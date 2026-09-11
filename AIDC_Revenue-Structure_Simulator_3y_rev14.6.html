@@ -123,7 +123,9 @@
     }
     .btn-reset svg { width: 36px; height: 36px; display: block; }
     .btn-reset:hover { color: var(--g60); }
-    .top-right { position: absolute; right: 119.6px; top: 60.8px; display: flex; align-items: flex-start; gap: 20.5px; }
+    .btn-reset.spin svg { animation: resetSpin .55s cubic-bezier(.4, 0, .2, 1); }
+    @keyframes resetSpin { to { transform: rotate(360deg); } }
+    .top-right { position: absolute; right: 119.6px; top: 92.8px; display: flex; align-items: flex-start; gap: 20.5px; }
     .top-caption {
       font-size: 19px; font-weight: 500; color: var(--g60); line-height: 25.7px; margin-top: 3.9px; white-space: nowrap; cursor: help;
     }
@@ -149,20 +151,19 @@
        ===================================================================== */
     .dashboard-grid { display: flex; align-items: flex-start; position: relative; }
     /* 시안: x=517.5 사이드바 경계 헤어라인(#ccc 0.5) — 스크롤바 구현과 무관하게 항상 그린다 */
-    .dashboard-grid::before { content: ""; position: absolute; left: calc(var(--side-w) - var(--hair)); top: 0; bottom: 0; width: var(--hair); background: var(--gcc); z-index: 1; pointer-events: none; }
-    .dashboard-grid.is-finance::before { display: none; }
+    .app::before { content: ""; position: absolute; left: calc(var(--side-w) - var(--hair)); top: 227px; bottom: 0; width: var(--hair); background: var(--gcc); z-index: 1; pointer-events: none; }
+    .app:has(.dashboard-grid.is-finance)::before { display: none; }
     .control-panel {
       flex: 0 0 var(--side-w); width: var(--side-w); position: sticky; top: 0; height: 100vh;
       overflow-y: auto; overflow-x: hidden; padding-left: var(--side-pad);
     }
     /* 시안: 스크롤바 폭 6.5(≈7)px · 썸 #a5a5a5 · 트랙 투명 (Chromium: ::-webkit-scrollbar 규칙이 적용되도록 scrollbar-width는 지정하지 않음) */
-    .control-panel::-webkit-scrollbar, .fin-aside::-webkit-scrollbar { width: 7px; }
-    .control-panel::-webkit-scrollbar-track, .fin-aside::-webkit-scrollbar-track { background: transparent; }
-    .control-panel::-webkit-scrollbar-thumb, .fin-aside::-webkit-scrollbar-thumb { background: var(--ga5); }
-    @supports not selector(::-webkit-scrollbar) {
-      .control-panel, .fin-aside { scrollbar-width: thin; scrollbar-color: var(--ga5) transparent; }
-    }
-    .controls-root { width: var(--side-inner); padding-top: 57px; padding-bottom: 240px; }
+    /* rev17: 네이티브 스크롤바를 숨기고(콘텐츠 폭 517.5 확보 → 검정 룰이 끝까지 닿음) 시안 위치(x=511, 6.5px, #a5a5a5)에 썸을 직접 그린다 */
+    .control-panel::-webkit-scrollbar, .fin-aside::-webkit-scrollbar { width: 0; height: 0; }
+    .control-panel, .fin-aside { scrollbar-width: none; }
+    .side-thumb { position: fixed; left: 0; top: 0; width: 6.5px; background: var(--ga5); z-index: 4; display: none; touch-action: none; }
+    .side-thumb.on { display: block; }
+    .controls-root { width: var(--side-inner); padding-top: 57px; padding-bottom: 80px; }
     .results-area { flex: 0 0 var(--main-w); width: var(--main-w); margin-left: 150px; min-width: 0; padding-top: 98.9px; }
     .dashboard-grid.is-compare .results-area { padding-top: 98.9px; }
     .dashboard-grid.is-compare #mainContent > .sec:first-child { margin-top: 0; }
@@ -286,17 +287,19 @@
     /* =====================================================================
        메인: 요약 카드
        ===================================================================== */
-    .summary-grid { display: grid; grid-template-columns: repeat(4, 285px); column-gap: 15px; padding-bottom: 24.9px; border-bottom: var(--hair) solid var(--k100); }
-    /* rev16: 요약 카드는 리모컨처럼 본문 상단에 고정(사이드바와 독립), 재무구조 블록이 올라오면 밀려 올라간다 */
-    .summary-grid { position: sticky; top: 0; z-index: 5; background: #fff; }
-    .summary-grid::before { content: ""; position: absolute; left: -20px; right: -20px; top: -30px; height: 30px; background: #fff; }
-    .summary-grid.collapsed .kpi { display: none; }
-    .summary-grid.collapsed { padding-bottom: 0; min-height: 10px; }
+    .summary-grid { padding-bottom: 24.9px; border-bottom: var(--hair) solid var(--k100); }
+    /* rev17: 리모컨(요약 카드·재무 KPI) — 본문 상단 30px 아래에 고정, 접기/펴기 애니메이션, 좌우 20px만 흰색으로 덮음 */
+    .summary-grid > .sg-inner { display: grid; grid-template-columns: repeat(4, 285px); column-gap: 15px; }
+    .remote { position: sticky; top: 30px; z-index: 5; background: #fff; transition: padding-bottom .28s ease; }
+    .remote::before { content: ""; position: absolute; left: -20px; right: -20px; top: -30px; height: 30px; background: #fff; }
+    .remote.stuck { box-shadow: -20px 0 0 #fff, 20px 0 0 #fff; }
+    .remote .sg-inner { overflow: clip; overflow-clip-margin: 8px; max-height: var(--sg-h, 999px); transition: max-height .28s ease, opacity .22s ease; }
+    .remote.collapsed .sg-inner { max-height: 0 !important; opacity: 0; }
+    .remote.collapsed { padding-bottom: 8px; }
     .sg-toggle { position: absolute; left: 50%; bottom: -19px; transform: translateX(-50%); width: 42px; height: 19px; border: var(--hair) solid var(--k100); border-top: 0; background: #fff; display: none; align-items: center; justify-content: center; cursor: pointer; padding: 0; z-index: 6; }
-    .summary-grid.stuck .sg-toggle { display: flex; }
-    .summary-grid.stuck { box-shadow: 0 0 0 20px #fff; }
-    .sg-toggle::before { content: ""; width: 7px; height: 7px; border-left: 1.5px solid var(--k100); border-top: 1.5px solid var(--k100); transform: translateY(2px) rotate(45deg); }
-    .summary-grid.collapsed .sg-toggle::before { transform: translateY(-2px) rotate(225deg); }
+    .remote.stuck .sg-toggle { display: flex; }
+    .sg-toggle::before { content: ""; width: 7px; height: 7px; border-left: 1.5px solid var(--k100); border-top: 1.5px solid var(--k100); transform: translateY(2px) rotate(45deg); transition: transform .28s ease; }
+    .remote.collapsed .sg-toggle::before { transform: translateY(-2px) rotate(225deg); }
     .kpi { position: relative; min-width: 0; }
     .kpi .k-pre { font-size: 13px; font-weight: 500; color: var(--g77); line-height: 17.6px; margin-bottom: 0.4px; white-space: nowrap; }
     .kpi .k-label { display: flex; align-items: center; font-size: 19px; font-weight: 600; color: var(--g77); line-height: 25.7px; white-space: nowrap; }
@@ -325,15 +328,16 @@
     .sec.mt-163 { margin-top: 163px; }
     .sec-head { display: flex; align-items: center; justify-content: space-between; min-height: 24.4px; }
     .sec-title { position: relative; display: inline-flex; align-items: center; font-size: 18px; font-weight: 600; color: var(--g60); line-height: 24.4px; white-space: nowrap; }
-    .sec-title.tri::before {
-      content: ""; position: absolute; left: -29.8px; top: 8.9px; width: 0; height: 0;
-      border-left: 4.95px solid transparent; border-right: 4.95px solid transparent; border-top: 8.5px solid var(--g60);
+    .tri-btn { position: absolute; left: -37px; top: 0; width: 24px; height: 24px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+    .tri-btn::before {
+      content: ""; position: absolute; left: 7.2px; top: 8.9px; width: 0; height: 0;
+      border-left: 4.95px solid transparent; border-right: 4.95px solid transparent; border-top: 8.5px solid var(--g60); transition: transform .2s ease;
     }
     .sec-title .tag-box { margin-left: 5.4px; position: relative; top: 1px; }
     /* rev16: ▼ 제목 클릭으로 접기/펴기 */
     .sec-title.tri { cursor: pointer; }
     .sec.collapsed > :not(.sec-head) { display: none; }
-    .sec.collapsed .sec-title.tri::before { transform: rotate(-90deg); transform-origin: 50% 35%; }
+    .sec.collapsed .tri-btn::before { transform: rotate(-90deg); transform-origin: 50% 35%; }
     .sec-tools { display: inline-flex; align-items: center; gap: 22px; font-size: 13px; color: var(--g77); }
     .sec-tools .lnk { font-size: 13px; font-weight: 500; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
     .sec-tools .lnk:hover { color: var(--k100); }
@@ -709,7 +713,7 @@
     .fin-fab { width: 44px; padding: 0; justify-content: center; right: 30px; bottom: 30px; }
     @media print { .fin-fab { display: none !important; } }
 
-    .site-footer { width: 1920px; margin: 0 auto; padding: 127.6px 129px 94.4px 0; text-align: right; font-size: 19px; font-weight: 400; color: var(--ga5); line-height: 25.8px; }
+    .site-footer { width: 1920px; margin: 0 auto; padding: 127.6px 129px 94.4px 0; text-align: right; font-size: 14px; font-weight: 400; color: var(--ga5); line-height: 20px; }
 
     /* 유틸 */
     .unit { line-height: 1; }
@@ -750,7 +754,7 @@
       </aside>
 
       <main class="results-area">
-        <section class="summary-grid" id="summaryCards" aria-label="Revenue summary"></section>
+        <section class="summary-grid remote" id="summaryCards" aria-label="Revenue summary"></section>
         <div id="mainContent"></div>
       </main>
     </div>
@@ -2100,12 +2104,12 @@
         : t('podExpenseHint', { a: eok(data.itCapexEok), b: eok(data.facilityEok) });
       const profitHint = `${getBreakEvenText(data)} \u00B7 ${t('vsRevenuePct', { pct: data.cumRevenue[YEARS - 1] ? pct(profit / data.cumRevenue[YEARS - 1] * 100, 1) : '0%' })}`;
 
-      root.innerHTML = [
+      root.innerHTML = '<div class="sg-inner">' + [
         kpiCard(t('cardAnnualRevenue'), eok(data.annualRevenue[0]), revenueHint, '', t('cardTipAnnualRevenue'), '', true),
         kpiCard(t('cardCumRevenue', { n: YEARS }), eok(data.cumRevenue[YEARS - 1]), cumulativeHint, '', t('cardTipCumRevenue'), '', true),
         kpiCard(t('cardCumExpense', { n: YEARS }), eok(data.cumExpense[YEARS - 1]), expenseHint, 'text-danger', t('cardTipCumExpense'), '', true),
         kpiCard(t('cardCumProfit', { n: YEARS }), eok(data.cumProfit[YEARS - 1]), profitHint, profit >= 0 ? 'text-success' : 'text-danger', t('cardTipCumProfit'), '', true)
-      ].join('') + `<button type="button" class="sg-toggle" aria-label="${escAttr(t('btnToggleCards'))}" title="${escAttr(t('btnToggleCards'))}"></button>`;
+      ].join('') + '</div>' + `<button type="button" class="sg-toggle" aria-label="${escAttr(t('btnToggleCards'))}" title="${escAttr(t('btnToggleCards'))}"></button>`;
       fitInputs(root);
     }
 
@@ -2182,7 +2186,7 @@
       opts = opts || {};
       return `
         <div class="sec-head">
-          <h2 class="sec-title ${opts.tri === false ? '' : 'tri'}">${title}${opts.badge ? `<span class="tag-box ${opts.badgeCls || ''}">${opts.badge}</span>` : ''}</h2>
+          <h2 class="sec-title ${opts.tri === false ? '' : 'tri'}">${opts.tri === false ? '' : '<button type="button" class="tri-btn" aria-label="toggle"></button>'}${title}${opts.badge ? `<span class="tag-box ${opts.badgeCls || ''}">${opts.badge}</span>` : ''}</h2>
           ${opts.tools ? `<div class="sec-tools">${opts.tools}</div>` : ''}
         </div>`;
     }
@@ -2279,7 +2283,7 @@
     function renderSystemSelector(data) {
       return `
         <section class="sec sys-sec">
-          ${secHead(t('systemSelectorTitle').replace(/\uAC12$/, ''), { tri: false, tools: `${reportIconBtn()}<button type="button" class="lnk muted" data-reset-selected>${t('resetBtn')}</button>` })}
+          ${secHead(t('systemSelectorTitle').replace(/\uAC12$/, ''), { tri: false })}
           <div class="sec-desc">${emphasizeSource(t('systemSelectorDesc'))}</div>
           <div class="sys-grid">
             ${SYSTEM_KEYS.map(key => {
@@ -2537,7 +2541,7 @@
     function renderRackSelector(data) {
       return `
         <section class="sec sys-sec">
-          ${secHead(t('rackSelectorTitle').replace(/값$/, ''), { tri: false, tools: `${reportIconBtn()}<button type="button" class="lnk muted" data-reset-rack>${t('resetRackBtn')}</button>` })}
+          ${secHead(t('rackSelectorTitle').replace(/값$/, ''), { tri: false })}
           <div class="sec-desc">${t('rackSelectorDesc')}</div>
           <div class="sys-grid">
             ${RACK_KEYS.map(key => {
@@ -3561,24 +3565,56 @@
         if (!h) return;
         sec.classList.toggle('collapsed', collapsedSecs.has(h.textContent.trim()));
       });
+      (root || document).querySelectorAll('.remote').forEach(el => el.classList.toggle('collapsed', collapsedSecs.has('@' + (el.id || 'fin'))));
     }
     // rev16: 요약 카드 리모컨 — 고정 상태 표시, 재무구조 블록에 걸리면 밀려 올라감
     function syncStickyCards() {
+      document.querySelectorAll('.remote').forEach(el => {
+        if (el.offsetParent === null) return;
+        el.classList.toggle('stuck', window.scrollY > 0 && el.getBoundingClientRect().top <= 30.5);
+      });
+      // 요약 카드 리모컨은 재무구조 블록이 올라오면 밀려 올라간다
       const sg = document.getElementById('summaryCards');
-      if (!sg || sg.style.display === 'none') return;
-      const stuck = window.scrollY > 0 && sg.getBoundingClientRect().top <= 0.5;
-      sg.classList.toggle('stuck', stuck);
-      let shift = 0;
       const fin = document.querySelector('#mainContent .fin-sep');
-      if (fin && stuck) {
+      let shift = 0;
+      if (sg && fin && sg.classList.contains('stuck')) {
         const need = sg.offsetHeight + 30;
         const ft = fin.getBoundingClientRect().top;
         if (ft < need) shift = ft - need;
       }
-      sg.style.transform = shift ? `translateY(${shift}px)` : '';
+      if (sg) sg.style.transform = shift ? `translateY(${shift}px)` : '';
+      syncSideThumb();
     }
     window.addEventListener('scroll', syncStickyCards, { passive: true });
     window.addEventListener('resize', syncStickyCards);
+    // rev17: 사이드바 커스텀 스크롤 썸 (시안 x=511 · 6.5px · #a5a5a5) — 네이티브 스크롤바는 숨김
+    const sideThumb = document.createElement('div');
+    sideThumb.className = 'side-thumb';
+    document.body.appendChild(sideThumb);
+    function syncSideThumb() {
+      const cp = document.querySelector('.control-panel');
+      if (!cp || cp.offsetParent === null || cp.scrollHeight <= cp.clientHeight + 1) { sideThumb.classList.remove('on'); return; }
+      const r = cp.getBoundingClientRect();
+      const h = Math.max(24, cp.clientHeight * cp.clientHeight / cp.scrollHeight);
+      const top = r.top + (cp.scrollTop / (cp.scrollHeight - cp.clientHeight)) * (cp.clientHeight - h);
+      sideThumb.style.left = `${r.left + 511}px`;
+      sideThumb.style.top = `${top}px`;
+      sideThumb.style.height = `${h}px`;
+      sideThumb.classList.add('on');
+    }
+    (function bindSideThumb() {
+      const cp = document.querySelector('.control-panel');
+      if (cp) cp.addEventListener('scroll', syncSideThumb, { passive: true });
+      let drag = null;
+      sideThumb.addEventListener('pointerdown', e => {
+        if (!cp) return;
+        drag = { y: e.clientY, st: cp.scrollTop, ratio: (cp.scrollHeight - cp.clientHeight) / Math.max(1, cp.clientHeight - sideThumb.offsetHeight) };
+        sideThumb.setPointerCapture(e.pointerId); e.preventDefault();
+      });
+      sideThumb.addEventListener('pointermove', e => { if (drag) cp.scrollTop = drag.st + (e.clientY - drag.y) * drag.ratio; });
+      sideThumb.addEventListener('pointerup', () => { drag = null; });
+      sideThumb.addEventListener('pointercancel', () => { drag = null; });
+    })();
 
     function setLang(lang) {
       if (state.lang === lang) return;
@@ -4154,16 +4190,24 @@
       // rev16: 요약 카드 리모컨 접기/펴기
       const sgToggle = event.target.closest('.sg-toggle');
       if (sgToggle) {
-        const sg = sgToggle.closest('.summary-grid');
-        const before = sg.offsetHeight;
+        const sg = sgToggle.closest('.remote');
+        const inner = sg.querySelector('.sg-inner');
+        if (inner) sg.style.setProperty('--sg-h', `${inner.scrollHeight}px`);
         sg.classList.toggle('collapsed');
-        if (sg.classList.contains('stuck')) window.scrollBy(0, sg.offsetHeight - before);
-        syncStickyCards();
+        const key = '@' + (sg.id || 'fin');
+        if (sg.classList.contains('collapsed')) collapsedSecs.add(key); else collapsedSecs.delete(key);
+        // 고정 상태에서 접힐 때 아래 내용이 튀지 않도록 프레임마다 높이 변화분만큼 스크롤 보정
+        if (sg.classList.contains('stuck')) {
+          let last = sg.offsetHeight; const t0 = performance.now();
+          const step = () => { const h = sg.offsetHeight; if (h !== last) { window.scrollBy(0, h - last); last = h; } if (performance.now() - t0 < 420) requestAnimationFrame(step); else syncStickyCards(); };
+          requestAnimationFrame(step);
+        }
         return;
       }
-      // rev16: ▼ 제목 클릭으로 섹션 접기/펴기 (제목 안의 아이콘·배지·링크 클릭은 제외)
-      const secTitle = event.target.closest('.sec-title.tri');
-      if (secTitle && !event.target.closest('.ico-i, .tag-box, a, button, [data-open-report]')) {
+      // rev16: ▼ 삼각형(터치 범위 24px) 또는 제목 클릭으로 섹션 접기/펴기 (제목 안의 아이콘·배지·링크 클릭은 제외)
+      const triBtn = event.target.closest('.tri-btn');
+      const secTitle = triBtn ? triBtn.closest('.sec-title') : event.target.closest('.sec-title.tri');
+      if (secTitle && (triBtn || !event.target.closest('.ico-i, .tag-box, a, button, [data-open-report]'))) {
         const sec = secTitle.closest('.sec');
         if (sec) {
           sec.classList.toggle('collapsed');
@@ -4186,7 +4230,11 @@
       if (gotoButton) { state.activeView = gotoButton.dataset.gotoView; buildControls(); render(); return; }
 
       const scenarioButton = event.target.closest('[data-scenario]');
-      if (scenarioButton) { applyScenario(scenarioButton.dataset.scenario); return; }
+      if (scenarioButton) {
+        scenarioButton.classList.remove('spin'); void scenarioButton.offsetWidth; scenarioButton.classList.add('spin');
+        scenarioButton.addEventListener('animationend', () => scenarioButton.classList.remove('spin'), { once: true });
+        applyScenario(scenarioButton.dataset.scenario); return;
+      }
 
       const bmButton = event.target.closest('[data-bm-mode]');
       if (bmButton) { applyBmMode(bmButton.dataset.bmMode); return; }
@@ -5219,7 +5267,7 @@ const PODFIN = (function () {
 
   function panelBody(id) {
     return `
-      <div id="pfinKpis${id}" class="fin-kpis"></div>
+      <div class="fin-kpis remote"><div class="sg-inner" id="pfinKpis${id}"></div><button type="button" class="sg-toggle" aria-label="${L('접기/펴기', 'Collapse/expand')}" title="${L('접기/펴기', 'Collapse/expand')}"></button></div>
       <section class="sec fin-title">
         ${secHead(L('재무구조 · 주주수익률 (레버리지 반영)', 'Financing & equity returns (levered)'), { tri: false })}
         <div class="sec-desc">${L('좌측 입력값으로 산출된 CAPEX·매출·운영비·감가상각에 조달구조와 법인세를 얹어 계산된 주주 관점 수익률. SU 수·환율·단가·가동률을 바꾸면 즉시 반영됩니다.', 'Shareholder returns computed by applying the funding structure and corporate tax to the capex, revenue, operating cost and depreciation produced by the inputs at left. Updates instantly with SU count, FX, rates and utilization.')}</div>
