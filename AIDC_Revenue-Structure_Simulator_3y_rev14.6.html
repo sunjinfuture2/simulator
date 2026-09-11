@@ -64,6 +64,7 @@
     input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     input:focus { outline: none; }
     .app { width: 1920px; margin: 0 auto; position: relative; }
+    @media (min-width: 1905px) { html { overflow-x: hidden; } }
 
     /* ---------- 공통: 오렌지 편집 밑줄 (편집 가능한 값) ---------- */
     .u { position: relative; display: inline-block; }
@@ -146,17 +147,23 @@
     /* =====================================================================
        레이아웃: 사이드바(sticky) + 메인
        ===================================================================== */
-    .dashboard-grid { display: flex; align-items: flex-start; }
+    .dashboard-grid { display: flex; align-items: flex-start; position: relative; }
+    /* 시안: x=517.5 사이드바 경계 헤어라인(#ccc 0.5) — 스크롤바 구현과 무관하게 항상 그린다 */
+    .dashboard-grid::before { content: ""; position: absolute; left: calc(var(--side-w) - var(--hair)); top: 0; bottom: 0; width: var(--hair); background: var(--gcc); z-index: 1; pointer-events: none; }
+    .dashboard-grid.is-finance::before { display: none; }
     .control-panel {
       flex: 0 0 var(--side-w); width: var(--side-w); position: sticky; top: 0; height: 100vh;
-      overflow-y: auto; overflow-x: hidden; padding-left: var(--side-pad); overscroll-behavior: contain;
-      scrollbar-width: thin; scrollbar-color: var(--ga5) transparent;
+      overflow-y: auto; overflow-x: hidden; padding-left: var(--side-pad);
     }
-    .control-panel::-webkit-scrollbar { width: 7px; }
-    .control-panel::-webkit-scrollbar-track { background: transparent; border-right: var(--hair) solid var(--gcc); }
-    .control-panel::-webkit-scrollbar-thumb { background: var(--ga5); }
-    .controls-root { width: var(--side-inner); padding-top: 57px; padding-bottom: 120px; }
-    .results-area { flex: 0 0 var(--main-w); width: var(--main-w); margin-left: 150px; min-width: 0; padding-top: 80.9px; }
+    /* 시안: 스크롤바 폭 6.5(≈7)px · 썸 #a5a5a5 · 트랙 투명 (Chromium: ::-webkit-scrollbar 규칙이 적용되도록 scrollbar-width는 지정하지 않음) */
+    .control-panel::-webkit-scrollbar, .fin-aside::-webkit-scrollbar { width: 7px; }
+    .control-panel::-webkit-scrollbar-track, .fin-aside::-webkit-scrollbar-track { background: transparent; }
+    .control-panel::-webkit-scrollbar-thumb, .fin-aside::-webkit-scrollbar-thumb { background: var(--ga5); }
+    @supports not selector(::-webkit-scrollbar) {
+      .control-panel, .fin-aside { scrollbar-width: thin; scrollbar-color: var(--ga5) transparent; }
+    }
+    .controls-root { width: var(--side-inner); padding-top: 57px; padding-bottom: 240px; }
+    .results-area { flex: 0 0 var(--main-w); width: var(--main-w); margin-left: 150px; min-width: 0; padding-top: 98.9px; }
     .dashboard-grid.is-compare .results-area { padding-top: 98.9px; }
     .dashboard-grid.is-compare #mainContent > .sec:first-child { margin-top: 0; }
     .dashboard-grid.is-finance .results-area { margin-left: 0; }
@@ -171,8 +178,8 @@
     .s-group.space { padding-top: 51.5px; }
     .s-group.bm { padding-top: 44.6px; padding-bottom: 40.8px; }
     .s-group.util { padding-top: 46.7px; padding-bottom: 33.8px; }
-    .s-group.mix { padding-top: 44.7px; padding-bottom: 50px; }
-    .s-group.rate { padding-top: 38.4px; padding-bottom: 34.5px; }
+    .s-group.mix { padding-top: 44.7px; padding-bottom: 47px; }
+    .s-group.rate { padding-top: 38.4px; padding-bottom: 33.5px; }
     .s-group.dep { padding-top: 29.2px; padding-bottom: 57.3px; }
     .s-group.sw { padding-top: 22.8px; }
     .s-group.tight { padding-top: 29.2px; }
@@ -194,8 +201,9 @@
     .s-val .unit { font-size: 11px; font-weight: 500; color: var(--g77); margin-left: 1.4px; line-height: 1; }
     .s-val .unit.pct { font-size: 14px; margin-left: 1.3px; }
     .s-val .unit.pct12 { font-size: 12px; margin-left: 0.4px; }
+    .s-val .unit.ins { margin-right: 7.7px; }
     .s-val .pre { font-size: 11px; font-weight: 500; color: var(--g77); margin-right: 3px; }
-    .s-sub { position: absolute; right: 0; top: -14.6px; font-size: 12px; font-weight: 400; color: var(--g77); line-height: 16.3px; white-space: nowrap; }
+    .s-sub { position: absolute; right: 7.7px; top: -14.6px; font-size: 12px; font-weight: 400; color: var(--g77); line-height: 16.3px; white-space: nowrap; }
     .s-row.has-sub { margin-top: 38.4px; }
     .s-hint { margin-top: 19.2px; font-size: 12px; font-weight: 400; color: var(--g77); line-height: 17.1px; word-break: keep-all; }
     .s-hint.warn { color: var(--red); }
@@ -226,12 +234,20 @@
     .s-cols.c3 { grid-template-columns: repeat(3, 1fr); }
     .s-cols.c4 { grid-template-columns: 86px 105.9px 105.8px 77px; }
     .s-col { display: flex; flex-direction: column; }
-    .s-cols.c3 .s-col:nth-child(2) { align-items: center; }
-    .s-cols.c3 .s-col:nth-child(3) { align-items: flex-end; }
-    .s-cols.c4 .s-col:nth-child(2), .s-cols.c4 .s-col:nth-child(3) { align-items: center; }
-    .s-cols.c4 .s-col:nth-child(4) { align-items: flex-end; }
-    .s-cols.c4 .s-col + .s-col { border-left: var(--hair) solid var(--gcc); }
-    .s-cols.c4 .s-col { padding-top: 1.8px; margin-top: -1.8px; }
+    /* 3열(연차별): 시안은 연차 라벨을 숫자 바로 위(왼쪽 맞춤)에 두고 %는 숫자 오른쪽에 매달린다 */
+    .s-cols.c3 .s-col:nth-child(n+2) { display: grid; grid-template-columns: max-content max-content; align-items: baseline; }
+    .s-cols.c3 .s-col:nth-child(2) { justify-content: center; padding-right: 6.5px; }
+    .s-cols.c3 .s-col:nth-child(3) { justify-content: end; }
+    .s-cols.c3 .s-col:nth-child(n+2) .s-col-val { display: contents; }
+    .s-cols.c3 .s-col:nth-child(n+2) .s-col-lab { grid-column: 1; grid-row: 1; justify-self: start; }
+    .s-cols.c3 .s-col:nth-child(n+2) .s-col-val .u { grid-column: 1; grid-row: 2; margin-top: 3.1px; }
+    .s-cols.c3 .s-col:nth-child(n+2) .s-col-val .unit { grid-column: 2; grid-row: 2; margin-top: 3.1px; }
+    /* 4열(포트폴리오): 각 열은 구분선에서 25px 안쪽 왼쪽 맞춤, 구분선은 라벨 1.8px 아래부터 41.2px */
+    .s-cols.c4 .s-col:nth-child(2) { padding-left: 25.2px; }
+    .s-cols.c4 .s-col:nth-child(3) { padding-left: 28px; }
+    .s-cols.c4 .s-col:nth-child(4) { padding-left: 24.1px; }
+    .s-cols.c4 .s-col + .s-col { position: relative; }
+    .s-cols.c4 .s-col + .s-col::before { content: ""; position: absolute; left: 0; top: 1.8px; width: var(--hair); height: 41.2px; background: var(--gcc); }
     .s-col-lab { font-size: 11px; font-weight: 500; color: var(--g77); line-height: 14.9px; white-space: nowrap; }
     .s-col-val { display: inline-flex; align-items: baseline; margin-top: 3.1px; }
     .s-col-val .u { font-size: 24px; font-weight: 400; color: var(--k100); line-height: 32.5px; }
@@ -242,9 +258,10 @@
     .s-slider { margin-top: 45.7px; }
     .s-slider + .s-slider { margin-top: 16px; }
     .s-slider .s-row { min-height: 20.3px; }
+    .s-slider .s-row { align-items: center; }
     .s-slider .s-val { top: 3px; }
     .s-slider .s-val .u { line-height: 32.5px; }
-    .s-slider .s-lab { align-self: flex-end; }
+    .s-slider .s-lab { position: relative; top: 3px; }
     .track { display: block; width: 100%; height: 3.9px; margin-top: 11px; -webkit-appearance: none; appearance: none; background: var(--ge2); cursor: pointer; }
     .track { background: linear-gradient(to right, var(--k100) 0, var(--k100) var(--p, 0%), var(--ge2) var(--p, 0%), var(--ge2) 100%); }
     .track::-webkit-slider-runnable-track { height: 3.9px; background: transparent; }
@@ -256,7 +273,7 @@
     .track:disabled { cursor: default; }
 
     /* 사이드바 재무 그룹 */
-    .s-fin-title { display: flex; align-items: center; justify-content: space-between; }
+    .s-fin-title { display: flex; align-items: center; }
     .s-fin-title .s-lab { white-space: normal; }
     .s-fin .s-hint { margin-top: 19.2px; }
     .s-fin .s-slider.fin-eq { margin-top: 42px; }
@@ -265,10 +282,6 @@
     .s-fin .s-lab-only { margin-top: 60.7px; }
     .s-fin .s-lab-only + .s-btns { margin-top: 17.3px; }
     .s-fin .s-btns + .s-lab-only { margin-top: 63.3px; }
-    .s-reset-mini {
-      font-size: 12px; font-weight: 500; color: var(--g77); text-decoration: underline; text-underline-offset: 2px; white-space: nowrap;
-    }
-    .s-reset-mini:hover { color: var(--k100); }
 
     /* =====================================================================
        메인: 요약 카드
@@ -284,6 +297,7 @@
     .kpi .k-value.is-danger, .kpi .k-value.text-danger { color: var(--red); }
     .kpi .k-value.is-primary { color: var(--blue); }
     .kpi .k-hint { margin-top: 0.3px; font-size: 13px; font-weight: 400; color: var(--ga0); line-height: 18px; word-break: keep-all; margin-left: -2px; }
+    #summaryCards .k-hint { min-height: 36px; }
     .kpi[data-kpitip] { cursor: help; }
     .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); }
     .kpi-grid + .kpi-grid { margin-top: 55.6px; }
@@ -561,10 +575,7 @@
 
     /* 재무구조 탭 (전용 레이아웃) */
     .fin-layout { display: flex; align-items: flex-start; }
-    .fin-aside { flex: 0 0 var(--side-w); width: var(--side-w); position: sticky; top: 0; height: 100vh; overflow-y: auto; padding-left: var(--side-pad); scrollbar-width: thin; scrollbar-color: var(--ga5) transparent; }
-    .fin-aside::-webkit-scrollbar { width: 7px; }
-    .fin-aside::-webkit-scrollbar-track { background: transparent; border-right: var(--hair) solid var(--gcc); }
-    .fin-aside::-webkit-scrollbar-thumb { background: var(--ga5); }
+    .fin-aside { flex: 0 0 var(--side-w); width: var(--side-w); position: sticky; top: 0; height: 100vh; overflow-y: auto; padding-left: var(--side-pad); }
     .fin-aside-inner { width: var(--side-inner); padding-top: 57.4px; padding-bottom: 120px; }
     .fin-aside-head h2 { font-size: 18px; font-weight: 600; color: var(--g60); line-height: 24.4px; }
     .fin-aside-head p { margin-top: 19.6px; font-size: 12px; color: var(--g77); line-height: 17.1px; word-break: keep-all; }
@@ -2074,10 +2085,10 @@
       const profitHint = `${getBreakEvenText(data)} \u00B7 ${t('vsRevenuePct', { pct: data.cumRevenue[YEARS - 1] ? pct(profit / data.cumRevenue[YEARS - 1] * 100, 1) : '0%' })}`;
 
       root.innerHTML = [
-        kpiCard(t('cardAnnualRevenue'), eok(data.annualRevenue[0]), revenueHint, '', t('cardTipAnnualRevenue')),
-        kpiCard(t('cardCumRevenue', { n: YEARS }), eok(data.cumRevenue[YEARS - 1]), cumulativeHint, '', t('cardTipCumRevenue')),
-        kpiCard(t('cardCumExpense', { n: YEARS }), eok(data.cumExpense[YEARS - 1]), expenseHint, 'text-danger', t('cardTipCumExpense')),
-        kpiCard(t('cardCumProfit', { n: YEARS }), eok(data.cumProfit[YEARS - 1]), profitHint, profit >= 0 ? 'text-success' : 'text-danger', t('cardTipCumProfit'))
+        kpiCard(t('cardAnnualRevenue'), eok(data.annualRevenue[0]), revenueHint, '', t('cardTipAnnualRevenue'), '', true),
+        kpiCard(t('cardCumRevenue', { n: YEARS }), eok(data.cumRevenue[YEARS - 1]), cumulativeHint, '', t('cardTipCumRevenue'), '', true),
+        kpiCard(t('cardCumExpense', { n: YEARS }), eok(data.cumExpense[YEARS - 1]), expenseHint, 'text-danger', t('cardTipCumExpense'), '', true),
+        kpiCard(t('cardCumProfit', { n: YEARS }), eok(data.cumProfit[YEARS - 1]), profitHint, profit >= 0 ? 'text-success' : 'text-danger', t('cardTipCumProfit'), '', true)
       ].join('');
       fitInputs(root);
     }
@@ -2103,13 +2114,15 @@
       // 시안: 긴 괄호 설명만 라벨 위 소제목으로 분리 — 짧은 것('(세후)')은 라벨에 그대로 둔다
       return (m && m[2].length >= 8) ? { main: m[1], pre: m[2] } : { main: label, pre: '' };
     }
-    function kpiCard(label, valueStr, hint, cls, tip, tipAttr) {
-      const l = splitLabelParen(label);
+    function kpiCard(label, valueStr, hint, cls, tip, tipAttr, noPre) {
+      const l = noPre ? { main: splitLabelParen(label).main, pre: '' } : splitLabelParen(label);
       const v = splitUnit(valueStr);
+      // 상단 요약 카드(시안: 라벨 위 소제목 없음)는 괄호 설명을 툴팁 제목으로 넘긴다
+      const tipTitle = noPre ? label : l.main;
       return `
         <article class="kpi"${tipAttr || ''}>
-          <div class="k-pre">${l.pre || '&nbsp;'}</div>
-          <div class="k-label"><span>${l.main}</span>${tip ? infoIcon(tip, l.main) : ''}</div>
+          ${noPre ? '' : `<div class="k-pre">${l.pre || '&nbsp;'}</div>`}
+          <div class="k-label"><span>${l.main}</span>${tip ? infoIcon(tip, tipTitle) : ''}</div>
           <div class="k-value ${cls || ''}"><span class="num">${v.num}</span>${v.unit ? `<span class="unit">${v.unit}</span>` : ''}</div>
           <div class="k-hint">${hint || ''}</div>
         </article>`;
@@ -3093,7 +3106,7 @@
     function lineChartSvg(series, label) {
       const width = CHART_W, height = CHART_H, pad = CHART_PAD;
       const values = series.flatMap(s => s.data).concat([0]);
-      const sc = niceScale(values, 5);
+      const sc = niceScale(values, 4); // 시안: 기본 데이터에서 2,500억 간격 5구간 (-2,500 … 10,000)
       const innerW = width - pad.left - pad.right;
       const plotTop = pad.top, plotBottom = height - pad.bottom;
       const xMonth = mth => pad.left + (Math.max(0, Math.min(12 * YEARS, mth)) / (12 * YEARS)) * innerW;
@@ -3317,10 +3330,13 @@
     }
     function ctlRow(id, labelHtml, opts) {
       opts = opts || {};
+      const unitTxt = opts.unit !== undefined ? opts.unit : unitOf(id);
+      // 시안: 통화·kW·㎡ 단위(11px)는 열 오른쪽 끝(442.2)에서 7.7px 안쪽(≈434.5)에서 끝나고, %·GPU·년은 끝까지 간다
+      const unitCls = opts.unitCls || (/^(원\/|₩\/|\$\/|kW$|㎡$)/.test(String(unitTxt)) ? 'ins' : '');
       return `
         <div class="s-row ${opts.cls || ''}">
           <span class="s-lab ${opts.labCls || ''}">${labelHtml}</span>
-          <span class="s-val">${opts.sub ? `<span class="s-sub" ${opts.subAttr || ''}>${opts.sub}</span>` : ''}${opts.pre ? `<span class="pre">${opts.pre}</span>` : ''}${numInputHtml(id, opts.extra)}<span class="unit ${opts.unitCls || ''}">${opts.unit !== undefined ? opts.unit : unitOf(id)}</span></span>
+          <span class="s-val">${opts.sub ? `<span class="s-sub" ${opts.subAttr || ''}>${opts.sub}</span>` : ''}${opts.pre ? `<span class="pre">${opts.pre}</span>` : ''}${numInputHtml(id, opts.extra)}<span class="unit ${unitCls}">${unitTxt}</span></span>
         </div>`;
     }
     function ctlCols(ids, labels, cls) {
@@ -3567,6 +3583,8 @@
       fillSelectedRack(state, rackTypes, state.selectedRack);
       if (state.spaceMode === 'expand') state.floorAreaSqm = minFloorAreaForPowerMax();
       state.suCount = podMaxSu();
+      // rev15: 헤더 '기본값'은 재무구조 조달 가정(자기자본·금리·상환·사업기구)도 함께 초기화 (사이드바 '초기화' 링크 대체)
+      if (typeof PODFIN !== 'undefined' && PODFIN.resetP) PODFIN.resetP();
       buildControls();
       render();
     }
@@ -4799,9 +4817,13 @@ const FINVIEW = (function () {
 
     // ① 순이익 → FCFE 조정
     const resid = x => (x.y === n ? (r.resid || 0) : 0);
-    const recon = `<section class="sec">${secHead(L('회계 순이익 → 주주 현금흐름 조정', 'Reconciliation: net income to cash flow to equity'))}`
+    // 원본의 상위 제목 '연차별 최종 수익구조'와 설명(단위: 억 원)은 첫 소제목의 i 팝업으로 보존
+    const finalInfo = (typeof infoIcon === 'function')
+      ? infoIcon(L('회계상 손익과 실제 주주 귀속 현금의 관계, 투자원금 회수 진행률. 단위: 억 원', 'How accounting profit relates to shareholder cash, plus payback progress. Unit: KRW 100M'), L('연차별 최종 수익구조', 'Final annual return structure'), true)
+      : '';
+    const recon = `<section class="sec" aria-label="${L('연차별 최종 수익구조', 'Final annual return structure')}">${secHead(L('회계 순이익 → 주주 현금흐름 조정', 'Reconciliation: net income to cash flow to equity') + finalInfo)}`
       + tbl(
-        row(L('세후 순이익 (회계상 순익)', 'Net income after tax'), x => x.ni, 'key')
+        row(L('세후 순이익 (회계상 손익)', 'Net income after tax'), x => x.ni, 'key')
         + row(L('(+) 감가상각비 — 비현금 비용 가산', '(+) Depreciation — non-cash add-back'), x => x.dep, 'sub')
         + row(L('(−) PF 원금상환 — 비용이 아닌 현금유출', '(-) PF principal — cash outflow, not a cost'), x => -x.P, 'sub')
         + row(L('(+) 감가상각 잔존가액 회수', '(+) Recovery of undepreciated residual'), resid, 'sub', r.resid || 0)
@@ -5078,7 +5100,6 @@ const PODFIN = (function () {
       <section class="s-group s-fin" data-views="superpod,gpu">
         <div class="s-fin-title">
           <span class="s-lab">${L('재무구조 · 주주수익률 (레버리지 반영)', 'Financing & equity returns (levered)')}</span>
-          <button type="button" class="s-reset-mini" id="pfinReset" title="${L('조달 가정 초기화', 'Reset funding assumptions')}">${L('초기화', 'Reset')}</button>
         </div>
         <div class="s-hint">${L('공통 입력값으로 산출된 CAPEX·매출·운영비·감가상각에 조달구조와 법인세를 얹어 계산된 주주 관점 수익률.', 'Shareholder returns computed by layering the funding structure and corporate tax on the CAPEX, revenue, operating cost and depreciation derived from the shared inputs.')}</div>
         <div class="s-slider fin-eq">
@@ -5354,7 +5375,7 @@ const PODFIN = (function () {
   // 모델 비교 탭용: 임의 모델 데이터의 재무지표 산출 (조달 가정 공유)
   function metrics(data) { try { return data ? build(data) : null; } catch (e) { return null; } }
 
-  return { html, view, attach, refresh, metrics, sidebarHtml, syncSidebar, getP: () => P, setModel: m => { finModel = m; }, getModel: () => finModel };
+  return { html, view, attach, refresh, metrics, sidebarHtml, syncSidebar, getP: () => P, resetP: () => { Object.assign(P, DEF); syncSidebar(); }, setModel: m => { finModel = m; }, getModel: () => finModel };
 })();
 // 모듈 파싱 완료 후, 메인 스크립트가 먼저 그린 화면을 재무 패널 포함해 재렌더
 if (typeof render === 'function') { try { buildControls(); render(); } catch (e) { console.error(e); } }
