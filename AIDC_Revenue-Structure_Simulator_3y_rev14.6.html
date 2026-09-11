@@ -866,7 +866,7 @@
       tabSuperpod: { ko: 'SuperPOD', en: 'SuperPOD' },
       tabGpu: { ko: '개별GPU 서버', en: 'Standalone GPU Servers' },
       tabCompare: { ko: '모델 비교', en: 'Model Comparison' },
-      suSecTitle: { ko: 'SU 구성', en: 'SU Configuration' },
+      suSecTitle: { ko: 'SU구성', en: 'SU Configuration' },
       labelDepGroup: { ko: 'GPU 누적 감가상각률', en: 'Cumulative GPU Depreciation' },
       labelSwSubShort: { ko: 'SW 구독 단가', en: 'SW Subscription Rate' },
       rackSpecHeading: { ko: '랙 사양 · 1랙 기준', en: 'Rack spec · per rack' },
@@ -2232,7 +2232,7 @@
           <div class="sys-rate g1">
             <span class="lab">${t('specRateODLabel')}</span>
             <div class="vals">
-              <span class="v"><span class="u"><input type="number" min="0" step="0.01" value="${nfPlain(baseRateUsdOf(entity), 2)}" ${inputAttrs} aria-label="${escAttr(t('specHourlyBaseLabel'))}" /></span><span class="unit">$/GPU/h</span></span>
+              <span class="v"><span class="u" title="${escAttr(t('specHourlyBaseLabel'))}"><input type="number" min="0" step="0.01" value="${nfPlain(baseRateUsdOf(entity), 2)}" ${inputAttrs} aria-label="${escAttr(t('specHourlyBaseLabel'))}" /></span><span class="unit">$/GPU/h</span></span>
               <span class="v"><span data-rate="${derivedKey}:od">${rateNum(r.od)}</span><span class="unit">${unitKrw}</span></span>
             </div>
           </div>
@@ -2261,7 +2261,7 @@
                 <article class="sys-card ${active}" data-select-system="${key}" role="button" tabindex="0" aria-pressed="${active ? 'true' : 'false'}">
                   <div class="sys-in">
                     <div class="sys-title"><strong>${sys.label}</strong><span class="spec">FP4: ${nf.format(sys.fp4PflopsPerSu)} <small>PFLOPS/SU</small></span></div>
-                    <div class="sys-sub">${systemDesc(sys)}</div>
+                    <div class="sys-sub">${systemDesc(sys)} · ≈ ${fmtKwAsMw(sys.suItPowerKw)}</div>
                     ${rateBlockHtml(sys, `data-sys-key="${key}" data-sys-prop="baseRateUsd"`, `sys:${key}`)}
                     <div class="sys-capex-h">${t('capexHeading')}</div>
                     <ul class="sys-capex">
@@ -2364,7 +2364,7 @@
       }).join('');
       return `
         <div class="dt-wrap th-table">
-          <table class="dt th" style="--gap:3.3px">
+          <table class="dt th" style="--gap:3.3px" aria-label="${escAttr(t('thTitle'))}">
             <colgroup><col style="width:318.7px"><col style="width:217px"><col style="width:220.4px"><col></colgroup>
             <thead><tr><th>${t('thColSu')}</th><th class="r">${t('thColArea')}</th><th class="r">${t('thColPower')}</th><th class="r">${t('thColState')}</th></tr></thead>
             <tbody>${rows}</tbody>
@@ -2468,7 +2468,7 @@
       }).join('');
       return `
         <div class="dt-wrap th-table">
-          <table class="dt th" style="--gap:3.3px">
+          <table class="dt th" style="--gap:3.3px" aria-label="${escAttr(t('thRackTitle'))}">
             <colgroup><col style="width:318.7px"><col style="width:217px"><col style="width:220.4px"><col></colgroup>
             <thead><tr><th>${t('thColRack')}</th><th class="r">${t('thColArea')}</th><th class="r">${t('thColPower')}</th><th class="r">${t('thColState')}</th></tr></thead>
             <tbody>${rows}</tbody>
@@ -2634,7 +2634,8 @@
         [t('blSwOpexRack'), `${eok(data.swOpexEok)} (${formatSwSub(state.swSubUsdPerGpuYear)})`],
         [t('blDep'), `${getDepreciationText()}%`]
       ];
-      const chips = commonChipItems(data).concat([
+      const usageText = t('usageTextGpu', { pct: pct(data.allocationPct, 1), mix: rackMixText(), kw: nf.format(state.itPowerKw) });
+      const chips = [[t('powerAllocLabel'), usageText.replace(/^[^:]*:\s*/, '')]].concat(commonChipItems(data), [
         [t('blOpex'), eok(state.opexEok)],
         [t('chipEnergyRate'), formatRateText('energyCostRate', state.energyCostRate)],
         [t('chipBasicCharge'), formatRateText('basicChargeKwMonth', state.basicChargeKwMonth)],
@@ -2653,7 +2654,7 @@
     function renderChartPanel() {
       return `
         <section class="sec mt-66 chart-sec">
-          ${secHead(t('chartTitle', { n: YEARS }), { tools: `<div class="legend" id="legend"></div><button type="button" class="lnk muted" data-export>${t('exportBtn')} ↓</button>` })}
+          ${secHead(`<span title="${escAttr(t('chartDesc'))}">${t('chartTitle', { n: YEARS })}</span>`, { tools: `<div class="legend" id="legend"></div><button type="button" class="lnk muted" data-export>${t('exportBtn')} ↓</button>` })}
           <div class="chart-wrap" id="chartWrap"></div>
         </section>
       `;
@@ -2675,7 +2676,12 @@
         [t('blSwOpex'), `${eok(data.swOpexEok)} (${formatSwSub(state.swSubUsdPerGpuYear)})`],
         [t('blDep'), `${getDepreciationText()}%`]
       ];
-      const chips = commonChipItems(data).concat([
+      const over = data.allocationPct > 100;
+      const usageText = t('usageTextPod', {
+        pct: pct(data.allocationPct, 1), sys: sys.shortLabel, n: nf.format(data.su),
+        kw: fmtKwAsMw(data.usedItPower), it: fmtKwAsMw(state.itPowerKw)
+      }) + (over ? ` · ${t('overCapacity')}` : '');
+      const chips = [[t('powerAllocLabel'), usageText.replace(/^[^:]*:\s*/, '')]].concat(commonChipItems(data), [
         [t('chipEnergyRate'), formatRateText('energyCostRate', state.energyCostRate)],
         [t('chipBasicCharge'), formatRateText('basicChargeKwMonth', state.basicChargeKwMonth)],
         [t('chipFx'), `${nf.format(state.fxKrwUsd)}원/USD`],
@@ -2836,16 +2842,16 @@
       }).join('');
       return `
         <div class="dt-wrap table-after-chart yr-table">
-          <table class="dt yr">
+          <table class="dt yr" aria-label="${escAttr(t('tableTitle'))}">
             <colgroup><col style="width:150px"><col style="width:150px"><col style="width:150px"><col style="width:150px"><col style="width:150px"><col style="width:150px"><col style="width:150px"><col></colgroup>
             <thead>
               <tr>
                 <th>${t('colYear')}</th>
                 <th>${t('colAnnualRevenue')}</th>
-                <th>${t('colAnnualExpense')}</th>
+                <th title="${escAttr(t('tableDesc'))}">${t('colAnnualExpense')}</th>
                 <th>${t('colAnnualProfit')}</th>
                 <th>${t('colCumRevenue')}</th>
-                <th>${t('colCumExpense')}</th>
+                <th title="${escAttr(t('tableDesc'))}">${t('colCumExpense')}</th>
                 <th>${t('colCumProfit')}</th>
                 <th class="r">${t('colMargin')}</th>
               </tr>
@@ -3099,7 +3105,7 @@
         const isZero = Math.abs(v) < 1e-9;
         const isBottom = Math.abs(v - sc.lo) < 1e-9;
         if (!isBottom) grid += `<line class="grid ${isZero ? 'zero' : ''}" x1="${pad.left - 7.7}" y1="${yy}" x2="${width - pad.right}" y2="${yy}"></line>`;
-        grid += `<text class="tick" x="${pad.left - 15.9}" y="${yy + 3.7}" text-anchor="end">${eokAxis(v)}</text>`;
+        grid += `<text class="tick" x="${pad.left - 15.9}" y="${yy + 3.7}" text-anchor="end">${isZero ? '0' : eokAxis(v)}</text>`;
       });
       let vgrid = '';
       let xTicks = '';
@@ -3305,7 +3311,9 @@
       const minA = Number.isFinite(disp.min) ? `min="${disp.min}"` : '';
       const maxA = Number.isFinite(disp.max) ? `max="${disp.max}"` : '';
       const value = id === 'pue' ? nf2.format(state.pue).replace(/,/g, '') : disp.value;
-      return `<span class="u"><input type="number" ${minA} ${maxA} step="${disp.step || 'any'}" value="${value}" data-input="${id}" aria-label="${escAttr(def.labelKey ? t(def.labelKey) : id)}" ${extra || ''} /></span>`;
+      // 원본의 '기본값: …' 안내는 값 위에 마우스를 올리면 보이는 title 로 유지
+      const baseTitle = DEFAULTS[id] !== undefined ? ` title="${escAttr(t('baseHintPrefix') + ' ' + formatControlValue(id, DEFAULTS[id]))}"` : '';
+      return `<span class="u"${baseTitle}><input type="number" ${minA} ${maxA} step="${disp.step || 'any'}" value="${value}" data-input="${id}" aria-label="${escAttr(def.labelKey ? t(def.labelKey) : id)}" ${extra || ''} /></span>`;
     }
     function ctlRow(id, labelHtml, opts) {
       opts = opts || {};
@@ -3380,11 +3388,11 @@
           ${segBtns('data-bm-mode', [['A', t('bmA').replace(/^A\)\s*/, '')], ['B', t('bmB').replace(/^B\)\s*/, '')]], state.bmMode === 'B' ? 'B' : 'A', true)}
         </section>
         <section class="s-group util" data-views="superpod,gpu,compare">
-          <span class="s-lab">${t('labelUtilYears')}${infoIcon(utilTip, t('labelUtilYears'), true)}</span>
+          <span class="s-lab">${t('labelUtilYears')}${infoIcon(utilTip + '\n' + t('utilAvgPrefix') + ' ' + nf.format(Math.round(utilAvgPct())) + '%', t('labelUtilYears'), true).replace('class="ico-i', 'data-util-avg class="ico-i')}</span>
           ${ctlCols(['utilY1', 'utilY2', 'utilY3'], [yr(1), yr(2), yr(3)], 'c3 util')}
         </section>
         <section class="s-group mix" data-views="superpod,gpu,compare">
-          <span class="s-lab">${t('labelPortfolio')}</span>
+          <span class="s-lab" data-mix-sum title="${escAttr(t('mixHint') + ' · ' + t('mixSumLabel') + ' ' + nf1.format(mix.total) + '%')}">${t('labelPortfolio')}</span>
           ${ctlCols(['mix3Y', 'mix1Y', 'mixOD', 'mixIdle'], [t('labelMix3Y'), t('labelMix1Y'), t('labelMixOD'), t('labelMixIdle')], 'c4')}
           <div class="s-hint warn ${mixOk ? 'hidden' : ''}" data-mix-hint>${mixOk ? '' : t('mixSumWarn', { v: nf1.format(mix.total) })}</div>
           ${ctlSlider('disc3YPct', t('labelDisc3Y'))}
@@ -3443,6 +3451,8 @@
         btn.classList.toggle('active', btn.dataset.bmMode === (state.bmMode === 'B' ? 'B' : 'A'));
       });
       document.querySelectorAll('[data-bm-hint]').forEach(h => { h.textContent = state.bmMode === 'B' ? t('bmBHint') : t('bmAHint'); });
+      document.querySelectorAll('[data-util-avg]').forEach(el => { el.dataset.tip = t('utilAnchorTip') + '\n' + t('utilBaseHint') + '\n' + t('utilAvgPrefix') + ' ' + nf.format(Math.round(utilAvgPct())) + '%'; });
+      document.querySelectorAll('[data-mix-sum]').forEach(el => { const m = portfolioMix(); el.title = t('mixHint') + ' · ' + t('mixSumLabel') + ' ' + nf1.format(m.total) + '%'; });
       const mixHint = document.querySelector('[data-mix-hint]');
       if (mixHint) {
         const mix = portfolioMix();
@@ -4102,14 +4112,24 @@
       if (spaceModeButton) { applySpaceMode(spaceModeButton.dataset.spaceMode); return; }
 
       const systemButton = event.target.closest('[data-select-system]');
-      if (systemButton) { if (systemButton.dataset.selectSystem !== state.selectedSystem) selectSystem(systemButton.dataset.selectSystem); return; }
+      if (systemButton) { if (Date.now() - cardPickAt > 600 && systemButton.dataset.selectSystem !== state.selectedSystem) selectSystem(systemButton.dataset.selectSystem); return; }
 
       const rackButton = event.target.closest('[data-select-rack]');
-      if (rackButton) { if (rackButton.dataset.selectRack !== state.selectedRack || !isPureSelectedMix()) selectRack(rackButton.dataset.selectRack); return; }
+      if (rackButton) { if (Date.now() - cardPickAt > 600 && (rackButton.dataset.selectRack !== state.selectedRack || !isPureSelectedMix())) selectRack(rackButton.dataset.selectRack); return; }
 
       if (event.target.closest('[data-reset-rack]')) { resetSelectedRackDefaults(); return; }
       if (event.target.closest('[data-reset-selected]')) { resetSelectedSystemDefaults(); return; }
       if (event.target.closest('[data-export]')) exportCurrentTable();
+    });
+    // 카드 선택은 mousedown 시점에 처리 — 포커스된 입력의 change → 재렌더가 click 전에 일어나도 선택이 유실되지 않음
+    let cardPickAt = 0;
+    document.addEventListener('mousedown', event => {
+      if (event.button !== 0) return;
+      if (event.target.closest('input, textarea, select, label.fac-manual, .info-dot, button')) return;
+      const sysCard = event.target.closest('[data-select-system]');
+      if (sysCard) { cardPickAt = Date.now(); if (sysCard.dataset.selectSystem !== state.selectedSystem) selectSystem(sysCard.dataset.selectSystem); return; }
+      const rackCard = event.target.closest('[data-select-rack]');
+      if (rackCard) { cardPickAt = Date.now(); if (rackCard.dataset.selectRack !== state.selectedRack || !isPureSelectedMix()) selectRack(rackCard.dataset.selectRack); }
     });
     // 카드(role=button) 키보드 접근성
     document.addEventListener('keydown', event => {
