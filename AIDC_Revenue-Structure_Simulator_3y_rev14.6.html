@@ -295,9 +295,10 @@
     .remote { position: sticky; top: 30px; z-index: 5; background: #fff; transition: padding-bottom .28s ease; }
     .remote::before { content: ""; position: absolute; left: -20px; right: -20px; top: -30px; height: 30px; background: #fff; z-index: -1; }
     /* 고정 중에는 흰 배경과 구분선이 사이드바 경계(517.5)부터 페이지 오른쪽 끝(1920)까지 꽉 찬다 */
+    .dashboard-grid:not(.is-finance) .remote.stuck { border-bottom-color: transparent; }
     .dashboard-grid:not(.is-finance) .remote.stuck::before { left: -150px; right: -135px; bottom: 0; height: auto; }
     .dashboard-grid:not(.is-finance) .remote.stuck::after { content: ""; position: absolute; left: -150px; right: -135px; bottom: 0; height: var(--hair); background: var(--k100); }
-    .remote .sg-inner { overflow: clip; overflow-clip-margin: 8px; max-height: var(--sg-h, 999px); transition: max-height .28s ease, opacity .22s ease; }
+    .remote .sg-inner { overflow: clip; overflow-clip-margin: 4px; max-height: var(--sg-h, 999px); transition: max-height .28s ease, opacity .22s ease; }
     .remote.collapsed .sg-inner { max-height: 0 !important; opacity: 0; }
     .remote.collapsed { padding-bottom: 8px; }
     .sg-toggle { position: absolute; left: 50%; bottom: -19px; transform: translateX(-50%); width: 42px; height: 19px; border: var(--hair) solid var(--k100); border-top: 0; background: #fff; display: none; align-items: center; justify-content: center; cursor: pointer; padding: 0; z-index: 6; }
@@ -318,6 +319,8 @@
     .kpi[data-kpitip] { cursor: help; }
     .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); }
     .kpi-grid + .kpi-grid { margin-top: 55.6px; }
+    .kpi-grid .kpi .k-label { font-size: 17.5px; }
+    .kpi-grid .kpi .k-pre { font-size: 12px; }
     .kpi-grid .kpi .k-value { font-size: 45px; line-height: 61px; }
     .kpi-grid .kpi .k-value .unit { font-size: 26px; }
 
@@ -341,6 +344,8 @@
     /* rev16: ▼ 제목 클릭으로 접기/펴기 */
     .sec-title.tri { cursor: pointer; }
     .sec.collapsed > :not(.sec-head) { display: none; }
+    .sec.collapsed .sec-tools { display: none; }
+    .sec.collapsed + .table-after-chart { display: none; }
     .sec.collapsed .tri-btn::before { transform: rotate(-90deg); transform-origin: 50% 35%; }
     .sec-tools { display: inline-flex; align-items: center; gap: 22px; font-size: 13px; color: var(--g77); }
     .sec-tools .lnk { font-size: 13px; font-weight: 500; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
@@ -690,6 +695,10 @@
     .tip-body b { font-weight: 700; }
     .tip-tag { display: inline-block; margin-right: 6px; padding: 0 5px; border: 1px solid var(--k100); font-size: 10px; font-weight: 600; line-height: 15px; vertical-align: 1px; }
     .info-tip.plain .tip-body { margin-top: 0; }
+    /* 계산식·판단 태그가 붙는 긴 팝업: 첫 태그 구간 위에 검은 구분선 */
+    .tip-body.tip-sec.tip-rule { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--k100); }
+    .tip-body.tip-sec + .tip-body.tip-sec { margin-top: 12px; }
+    .tip-body.tip-sec .tip-tag { vertical-align: 1px; }
 
     /* =====================================================================
        보고서 모달 / 플로팅 버튼 / 푸터
@@ -3668,7 +3677,8 @@
       facility = { pod: makeFacilityModel('pod'), rack: makeFacilityModel('rack') };
       state = { ...DEFAULTS, activeView: currentView, lang: currentLang };
       fillSelectedRack(state, rackTypes, state.selectedRack);
-      if (state.spaceMode === 'expand') state.floorAreaSqm = minFloorAreaForPowerMax();
+      // 기본값은 보고 있는 탭과 무관하게 동일해야 한다 (탭에 따라 연면적이 800/900㎡로 달라지던 문제)
+      if (state.spaceMode === 'expand') state.floorAreaSqm = minFloorAreaForPowerMax({ ...state, activeView: 'superpod' });
       state.suCount = podMaxSu();
       // rev15: 헤더 '기본값'은 재무구조 조달 가정(자기자본·금리·상환·사업기구)도 함께 초기화 (사이드바 '초기화' 링크 대체)
       if (typeof PODFIN !== 'undefined' && PODFIN.resetP) PODFIN.resetP();
@@ -4201,6 +4211,8 @@
         const inner = sg.querySelector('.sg-inner');
         if (inner) sg.style.setProperty('--sg-h', `${inner.scrollHeight}px`);
         sg.classList.toggle('collapsed');
+        // 펼침이 끝나면 고정 max-height를 풀어, 이후 내용이 길어져도 잘리지 않게 한다
+        if (!sg.classList.contains('collapsed')) setTimeout(() => { if (!sg.classList.contains('collapsed')) sg.style.removeProperty('--sg-h'); }, 340);
         const key = '@' + (sg.id || 'fin');
         if (sg.classList.contains('collapsed')) collapsedSecs.add(key); else collapsedSecs.delete(key);
         // 고정 상태에서 접힐 때 아래 내용이 튀지 않도록 프레임마다 높이 변화분만큼 스크롤 보정
@@ -4751,8 +4763,9 @@ const FINVIEW = (function () {
       <div class="tip-title">${t.label}${t.value ? ` <span class="tip-val">${t.value}</span>` : ''}${t.term ? `<small>${t.term}</small>` : ''}</div>
       ${t.termDef ? `<div class="tip-body">${t.termDef}</div>` : ''}
       ${t.def ? `<div class="tip-body">${t.def}</div>` : ''}
-      ${t.formula ? `<div class="tip-body"><span class="tip-tag">${L('계산식', 'Formula')}</span>${t.formula}</div>` : ''}
-      ${t.judge ? `<div class="tip-body"><span class="tip-tag">${L('판단', 'Read')}</span>${t.judge}</div>` : ''}`;
+      ${[t.formula ? `<div class="tip-body tip-sec"><span class="tip-tag">${L('계산식', 'Formula')}</span>${t.formula}</div>` : '',
+         t.judge ? `<div class="tip-body tip-sec"><span class="tip-tag">${L('판단', 'Read')}</span>${t.judge}</div>` : '']
+        .filter(Boolean).map((h, i) => i === 0 ? h.replace('tip-sec', 'tip-sec tip-rule') : h).join('')}`;
     el.style.visibility = 'visible';
     el.classList.add('visible');
     el.dataset.key = key; el.dataset.at = String(Date.now());
