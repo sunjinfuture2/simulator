@@ -3705,7 +3705,8 @@
       const k = uiScale();
       const top = Math.max(0, cp.getBoundingClientRect().top);
       const h = Math.max(240, (window.innerHeight - top) / k);
-      if (Math.abs(parseFloat(cp.style.height) - h) > 0.5) cp.style.height = `${h}px`;
+      const cur = parseFloat(cp.style.height);
+      if (!(Math.abs(cur - h) <= 0.5)) cp.style.height = `${h}px`;
       syncSideThumb();
     }
     window.addEventListener('scroll', syncSideViewport, { passive: true });
