@@ -112,7 +112,9 @@
     .top { position: relative; height: 264px; border-bottom: 2px solid var(--k100); }
     /* rev20: 상단 사이트 바 — 좌 SUNJIN 워드마크, 우 캡션 (좌우 24px) */
     .site-bar { position: absolute; left: 24px; right: 24px; top: 0; height: 67px; display: flex; align-items: center; justify-content: space-between; }
-    .logo { font-family: var(--font-helv); font-weight: 800; font-size: 17px; line-height: 1; letter-spacing: -0.03em; color: var(--k100); text-transform: uppercase; white-space: nowrap; }
+    .logo { display: inline-flex; align-items: center; height: 17px; color: var(--k100); }
+    .logo .logo-mark { height: 17px; width: auto; display: block; }
+    .logo:hover .logo-mark { opacity: .7; }
     .brand { position: absolute; left: 66.6px; top: 84.5px; display: flex; flex-direction: column; }
     .brand-en {
       font-family: var(--font-helv); font-weight: 700; font-size: 40px; line-height: 58px; color: var(--k100);
@@ -558,6 +560,14 @@
        메인: 기준값 및 산식
        ===================================================================== */
     .formula-wrap { display: grid; grid-template-columns: 736.2px 368.4px; column-gap: 13px; margin-top: 40.7px; align-items: start; }
+    /* rev21: 산식별 묶음 — 왼쪽에 해당 식에 들어가는 기준값, 오른쪽에 산식 카드 */
+    .fx-groups { margin-top: 40.7px; }
+    .fx-row { display: grid; grid-template-columns: 736.2px 368.4px; column-gap: 13px; align-items: start; border-top: var(--hair) solid var(--k100); }
+    .fx-row + .fx-row { margin-top: 36px; }
+    .fx-row .bl { border-top: 0; }
+    .fx-row .fx-card { border-bottom: var(--hair) solid var(--k100); }
+    .bl-row.res .bl-key { color: var(--k100); }
+    .bl-row.res .bl-val { color: var(--g60); font-weight: 600; }
     .bl { border-top: var(--hair) solid var(--k100); border-bottom: var(--hair) solid var(--k100); }
     .bl-row { display: grid; grid-template-columns: 301.2px 1fr; height: 40px; align-items: center; position: relative; }
     .bl-row + .bl-row .bl-key::before, .bl-row + .bl-row .bl-val::before { content: ""; position: absolute; left: 0; right: var(--gap); top: 0; height: var(--hair); background: var(--k100); }
@@ -777,7 +787,7 @@
         </div>
       </div>
       <div class="site-bar">
-        <span class="logo" aria-label="SUNJIN">SUNJIN</span>
+        <a class="logo" href="https://www.sunjin.co.kr" target="_blank" rel="noopener" aria-label="SUNJIN 홈페이지"><svg class="logo-mark" viewBox="0 0 1456 290" aria-hidden="true" fill="none" stroke="#000" stroke-width="72" stroke-linecap="butt" stroke-linejoin="round"><path d="M222 58 C150 20 52 34 46 96 C40 160 232 150 226 214 C220 262 120 284 26 246"/><path d="M298 40 V186 C298 262 476 262 476 186 V40"/><path d="M588 40 V270 M588 150 C606 82 700 22 752 60 C800 96 776 190 776 270"/><path d="M984 40 V186 C984 262 900 268 838 222"/><path d="M1096 40 V270"/><path d="M1216 40 V270 M1216 150 C1234 82 1328 22 1380 60 C1428 96 1404 190 1404 270"/></svg></a>
         <span class="top-caption" id="heroEyebrow" tabindex="0" role="note">AIDC · Revenue Simulator</span>
       </div>
       <div class="lang-links" role="group" aria-label="Language">
@@ -2731,14 +2741,19 @@
       const noteHtml = note ? (/[×=]/.test(note) ? `<div class="fx-note">${fxRender(fxParse(note), 0)}</div>` : `<div class="fx-note plain">${escAttr(note)}</div>`) : '';
       return `<div class="fx-f">${fxRender(fxParse(s), 0)}</div>${noteHtml}`;
     }
-    function formulaSectionHtml(items, cards) {
+    // groups: [{ title, body, items: [[key, value, 'res'?], ...] }] — 산식 카드 왼쪽에 그 식에 들어가는 기준값만 묶어 배치
+    function formulaSectionHtml(groups) {
+      const row = ([k, v, res]) => `<div class="bl-row ${res ? 'res' : ''}"><div class="bl-key">${k}</div><div class="bl-val" title="${escAttr(String(v).replace(/<[^>]+>/g, ''))}">${v}</div></div>`;
       return `
         <section class="sec mt-149 formula-sec">
           ${secHead(t('formulaTitle'))}
           <div class="sec-desc">${t('formulaDesc')}</div>
-          <div class="formula-wrap">
-            <div class="bl">${items.map(([k, v]) => `<div class="bl-row"><div class="bl-key">${k}</div><div class="bl-val" title="${escAttr(String(v).replace(/<[^>]+>/g, ''))}">${v}</div></div>`).join('')}</div>
-            <div class="fx">${cards.map(([h, b]) => `<div class="fx-card"><h3>${h}</h3>${fxHtml(b)}</div>`).join('')}</div>
+          <div class="fx-groups">
+            ${groups.map(g => `
+            <div class="fx-row">
+              <div class="bl">${g.items.filter(Boolean).map(row).join('')}</div>
+              <div class="fx-card"><h3>${g.title}</h3>${fxHtml(g.body)}</div>
+            </div>`).join('')}
           </div>
         </section>
       `;
@@ -2756,38 +2771,71 @@
     }
     function renderRackFormulaPanel(data) {
       const selected = rackTypes[state.selectedRack];
-      const basisItems = [
-        [t('blSelectedRack'), `${selected.label} (${rackMixText()})`],
-        [t('blPowerPerRack'), `${nf.format(selected.rackPowerKw)}kW`],
-        [t('blPricePerRack'), usdPlain(selected.rackPriceUsd)],
-        [t('blBmMode'), state.bmMode === 'B' ? t('bmB') : t('bmA')],
-        [t('blBaseRate'), `${t('labelMixOD')} ${formatHourlyRate(data.rates.od)} / ${t('labelMix1Y')} ${formatHourlyRate(data.rates.c1)} / ${t('labelMix3Y')} ${formatHourlyRate(data.rates.c3)}`],
-        [t('blPortfolio'), portfolioSummaryText()],
-        [t('blEffRate'), effRateSummaryText(rackTypes[state.selectedRack])],
-        [t('blAnnualRevenue'), eok(data.annualRevenue[0])],
-        [t('blItCapex'), eok(data.itCapexEok)],
-        [t('blAuxSi'), `${eok(data.auxEok + data.siEok)} (${t('auxColAux')} ${eok(data.auxEok)} + SI ${eok(data.siEok)} @ ${nf1.format(state.siMultiplier)}${state.lang === 'en' ? '×' : '배'})`],
-        [t('blFacility'), eok(data.facilityEok)],
-        [t('blElecCost'), eok(data.electricityEok)],
-        [t('blOpex'), eok(state.opexEok)],
-        [t('blSwOpexRack'), `${eok(data.swOpexEok)} (${formatSwSub(state.swSubUsdPerGpuYear)})`],
-        [t('blDep'), `${getDepreciationText()}%`]
-      ];
+      const [util, tot, it, pue, floor, support, fac] = commonChipItems(data);
       const usageText = t('usageTextGpu', { pct: pct(data.allocationPct, 1), mix: rackMixText(), kw: nf.format(state.itPowerKw) });
-      const chips = [[t('powerAllocLabel'), usageText.replace(/^[^:]*:\s*/, '')]].concat(commonChipItems(data), [
-        [t('blOpex'), eok(state.opexEok)],
-        [t('chipEnergyRate'), formatRateText('energyCostRate', state.energyCostRate)],
-        [t('chipBasicCharge'), formatRateText('basicChargeKwMonth', state.basicChargeKwMonth)],
-        [t('chipFx'), `${nf.format(state.fxKrwUsd)}원/USD`],
-        [t('chipDep'), `${getDepreciationText()}%`]
+      const B = {
+        rack: [t('blSelectedRack'), `${selected.label} (${rackMixText()})`],
+        powerPerRack: [t('blPowerPerRack'), `${nf.format(selected.rackPowerKw)}kW`],
+        pricePerRack: [t('blPricePerRack'), usdPlain(selected.rackPriceUsd)],
+        bm: [t('blBmMode'), state.bmMode === 'B' ? t('bmB') : t('bmA')],
+        rate: [t('blBaseRate'), `${t('labelMixOD')} ${formatHourlyRate(data.rates.od)} / ${t('labelMix1Y')} ${formatHourlyRate(data.rates.c1)} / ${t('labelMix3Y')} ${formatHourlyRate(data.rates.c3)}`],
+        mix: [t('blPortfolio'), portfolioSummaryText()],
+        eff: [t('blEffRate'), effRateSummaryText(rackTypes[state.selectedRack])],
+        rev: [t('blAnnualRevenue'), eok(data.annualRevenue[0]), 'res'],
+        itCapex: [t('blItCapex'), eok(data.itCapexEok), 'res'],
+        auxSi: [t('blAuxSi'), `${eok(data.auxEok + data.siEok)} (${t('auxColAux')} ${eok(data.auxEok)} + SI ${eok(data.siEok)} @ ${nf1.format(state.siMultiplier)}${state.lang === 'en' ? '×' : '배'})`],
+        fac: [t('blFacility'), eok(data.facilityEok)],
+        elec: [t('blElecCost'), eok(data.electricityEok), 'res'],
+        opex: [t('blOpex'), eok(state.opexEok)],
+        sw: [t('blSwOpexRack'), `${eok(data.swOpexEok)} (${formatSwSub(state.swSubUsdPerGpuYear)})`, 'res'],
+        dep: [t('blDep'), `${getDepreciationText()}%`],
+        power: [t('powerAllocLabel'), usageText.replace(/^[^:]*:\s*/, '')],
+        util, tot, it, pue, floor, support,
+        energy: [t('chipEnergyRate'), formatRateText('energyCostRate', state.energyCostRate)],
+        basic: [t('chipBasicCharge'), formatRateText('basicChargeKwMonth', state.basicChargeKwMonth)],
+        fx: [t('chipFx'), `${nf.format(state.fxKrwUsd)}원/USD`]
+      };
+      return formulaSectionHtml([
+        { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBodyRack'), items: [B.rack, B.powerPerRack, B.bm, B.rate, B.mix, B.util, B.eff, B.fx, B.rev] },
+        { title: t('formulaCardCapexTitleRack'), body: t('formulaCardCapexBodyRack'), items: [B.rack, B.pricePerRack, B.auxSi, B.fx, B.itCapex] },
+        { title: t('formulaCardElecTitleRack'), body: t('formulaCardElecBodyRack'), items: [B.tot, B.it, B.pue, B.power, B.util, B.energy, B.basic, B.fx, B.elec, B.opex, B.sw] },
+        { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyRack'), items: [B.dep, B.elec, B.opex, B.sw, B.itCapex, B.floor, B.support, B.fac] }
       ]);
-      const cards = [
-        [t('formulaCardGpuTitle'), t('formulaCardGpuBodyRack')],
-        [t('formulaCardCapexTitleRack'), t('formulaCardCapexBodyRack')],
-        [t('formulaCardElecTitleRack'), t('formulaCardElecBodyRack')],
-        [t('formulaCardDepTitle'), t('formulaCardDepBodyRack')]
-      ];
-      return formulaSectionHtml(basisItems.concat(chips), cards);
+    }
+    function renderFormulaPanel(data) {
+      const sys = data.system;
+      const [util, tot, it, pue, floor, support, fac] = commonChipItems(data);
+      const over = data.allocationPct > 100;
+      const usageText = t('usageTextPod', {
+        pct: pct(data.allocationPct, 1), sys: sys.shortLabel, n: nf.format(data.su),
+        kw: fmtKwAsMw(data.usedItPower), it: fmtKwAsMw(state.itPowerKw)
+      }).replace(/MWkW/g, 'MW') + (over ? ` · ${t('overCapacity')}` : '');
+      const B = {
+        sys: [t('blSelectedSystem'), sys.label],
+        su: [t('blSuConfig'), t('blSuConfigVal', { n: nf.format(data.su), r: nf.format(data.racks), g: nf.format(data.gpus) })],
+        bm: [t('blBmMode'), state.bmMode === 'B' ? t('bmB') : t('bmA')],
+        rate: [t('blBaseRate'), `${t('labelMixOD')} ${formatHourlyRate(data.rates.od)} / ${t('labelMix1Y')} ${formatHourlyRate(data.rates.c1)} / ${t('labelMix3Y')} ${formatHourlyRate(data.rates.c3)}`],
+        mix: [t('blPortfolio'), portfolioSummaryText()],
+        eff: [t('blEffRate'), effRateSummaryText(sys)],
+        rev: [t('blAnnualRevenue'), eok(data.annualRevenue[0]), 'res'],
+        capex: [t('blPodCapex'), `${eok(data.itCapexEok)} (${usdM(data.itCapexUsd)})`, 'res'],
+        fac: [t('blFacility'), eok(data.facilityEok)],
+        elec: [t('blElecCost'), eok(data.electricityEok), 'res'],
+        sw: [t('blSwOpex'), `${eok(data.swOpexEok)} (${formatSwSub(state.swSubUsdPerGpuYear)})`, 'res'],
+        dep: [t('blDep'), `${getDepreciationText()}%`],
+        power: [t('powerAllocLabel'), usageText.replace(/^[^:]*:\s*/, '')],
+        util, tot, it, pue, floor, support,
+        energy: [t('chipEnergyRate'), formatRateText('energyCostRate', state.energyCostRate)],
+        basic: [t('chipBasicCharge'), formatRateText('basicChargeKwMonth', state.basicChargeKwMonth)],
+        fx: [t('chipFx'), `${nf.format(state.fxKrwUsd)}원/USD`],
+        swsub: [t('chipSwSub'), formatSwSub(state.swSubUsdPerGpuYear)]
+      };
+      return formulaSectionHtml([
+        { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBody'), items: [B.sys, B.su, B.bm, B.rate, B.mix, B.util, B.eff, B.fx, B.rev] },
+        { title: t('formulaCardCapexTitle'), body: t('formulaCardCapexBody'), items: [B.sys, B.su, B.fx, B.capex] },
+        { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBody'), items: [B.tot, B.it, B.pue, B.power, B.util, B.energy, B.basic, B.swsub, B.fx, B.elec, B.sw] },
+        { title: t('formulaCardDepTitle'), body: t('formulaCardDepBody'), items: [B.dep, B.elec, B.sw, B.capex, B.floor, B.support, B.fac] }
+      ]);
     }
 
     function renderChartPanel() {
@@ -2797,43 +2845,6 @@
           <div class="chart-wrap" id="chartWrap"></div>
         </section>
       `;
-    }
-
-    function renderFormulaPanel(data) {
-      const sys = data.system;
-      const basisItems = [
-        [t('blSelectedSystem'), sys.label],
-        [t('blSuConfig'), t('blSuConfigVal', { n: nf.format(data.su), r: nf.format(data.racks), g: nf.format(data.gpus) })],
-        [t('blBmMode'), state.bmMode === 'B' ? t('bmB') : t('bmA')],
-        [t('blBaseRate'), `${t('labelMixOD')} ${formatHourlyRate(data.rates.od)} / ${t('labelMix1Y')} ${formatHourlyRate(data.rates.c1)} / ${t('labelMix3Y')} ${formatHourlyRate(data.rates.c3)}`],
-        [t('blPortfolio'), portfolioSummaryText()],
-        [t('blEffRate'), effRateSummaryText(sys)],
-        [t('blAnnualRevenue'), eok(data.annualRevenue[0])],
-        [t('blPodCapex'), `${eok(data.itCapexEok)} (${usdM(data.itCapexUsd)})`],
-        [t('blFacility'), eok(data.facilityEok)],
-        [t('blElecCost'), eok(data.electricityEok)],
-        [t('blSwOpex'), `${eok(data.swOpexEok)} (${formatSwSub(state.swSubUsdPerGpuYear)})`],
-        [t('blDep'), `${getDepreciationText()}%`]
-      ];
-      const over = data.allocationPct > 100;
-      const usageText = t('usageTextPod', {
-        pct: pct(data.allocationPct, 1), sys: sys.shortLabel, n: nf.format(data.su),
-        kw: fmtKwAsMw(data.usedItPower), it: fmtKwAsMw(state.itPowerKw)
-      }) + (over ? ` · ${t('overCapacity')}` : '');
-      const chips = [[t('powerAllocLabel'), usageText.replace(/^[^:]*:\s*/, '')]].concat(commonChipItems(data), [
-        [t('chipEnergyRate'), formatRateText('energyCostRate', state.energyCostRate)],
-        [t('chipBasicCharge'), formatRateText('basicChargeKwMonth', state.basicChargeKwMonth)],
-        [t('chipFx'), `${nf.format(state.fxKrwUsd)}원/USD`],
-        [t('chipSwSub'), formatSwSub(state.swSubUsdPerGpuYear)],
-        [t('chipDep'), `${getDepreciationText()}%`]
-      ]);
-      const cards = [
-        [t('formulaCardGpuTitle'), t('formulaCardGpuBody')],
-        [t('formulaCardCapexTitle'), t('formulaCardCapexBody')],
-        [t('formulaCardOpexTitle'), t('formulaCardOpexBody')],
-        [t('formulaCardDepTitle'), t('formulaCardDepBody')]
-      ];
-      return formulaSectionHtml(basisItems.concat(chips), cards);
     }
 
     function facInputProps(valueEok) {
