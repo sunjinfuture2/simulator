@@ -2399,7 +2399,8 @@
       }
       const full = t('usageTextPod', { pct: '', sys: data.system.shortLabel, n: nf.format(data.su), kw: fmtKwAsMw(data.usedItPower), it: fmtKwAsMw(state.itPowerKw) });
       const m = full.match(/\((.*)\)\s*$/);
-      return `(${m ? m[1] : full})` + (over ? ` \u00B7 ${t('overCapacity')}` : '');
+      // 원본 템플릿이 MW 표기 뒤에 kW를 덧붙이던 표기('4.8MWkW') 정리
+      return `(${(m ? m[1] : full).replace(/MWkW/g, 'MW')})` + (over ? ` \u00B7 ${t('overCapacity')}` : '');
     }
     function fmtKwAsMw(kw) {
       return kw >= 1000 ? `${nf1.format(kw / 1000)}MW` : `${nf.format(kw)}kW`;
