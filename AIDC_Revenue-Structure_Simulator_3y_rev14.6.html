@@ -163,7 +163,7 @@
     .app::before { content: ""; position: absolute; left: calc(var(--side-w) - var(--hair)); top: 264px; bottom: 0; width: var(--hair); background: var(--gcc); z-index: 1; pointer-events: none; }
     .control-panel {
       flex: 0 0 var(--side-w); width: var(--side-w); position: sticky; top: 0; height: 100vh;
-      overflow-y: auto; overflow-x: hidden; padding-left: var(--side-pad);
+      overflow-y: hidden; overflow-x: hidden; padding-left: var(--side-pad);
     }
     /* 시안: 스크롤바 폭 6.5(≈7)px · 썸 #a5a5a5 · 트랙 투명 (Chromium: ::-webkit-scrollbar 규칙이 적용되도록 scrollbar-width는 지정하지 않음) */
     /* rev17: 네이티브 스크롤바를 숨기고(콘텐츠 폭 517.5 확보 → 검정 룰이 끝까지 닿음) 시안 위치(x=511, 6.5px, #a5a5a5)에 썸을 직접 그린다 */
@@ -171,7 +171,7 @@
     .control-panel, .fin-aside { scrollbar-width: none; }
     .side-thumb { position: fixed; left: 0; top: 0; width: 6.5px; background: var(--ga5); z-index: 4; display: none; touch-action: none; }
     .side-thumb.on { display: block; }
-    .controls-root { width: var(--side-inner); padding-top: 57px; padding-bottom: 6px; }
+    .controls-root { width: var(--side-inner); padding-top: 57px; padding-bottom: 248px; }
     .results-area { flex: 0 0 var(--main-w); width: var(--main-w); margin-left: 150px; min-width: 0; padding-top: 98.9px; padding-bottom: 242px; }
     .dashboard-grid.is-compare .results-area { padding-top: 98.9px; }
     .dashboard-grid.is-compare #mainContent > .sec:first-child { margin-top: 0; }
@@ -620,7 +620,7 @@
 
     /* 재무구조 탭 (전용 레이아웃) */
     .fin-layout { display: flex; align-items: flex-start; }
-    .fin-aside { flex: 0 0 var(--side-w); width: var(--side-w); position: sticky; top: 0; height: 100vh; overflow-y: auto; padding-left: var(--side-pad); }
+    .fin-aside { flex: 0 0 var(--side-w); width: var(--side-w); position: sticky; top: 0; height: 100vh; overflow-y: hidden; padding-left: var(--side-pad); }
     .fin-aside-inner { width: var(--side-inner); padding-top: 57.4px; padding-bottom: 120px; }
     .fin-aside-head h2 { font-size: 18px; font-weight: 600; color: var(--g60); line-height: 24.4px; }
     .fin-aside-head p { margin-top: 19.6px; font-size: 12px; color: var(--g77); line-height: 17.1px; word-break: keep-all; }
@@ -3698,8 +3698,22 @@
       sideThumb.style.height = `${h}px`;
       sideThumb.classList.add('on');
     }
+    // rev25: 사이드바는 페이지 스크롤과 함께 움직인다 — 내려갈 땐 사이드바 끝이 보일 때까지, 올라갈 땐 첫 항목이 보일 때까지 같이 스크롤한 뒤 멈춘다
+    let sideLastY = window.scrollY, sideShift = 0;
+    function syncSideScroll() {
+      const cp = activeAside(); const y = window.scrollY;
+      if (!cp) { sideLastY = y; return; }
+      const k = uiScale();
+      const max = Math.max(0, cp.scrollHeight - cp.clientHeight);
+      const stuck = cp.getBoundingClientRect().top <= 0.5;
+      sideShift = stuck ? Math.max(0, Math.min(max, sideShift + (y - sideLastY) / k)) : 0;
+      sideLastY = y;
+      if (Math.abs(cp.scrollTop - sideShift) > 0.5) cp.scrollTop = sideShift;
+      syncSideThumb();
+    }
+    window.addEventListener('scroll', syncSideScroll, { passive: true });
     (function bindSideThumb() {
-      document.addEventListener('scroll', e => { if (e.target instanceof Element && e.target.matches('.control-panel, .fin-aside')) syncSideThumb(); }, { capture: true, passive: true });
+      document.addEventListener('scroll', e => { if (e.target instanceof Element && e.target.matches('.control-panel, .fin-aside')) { sideShift = e.target.scrollTop; syncSideThumb(); } }, { capture: true, passive: true });
       let drag = null;
       sideThumb.addEventListener('pointerdown', e => {
         const cp = activeAside(); if (!cp) return;
