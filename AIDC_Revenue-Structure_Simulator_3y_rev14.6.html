@@ -747,6 +747,8 @@
     .fin-fab .fab-ico { font-size: 18px; line-height: 1; }
     .fin-fab .fab-txt { display: none; }
     .fin-fab { width: 44px; padding: 0; justify-content: center; right: 30px; bottom: 30px; }
+    .fin-fab.fin-fab-up { bottom: 82px; }
+    .fin-fab.fin-fab-up.alone { bottom: 30px; }
     @media print { .fin-fab { display: none !important; } }
 
     .site-footer { position: absolute; left: 0; right: 0; bottom: 0; padding: 127.6px 129px 94.4px 0; text-align: right; font-size: 14px; font-weight: 400; color: var(--ga5); line-height: 20px; }
@@ -5117,7 +5119,7 @@ const FINVIEW = (function () {
 // ===== 플로팅 버튼 — 재무구조 패널로 바로 이동 (SuperPOD · 서버/GPU 임대 탭) =====
 const FINFAB = (function () {
   const L = FINVIEW.L;
-  let el = null, bound = false, mode = 'down';
+  let el = null, upEl = null, bound = false, mode = 'down';
 
   // 재무 패널은 항상 #mainContent 안에 렌더된다. 탭 전환 잔여 노드를 잡지 않도록 범위를 한정
   function target() {
@@ -5167,6 +5169,15 @@ const FINFAB = (function () {
     el.className = 'fin-fab';
     el.addEventListener('click', onClick);
     document.body.appendChild(el);
+    // ↑ 맨 위로 — 같은 디자인, ↓ 버튼 바로 위
+    upEl = document.createElement('button');
+    upEl.type = 'button';
+    upEl.id = 'finFabUp';
+    upEl.className = 'fin-fab fin-fab-up';
+    upEl.innerHTML = `<span class="fab-ico" aria-hidden="true">↑</span><span class="fab-txt">${L('맨 위로', 'Back to top')}</span>`;
+    upEl.setAttribute('aria-label', L('맨 위로 이동', 'Scroll back to top'));
+    upEl.addEventListener('click', function () { goTo(0); setTimeout(update, 400); });
+    document.body.appendChild(upEl);
     if (!bound) {
       bound = true;
       window.addEventListener('scroll', update, { passive: true });
@@ -5192,8 +5203,7 @@ const FINFAB = (function () {
     return (curScroll() >= dest - 8) ? 'up' : 'down';
   }
   function onClick() {
-    mode = resolveMode();
-    const t = (mode === 'down' && hasTarget()) ? target() : null;
+    const t = hasTarget() ? target() : null;
     if (t) goTo(docTopOf(t) - 16);
     else goTo(0);
     // 부드러운 스크롤이 끝난 뒤 라벨을 갱신 (고정 지연 대신 정지 감지)
@@ -5205,13 +5215,15 @@ const FINFAB = (function () {
     }, 60);
   }
   function update() {
-    if (!applicable()) { if (el) el.classList.remove('is-on'); return; }
     const e = ensure();
     mode = resolveMode();
-    e.innerHTML = label();
-    e.setAttribute('aria-label', mode === 'down' ? L('재무구조 패널로 이동', 'Scroll to the financing panel') : L('맨 위로 이동', 'Scroll back to top'));
-    e.classList.add('is-on');
-    e.classList.toggle('is-up', mode === 'up');
+    const downOn = hasTarget() && mode === 'down';
+    const upOn = curScroll() > 240;
+    e.innerHTML = `<span class="fab-ico" aria-hidden="true">↓</span><span class="fab-txt">${L('재무구조 이동', 'Go to financing')}</span>`;
+    e.setAttribute('aria-label', L('재무구조 패널로 이동', 'Scroll to the financing panel'));
+    e.classList.toggle('is-on', downOn);
+    upEl.classList.toggle('is-on', upOn);
+    upEl.classList.toggle('alone', !downOn);
   }
   // 레이아웃이 확정된 뒤 판정하도록 2프레임 지연 (innerHTML 직후 rect가 0으로 읽히는 문제 방지)
   function refresh() {
@@ -5220,7 +5232,7 @@ const FINFAB = (function () {
     if (typeof raf === 'function') raf(function () { raf(update); });
     else setTimeout(update, 32);
   }
-  function hide() { if (el) el.classList.remove('is-on'); }
+  function hide() { if (el) el.classList.remove('is-on'); if (upEl) upEl.classList.remove('is-on'); }
   return { refresh, update, hide };
 })();
 
