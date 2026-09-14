@@ -163,7 +163,7 @@
     .app::before { content: ""; position: absolute; left: calc(var(--side-w) - var(--hair)); top: 264px; bottom: 0; width: var(--hair); background: var(--gcc); z-index: 1; pointer-events: none; }
     .control-panel {
       flex: 0 0 var(--side-w); width: var(--side-w); position: sticky; top: 0; height: 100vh;
-      overflow-y: hidden; overflow-x: hidden; padding-left: var(--side-pad);
+      overflow-y: auto; overflow-x: hidden; padding-left: var(--side-pad); overscroll-behavior: contain;
     }
     /* 시안: 스크롤바 폭 6.5(≈7)px · 썸 #a5a5a5 · 트랙 투명 (Chromium: ::-webkit-scrollbar 규칙이 적용되도록 scrollbar-width는 지정하지 않음) */
     /* rev17: 네이티브 스크롤바를 숨기고(콘텐츠 폭 517.5 확보 → 검정 룰이 끝까지 닿음) 시안 위치(x=511, 6.5px, #a5a5a5)에 썸을 직접 그린다 */
@@ -272,7 +272,8 @@
     .s-slider .s-val .u { line-height: 32.5px; }
     .s-slider .s-lab { position: relative; top: 3px; }
     .track { display: block; width: 100%; height: 3.9px; margin-top: 11px; -webkit-appearance: none; appearance: none; background: var(--ge2); cursor: pointer; }
-    .track { background: linear-gradient(to right, var(--k100) 0, var(--k100) var(--p, 0%), var(--ge2) var(--p, 0%), var(--ge2) 100%); }
+    .track { background: linear-gradient(to right, var(--k100) 0, var(--k100) var(--p, 0%), var(--ge2) var(--p, 0%), var(--ge2) 100%); transition: --p .22s ease; }
+    @property --p { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
     .track::-webkit-slider-runnable-track { height: 3.9px; background: transparent; }
     .track::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; margin-top: -5px; background: transparent; border: 0; border-radius: 50%; }
     .track:hover::-webkit-slider-thumb, .track:focus-visible::-webkit-slider-thumb { background: var(--k100); }
@@ -303,7 +304,7 @@
     /* 고정 중에는 흰 배경과 구분선이 사이드바 경계(517.5)부터 페이지 오른쪽 끝(1920)까지 꽉 찬다 */
     .dashboard-grid:not(.is-finance) .remote.stuck { border-bottom-color: transparent; }
     .dashboard-grid:not(.is-finance) .remote.stuck::before { left: -150px; right: -135px; bottom: 0; height: auto; }
-    .dashboard-grid:not(.is-finance) .remote.stuck::after { content: ""; position: absolute; left: -150px; right: -135px; bottom: 0; height: var(--hair); background: var(--k100); }
+    .dashboard-grid:not(.is-finance) .remote.stuck::after { content: ""; position: absolute; left: -150px; right: -135px; bottom: 0; height: 2px; background: var(--k100); }
     .remote .sg-inner { overflow: clip; overflow-clip-margin: 4px; max-height: var(--sg-h, 999px); transition: max-height .28s ease, opacity .22s ease; }
     .remote.collapsed .sg-inner { max-height: 0 !important; opacity: 0; }
     .remote.collapsed { padding-bottom: 8px; }
@@ -575,7 +576,6 @@
     .bl-key, .bl-val { position: relative; height: 100%; display: flex; align-items: center; font-size: 15px; line-height: 20.3px; white-space: nowrap; }
     .bl-key { font-weight: 600; color: var(--g60); }
     .bl-val { font-weight: 400; color: var(--ga0); overflow: hidden; text-overflow: ellipsis; }
-    .fx { border-top: var(--hair) solid var(--k100); }
     .fx-card { padding: 21.1px 0 42px; border-bottom: var(--hair) solid var(--k100); }
     .fx-card h3 { font-size: 15px; font-weight: 600; color: var(--g60); line-height: 20.3px; }
     .fx-card p { margin-top: 10.2px; font-size: 15px; font-weight: 400; color: var(--ga0); line-height: 22px; word-break: keep-all; }
@@ -620,7 +620,7 @@
 
     /* 재무구조 탭 (전용 레이아웃) */
     .fin-layout { display: flex; align-items: flex-start; }
-    .fin-aside { flex: 0 0 var(--side-w); width: var(--side-w); position: sticky; top: 0; height: 100vh; overflow-y: hidden; padding-left: var(--side-pad); }
+    .fin-aside { flex: 0 0 var(--side-w); width: var(--side-w); position: sticky; top: 0; height: 100vh; overflow-y: auto; padding-left: var(--side-pad); overscroll-behavior: contain; }
     .fin-aside-inner { width: var(--side-inner); padding-top: 57.4px; padding-bottom: 120px; }
     .fin-aside-head h2 { font-size: 18px; font-weight: 600; color: var(--g60); line-height: 24.4px; }
     .fin-aside-head p { margin-top: 19.6px; font-size: 12px; color: var(--g77); line-height: 17.1px; word-break: keep-all; }
@@ -3636,6 +3636,7 @@
       if (typeof PODFIN !== 'undefined' && PODFIN.syncSidebar) PODFIN.syncSidebar();
       applyCollapsedSecs();
       syncStickyCards();
+      if (typeof syncSideViewport === 'function') syncSideViewport();
     }
     // rev16: 접힌 섹션 상태(제목 기준)를 재렌더 후에도 유지
     const collapsedSecs = new Set();
@@ -3698,22 +3699,21 @@
       sideThumb.style.height = `${h}px`;
       sideThumb.classList.add('on');
     }
-    // rev25: 사이드바는 페이지 스크롤과 함께 움직인다 — 내려갈 땐 사이드바 끝이 보일 때까지, 올라갈 땐 첫 항목이 보일 때까지 같이 스크롤한 뒤 멈춘다
-    let sideLastY = window.scrollY, sideShift = 0;
-    function syncSideScroll() {
-      const cp = activeAside(); const y = window.scrollY;
-      if (!cp) { sideLastY = y; return; }
+    // rev26: 사이드바는 독립 스크롤(페이지로 체이닝되지 않음). 헤더가 보이는 동안은 패널 높이를 화면에 보이는 만큼으로 맞춰 끝까지 닿게 한다
+    function syncSideViewport() {
+      const cp = activeAside(); if (!cp) return;
       const k = uiScale();
-      const max = Math.max(0, cp.scrollHeight - cp.clientHeight);
-      const stuck = cp.getBoundingClientRect().top <= 0.5;
-      sideShift = stuck ? Math.max(0, Math.min(max, sideShift + (y - sideLastY) / k)) : 0;
-      sideLastY = y;
-      if (Math.abs(cp.scrollTop - sideShift) > 0.5) cp.scrollTop = sideShift;
+      const top = Math.max(0, cp.getBoundingClientRect().top);
+      const h = Math.max(240, (window.innerHeight - top) / k);
+      if (Math.abs(parseFloat(cp.style.height) - h) > 0.5) cp.style.height = `${h}px`;
       syncSideThumb();
     }
-    window.addEventListener('scroll', syncSideScroll, { passive: true });
+    window.addEventListener('scroll', syncSideViewport, { passive: true });
+    window.addEventListener('resize', syncSideViewport);
+    window.addEventListener('load', syncSideViewport);
+    requestAnimationFrame(() => { syncSideViewport(); syncStickyCards(); });
     (function bindSideThumb() {
-      document.addEventListener('scroll', e => { if (e.target instanceof Element && e.target.matches('.control-panel, .fin-aside')) { sideShift = e.target.scrollTop; syncSideThumb(); } }, { capture: true, passive: true });
+      document.addEventListener('scroll', e => { if (e.target instanceof Element && e.target.matches('.control-panel, .fin-aside')) syncSideThumb(); }, { capture: true, passive: true });
       let drag = null;
       sideThumb.addEventListener('pointerdown', e => {
         const cp = activeAside(); if (!cp) return;
