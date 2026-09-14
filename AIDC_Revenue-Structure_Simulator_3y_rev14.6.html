@@ -2737,7 +2737,7 @@
       const utilRow = [t('chipUtilYearly'), `${nf.format(state.utilY1)}-${nf.format(state.utilY2)}-${nf.format(state.utilY3)}%`];
       return formulaSectionHtml([
         { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBodyRack'), items: [B.rack, B.powerPerRack, B.pricePerRack, B.bm, B.rate, B.mix, B.eff, B.rev] },
-        { title: t('formulaCardCapexTitleRack'), body: t('formulaCardCapexBodyRack'), items: [B.itCapex, B.auxSi] },
+        { title: t('formulaCardCapexTitleRack'), body: t('formulaCardCapexBodyRack'), items: [[t('blServerCapex'), eok(data.itCapexEok)], B.auxSi, B.fac] },
         { title: t('formulaCardElecTitleRack'), body: t('formulaCardElecBodyRack'), items: [B.elec, B.opex, B.sw, [t('blDep'), depTxt], utilRow, B.tot, B.it, B.pue] },
         { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyRack'), items: [B.floor, B.support, B.fac, B.energy, B.basic, B.fx, [t('chipDep'), depTxt]] }
       ]);
@@ -2772,10 +2772,9 @@
       };
       const depTxt = `${getDepreciationText().replace(/\//g, ' / ')}%`;
       const utilRow = [t('chipUtilYearly'), `${nf.format(state.utilY1)}-${nf.format(state.utilY2)}-${nf.format(state.utilY3)}%`];
-      const serverCapex = [t('blServerCapex'), eok(data.facilityEok)];
       return formulaSectionHtml([
         { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBody'), items: [B.sys, B.su, B.bm, B.rate, B.mix, B.eff, B.rev] },
-        { title: t('formulaCardCapexTitle'), body: t('formulaCardCapexBody'), items: [B.capex, serverCapex] },
+        { title: t('formulaCardCapexTitle'), body: t('formulaCardCapexBody'), items: [B.capex, B.fac] },
         { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBody'), items: [B.elec, B.sw, [t('blDep'), depTxt], utilRow, B.tot, B.it, B.pue] },
         { title: t('formulaCardDepTitle'), body: t('formulaCardDepBody'), items: [B.floor, B.support, B.fac, B.energy, B.basic, B.fx, B.swsub, [t('chipDep'), depTxt]] }
       ]);
