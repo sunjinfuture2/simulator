@@ -130,7 +130,7 @@
     .brand-ko.is-latin { font-family: var(--font-helv); font-weight: 700; font-size: 40px; letter-spacing: -0.015em; }
     .btn-reset {
       width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;
-      color: var(--k100); position: relative; top: -1.5px; left: 0;
+      color: var(--k100); position: relative; top: 0.5px; left: 0;
     }
     .btn-reset svg { width: 36px; height: 36px; display: block; }
     .btn-reset:hover { color: var(--g60); }
@@ -147,8 +147,8 @@
     .view-tabs { position: absolute; left: 667.5px; right: 135px; bottom: -2px; display: flex; align-items: flex-end; gap: 16.4px; z-index: 2; }
     .view-tab[data-view="finance"] { margin-left: auto; }
     .view-tab {
-      height: 35.1px; padding: 5px 22.7px 0; border: 2px solid var(--g60); border-bottom: 0; background: #fff;
-      color: var(--g60); font-size: 19px; font-weight: 500; line-height: 1; white-space: nowrap;
+      height: 35.1px; padding: 5px 22.7px 0; border: 2px solid #909090; border-bottom: 0; background: #fff;
+      color: #909090; font-size: 19px; font-weight: 500; line-height: 1; white-space: nowrap;
       display: inline-flex; align-items: center; justify-content: center; margin-bottom: 2px;
     }
     .view-tab.active {
@@ -172,7 +172,7 @@
     .side-thumb { position: fixed; left: 0; top: 0; width: 6.5px; background: var(--ga5); z-index: 4; display: none; touch-action: none; }
     .side-thumb.on { display: block; }
     .controls-root { width: var(--side-inner); padding-top: 57px; padding-bottom: 6px; }
-    .results-area { flex: 0 0 var(--main-w); width: var(--main-w); margin-left: 150px; min-width: 0; padding-top: 98.9px; }
+    .results-area { flex: 0 0 var(--main-w); width: var(--main-w); margin-left: 150px; min-width: 0; padding-top: 98.9px; padding-bottom: 242px; }
     .dashboard-grid.is-compare .results-area { padding-top: 98.9px; }
     .dashboard-grid.is-compare #mainContent > .sec:first-child { margin-top: 0; }
     .dashboard-grid.is-finance .results-area { margin-left: 0; }
@@ -565,10 +565,12 @@
     /* rev23: 우측 산식 카드는 좌측 표의 묶음 경계(행 40px 단위)에 검정 상단 룰이 맞춰지는 그리드 행 */
     .fx { display: grid; border-top: 0; border-bottom: var(--hair) solid var(--k100); }
     .fx .fx-card { align-self: start; border-top: var(--hair) solid var(--k100); border-bottom: 0; padding: 21.1px 0 0; }
+    .fx .fx-card:nth-child(2) { padding-top: 16.1px; }
     .fx-abbr { text-decoration: underline; text-decoration-thickness: var(--hair); text-underline-offset: 3px; cursor: help; }
     .bl { border-top: var(--hair) solid var(--k100); border-bottom: var(--hair) solid var(--k100); }
     .bl-row { display: grid; grid-template-columns: 301.2px 1fr; height: 40px; align-items: center; position: relative; }
-    .bl-row + .bl-row .bl-key::before, .bl-row + .bl-row .bl-val::before { content: ""; position: absolute; left: 0; right: var(--gap); top: 0; height: var(--hair); background: var(--gcc); }
+    .bl-row + .bl-row .bl-key::before, .bl-row + .bl-row .bl-val::before { content: ""; position: absolute; left: 0; right: var(--gap); top: 0; height: 0; border-top: var(--hair) solid var(--gcc); }
+    .bl-row.grp .bl-key::before, .bl-row.grp .bl-val::before { border-color: var(--k100); }
     .bl-row + .bl-row .bl-val::before { right: 0; }
     .bl-key, .bl-val { position: relative; height: 100%; display: flex; align-items: center; font-size: 15px; line-height: 20.3px; white-space: nowrap; }
     .bl-key { font-weight: 600; color: var(--g60); }
@@ -631,7 +633,8 @@
     .fin-item .fin-hint { margin-top: 12px; font-size: 12px; color: var(--g77); line-height: 17.1px; }
     .fin-reset { margin-top: 30px; height: 30.8px; width: 100%; border: var(--hair) solid var(--gcc); color: var(--g77); font-size: 15px; font-weight: 500; }
     .fin-reset:hover { color: var(--k100); border-color: var(--k100); }
-    .fin-main { flex: 0 0 var(--main-w); width: var(--main-w); margin-left: 150px; padding-top: 57.4px; min-width: 0; }
+    .fin-main { flex: 0 0 var(--main-w); width: var(--main-w); margin-left: 150px; padding-top: 57.4px; padding-bottom: 242px; min-width: 0; }
+    .dashboard-grid.is-finance .results-area { padding-bottom: 0; }
     /* 비교(2열) 모드: 표는 열 폭에 맞춰 줄이고, KPI 블록은 고정하지 않는다 */
     .fin-col .dt col { width: auto !important; }
     .fin-col .dt { width: 100%; table-layout: auto; }
@@ -746,7 +749,7 @@
     .fin-fab { width: 44px; padding: 0; justify-content: center; right: 30px; bottom: 30px; }
     @media print { .fin-fab { display: none !important; } }
 
-    .site-footer { width: 1920px; margin: 0 auto; padding: 127.6px 129px 94.4px 0; text-align: right; font-size: 14px; font-weight: 400; color: var(--ga5); line-height: 20px; }
+    .site-footer { position: absolute; left: 0; right: 0; bottom: 0; padding: 127.6px 129px 94.4px 0; text-align: right; font-size: 14px; font-weight: 400; color: var(--ga5); line-height: 20px; }
 
     /* 유틸 */
     .unit { line-height: 1; }
@@ -2679,7 +2682,7 @@
 
     // 기준값 및 산식 — 좌: 현재 기준 리스트(40px 행) / 우: 산식 블록
     function formulaSectionHtml(groups) {
-      const row = ([k, v]) => `<div class="bl-row"><div class="bl-key">${k}</div><div class="bl-val" title="${escAttr(String(v).replace(/<[^>]+>/g, ''))}">${v}</div></div>`;
+      const row = ([k, v], cls) => `<div class="bl-row ${cls || ''}"><div class="bl-key">${k}</div><div class="bl-val" title="${escAttr(String(v).replace(/<[^>]+>/g, ''))}">${v}</div></div>`;
       const rowsCss = groups.map(g => `minmax(${g.items.filter(Boolean).length * 40}px, auto)`).join(' ');
       // 시안: 긴 Σ( … )(USD) / [ … ](USD) 목록은 'Σ(USD)' · '[USD]'로 줄이고(밑줄), 전체 항목은 i 팝업으로
       const abbr = body => String(body)
@@ -2690,7 +2693,7 @@
           ${secHead(t('formulaTitle'))}
           <div class="sec-desc">${t('formulaDesc')}</div>
           <div class="formula-wrap">
-            <div class="bl">${groups.map(g => g.items.filter(Boolean).map(row).join('')).join('')}</div>
+            <div class="bl">${groups.map((g, gi) => g.items.filter(Boolean).map((it, i) => row(it, gi > 0 && i === 0 ? 'grp' : '')).join('')).join('')}</div>
             <div class="fx" style="grid-template-rows:${rowsCss}">${groups.map(g => `<div class="fx-card"><h3>${g.title}</h3><p>${abbr(g.body)}</p></div>`).join('')}</div>
           </div>
         </section>
@@ -3686,8 +3689,9 @@
       const cp = activeAside();
       if (!cp || cp.scrollHeight <= cp.clientHeight + 1) { sideThumb.classList.remove('on'); return; }
       const r = cp.getBoundingClientRect();
-      const h = Math.max(24, r.height * cp.clientHeight / cp.scrollHeight);
-      const top = r.top + (cp.scrollTop / (cp.scrollHeight - cp.clientHeight)) * (r.height - h);
+      const tTop = Math.max(0, r.top), tBottom = Math.min(window.innerHeight, r.bottom), tH = Math.max(0, tBottom - tTop);
+      const h = Math.max(24, tH * cp.clientHeight / cp.scrollHeight);
+      const top = tTop + (cp.scrollTop / Math.max(1, cp.scrollHeight - cp.clientHeight)) * (tH - h);
       sideThumb.style.left = `${r.left + r.width * (511 / 517.5)}px`;
       sideThumb.style.width = `${6.5 * (r.width / 517.5)}px`;
       sideThumb.style.top = `${top}px`;
