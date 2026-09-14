@@ -113,9 +113,9 @@
     /* rev20: 상단 사이트 바 — 좌 SUNJIN 워드마크, 우 캡션 (좌우 24px) */
     .site-bar { position: absolute; left: 24px; right: 24px; top: 0; height: 67px; display: flex; align-items: center; justify-content: space-between; }
     .logo { display: inline-flex; align-items: center; height: 17px; color: var(--k100); }
-    .logo .logo-mark { height: 17px; width: auto; display: block; }
+    .logo .logo-mark, .logo .logo-img { height: 17px; width: auto; display: block; }
     .logo:hover .logo-mark { opacity: .7; }
-    .brand { position: absolute; left: 66.6px; top: 84.5px; display: flex; flex-direction: column; }
+    .brand { position: absolute; left: 66.6px; top: 79.5px; display: flex; flex-direction: column; }
     .brand-en {
       font-family: var(--font-helv); font-weight: 700; font-size: 40px; line-height: 58px; color: var(--k100);
       letter-spacing: -0.005em; white-space: nowrap;
@@ -134,9 +134,9 @@
     .btn-reset:hover { color: var(--g60); }
     .btn-reset.spin svg { animation: resetSpin .55s cubic-bezier(.4, 0, .2, 1); }
     @keyframes resetSpin { to { transform: rotate(360deg); } }
-    .top-caption { font-size: 14px; font-weight: 500; color: var(--g60); line-height: 20px; white-space: nowrap; cursor: help; }
+    .top-caption { font-size: 14px; font-weight: 500; color: var(--g60); line-height: 20px; white-space: nowrap; cursor: help; margin-right: 10px; }
     /* 언어 전환: 타이틀 아래 텍스트 링크 (KOR 활성 = 검정 + 밑줄, 비활성 = #a5a5a5) */
-    .lang-links { position: absolute; left: 67.5px; top: 201px; display: flex; align-items: baseline; gap: 12px; }
+    .lang-links { position: absolute; left: 67.5px; top: 196px; display: flex; align-items: baseline; gap: 12px; }
     .lang-link { font-size: 20px; font-weight: 700; line-height: 27px; color: var(--ga5); letter-spacing: -0.01em; }
     .lang-link:hover { color: var(--g60); }
     .lang-link.on { color: var(--k100); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
@@ -146,11 +146,11 @@
     .view-tab[data-view="finance"] { margin-left: auto; }
     .view-tab {
       height: 35.1px; padding: 5px 22.7px 0; border: 2px solid var(--g60); border-bottom: 0; background: #fff;
-      color: var(--g60); font-size: 21px; font-weight: 500; line-height: 1; white-space: nowrap;
+      color: var(--g60); font-size: 19px; font-weight: 500; line-height: 1; white-space: nowrap;
       display: inline-flex; align-items: center; justify-content: center; margin-bottom: 2px;
     }
     .view-tab.active {
-      height: 43.3px; padding: 0 21.2px; border-color: var(--k100); color: var(--k100); font-size: 22px; font-weight: 700; margin-bottom: 0;
+      height: 43.3px; padding: 0 21.2px; border-color: var(--k100); color: var(--k100); font-size: 20px; font-weight: 700; margin-bottom: 0;
     }
 
     /* =====================================================================
@@ -159,7 +159,6 @@
     .dashboard-grid { display: flex; align-items: flex-start; position: relative; }
     /* 시안: x=517.5 사이드바 경계 헤어라인(#ccc 0.5) — 스크롤바 구현과 무관하게 항상 그린다 */
     .app::before { content: ""; position: absolute; left: calc(var(--side-w) - var(--hair)); top: 264px; bottom: 0; width: var(--hair); background: var(--gcc); z-index: 1; pointer-events: none; }
-    .app:has(.dashboard-grid.is-finance)::before { display: none; }
     .control-panel {
       flex: 0 0 var(--side-w); width: var(--side-w); position: sticky; top: 0; height: 100vh;
       overflow-y: auto; overflow-x: hidden; padding-left: var(--side-pad);
@@ -170,7 +169,7 @@
     .control-panel, .fin-aside { scrollbar-width: none; }
     .side-thumb { position: fixed; left: 0; top: 0; width: 6.5px; background: var(--ga5); z-index: 4; display: none; touch-action: none; }
     .side-thumb.on { display: block; }
-    .controls-root { width: var(--side-inner); padding-top: 57px; padding-bottom: 80px; }
+    .controls-root { width: var(--side-inner); padding-top: 57px; padding-bottom: 6px; }
     .results-area { flex: 0 0 var(--main-w); width: var(--main-w); margin-left: 150px; min-width: 0; padding-top: 98.9px; }
     .dashboard-grid.is-compare .results-area { padding-top: 98.9px; }
     .dashboard-grid.is-compare #mainContent > .sec:first-child { margin-top: 0; }
@@ -327,7 +326,8 @@
     .kpi-grid .kpi .k-label { font-size: 17px; }
     .kpi-grid .kpi .k-pre { font-size: 12px; }
     .kpi-grid .kpi .k-value { font-size: 45px; line-height: 61px; }
-    .kpi-grid .kpi .k-value .unit { font-size: 23.5px; }
+    .kpi-grid .kpi .k-value .unit { font-size: 23.5px; font-weight: 600; }
+    .kpi-grid .kpi .k-hint { margin-top: -2.7px; }
 
     /* =====================================================================
        메인: 섹션 공통
@@ -560,14 +560,12 @@
        메인: 기준값 및 산식
        ===================================================================== */
     .formula-wrap { display: grid; grid-template-columns: 736.2px 368.4px; column-gap: 13px; margin-top: 40.7px; align-items: start; }
-    /* rev21: 산식별 묶음 — 왼쪽에 해당 식에 들어가는 기준값, 오른쪽에 산식 카드 */
+    /* rev22: 기준값 목록을 산식 순서대로 묶고(그룹 사이 검정 헤어라인), 오른쭉 산식 카드는 해당 묶음의 세로 중앙에 */
     .fx-groups { margin-top: 40.7px; }
-    .fx-row { display: grid; grid-template-columns: 736.2px 368.4px; column-gap: 13px; align-items: start; border-top: var(--hair) solid var(--k100); }
-    .fx-row + .fx-row { margin-top: 36px; }
-    .fx-row .bl { border-top: 0; }
-    .fx-row .fx-card { border-bottom: var(--hair) solid var(--k100); }
-    .bl-row.res .bl-key { color: var(--k100); }
-    .bl-row.res .bl-val { color: var(--g60); font-weight: 600; }
+    .fx-row { display: grid; grid-template-columns: 736.2px 368.4px; column-gap: 13px; align-items: center; }
+    .fx-row .bl { border-top: var(--hair) solid var(--k100); border-bottom: 0; }
+    .fx-row:last-child .bl { border-bottom: var(--hair) solid var(--k100); }
+    .fx-row .fx-card { padding: 0 0 0 4px; border: 0; }
     .bl { border-top: var(--hair) solid var(--k100); border-bottom: var(--hair) solid var(--k100); }
     .bl-row { display: grid; grid-template-columns: 301.2px 1fr; height: 40px; align-items: center; position: relative; }
     .bl-row + .bl-row .bl-key::before, .bl-row + .bl-row .bl-val::before { content: ""; position: absolute; left: 0; right: var(--gap); top: 0; height: var(--hair); background: var(--k100); }
@@ -580,21 +578,6 @@
     .fx-card h3 { font-size: 15px; font-weight: 600; color: var(--g60); line-height: 20.3px; }
     .fx-card p { margin-top: 10.2px; font-size: 15px; font-weight: 400; color: var(--ga0); line-height: 22px; word-break: keep-all; }
     .fx-card code { font-family: inherit; }
-    /* 산식 다이어그램: 요소 토큰 · 연산자 · 묶음(옅은 배경, 안쪽은 더 옅은 색) */
-    .fx-f { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 5px; font-size: 14px; line-height: 20px; color: var(--g60); word-break: keep-all; }
-    .fx-t { white-space: nowrap; }
-    .fx-op { color: var(--ga0); font-weight: 500; padding: 0 1px; }
-    .fx-g { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 5px; padding: 4px 8px; background: #f4f4f4; }
-    .fx-g .fx-t { color: var(--g77); }
-    .fx-g.d1, .fx-g.d2 { background: #fff; border: var(--hair) solid #d9d9d9; }
-    .fx-g.d1 .fx-t, .fx-g.d2 .fx-t { color: var(--ga0); }
-    .fx-l { font-weight: 700; color: var(--k100); margin-right: 3px; white-space: nowrap; }
-    .fx-ann { font-size: 11px; color: var(--ga0); margin-left: 1px; white-space: nowrap; }
-    .fx-note { margin-top: 10px; font-size: 12.5px; line-height: 18px; color: var(--ga0); display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
-    .fx-note::before { content: "※"; margin-right: 2px; }
-    .fx-note.plain { display: block; word-break: keep-all; }
-    .fx-note .fx-g { padding: 2px 6px; background: #f9f9f9; }
-    .fx-note .fx-t, .fx-note .fx-g .fx-t { color: var(--ga0); }
 
     /* =====================================================================
        메인: 재무구조 반영
@@ -611,7 +594,7 @@
     .fin-assume .lab { font-size: 15px; font-weight: 600; color: var(--g60); line-height: 20.3px; }
     .fin-assume .val { display: inline-flex; align-items: baseline; margin-top: -5.2px; margin-left: -4px; font-size: 55px; font-weight: 300; color: var(--g60); line-height: 74.5px; letter-spacing: -0.01em; }
     .fin-assume .val .unit { font-size: 25px; font-weight: 500; margin-left: 0; }
-    .fin-assume .val.txt { font-size: 38px; margin-left: -1px; }
+    .fin-assume .val.txt { font-size: 38px; margin-left: -1px; font-weight: 400; }
     .fin-table { margin-top: 56.6px; }
     .fin-note { margin-top: 21.3px; font-size: 13px; font-weight: 400; color: var(--ga0); line-height: 21px; word-break: keep-all; }
     .fin-chart-wrap { margin-top: 80.3px; }
@@ -787,7 +770,7 @@
         </div>
       </div>
       <div class="site-bar">
-        <a class="logo" href="https://www.sunjin.co.kr" target="_blank" rel="noopener" aria-label="SUNJIN 홈페이지"><svg class="logo-mark" viewBox="0 0 1456 290" aria-hidden="true" fill="none" stroke="#000" stroke-width="72" stroke-linecap="butt" stroke-linejoin="round"><path d="M222 58 C150 20 52 34 46 96 C40 160 232 150 226 214 C220 262 120 284 26 246"/><path d="M298 40 V186 C298 262 476 262 476 186 V40"/><path d="M588 40 V270 M588 150 C606 82 700 22 752 60 C800 96 776 190 776 270"/><path d="M984 40 V186 C984 262 900 268 838 222"/><path d="M1096 40 V270"/><path d="M1216 40 V270 M1216 150 C1234 82 1328 22 1380 60 C1428 96 1404 190 1404 270"/></svg></a>
+        <a class="logo" href="https://www.sunjin.co.kr" target="_blank" rel="noopener" aria-label="SUNJIN 홈페이지"><img class="logo-img" src="assets/sunjin-logo.svg" alt="SUNJIN" onerror="var p=this.parentNode;this.remove();p.querySelector('.logo-mark').style.display='block'"><svg class="logo-mark" style="display:none" viewBox="0 0 1456 290" aria-hidden="true" fill="none" stroke="#000" stroke-width="72" stroke-linecap="butt" stroke-linejoin="round"><path d="M222 58 C150 20 52 34 46 96 C40 160 232 150 226 214 C220 262 120 284 26 246"/><path d="M298 40 V186 C298 262 476 262 476 186 V40"/><path d="M588 40 V270 M588 150 C606 82 700 22 752 60 C800 96 776 190 776 270"/><path d="M984 40 V186 C984 262 900 268 838 222"/><path d="M1096 40 V270"/><path d="M1216 40 V270 M1216 150 C1234 82 1328 22 1380 60 C1428 96 1404 190 1404 270"/></svg></a>
         <span class="top-caption" id="heroEyebrow" tabindex="0" role="note">AIDC · Revenue Simulator</span>
       </div>
       <div class="lang-links" role="group" aria-label="Language">
@@ -2694,56 +2677,8 @@
     }
 
     // 기준값 및 산식 — 좌: 현재 기준 리스트(40px 행) / 우: 산식 블록
-    // rev20: 산식 문자열을 요소(토큰)·연산자·묶음(괄호/대괄호, Σ·전기료 같은 라벨)으로 파싱해 구조적으로 그린다
-    function fxParse(str) {
-      let i = 0;
-      const isOpAt = k => str[k] === '×' || ((str[k] === '+' || str[k] === '−' || str[k] === '-' || str[k] === '=') && str[k - 1] === ' ' && str[k + 1] === ' ');
-      function parse(closer) {
-        const items = []; let buf = '';
-        const flush = () => { if (buf.trim()) items.push({ t: 'tok', v: buf.trim() }); buf = ''; };
-        while (i < str.length) {
-          const ch = str[i];
-          if (closer && ch === closer) { i++; break; }
-          if (ch === '(' || ch === '[') {
-            const attached = buf.length > 0 && !/\s$/.test(buf);
-            const label = buf.trim();
-            i++;
-            const inner = parse(ch === '(' ? ')' : ']');
-            const hasOps = inner.some(x => x.t === 'op' || x.t === 'grp');
-            if (!hasOps) {
-              // 연산자가 없는 괄호는 주석(단위·비고): 앞 토큰에 붙이거나 직전 묶음의 꼬리표로
-              const txt = inner.map(x => x.v).join(' ');
-              if (!buf.trim() && items.length && items[items.length - 1].t === 'grp') items[items.length - 1].ann = txt;
-              else buf += ch + txt + (ch === '(' ? ')' : ']');
-            } else {
-              if (attached) buf = ''; else flush();
-              items.push({ t: 'grp', label: attached ? label : '', kids: inner });
-            }
-            continue;
-          }
-          if (isOpAt(i)) { flush(); items.push({ t: 'op', v: ch === '-' ? '−' : ch }); i++; continue; }
-          buf += ch; i++;
-        }
-        flush();
-        return items;
-      }
-      return parse(null);
-    }
-    function fxRender(items, depth) {
-      return items.map(x => x.t === 'op' ? `<span class="fx-op">${x.v}</span>`
-        : x.t === 'tok' ? `<span class="fx-t">${escAttr(x.v)}</span>`
-        : `<span class="fx-g d${Math.min(depth, 2)}">${x.label ? `<span class="fx-l">${escAttr(x.label)}</span>` : ''}${fxRender(x.kids, depth + 1)}${x.ann ? `<span class="fx-ann">${escAttr(x.ann)}</span>` : ''}</span>`).join('');
-    }
-    function fxHtml(body) {
-      let s = String(body || '').trim(), note = '';
-      const m = s.match(/\s*(※|—)\s*/);
-      if (m) { note = s.slice(m.index + m[0].length).trim(); s = s.slice(0, m.index).trim(); }
-      const noteHtml = note ? (/[×=]/.test(note) ? `<div class="fx-note">${fxRender(fxParse(note), 0)}</div>` : `<div class="fx-note plain">${escAttr(note)}</div>`) : '';
-      return `<div class="fx-f">${fxRender(fxParse(s), 0)}</div>${noteHtml}`;
-    }
-    // groups: [{ title, body, items: [[key, value, 'res'?], ...] }] — 산식 카드 왼쪽에 그 식에 들어가는 기준값만 묶어 배치
     function formulaSectionHtml(groups) {
-      const row = ([k, v, res]) => `<div class="bl-row ${res ? 'res' : ''}"><div class="bl-key">${k}</div><div class="bl-val" title="${escAttr(String(v).replace(/<[^>]+>/g, ''))}">${v}</div></div>`;
+      const row = ([k, v]) => `<div class="bl-row"><div class="bl-key">${k}</div><div class="bl-val" title="${escAttr(String(v).replace(/<[^>]+>/g, ''))}">${v}</div></div>`;
       return `
         <section class="sec mt-149 formula-sec">
           ${secHead(t('formulaTitle'))}
@@ -2752,7 +2687,7 @@
             ${groups.map(g => `
             <div class="fx-row">
               <div class="bl">${g.items.filter(Boolean).map(row).join('')}</div>
-              <div class="fx-card"><h3>${g.title}</h3>${fxHtml(g.body)}</div>
+              <div class="fx-card"><h3>${g.title}</h3><p>${g.body}</p></div>
             </div>`).join('')}
           </div>
         </section>
@@ -2795,11 +2730,12 @@
         basic: [t('chipBasicCharge'), formatRateText('basicChargeKwMonth', state.basicChargeKwMonth)],
         fx: [t('chipFx'), `${nf.format(state.fxKrwUsd)}원/USD`]
       };
+      const depChip = [t('chipDep'), `${getDepreciationText()}%`];
       return formulaSectionHtml([
-        { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBodyRack'), items: [B.rack, B.powerPerRack, B.bm, B.rate, B.mix, B.util, B.eff, B.fx, B.rev] },
-        { title: t('formulaCardCapexTitleRack'), body: t('formulaCardCapexBodyRack'), items: [B.rack, B.pricePerRack, B.auxSi, B.fx, B.itCapex] },
-        { title: t('formulaCardElecTitleRack'), body: t('formulaCardElecBodyRack'), items: [B.tot, B.it, B.pue, B.power, B.util, B.energy, B.basic, B.fx, B.elec, B.opex, B.sw] },
-        { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyRack'), items: [B.dep, B.elec, B.opex, B.sw, B.itCapex, B.floor, B.support, B.fac] }
+        { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBodyRack'), items: [B.rack, B.powerPerRack, B.pricePerRack, B.bm, B.rate, B.mix, B.eff, B.rev] },
+        { title: t('formulaCardCapexTitleRack'), body: t('formulaCardCapexBodyRack'), items: [B.itCapex, B.auxSi] },
+        { title: t('formulaCardElecTitleRack'), body: t('formulaCardElecBodyRack'), items: [B.elec, B.opex, B.sw, B.dep, B.util, B.tot, B.it, B.pue, B.power] },
+        { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyRack'), items: [B.floor, B.support, B.fac, B.energy, B.basic, B.fx, depChip] }
       ]);
     }
     function renderFormulaPanel(data) {
@@ -2830,11 +2766,12 @@
         fx: [t('chipFx'), `${nf.format(state.fxKrwUsd)}원/USD`],
         swsub: [t('chipSwSub'), formatSwSub(state.swSubUsdPerGpuYear)]
       };
+      const depChip = [t('chipDep'), `${getDepreciationText()}%`];
       return formulaSectionHtml([
-        { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBody'), items: [B.sys, B.su, B.bm, B.rate, B.mix, B.util, B.eff, B.fx, B.rev] },
-        { title: t('formulaCardCapexTitle'), body: t('formulaCardCapexBody'), items: [B.sys, B.su, B.fx, B.capex] },
-        { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBody'), items: [B.tot, B.it, B.pue, B.power, B.util, B.energy, B.basic, B.swsub, B.fx, B.elec, B.sw] },
-        { title: t('formulaCardDepTitle'), body: t('formulaCardDepBody'), items: [B.dep, B.elec, B.sw, B.capex, B.floor, B.support, B.fac] }
+        { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBody'), items: [B.sys, B.su, B.bm, B.rate, B.mix, B.eff, B.rev] },
+        { title: t('formulaCardCapexTitle'), body: t('formulaCardCapexBody'), items: [B.capex] },
+        { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBody'), items: [B.elec, B.sw, B.dep, B.util, B.tot, B.it, B.pue, B.power] },
+        { title: t('formulaCardDepTitle'), body: t('formulaCardDepBody'), items: [B.floor, B.support, B.fac, B.energy, B.basic, B.fx, B.swsub, depChip] }
       ]);
     }
 
@@ -3722,13 +3659,14 @@
     }
     window.addEventListener('scroll', syncStickyCards, { passive: true });
     window.addEventListener('resize', syncStickyCards);
-    // rev17: 사이드바 커스텀 스크롤 썸 (시안 x=511 · 6.5px · #a5a5a5) — 네이티브 스크롤바는 숨김
+    // rev17/22: 사이드바 커스텀 스크롤 썸 (시안 x=511 · 6.5px · #a5a5a5) — 메인 뷰의 .control-panel, 재무 탭의 .fin-aside 모두 지원
     const sideThumb = document.createElement('div');
     sideThumb.className = 'side-thumb';
     document.body.appendChild(sideThumb);
+    function activeAside() { return [...document.querySelectorAll('.control-panel, .fin-aside')].find(el => el.offsetParent !== null) || null; }
     function syncSideThumb() {
-      const cp = document.querySelector('.control-panel');
-      if (!cp || cp.offsetParent === null || cp.scrollHeight <= cp.clientHeight + 1) { sideThumb.classList.remove('on'); return; }
+      const cp = activeAside();
+      if (!cp || cp.scrollHeight <= cp.clientHeight + 1) { sideThumb.classList.remove('on'); return; }
       const r = cp.getBoundingClientRect();
       const h = Math.max(24, r.height * cp.clientHeight / cp.scrollHeight);
       const top = r.top + (cp.scrollTop / (cp.scrollHeight - cp.clientHeight)) * (r.height - h);
@@ -3739,15 +3677,14 @@
       sideThumb.classList.add('on');
     }
     (function bindSideThumb() {
-      const cp = document.querySelector('.control-panel');
-      if (cp) cp.addEventListener('scroll', syncSideThumb, { passive: true });
+      document.addEventListener('scroll', e => { if (e.target instanceof Element && e.target.matches('.control-panel, .fin-aside')) syncSideThumb(); }, { capture: true, passive: true });
       let drag = null;
       sideThumb.addEventListener('pointerdown', e => {
-        if (!cp) return;
-        drag = { y: e.clientY, st: cp.scrollTop, ratio: (cp.scrollHeight - cp.clientHeight) / Math.max(1, cp.getBoundingClientRect().height - sideThumb.offsetHeight) };
+        const cp = activeAside(); if (!cp) return;
+        drag = { cp, y: e.clientY, st: cp.scrollTop, ratio: (cp.scrollHeight - cp.clientHeight) / Math.max(1, cp.getBoundingClientRect().height - sideThumb.offsetHeight) };
         sideThumb.setPointerCapture(e.pointerId); e.preventDefault();
       });
-      sideThumb.addEventListener('pointermove', e => { if (drag) cp.scrollTop = drag.st + (e.clientY - drag.y) * drag.ratio; });
+      sideThumb.addEventListener('pointermove', e => { if (drag) drag.cp.scrollTop = drag.st + (e.clientY - drag.y) * drag.ratio; });
       sideThumb.addEventListener('pointerup', () => { drag = null; });
       sideThumb.addEventListener('pointercancel', () => { drag = null; });
     })();
