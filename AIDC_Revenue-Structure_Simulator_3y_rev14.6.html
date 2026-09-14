@@ -308,9 +308,10 @@
     .remote .sg-inner { overflow: clip; overflow-clip-margin: 4px; max-height: var(--sg-h, 999px); transition: max-height .28s ease, opacity .22s ease; }
     .remote.collapsed .sg-inner { max-height: 0 !important; opacity: 0; }
     .remote.collapsed { padding-bottom: 8px; }
-    .sg-toggle { position: absolute; left: 50%; bottom: -19px; transform: translateX(-50%); width: 42px; height: 19px; border: var(--hair) solid var(--k100); border-top: 0; background: #fff; display: none; align-items: center; justify-content: center; cursor: pointer; padding: 0; z-index: 6; }
+    /* 접기/펴기 탭: 2px 선이 탭 양옆으로 꺾여 내려가는 홈(notch) 형태 — 탭 안쪽 윗선은 비움 */
+    .sg-toggle { position: absolute; left: 50%; top: calc(100% - 2px); transform: translateX(-50%); width: 44px; height: 21px; border: 2px solid var(--k100); border-top: 0; background: #fff; display: none; align-items: center; justify-content: center; cursor: pointer; padding: 0; z-index: 6; }
     .remote.stuck .sg-toggle { display: flex; }
-    .sg-toggle::before { content: ""; width: 7px; height: 7px; border-left: 1.5px solid var(--k100); border-top: 1.5px solid var(--k100); transform: translateY(2px) rotate(45deg); transition: transform .28s ease; }
+    .sg-toggle::before { content: ""; width: 9px; height: 9px; border-left: 2px solid var(--k100); border-top: 2px solid var(--k100); transform: translateY(3px) rotate(45deg); transition: transform .28s ease; }
     .remote.collapsed .sg-toggle::before { transform: translateY(-2px) rotate(225deg); }
     .kpi { position: relative; min-width: 0; }
     .kpi .k-pre { font-size: 13px; font-weight: 500; color: var(--g77); line-height: 17.6px; margin-bottom: 0.4px; white-space: nowrap; }
