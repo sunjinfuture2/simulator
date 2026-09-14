@@ -565,6 +565,7 @@
     /* rev23: 우측 산식 카드는 좌측 표의 묶음 경계(행 40px 단위)에 검정 상단 룰이 맞춰지는 그리드 행 */
     .fx { display: grid; border-top: 0; border-bottom: var(--hair) solid var(--k100); }
     .fx .fx-card { align-self: start; border-top: var(--hair) solid var(--k100); border-bottom: 0; padding: 21.1px 0 0; }
+    .fx-abbr { text-decoration: underline; text-decoration-thickness: var(--hair); text-underline-offset: 3px; cursor: help; }
     .bl { border-top: var(--hair) solid var(--k100); border-bottom: var(--hair) solid var(--k100); }
     .bl-row { display: grid; grid-template-columns: 301.2px 1fr; height: 40px; align-items: center; position: relative; }
     .bl-row + .bl-row .bl-key::before, .bl-row + .bl-row .bl-val::before { content: ""; position: absolute; left: 0; right: var(--gap); top: 0; height: var(--hair); background: var(--gcc); }
@@ -2679,14 +2680,18 @@
     // 기준값 및 산식 — 좌: 현재 기준 리스트(40px 행) / 우: 산식 블록
     function formulaSectionHtml(groups) {
       const row = ([k, v]) => `<div class="bl-row"><div class="bl-key">${k}</div><div class="bl-val" title="${escAttr(String(v).replace(/<[^>]+>/g, ''))}">${v}</div></div>`;
-      const rowsCss = groups.map(g => `${g.items.filter(Boolean).length * 40}px`).join(' ');
+      const rowsCss = groups.map(g => `minmax(${g.items.filter(Boolean).length * 40}px, auto)`).join(' ');
+      // 시안: 긴 Σ( … )(USD) / [ … ](USD) 목록은 'Σ(USD)' · '[USD]'로 줄이고(밑줄), 전체 항목은 i 팝업으로
+      const abbr = body => String(body)
+        .replace(/Σ\(([^()]+)\)\(USD\)/g, (m, inner) => `<span class="fx-abbr info-dot" tabindex="0" role="note" data-tip="${escAttr('Σ(' + inner + ')')}" data-tip-title="Σ">Σ(USD)</span>`)
+        .replace(/\[([^\[\]]+)\]\(USD\)/g, (m, inner) => `<span class="fx-abbr info-dot" tabindex="0" role="note" data-tip="${escAttr('[' + inner + ']')}" data-tip-title="[ ]">[USD]</span>`);
       return `
         <section class="sec mt-149 formula-sec">
           ${secHead(t('formulaTitle'))}
           <div class="sec-desc">${t('formulaDesc')}</div>
           <div class="formula-wrap">
             <div class="bl">${groups.map(g => g.items.filter(Boolean).map(row).join('')).join('')}</div>
-            <div class="fx" style="grid-template-rows:${rowsCss}">${groups.map(g => `<div class="fx-card"><h3>${g.title}</h3><p>${g.body}</p></div>`).join('')}</div>
+            <div class="fx" style="grid-template-rows:${rowsCss}">${groups.map(g => `<div class="fx-card"><h3>${g.title}</h3><p>${abbr(g.body)}</p></div>`).join('')}</div>
           </div>
         </section>
       `;
