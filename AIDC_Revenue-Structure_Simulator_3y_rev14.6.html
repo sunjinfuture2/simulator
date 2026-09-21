@@ -182,13 +182,13 @@
        사이드바 컨트롤
        ===================================================================== */
     /* 그룹별 여백 — 시안 y좌표에서 산출 (라벨 top = 행 top + 6.4: 24px 값 박스와 baseline 정렬 시 라벨이 내려가는 양) */
-    .s-group { padding: 39px 0 42px; border-bottom: var(--hair) solid var(--gcc); }
-    .s-group.pue { padding-top: 47.3px; padding-bottom: 41px; }
-    .s-group.space { padding-top: 43.3px; padding-bottom: 40.5px; }
+    .s-group { padding: 39px 0 41.5px; border-bottom: var(--hair) solid var(--gcc); }
+    .s-group.power { padding-top: 39px; padding-bottom: 43.7px; }
+    .s-group.space { padding-top: 42.5px; padding-bottom: 40.5px; }
     .s-group.bm { padding-top: 43.2px; padding-bottom: 46.9px; }
     .s-group.util { padding-top: 44.9px; padding-bottom: 38.2px; }
-    .s-group.mix { padding-top: 43.3px; padding-bottom: 47px; }
-    .s-group.rate { padding-top: 45px; padding-bottom: 41.1px; }
+    .s-group.mix { padding-top: 43.3px; padding-bottom: 38px; }
+    .s-group.rate { padding-top: 45px; padding-bottom: 47.4px; }
     .s-group.dep { padding-top: 43.6px; padding-bottom: 38px; }
     .s-group.sw { padding-top: 39.7px; padding-bottom: 28.3px; }
     .s-group.tight { padding-top: 29.2px; }
@@ -229,14 +229,6 @@
     .s-btn:hover { color: var(--k100); border-color: var(--g77); }
     .s-btn.active, .s-btn.on { background: var(--k100); color: #fff; border-color: var(--k100); font-weight: 600; }
 
-    /* PUE 배지 */
-    .s-pue {
-      display: inline-flex; align-items: center; height: 20.1px; padding: 0 7px 0 7.1px; background: var(--k100); color: #fff;
-      font-size: 12px; font-weight: 600; line-height: 1; white-space: nowrap; margin-bottom: 23.6px;
-    }
-    .s-pue input { width: 34px; border: 0; background: transparent; color: #fff; font: inherit; padding: 0; margin-left: 3px; }
-    .s-pue.pue-warn { background: var(--red); }
-
     /* 다열 그룹 (연차별 계수 / 포트폴리오 / 감가상각) */
     .s-cols { display: grid; margin-top: 29.5px; }
     .s-cols.util { margin-top: 37.8px; }
@@ -271,6 +263,16 @@
     .s-slider .s-val { top: 3px; }
     .s-slider .s-val .u { line-height: 32.5px; }
     .s-slider .s-lab { position: relative; top: 3px; }
+    /* 일반 행(18px 라벨) + 조절 바: 총 수전 / IT 수전 / PUE */
+    .s-slider.lg { margin-top: 0; }
+    .s-slider.lg + .s-slider.lg { margin-top: 24px; }
+    .s-slider.lg .s-row { min-height: 24.4px; align-items: baseline; }
+    .s-slider.lg .s-lab { top: 0; }
+    .s-slider.lg .s-val { top: 2.6px; }
+    .s-slider.lg .track { margin-top: 12px; }
+    .s-slider.lg.pue-warn .u input { color: var(--red); }
+    /* 요율 그룹: 위치 프리미엄 행 다음에 오는 할인율 슬라이더 (라벨 간격 = 행 간격) */
+    .s-row + .s-slider { margin-top: 32.3px; }
     .track { display: block; width: 100%; height: 3.9px; margin-top: 11px; -webkit-appearance: none; appearance: none; background: var(--ge2); cursor: pointer; }
     .track { background: linear-gradient(to right, var(--k100) 0, var(--k100) var(--p, 0%), var(--ge2) var(--p, 0%), var(--ge2) 100%); }
     .track::-webkit-slider-runnable-track { height: 3.9px; background: transparent; }
@@ -3446,13 +3448,18 @@
       opts = opts || {};
       const def = getControlDef(id) || {};
       const disp = inputDisplayProps(def);
+      const unitTxt = opts.unit !== undefined ? opts.unit : unitOf(id);
+      const unitCls = opts.unitCls !== undefined ? opts.unitCls : 'pct';
+      // 바의 최솟값은 step 배수에 맞춘다 (예: 최소 1·step 10 → 0) — 입력값 자체는 def.min 으로 계속 하한 처리됨
+      const step = Number(disp.step) || 1;
+      const rmin = Number.isFinite(disp.min) ? Math.floor(disp.min / step) * step : 0;
       return `
-        <div class="s-slider">
+        <div class="s-slider ${opts.lg ? 'lg' : ''}" ${opts.attr || ''}>
           <div class="s-row">
-            <span class="s-lab md">${label}</span>
-            <span class="s-val">${numInputHtml(id)}<span class="unit pct">${opts.unit || unitOf(id)}</span></span>
+            <span class="s-lab ${opts.lg ? '' : 'md'}">${label}</span>
+            <span class="s-val">${numInputHtml(id)}<span class="unit ${unitCls}">${unitTxt}</span></span>
           </div>
-          <input type="range" class="track" min="${disp.min}" max="${disp.max}" step="${disp.step}" value="${disp.value}" data-input="${id}" aria-label="${escAttr(label)}" />
+          <input type="range" class="track" min="${rmin}" max="${disp.max}" step="${disp.step}" value="${disp.value}" data-input="${id}" aria-label="${escAttr(label)}" />
         </div>`;
     }
     function segBtns(attr, items, activeVal, two) {
@@ -3471,17 +3478,19 @@
       const swTip = t('labelSwSub') + '\n' + t('baseHintPrefix') + ' ' + formatControlValue('swSubUsdPerGpuYear', DEFAULTS.swSubUsdPerGpuYear);
       const yr = n => t('yearLabel', { n });
       const common = `
-        <section class="s-group" data-views="superpod,gpu,compare">
-          ${ctlRow('fxKrwUsd', t('labelFx'))}
+        <section class="s-group util" data-views="superpod,gpu,compare">
+          <span class="s-lab">${t('labelUtilYears')}${infoIcon(utilTip + '\n' + t('utilAvgPrefix') + ' ' + nf.format(Math.round(utilAvgPct())) + '%', t('labelUtilYears'), true).replace('class="ico-i', 'data-util-avg class="ico-i')}</span>
+          ${ctlCols(['utilY1', 'utilY2', 'utilY3'], [yr(1), yr(2), yr(3)], 'c3 util')}
         </section>
-        <section class="s-group" data-views="superpod,gpu,compare">
-          ${ctlRow('energyCostRate', t('labelEnergyCostRate'))}
-          ${ctlRow('basicChargeKwMonth', t('labelBasicCharge'))}
+        <section class="s-group mix" data-views="superpod,gpu,compare">
+          <span class="s-lab" data-mix-sum title="${escAttr(t('mixHint') + ' · ' + t('mixSumLabel') + ' ' + nf1.format(mix.total) + '%')}">${t('labelPortfolio')}</span>
+          ${ctlCols(['mix3Y', 'mix1Y', 'mixOD', 'mixIdle'], [t('labelMix3Y'), t('labelMix1Y'), t('labelMixOD'), t('labelMixIdle')], 'c4')}
+          <div class="s-hint warn ${mixOk ? 'hidden' : ''}" data-mix-hint>${mixOk ? '' : t('mixSumWarn', { v: nf1.format(mix.total) })}</div>
         </section>
-        <section class="s-group pue" data-views="superpod,gpu,compare">
-          <div class="s-pue" data-pue-badge title="${escAttr(t('pueHint'))}">PUE ${numInputHtml('pue').replace('<span class="u"', '<span class="u u-off"')}</div>
-          ${ctlRow('totalPowerKw', t('labelTotalPowerKw'))}
-          ${ctlRow('itPowerKw', t('labelItPowerKw'))}
+        <section class="s-group bm" data-views="superpod,gpu,compare">
+          <span class="s-lab">${t('labelBmMode')}</span>
+          <div class="s-hint" data-bm-hint>${state.bmMode === 'B' ? t('bmBHint') : t('bmAHint')}</div>
+          ${segBtns('data-bm-mode', [['A', t('bmA').replace(/^A\)\s*/, '')], ['B', t('bmB').replace(/^B\)\s*/, '')]], state.bmMode === 'B' ? 'B' : 'A', true)}
         </section>
         <section class="s-group space" data-views="superpod,gpu,compare">
           <span class="s-lab">${t('labelSpaceMode')}</span>
@@ -3491,25 +3500,24 @@
           ${ctlRow('supportAreaBase', `${t('labelSupportArea')}${infoIcon(supportTip, t('labelSupportArea'), true).replace('class="ico-i', 'data-support-hint class="ico-i')}`, { cls: 'has-sub', sub: '4.8MW' })}
           ${ctlRow('supportAreaFixed', `${t('labelSupportAreaFixed')}${infoIcon(t('supportAreaFixedTip'), t('labelSupportAreaFixed'), true)}`)}
         </section>
-        <section class="s-group bm" data-views="superpod,gpu,compare">
-          <span class="s-lab">${t('labelBmMode')}</span>
-          <div class="s-hint" data-bm-hint>${state.bmMode === 'B' ? t('bmBHint') : t('bmAHint')}</div>
-          ${segBtns('data-bm-mode', [['A', t('bmA').replace(/^A\)\s*/, '')], ['B', t('bmB').replace(/^B\)\s*/, '')]], state.bmMode === 'B' ? 'B' : 'A', true)}
+        <section class="s-group power" data-views="superpod,gpu,compare">
+          ${ctlSlider('totalPowerKw', t('labelTotalPowerKw'), { lg: true, unitCls: 'ins' })}
+          ${ctlSlider('itPowerKw', t('labelItPowerKw'), { lg: true, unitCls: 'ins' })}
+          ${ctlSlider('pue', t('labelPue'), { lg: true, unit: '', unitCls: '', attr: 'data-pue-badge' })}
+          <div class="s-hint">${t('pueHint')}</div>
         </section>
-        <section class="s-group util" data-views="superpod,gpu,compare">
-          <span class="s-lab">${t('labelUtilYears')}${infoIcon(utilTip + '\n' + t('utilAvgPrefix') + ' ' + nf.format(Math.round(utilAvgPct())) + '%', t('labelUtilYears'), true).replace('class="ico-i', 'data-util-avg class="ico-i')}</span>
-          ${ctlCols(['utilY1', 'utilY2', 'utilY3'], [yr(1), yr(2), yr(3)], 'c3 util')}
-        </section>
-        <section class="s-group mix" data-views="superpod,gpu,compare">
-          <span class="s-lab" data-mix-sum title="${escAttr(t('mixHint') + ' · ' + t('mixSumLabel') + ' ' + nf1.format(mix.total) + '%')}">${t('labelPortfolio')}</span>
-          ${ctlCols(['mix3Y', 'mix1Y', 'mixOD', 'mixIdle'], [t('labelMix3Y'), t('labelMix1Y'), t('labelMixOD'), t('labelMixIdle')], 'c4')}
-          <div class="s-hint warn ${mixOk ? 'hidden' : ''}" data-mix-hint>${mixOk ? '' : t('mixSumWarn', { v: nf1.format(mix.total) })}</div>
-          ${ctlSlider('disc3YPct', t('labelDisc3Y'))}
-          ${ctlSlider('disc1YPct', t('labelDisc1Y'))}
+        <section class="s-group" data-views="superpod,gpu,compare">
+          ${ctlRow('energyCostRate', t('labelEnergyCostRate'))}
+          ${ctlRow('basicChargeKwMonth', t('labelBasicCharge'))}
         </section>
         <section class="s-group rate" data-views="superpod,gpu,compare">
           <span class="s-lab sm">${t('groupRateTitle')}</span>
           ${ctlRow('locPremiumPct', t('labelLocPremium'), { cls: 'rate-row', unitCls: 'pct' })}
+          ${ctlSlider('disc1YPct', t('labelDisc1Y'))}
+          ${ctlSlider('disc3YPct', t('labelDisc3Y'))}
+        </section>
+        <section class="s-group" data-views="superpod,gpu,compare">
+          ${ctlRow('fxKrwUsd', t('labelFx'))}
         </section>
         <section class="s-group dep" data-views="superpod,gpu,compare">
           <span class="s-lab">${t('labelDepGroup')}</span>
