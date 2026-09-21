@@ -386,6 +386,8 @@
     .dt th:last-child::after, .dt td:last-child::after { right: 0; }
     .dt tbody tr:last-child td::after { display: none; }
     .dt .r { text-align: right; }
+    /* 오른쪽 정렬 셀은 라인 끝(--gap 안쪽)에 맞춰 정렬 — 마지막 열은 라인이 끝까지 가므로 제외 */
+    .dt th.r:not(:last-child), .dt td.r:not(:last-child) { padding-right: var(--gap); }
     .dt .c { text-align: center; }
     .dt td.pos { color: var(--green); }
     .dt td.neg { color: var(--red); }
