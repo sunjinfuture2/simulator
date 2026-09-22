@@ -206,12 +206,12 @@
     .s-lab.md { font-size: 15px; line-height: 20.3px; }
     .s-lab.sm { font-size: 12px; font-weight: 500; line-height: 16.3px; }
     .s-val { display: inline-flex; align-items: baseline; position: relative; top: 2.6px; white-space: nowrap; }
-    .s-val .u { font-size: 24px; font-weight: 400; color: var(--k100); line-height: 32.5px; text-align: right; }
-    .s-val .unit { font-size: 11px; font-weight: 500; color: var(--g77); margin-left: 1.4px; line-height: 1; }
+    .s-val .u { font-size: 24px; font-weight: 500; color: var(--k100); line-height: 32.5px; text-align: right; }
+    .s-val .unit { font-size: 11px; font-weight: 600; color: var(--g77); margin-left: 1.4px; line-height: 1; }
     .s-val .unit.pct { font-size: 14px; margin-left: 1.3px; }
     .s-val .unit.pct12 { font-size: 12px; margin-left: 0.4px; }
     .s-val .unit.ins { margin-right: 7.7px; }
-    .s-val .pre { font-size: 11px; font-weight: 500; color: var(--g77); margin-right: 3px; }
+    .s-val .pre { font-size: 11px; font-weight: 600; color: var(--g77); margin-right: 3px; }
     .s-sub { position: absolute; right: 7.7px; top: -14.6px; font-size: 12px; font-weight: 400; color: var(--g77); line-height: 16.3px; white-space: nowrap; }
     .s-row.has-sub { margin-top: 38.4px; }
     .s-hint { margin-top: 19.2px; font-size: 12px; font-weight: 400; color: var(--g77); line-height: 17.1px; word-break: keep-all; }
@@ -251,8 +251,8 @@
     .s-cols.c4 .s-col + .s-col::before { content: ""; position: absolute; left: 0; top: 1.8px; width: var(--hair); height: 41.2px; background: var(--gcc); }
     .s-col-lab { font-size: 11px; font-weight: 500; color: var(--g77); line-height: 14.9px; white-space: nowrap; }
     .s-col-val { display: inline-flex; align-items: baseline; margin-top: 3.1px; }
-    .s-col-val .u { font-size: 24px; font-weight: 400; color: var(--k100); line-height: 32.5px; }
-    .s-col-val .unit { font-size: 12px; font-weight: 500; color: var(--g77); margin-left: 0.4px; }
+    .s-col-val .u { font-size: 24px; font-weight: 500; color: var(--k100); line-height: 32.5px; }
+    .s-col-val .unit { font-size: 12px; font-weight: 600; color: var(--g77); margin-left: 0.4px; }
     .s-cols + .s-hint { margin-top: 12px; }
 
     /* 슬라이더 행 */
@@ -318,8 +318,8 @@
     .kpi .k-pre { font-size: 13px; font-weight: 500; color: var(--g77); line-height: 17.6px; margin-bottom: 0.4px; white-space: nowrap; }
     .kpi .k-label { display: flex; align-items: center; font-size: 19px; font-weight: 600; color: var(--g77); line-height: 25.7px; white-space: nowrap; }
     .kpi .k-label .ico-i { margin-left: 5.1px; }
-    .kpi .k-value { display: flex; align-items: baseline; margin-top: 7.6px; font-size: 50px; font-weight: 400; color: var(--g60); line-height: 67.7px; letter-spacing: -0.015em; white-space: nowrap; margin-left: -3px; }
-    .kpi .k-value .unit { font-size: 29px; font-weight: 500; margin-left: 1.2px; }
+    .kpi .k-value { display: flex; align-items: baseline; margin-top: 7.6px; font-size: 50px; font-weight: 500; color: var(--g60); line-height: 67.7px; letter-spacing: -0.015em; white-space: nowrap; margin-left: -3px; }
+    .kpi .k-value .unit { font-size: 29px; font-weight: 600; margin-left: 1.2px; }
     .kpi .k-value.is-success, .kpi .k-value.text-success { color: var(--green); }
     .kpi .k-value.is-danger, .kpi .k-value.text-danger { color: var(--red); }
     .kpi .k-value.is-primary { color: var(--blue); }
@@ -331,7 +331,7 @@
     .kpi-grid .kpi .k-label { font-size: 17px; }
     .kpi-grid .kpi .k-pre { font-size: 12px; }
     .kpi-grid .kpi .k-value { font-size: 45px; line-height: 61px; }
-    .kpi-grid .kpi .k-value .unit { font-size: 23.5px; font-weight: 600; }
+    .kpi-grid .kpi .k-value .unit { font-size: 23.5px; font-weight: 700; }
     .kpi-grid .kpi .k-hint { margin-top: -2.7px; }
 
     /* =====================================================================
@@ -373,8 +373,8 @@
     .foot-note.warn { color: var(--red); }
     .foot-note.info { color: var(--g60); }
     .foot-note + .foot-note { margin-top: 0; }
-    .big-num { display: inline-flex; align-items: baseline; color: var(--g60); font-weight: 300; line-height: var(--lh); letter-spacing: -0.015em; }
-    .big-num .unit { font-weight: 500; }
+    .big-num { display: inline-flex; align-items: baseline; color: var(--g60); font-weight: 400; line-height: var(--lh); letter-spacing: -0.015em; }
+    .big-num .unit { font-weight: 600; }
 
     /* =====================================================================
        메인: 데이터 표 (.dt) — 헤더 라인 검정 0.3 / 행 라인 #606060 0.2 / 하단 검정 0.3
@@ -405,7 +405,7 @@
     .dt tr.sub td:first-child { color: var(--ga5); }
     .dt tr.sub .ico-i { color: var(--ga5); }
     .dt tr.key .ico-i { color: var(--k100); }
-    .dt .suf { font-size: 11px; font-weight: 500; margin-left: 0.5px; }
+    .dt .suf { font-size: 11px; font-weight: 600; margin-left: 0.5px; }
     .dt td.tot { color: var(--k100); }
     .dt.row37 td { height: 37.05px; }
     .dt.row40 td { height: 40px; }
@@ -478,8 +478,8 @@
     .sys-rate.g3 { flex: 1 1 auto; }
     .sys-rate .lab { font-size: 12px; font-weight: 500; color: var(--g60); line-height: 16.3px; white-space: nowrap; }
     .sys-rate .vals { display: flex; align-items: baseline; margin-top: 3.9px; gap: 22.9px; white-space: nowrap; }
-    .sys-rate .v { display: inline-flex; align-items: baseline; font-size: 22px; font-weight: 400; color: var(--k100); line-height: 29.8px; }
-    .sys-rate .v .unit { font-size: 11px; font-weight: 500; color: var(--g77); margin-left: 3px; }
+    .sys-rate .v { display: inline-flex; align-items: baseline; font-size: 22px; font-weight: 500; color: var(--k100); line-height: 29.8px; }
+    .sys-rate .v .unit { font-size: 11px; font-weight: 600; color: var(--g77); margin-left: 3px; }
     .sys-rate .v .u { font-size: 22px; }
     .sys-rate .v .u input { width: 3.2em; }
     .sys-capex-h { margin-top: 41.9px; font-size: 12px; font-weight: 500; color: var(--g60); line-height: 16.3px; }
@@ -496,18 +496,18 @@
        메인: SU 구성
        ===================================================================== */
     .su-big { display: inline-flex; align-items: baseline; margin-top: 8px; margin-left: -4px; color: var(--k100); }
-    .su-big .u { font-size: 70px; font-weight: 300; line-height: 94.85px; letter-spacing: -0.015em; }
+    .su-big .u { font-size: 70px; font-weight: 400; line-height: 94.85px; letter-spacing: -0.015em; }
     .su-big .u::after { bottom: 0.236em; }
     .su-big .u input { width: 0.8em; }
-    .su-big .unit { font-size: 25px; font-weight: 700; margin-left: 1.8px; }
+    .su-big .unit { font-size: 25px; font-weight: 800; margin-left: 1.8px; }
     .su-big .max { font-size: 13px; font-weight: 400; color: var(--ga0); margin-left: 12px; }
     .su-summary { margin-top: -7.2px; font-size: 13px; color: var(--ga0); line-height: 21px; }
     .meters { display: flex; justify-content: space-between; margin-top: 29.7px; }
     .meter-box { width: 531.5px; }
     .meter-head { display: flex; justify-content: space-between; align-items: baseline; }
     .meter-head .lab { font-size: 15px; font-weight: 600; color: var(--g60); line-height: 20.3px; }
-    .meter-head .val { display: inline-flex; align-items: baseline; font-size: 24px; font-weight: 400; color: var(--k100); line-height: 32.5px; position: relative; top: 3px; }
-    .meter-head .val .unit { font-size: 14px; font-weight: 500; color: var(--g77); margin-left: 1.3px; }
+    .meter-head .val { display: inline-flex; align-items: baseline; font-size: 24px; font-weight: 500; color: var(--k100); line-height: 32.5px; position: relative; top: 3px; }
+    .meter-head .val .unit { font-size: 14px; font-weight: 600; color: var(--g77); margin-left: 1.3px; }
     .meter-head .val.text-danger { color: var(--red); }
     .meter { position: relative; display: flex; height: 3.8px; background: var(--ge2); margin-top: 8px; overflow: hidden; }
     .meter span { display: block; height: 100%; }
@@ -549,7 +549,7 @@
     .dt.fac .fac-val { font-size: 19px; font-weight: 400; color: var(--g60); line-height: 25.7px; white-space: nowrap; display: inline-flex; align-items: baseline; }
     .dt.fac .fac-val .u { font-size: 19px; color: var(--k100); line-height: 25.7px; }
     .dt.fac .fac-val .u input { width: 2.6em; }
-    .dt.fac .fac-val .fac-unit { font-size: 11px; color: var(--g77); margin-left: 2px; }
+    .dt.fac .fac-val .fac-unit { font-size: 11px; font-weight: 500; color: var(--g77); margin-left: 2px; }
     .dt.fac .fac-auto { display: block; font-size: 11px; color: var(--ga0); margin-top: 2px; }
     .dt.fac .fac-note { font-size: 15px; font-weight: 400; color: var(--g60); line-height: 25px; }
     .dt.fac .fac-note .head { font-weight: 600; }
@@ -600,9 +600,9 @@
     .chips .tag-box { padding: 0 9px; }
     .fin-assume { display: grid; grid-template-columns: repeat(4, 300px); margin-top: 69px; }
     .fin-assume .lab { font-size: 15px; font-weight: 600; color: var(--g60); line-height: 20.3px; }
-    .fin-assume .val { display: inline-flex; align-items: baseline; margin-top: -5.2px; margin-left: -4px; font-size: 55px; font-weight: 300; color: var(--g60); line-height: 74.5px; letter-spacing: -0.015em; }
-    .fin-assume .val .unit { font-size: 25px; font-weight: 500; margin-left: 0; }
-    .fin-assume .val.txt { font-size: 38px; margin-left: -1px; font-weight: 400; }
+    .fin-assume .val { display: inline-flex; align-items: baseline; margin-top: -5.2px; margin-left: -4px; font-size: 55px; font-weight: 400; color: var(--g60); line-height: 74.5px; letter-spacing: -0.015em; }
+    .fin-assume .val .unit { font-size: 25px; font-weight: 600; margin-left: 0; }
+    .fin-assume .val.txt { font-size: 38px; margin-left: -1px; font-weight: 500; }
     .fin-table { margin-top: 56.6px; }
     .fin-note { margin-top: 21.3px; font-size: 13px; font-weight: 400; color: var(--ga0); line-height: 21px; word-break: keep-all; }
     .fin-chart-wrap { margin-top: 80.3px; }
@@ -655,7 +655,7 @@
     .fin-col { min-width: 0; }
     .fin-col .kpi-grid { grid-template-columns: repeat(2, 1fr); row-gap: 40px; }
     .fin-col .kpi .k-value { font-size: 36px; line-height: 48.8px; }
-    .fin-col .kpi .k-value .unit { font-size: 22px; }
+    .fin-col .kpi .k-value .unit { font-size: 22px; font-weight: 700; }
     .fin-col .fin-assume { grid-template-columns: repeat(2, 1fr); row-gap: 30px; }
     .fin-col .fin-assume .val { font-size: 42px; line-height: 57px; }
     .fin-col .fin-assume .val.txt { font-size: 30px; }
@@ -673,12 +673,12 @@
     .adj-card.active { border-color: var(--k100); background: var(--gf9); }
     .adj-head { display: flex; align-items: baseline; justify-content: space-between; }
     .adj-head strong { font-size: 24px; font-weight: 700; color: var(--k100); line-height: 32.5px; }
-    .adj-head .count { display: inline-flex; align-items: baseline; font-size: 24px; font-weight: 400; color: var(--k100); }
-    .adj-head .count .unit { font-size: 11px; color: var(--g77); margin-left: 2px; }
+    .adj-head .count { display: inline-flex; align-items: baseline; font-size: 24px; font-weight: 500; color: var(--k100); }
+    .adj-head .count .unit { font-size: 11px; font-weight: 500; color: var(--g77); margin-left: 2px; }
     .adj-card .track { margin-top: 14px; }
     .adj-specs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px 20px; margin-top: 30px; }
     .adj-spec label { display: block; font-size: 12px; font-weight: 500; color: var(--g60); line-height: 16.3px; }
-    .adj-spec .u { margin-top: 4px; font-size: 22px; font-weight: 400; color: var(--k100); line-height: 29.8px; }
+    .adj-spec .u { margin-top: 4px; font-size: 22px; font-weight: 500; color: var(--k100); line-height: 29.8px; }
     .adj-spec .u input { width: 4.5em; }
     .adj-spec .u.wide input { width: 8em; }
     .adj-spec .hint { margin-top: 4px; font-size: 12px; color: var(--ga0); line-height: 16.3px; white-space: nowrap; }
@@ -686,9 +686,9 @@
     .dt.aux td { height: 44px; }
     .dt.aux .aux-sub { display: block; font-size: 11px; font-weight: 500; color: var(--ga0); line-height: 14px; }
     .dt.aux .aux-mult { display: inline-flex; align-items: baseline; }
-    .dt.aux .aux-mult .u { font-size: 22px; color: var(--k100); line-height: 29.8px; }
+    .dt.aux .aux-mult .u { font-size: 22px; font-weight: 500; color: var(--k100); line-height: 29.8px; }
     .dt.aux .aux-mult .u input { width: 2.4em; }
-    .dt.aux .aux-mult .unit { font-size: 11px; color: var(--g77); margin-left: 3px; }
+    .dt.aux .aux-mult .unit { font-size: 11px; font-weight: 500; color: var(--g77); margin-left: 3px; }
     .dt.aux tr.aux-breakeven-row td { white-space: normal; line-height: 21px; padding: 8px 0; height: auto; color: var(--g60); font-size: 13px; }
     .dt.aux tr.aux-breakeven-row td b { color: var(--k100); }
     .dt.wide td { white-space: normal; line-height: 21px; padding: 8px 12px 8px 0; height: auto; vertical-align: top; }
@@ -699,7 +699,7 @@
     .cmp-card > p { margin-top: 3.4px; font-size: 12px; color: var(--ga0); line-height: 16.3px; }
     .cmp-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 30px; }
     .cmp-metrics span { display: block; font-size: 12px; font-weight: 500; color: var(--g60); line-height: 16.3px; }
-    .cmp-metrics span b { display: block; margin-top: 4px; font-size: 22px; font-weight: 400; color: var(--k100); line-height: 29.8px; }
+    .cmp-metrics span b { display: block; margin-top: 4px; font-size: 22px; font-weight: 500; color: var(--k100); line-height: 29.8px; }
     .cmp-metrics span b.text-success { color: var(--green); }
     .cmp-metrics span b.text-danger { color: var(--red); }
     .cmp-card .goto { margin-top: 26px; height: 30.8px; padding: 0 22px; background: var(--k100); color: #fff; font-size: 15px; font-weight: 600; }
@@ -1014,7 +1014,7 @@
       podCumHint: { ko: '{sys} {n}SU · 총 {gpu} GPU', en: '{sys} {n} SU · {gpu} GPUs' },
       podExpenseHint: { ko: 'CAPEX {a} + 시설 {b}<br>(감가상각 반영)', en: 'CAPEX {a} + Facility {b}<br>(depreciated)' },
       systemSelectorTitle: { ko: '랙 시스템 선택값', en: 'Rack System Selection' },
-      systemSelectorDesc: { ko: "'GB200 NVL72 SuperPOD CAPEX & OPEX 추산' 자료의 초기 투자비(CAPEX) 항목별 추산치와 연차별 GPU 임대단가·GPU FP4 성능을 기준으로 합니다. GB300 SuperPOD은 NVL72 항목에 GPU 단가 표준 비율 1.3배를 적용했으며(그 외 항목·OPEX·내장 SW 사양 동일), 카드를 누르면 해당 시스템으로 전환됩니다.", en: "Based on the per-item initial CAPEX estimates from the 'GB200 NVL72 SuperPOD CAPEX & OPEX' report, plus per-year GPU rental rates and GPU FP4 performance. GB300 SuperPOD applies a 1.3x GPU price ratio to the NVL72 line item (all other items, OPEX, and bundled SW identical). Click a card to switch systems." },
+      systemSelectorDesc: { ko: "'GB200 NVL72 SuperPOD CAPEX & OPEX 추산' 자료의 초기 투자비(CAPEX) 항목별 추산치와 연차별 GPU 임대단가·GPU FP4 성능 기준.<br>GB300 SuperPOD은 NVL72 항목에 GPU 단가 표준 비율 1.3배를 적용(그 외 항목·OPEX·내장 SW 사양 동일).", en: "Based on the per-item initial CAPEX estimates from the 'GB200 NVL72 SuperPOD CAPEX & OPEX' report, plus per-year GPU rental rates and GPU FP4 performance.<br>GB300 SuperPOD applies a 1.3x GPU price ratio to the NVL72 line item (all other items, OPEX, and bundled SW identical)." },
       resetBtn: { ko: '선택 시스템 기준값 재적용', en: 'Reset Selected System to Defaults' },
       reportBtnLabel: { ko: '임대료 산정 보고서', en: 'Rate Report' },
       reportModalTitle: { ko: 'GPU 시간당 임대료 산정 보고서 (GB300 NVL72 SuperPOD 4SU 기준)', en: 'GPU Hourly Rental Rate Report (GB300 NVL72 SuperPOD, 4SU)' },
