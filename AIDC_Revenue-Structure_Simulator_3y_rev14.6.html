@@ -17,6 +17,7 @@
        line box 1.355em)을 기준으로 배치한다.
        ===================================================================== */
     :root {
+      --b300-color: #3b5bdb; --vr-color: #7c3aed; --custom-color: #606060;
       --k100: #000000;
       --ink: #1e1e1e;
       --g56: #565656;
@@ -462,7 +463,7 @@
     .sys-grid { display: grid; grid-template-columns: repeat(2, 549.3px); column-gap: 18.9px; margin-top: 40px; }
     .sys-grid.three { grid-template-columns: repeat(3, 1fr); column-gap: 18.9px; }
     .sys-card { position: relative; border: var(--hair) solid var(--gcc); background: #fff; padding: 29.3px 41.6px 31.9px 29.5px; cursor: pointer; text-align: left; }
-    .sys-card.active { border-color: var(--k100); background: var(--gf9); cursor: default; }
+    .sys-card.active { border-color: var(--k100); background: var(--gf9); }
     .sys-card:not(.active) .sys-in { opacity: 0.42; }
     .sys-card:not(.active):hover .sys-in { opacity: 0.7; }
     .sys-title { display: flex; align-items: baseline; white-space: nowrap; margin-left: -3px; }
@@ -490,6 +491,68 @@
     .sys-specs { display: flex; gap: 22px; margin-top: 18px; flex-wrap: wrap; }
     .sys-specs span { font-size: 12px; color: var(--g60); }
     .sys-specs span b { font-size: 15px; color: var(--k100); margin-left: 4px; }
+    /* rev36: GPU 카드 4장(2×2) — 수량 슬라이더·사양 입력·CAPEX 접기 */
+    .sys-grid { row-gap: 40px; }
+    .sys-card { display: flex; flex-direction: column; }
+    .sys-card .sys-in { flex: 1 1 auto; }
+    .sys-card.add { display: flex; align-items: center; justify-content: center; min-height: 420px; background: var(--gf9); border-color: var(--gcc); }
+    .sys-card.add .plus { position: relative; width: 58px; height: 58px; opacity: 0.55; }
+    .sys-card.add .plus::before, .sys-card.add .plus::after { content: ""; position: absolute; background: var(--g77); }
+    .sys-card.add .plus::before { left: 50%; top: 0; width: 2px; height: 100%; margin-left: -1px; }
+    .sys-card.add .plus::after { top: 50%; left: 0; height: 2px; width: 100%; margin-top: -1px; }
+    .sys-card.add:hover .plus { opacity: 1; }
+    .sys-card .sys-name { width: 100%; max-width: 300px; border: 0; border-bottom: var(--hair) solid var(--gcc); background: transparent; padding: 0 0 2px; font-size: 24px; font-weight: 700; color: var(--k100); line-height: 32.5px; letter-spacing: -0.015em; }
+    .sys-card .sys-name::placeholder { color: var(--gcc); font-weight: 500; }
+    .sys-card .sys-name:focus { outline: none; border-bottom-color: var(--k100); }
+    .sys-blank-note { margin-top: 10px; font-size: 12px; color: var(--red); line-height: 16.3px; }
+    .sys-sub .u.sm input, .sys-title .u.sm input, .sys-capex .u.sm input { font-size: inherit; font-weight: 600; color: var(--k100); }
+    .sys-sub .u.sm { margin: 0 1px; }
+    .sys-card .su-big.card-count { margin-top: 22px; margin-left: -3px; display: flex; align-items: baseline; }
+    .sys-card .su-big.card-count .u { font-size: 60px; line-height: 78px; }
+    .sys-card .su-big.card-count .u::after { bottom: 0.22em; }
+    .sys-card .su-big.card-count .unit { font-size: 22px; }
+    .sys-card .su-big.card-count .max { margin-left: auto; text-align: right; white-space: nowrap; }
+    .sys-card .su-big.card-count .max.text-danger { color: var(--red); }
+    .sys-card .track { margin-top: 8px; }
+    .sys-card .track:disabled { opacity: 0.4; }
+    .sys-card .sys-rates { margin-top: 32px; }
+    .sys-specs2 { display: flex; margin-top: 26px; }
+    .sys-spec { display: flex; flex-direction: column; }
+    .sys-spec + .sys-spec { border-left: var(--hair) solid var(--gcc); padding-left: 19.7px; }
+    .sys-spec:nth-child(1) { flex: 0 0 160px; }
+    .sys-spec:nth-child(2) { flex: 0 0 150px; }
+    .sys-spec:nth-child(3) { flex: 1 1 auto; }
+    .sys-spec .lab { font-size: 12px; font-weight: 500; color: var(--g60); line-height: 16.3px; white-space: nowrap; }
+    .sys-spec .v { display: inline-flex; align-items: baseline; margin-top: 3.9px; font-size: 22px; font-weight: 500; color: var(--k100); line-height: 29.8px; white-space: nowrap; }
+    .sys-spec .v .u { font-size: 22px; }
+    .sys-spec .v .u input { min-width: 1.4em; }
+    .sys-spec .v .unit { font-size: 11px; font-weight: 600; color: var(--g77); margin-left: 3px; }
+    .sys-capex-h { display: flex; justify-content: space-between; align-items: baseline; cursor: pointer; user-select: none; border-bottom: var(--hair) solid var(--gcc); padding-bottom: 6px; }
+    .sys-capex-h b { font-size: 15px; font-weight: 600; color: var(--g60); }
+    .cx-tri { display: inline-block; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 6px solid var(--g60); margin-right: 6px; vertical-align: 2px; transition: transform .15s; }
+    .sys-capex-h:not(.open) .cx-tri { transform: rotate(-90deg); }
+    .sys-capex.collapsed { display: none; }
+    .sys-capex li .cx-val { display: inline-flex; align-items: baseline; gap: 8px; }
+    .sys-capex li .cx-extra { color: var(--ga0); }
+    .sys-capex li .u.sm input { text-align: right; }
+    .sys-card:not(.active) .track { pointer-events: none; }
+    /* 매출·가동률: 카드별 수량 요약 + 카드별 표 */
+    .mx-types { display: flex; margin-top: 31px; }
+    .mx-type { display: flex; flex-direction: column; padding-right: 32px; }
+    .mx-type + .mx-type { border-left: var(--hair) solid var(--gcc); padding-left: 32px; }
+    .mx-type.blank { opacity: 0.45; }
+    .mx-type-lab { font-size: 15px; font-weight: 600; color: var(--g60); line-height: 20.3px; white-space: nowrap; }
+    .mx-type-val { display: inline-flex; align-items: baseline; margin-top: 2px; color: var(--k100); }
+    .mx-type-val .num { font-size: 50px; font-weight: 400; line-height: 64px; letter-spacing: -0.015em; }
+    .mx-type-val .unit { font-size: 20px; font-weight: 700; margin-left: 2px; }
+    .mx-block + .mx-block { margin-top: 24px; }
+    .mx-sub { margin-top: 36px; font-size: 15px; font-weight: 600; color: var(--g60); line-height: 20.3px; }
+    .mx-block .dt-wrap { margin-top: 12px !important; }
+    .mx-sum .dt.mix tbody tr.mx-rev td { border-top: 2px solid var(--k100); }
+    .th-type { margin-top: 36px; }
+    .th-type .mx-sub { margin-top: 0; }
+    .th-type .th-table { margin-top: 12px; }
+    .th-sub { font-size: 12px; color: var(--g77); margin-left: 2px; }
     .sec-after-cards { margin-top: 116.5px; }
 
     /* =====================================================================
@@ -789,8 +852,7 @@
         <button type="button" class="lang-link" data-lang="en">ENG</button>
       </div>
       <nav class="view-tabs" aria-label="Model tabs">
-        <button type="button" class="view-tab active" data-view="superpod">SuperPOD</button>
-        <button type="button" class="view-tab" data-view="gpu">개별GPU 서버</button>
+        <button type="button" class="view-tab active" data-view="superpod">GPU 임대</button>
         <button type="button" class="view-tab" data-view="compare">모델 비교</button>
         <button type="button" class="view-tab" data-view="finance">재무구조</button>
       </nav>
@@ -896,6 +958,61 @@
     const RACK_AUX_USD_PER_RACK = 7050000 / 8;   // $881,250
     const RACK_SI_USD_PER_RACK = 3500000 / 8;    // $437,500
 
+    // ---- rev36: GPU 종류 통합 모델 — SuperPOD형(SU 단위)과 HGX 서버형(대 단위)을 같은 카드 구조로 다룬다 ----
+    //  · SU형: rackKw·rackAreaSqm·rackPriceUsd(랙당) × racksPerUnit → SU당 전력·면적·NVL72 항목 (GB300 = SuperPOD 추산 자료 1.2MW/120㎡/$32.5M ÷ 8)
+    //  · 서버형(B300): VSLAI rev1.2 HGX B300 NVL8 가정값 — 서버 본체 $451,400(NVL72 GPU당 단가 × 8), 네트워크 $66,000, 스토리지·관리 $31,900, CDU $27,800, SW Setup·SI $48,600
+    //    서버 1대 IT 부하 15kW(본체 14 + 네트워크 0.6 + 스토리지·관리 0.4), 수랭 4U 기준 랙당 8대 · 랙당 4.8㎡
+    //  · 기초단가: B300은 NeoCloud 공개 소비자가 $7.38/GPU·h를 온디맨드 기초단가 가정값으로 사용 (카드에서 수정 가능)
+    //  · VR SuperPOD · 직접 입력: 확인된 사양이 없어 빈칸(0) — 값을 넣기 전까지는 계산에 0으로 반영
+    const GPU_KEYS = ['b300', 'gb300', 'vr', 'custom'];
+    const SERVER_ITEM_KEYS = ['server', 'network', 'storage', 'cdu', 'si'];
+    const SERVER_ITEM_LABEL_KEYS = { server: 'capexItemServer', network: 'capexItemNet', storage: 'capexItemAux', cdu: 'capexItemCdu', si: 'capexItemSi' };
+    const SERVER_ABS_MAX = 2000;
+    const GPU_DEFAULTS = {
+      b300: {
+        kind: 'server', label: 'B300 NVL8 HGX', shortLabel: 'B300', rackName: 'HGX B300 NVL8',
+        processorKo: '서버 1대 = HGX B300 NVL8 · 8 Blackwell Ultra GPU', processorEn: '1 server = HGX B300 NVL8 · 8 Blackwell Ultra GPUs',
+        gpusPerUnit: 8, serversPerRack: 8, rackAreaSqm: 4.8, unitItPowerKw: 15,
+        baseRateUsd: { A: 7.38, B: 7.38 },
+        fp4PflopsPerUnit: 120,
+        capexUsd: { server: 451400, network: 66000, storage: 31900, cdu: 27800, si: 48600 },
+        color: 'var(--b300-color)'
+      },
+      gb300: {
+        kind: 'su', label: 'GB300 SuperPOD', shortLabel: 'GB300', rackName: 'GB300 NVL72',
+        processorKo: '1 SU = NVL72 랙 8대 · 576 Blackwell Ultra GPU + 288 Grace CPU', processorEn: '1 SU = 8 NVL72 racks · 576 Blackwell Ultra GPUs + 288 Grace CPUs',
+        gpusPerUnit: 576, racksPerUnit: 8, rackKw: 150, rackAreaSqm: 15, rackPriceUsd: 4062500,
+        unitItPowerKw: 1200, unitAreaSqm: 120,
+        baseRateUsd: { A: 18.12, B: 24.02 },
+        fp4PflopsPerUnit: 8640,
+        capexUsd: { nvl72: 32500000, network: 4750000, storage: 2000000, mgmt: 300000, cdu: 2000000, swSetup: 3500000 },
+        color: 'var(--gb300-color)'
+      },
+      vr: {
+        kind: 'su', label: 'VR SuperPOD', shortLabel: 'VR', rackName: 'VR NVL144',
+        processorKo: '', processorEn: '',
+        gpusPerUnit: 0, racksPerUnit: 0, rackKw: 0, rackAreaSqm: 0, rackPriceUsd: 0,
+        unitItPowerKw: 0, unitAreaSqm: 0,
+        baseRateUsd: { A: 0, B: 0 },
+        fp4PflopsPerUnit: 0,
+        capexUsd: { nvl72: 0, network: 0, storage: 0, mgmt: 0, cdu: 0, swSetup: 0 },
+        color: 'var(--vr-color)'
+      },
+      custom: {
+        kind: 'su', label: '', shortLabel: '', rackName: 'NVL72',
+        processorKo: '', processorEn: '',
+        gpusPerUnit: 0, racksPerUnit: 0, rackKw: 0, rackAreaSqm: 0, rackPriceUsd: 0,
+        unitItPowerKw: 0, unitAreaSqm: 0,
+        baseRateUsd: { A: 0, B: 0 },
+        fp4PflopsPerUnit: 0,
+        capexUsd: { nvl72: 0, network: 0, storage: 0, mgmt: 0, cdu: 0, swSetup: 0 },
+        color: 'var(--custom-color)'
+      }
+    };
+    function cloneGpuTypes(source) {
+      return Object.fromEntries(Object.entries(source).map(([k, v]) => [k, { ...v, capexUsd: { ...v.capexUsd }, baseRateUsd: { ...v.baseRateUsd } }]));
+    }
+
     const DEFAULTS = {
       lang: 'ko',
       activeView: 'superpod',
@@ -909,7 +1026,7 @@
       mix1Y: 30,              // 1년 약정 비중(%)
       mixOD: 10,              // 온디맨드 비중(%)
       mixIdle: 10,            // 정비 및 유휴(%)
-      locPremiumPct: 15,      // 설치 국가·입지 여건 프리미엄(%) — 보고서 5-1
+      locPremiumPct: 0,       // 설치 국가·입지 여건 프리미엄(%) — 보고서 5-1 (rev36: 기본값 0)
       disc1YPct: 25,          // 1년 장기약정 할인(%) — 보고서 5-3
       disc3YPct: 46,          // 3년 장기약정 할인(%) — 보고서 5-3
       totalPowerKw: 6000,
@@ -932,10 +1049,71 @@
       siMultiplier: 1.3,
       depY1: 33,
       depY2: 66,
-      depY3: 99
+      depY3: 99,
+      // rev36: GPU 임대 통합 — 카드별 포함 여부·수량 (초기 수량은 fillGpuDefaults 가 전력·면적 상한으로 채움)
+      on_b300: true, on_gb300: false, on_vr: false, on_custom: false,
+      n_b300: 0, n_gb300: 0, n_vr: 0, n_custom: 0,
+      customOpen: false
     };
     // ---------- i18n dictionary ----------
     const T = {
+      // ---- rev36: GPU 임대 통합 탭 · 다중 카드 ----
+      tabLease: { ko: 'GPU 임대', en: 'GPU Leasing' },
+      unitServer: { ko: '대', en: ' srv' },
+      gpuSelectorDesc: { ko: "'GB200 NVL72 SuperPOD CAPEX & OPEX 추산' 자료의 초기 투자비(CAPEX) 항목별 추산치와 연차별 GPU 임대단가·GPU FP4 성능 기준.<br>GB300 SuperPOD은 NVL72 항목에 GPU 단가 표준 비율 1.3배를 적용(그 외 항목·OPEX·내장 SW 사양 동일). 카드를 누르면 구성에 넣고 빼며, 여러 장을 켜면 혼합 구성으로 계산됩니다.", en: "Based on the per-item initial CAPEX estimates from the 'GB200 NVL72 SuperPOD CAPEX & OPEX' report, plus per-year GPU rental rates and GPU FP4 performance.<br>GB300 SuperPOD applies a 1.3x GPU price ratio to the NVL72 line item (all other items, OPEX, and bundled SW identical). Click a card to add or remove it; several cards on at once form a mixed configuration." },
+      gpuCardAddLabel: { ko: '직접 입력 시스템 추가', en: 'Add a custom system' },
+      gpuCustomDefaultName: { ko: '직접 입력', en: 'Custom' },
+      gpuCustomNamePh: { ko: '시스템 이름', en: 'System name' },
+      gpuBlankSpec: { ko: '사양 미입력 — 랙 수·GPU 수·전력·면적을 넣으면 계산에 반영됩니다', en: 'Specs not entered — fill in racks, GPUs, power and area to include it' },
+      gpuSuLine: { ko: '1 SU = 랙 {r}대 · GPU {g}개 · FP4 {fp} PFLOPS', en: '1 SU = {r} racks · {g} GPUs · FP4 {fp} PFLOPS' },
+      gpuSuLineB300: { ko: '서버 1대 = HGX B300 NVL8 · 8 Blackwell Ultra GPU · 랙당 {spr}대', en: '1 server = HGX B300 NVL8 · 8 Blackwell Ultra GPUs · {spr} per rack' },
+      gpuMaxNote: { ko: '최대 {n}{u}', en: 'max {n}{u}' },
+      gpuMaxNoteBlank: { ko: '사양 미입력', en: 'no specs' },
+      gpuOverNote: { ko: '잔여 전력·면적 초과', en: 'exceeds remaining power/area' },
+      specAreaPerRack: { ko: '랙당 소요 면적', en: 'Area / rack' },
+      specPowerPerRack: { ko: '랙당 사용 전력', en: 'Power / rack' },
+      specPricePerRack: { ko: '랙당 구매가', en: 'Price / rack' },
+      specPowerPerServer: { ko: '대당 사용 전력', en: 'Power / server' },
+      specPricePerServer: { ko: '대당 구매가', en: 'Price / server' },
+      capexHeadingServer: { ko: 'CAPEX 합계 (서버 1대)', en: 'CAPEX Total (per server)' },
+      capexNvl72Derived: { ko: '랙당 구매가 × {r}', en: 'price/rack × {r}' },
+      capexItemServer: { ko: '서버 본체 (HGX B300 NVL8)', en: 'Server (HGX B300 NVL8)' },
+      capexItemNet: { ko: '네트워크 (400G 스위치·NIC·광모듈)', en: 'Network (400G switches · NICs · optics)' },
+      capexItemAux: { ko: '스토리지·관리노드', en: 'Storage · management nodes' },
+      capexItemCdu: { ko: 'CDU (수랭)', en: 'CDU (liquid cooling)' },
+      capexItemSi: { ko: 'SW Setup·SI (할증 {m}배 적용)', en: 'SW setup · SI (×{m} premium)' },
+      mixTypeSub: { ko: '{name} · GPU {g}개 · {n}{u}', en: '{name} · {g} GPUs · {n}{u}' },
+      mixRowRevenueTotal: { ko: '연간 매출 합계', en: 'Total annual revenue' },
+      mixSummary: { ko: 'GPU {g}개 · FP4 {fp} PFLOPS · IT 장비 CAPEX {capex}', en: '{g} GPUs · FP4 {fp} PFLOPS · IT equipment CAPEX {capex}' },
+      mixNoType: { ko: '계산에 반영된 카드가 없습니다 — 사양이 입력된 카드를 켜 주세요.', en: 'No card is included in the calculation — turn on a card with specs.' },
+      capSecTitle: { ko: '수전·면적 사용 현황', en: 'Power & Area Usage' },
+      capSecDesc: { ko: '켜진 카드 수량의 합계가 IT 수전용량과 사용가능 면적 안에 들어오는지 확인합니다. 카드별 상한은 다른 카드가 쓰는 전력·면적을 뺀 잔여분으로 산출되며, 초과분은 빨간색으로 표시됩니다.', en: 'Checks whether the total of the active cards fits within IT power and usable floor area. Each card’s ceiling is the remainder after the other cards; any excess is shown in red.' },
+      usageLabelMix: { ko: '전력 사용률', en: 'Power Utilization' },
+      powerCapMix: { ko: '({mix} ≈ {kw} / IT 수전용량 {it})', en: '({mix} ≈ {kw} / IT power {it})' },
+      thColServerRack: { ko: '랙 수 (서버 수)', en: 'Racks (servers)' },
+      thServerDesc: { ko: '{name} 기준 · 랙당 {spr}대 · 랙당 {area}㎡ · 부대공간 {sup}㎡ — 다른 활성 카드가 쓰는 전력·면적을 뺀 잔여분 기준', en: '{name} · {spr} per rack · {area}㎡/rack · support {sup}㎡ — based on the remainder after other active cards' },
+      thTypeDescMix: { ko: '{sys} 기준 · SU당 {area}㎡ · 부대공간 {sup}㎡ — 다른 활성 카드가 쓰는 전력·면적을 뺀 잔여분 기준 (필요 연면적 = 부대공간 + 타 카드 점유 + SU수 × SU당 면적)', en: '{sys} · {area}㎡/SU · support {sup}㎡ — based on the remainder after other active cards (required area = support + other cards + SU × area/SU)' },
+      thPowerNoteMix: { ko: '전력 기준 상한 {max}{u} (잔여 IT {it}) — 이후 행은 IT 수전용량 증설 또는 다른 카드 축소 시에만 도달 가능', en: 'Power cap {max}{u} (remaining IT {it}) — rows beyond need more IT power or fewer units on other cards' },
+      leaseCumHint: { ko: '{mix} · 총 {gpu} GPU', en: '{mix} · {gpu} GPUs' },
+      leaseExpenseHint: { ko: 'IT CAPEX {a} + 시설 {b}<br>(감가상각 반영)', en: 'IT CAPEX {a} + Facility {b}<br>(depreciated)' },
+      blConfig: { ko: '구성', en: 'Configuration' },
+      blTypeRate: { ko: '{name} 임대단가', en: '{name} rates' },
+      blTypeEff: { ko: '{name} 유효 매출단가', en: '{name} effective rate' },
+      blTypeCapex: { ko: '{name} CAPEX', en: '{name} CAPEX' },
+      blOtherOpex: { ko: '기타 운영비(연, 서버형)', en: 'Other opex (per yr, servers)' },
+      formulaCardGpuBodyMix: { ko: 'Σ(GPU 종류별 수량 × 단위당 GPU 수 × 8,760시간 × Σ(계약비중 × 가동률 계수 × 계약유형별 단가)) ※ 단가 = 기초단가($) × 입지(+{loc}%) × 약정할인(0/-{d1}%/-{d3}%) × 환율', en: 'Σ(per GPU type: units × GPUs/unit × 8,760 hrs × Σ(mix × utilization coefficient × contract rate)) — rate = base ($) × location (+{loc}%) × term discount (0/-{d1}%/-{d3}%) × FX' },
+      formulaCardCapexTitleMix: { ko: 'IT 장비 CAPEX', en: 'IT Equipment CAPEX' },
+      formulaCardCapexBodyMix: { ko: 'SuperPOD형: SU 수 × Σ(NVL72 + Network Switches + Storage + Management Nodes + CDU + SW Setup & License)(USD) + 서버형: 서버 수 × [서버 본체 + 네트워크 + 스토리지·관리노드 + CDU + SW Setup·SI × 할증 배수](USD) — 합계 × 환율', en: 'SuperPOD type: SU × Σ(NVL72 + Network Switches + Storage + Management Nodes + CDU + SW Setup & License)(USD) + server type: servers × [server + network + storage/mgmt + CDU + SW setup·SI × premium](USD) — total × FX' },
+      formulaCardOpexBodyMix: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동률 × 전력량 단가] + SW 구독료[GPU 수 × 단가 × 환율] + 기타 운영비(서버형) ※ 전력량 요금은 켜진 카드의 사용 IT 전력 합계 기준', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 hrs × Utilization × Energy rate] + SW subscription [GPUs × rate × FX] + other opex (server type) — energy charge follows the used IT power of the active cards' },
+      formulaCardDepBodyMix: { ko: '(IT 장비 CAPEX + 시설 CAPEX) × 연차별 감가상각 증가율[기본 33→66→99% 누적] + 연간 OPEX', en: '(IT equipment CAPEX + Facility CAPEX) × Yearly depreciation increment [default 33→66→99% cumulative] + Annual OPEX' },
+      compareDescMix: { ko: '켜진 카드의 GPU 종류별로 각각 단독 구성(전력·면적 제약 내 최대 수량)했을 때의 {n}년 수익구조를 비교합니다. 카드가 2장 이상 켜져 있으면 현재 혼합 구성도 함께 보입니다. 전기료는 모두 사용 IT 전력 × PUE 기준입니다.', en: 'Compares the {n}-yr revenue structure of each active GPU type configured on its own (max units within power and area limits). With two or more cards on, the current mix is shown as well. Electricity is based on used IT power × PUE for all columns.' },
+      compareMixName: { ko: '현재 구성(혼합)', en: 'Current mix' },
+      compareNoteMix: { ko: '※ [확장] 공간 모드에서는 단독 구성 열마다 전력 기준 수량에 맞춰 연면적을 자동 산출하므로 시설 CAPEX가 열에 따라 다를 수 있습니다. 기타 운영비는 서버형(B300)이 포함된 열에만 계상됩니다.', en: '※ In [Expansion] space mode each standalone column sizes its floor area to the power-limited unit count, so facility CAPEX can differ by column. Other opex applies only to columns that include the server type (B300).' },
+      compareApplyBtnMix: { ko: '이 구성만 적용', en: 'Use this configuration' },
+      compareGotoBtn: { ko: 'GPU 임대 탭으로 이동', en: 'Open GPU Leasing tab' },
+      prodColPod: { ko: 'SuperPOD형 (GB300 · VR)', en: 'SuperPOD type (GB300 · VR)' },
+      prodColServer: { ko: 'HGX 서버형 (B300)', en: 'HGX server type (B300)' },
+      pnlOtherOpexNote: { ko: '기타 운영비는 서버형(B300)이 켜진 구성에만 계상됩니다.', en: 'Other opex applies only to configurations with the server type (B300) on.' },
       heroTitle: { ko: 'SuperPOD 기반<br>AI 데이터센터 수익구조 시뮬레이션', en: 'AI Data Center Revenue Simulation<br>Based on SuperPOD' },
       heroDesc: { ko: 'GB300/GB200 SuperPOD과 서버·GPU 임대, 두 사업모델의 3개년 수익구조를 비교합니다.<br>규모·공간·단가·조달구조를 바꾸면 매출과 손익은 물론 IRR·DSCR·주주 현금흐름까지 즉시 다시 계산됩니다.', en: 'Compare the three-year return structure of two business models: GB300/GB200 SuperPOD and standalone server/GPU rental.<br>Adjusting scale, space, rates or funding structure instantly recalculates revenue and profit \u2014 along with IRR, DSCR and cash flow to equity.' },
       btnDefault: { ko: '기본값', en: 'Defaults' },
@@ -1450,6 +1628,7 @@
     }
     let systems = cloneSystems(SYSTEM_DEFAULTS);
     let rackTypes = cloneRacks(RACK_DEFAULTS);
+    let gpuTypes = cloneGpuTypes(GPU_DEFAULTS);
     let facility = { pod: makeFacilityModel('pod'), rack: makeFacilityModel('rack') };
     let state = { ...DEFAULTS };
 
@@ -1695,9 +1874,9 @@
     }
     function enforcePowerCap(changedKey = null) { enforceDualCap(changedKey); }
     function handlePhysicalChange() {
-      // IT 전력·연면적·부대공간·랙/시스템 스펙 변경 시: 수량을 최대치로 재설정 (■0-(6))
-      if (isPureSelectedMix()) fillSelectedRack(state, rackTypes, state.selectedRack);
-      else enforceDualCap();
+      // IT 전력·연면적·부대공간·스펙 변경 시: 카드가 1장만 켜져 있으면 그 카드를 최대치로 재설정, 여러 장이면 수량 유지(초과분은 빨갛게 표시)
+      const keys = gpuActiveKeys().filter(k => gpuSpecOk(gpuTypes[k]));
+      if (keys.length === 1) fillGpuMax(keys[0]);
       state.suCount = podMaxSu();
     }
     function handleItPowerChange() { handlePhysicalChange(); }
@@ -2102,6 +2281,219 @@
       };
     }
 
+    // ---- rev36: GPU 종류 통합 헬퍼 ----
+    function gpuOn(key, s = state) { return !!s['on_' + key] && (key !== 'custom' || !!s.customOpen); }
+    function gpuCount(key, s = state) { return Math.max(0, Math.round(Number(s['n_' + key]) || 0)); }
+    function gpuUnitPowerKw(g) { return Math.max(0, Number(g.unitItPowerKw) || 0); }
+    function gpuUnitAreaSqm(g) {
+      return g.kind === 'server' ? (Number(g.rackAreaSqm) || 0) / Math.max(1, Number(g.serversPerRack) || 1) : (Number(g.unitAreaSqm) || 0);
+    }
+    function gpuSpecOk(g) { return gpuUnitPowerKw(g) > 0 && gpuUnitAreaSqm(g) > 0 && (Number(g.gpusPerUnit) || 0) > 0; }
+    function gpuAbsMax(g) { return g.kind === 'server' ? SERVER_ABS_MAX : SU_ABS_MAX; }
+    function gpuUnitLabel(g) { return g.kind === 'server' ? t('unitServer') : 'SU'; }
+    function gpuLabel(g, key) { return (g.label || '').trim() || (key === 'custom' ? t('gpuCustomDefaultName') : key); }
+    function gpuShortLabel(g, key) { return (g.shortLabel || '').trim() || gpuLabel(g, key); }
+    function gpuActiveKeys(s = state) { return GPU_KEYS.filter(k => gpuOn(k, s)); }
+    // SU형: 랙당 값 × SU당 랙 수 → SU당 전력·면적·NVL72 항목 (파생값 동기화)
+    function syncGpuDerived(g) {
+      if (g.kind !== 'su') return;
+      const r = Math.max(0, Number(g.racksPerUnit) || 0);
+      g.unitItPowerKw = r * (Number(g.rackKw) || 0);
+      g.unitAreaSqm = r * (Number(g.rackAreaSqm) || 0);
+      g.capexUsd.nvl72 = r * (Number(g.rackPriceUsd) || 0);
+    }
+    function gpuCapexPerUnitUsd(g, s = state) {
+      if (g.kind === 'server') {
+        const m = Math.max(1, Number(s.siMultiplier) || 1);
+        return SERVER_ITEM_KEYS.reduce((sum, k) => sum + (Number(g.capexUsd[k]) || 0) * (k === 'si' ? m : 1), 0);
+      }
+      return CAPEX_ITEM_KEYS.reduce((sum, k) => sum + (Number(g.capexUsd[k]) || 0), 0);
+    }
+    function gpuOccupiedArea(g, n) {
+      if (g.kind === 'server') return Math.ceil(n / Math.max(1, Number(g.serversPerRack) || 1)) * (Number(g.rackAreaSqm) || 0);
+      return n * (Number(g.unitAreaSqm) || 0);
+    }
+    function gpuRacks(g, n) {
+      if (g.kind === 'server') return Math.ceil(n / Math.max(1, Number(g.serversPerRack) || 1));
+      return n * (Number(g.racksPerUnit) || 0);
+    }
+    // 다른 켜진 카드가 점유한 전력·면적
+    function gpuOthersUsage(exceptKey, s = state, types = gpuTypes) {
+      let kw = 0, area = 0;
+      GPU_KEYS.forEach(k => {
+        if (k === exceptKey || !gpuOn(k, s)) return;
+        const g = types[k]; if (!gpuSpecOk(g)) return;
+        const n = gpuCount(k, s);
+        kw += n * gpuUnitPowerKw(g); area += gpuOccupiedArea(g, n);
+      });
+      return { kw, area };
+    }
+    function gpuPowerMax(key, s = state, types = gpuTypes, standalone = false) {
+      const g = types[key]; const p = gpuUnitPowerKw(g); if (p <= 0) return 0;
+      const others = standalone ? 0 : gpuOthersUsage(key, s, types).kw;
+      return Math.max(0, Math.floor(((Number(s.itPowerKw) || 0) - others) / p));
+    }
+    function gpuAreaMax(key, s = state, types = gpuTypes, standalone = false) {
+      const g = types[key]; if (gpuUnitAreaSqm(g) <= 0) return 0;
+      const others = standalone ? 0 : gpuOthersUsage(key, s, types).area;
+      const avail = usableAreaSqm(s) - others;
+      if (g.kind === 'server') return Math.max(0, Math.floor(avail / Math.max(0.1, Number(g.rackAreaSqm) || 0.1)) * Math.max(1, Number(g.serversPerRack) || 1));
+      return Math.max(0, Math.floor(avail / gpuUnitAreaSqm(g)));
+    }
+    function gpuMaxUnits(key, s = state, types = gpuTypes, standalone = false) {
+      const g = types[key]; if (!gpuSpecOk(g)) return 0;
+      return Math.min(gpuAbsMax(g), gpuPowerMax(key, s, types, standalone), gpuAreaMax(key, s, types, standalone));
+    }
+    // 카드 슬라이더 범위: 단독 구성 기준 최대 (잔여 초과분은 빨갛게 표시)
+    function gpuSliderMax(key, types = gpuTypes) {
+      const g = types[key];
+      return Math.max(1, Math.min(gpuAbsMax(g), gpuPowerMax(key, state, types, true)));
+    }
+    function gpuConstraintType(key, s = state, types = gpuTypes) {
+      const g = types[key];
+      const p = gpuPowerMax(key, s, types), a = gpuAreaMax(key, s, types);
+      if (Math.min(p, a) > gpuAbsMax(g)) return 'cap';
+      const hi = Math.max(p, a);
+      if (hi > 0 && Math.abs(p - a) / hi <= 0.05) return 'balanced';
+      return p < a ? 'power' : 'area';
+    }
+    function clampGpuCount(key, value, types = gpuTypes) {
+      const n = Math.round(Number(value) || 0);
+      return Math.max(0, Math.min(gpuAbsMax(types[key]), n));
+    }
+    function fillGpuMax(key, s = state, types = gpuTypes) {
+      s['n_' + key] = gpuSpecOk(types[key]) ? Math.max(1, gpuMaxUnits(key, s, types)) : 0;
+    }
+    // 기본값: 켜진 카드는 잔여 상한, 꺼진 카드는 단독 상한으로 수량을 채움
+    function fillGpuDefaults(s = state, types = gpuTypes) {
+      GPU_KEYS.forEach(k => { s['n_' + k] = gpuSpecOk(types[k]) ? Math.max(1, gpuMaxUnits(k, s, types, !gpuOn(k, s))) : 0; });
+    }
+    // [확장] 모드: 카드를 켤 때 잔여 전력 기준 수량이 면적에 막히면 연면적을 그만큼 늘린다 (100㎡ 단위 올림, 2,400㎡ 상한, 줄이지는 않음)
+    function growFloorForGpu(key, s = state, types = gpuTypes) {
+      if (s.spaceMode !== 'expand') return;
+      const g = types[key];
+      if (!gpuSpecOk(g)) return;
+      const n = Math.min(gpuAbsMax(g), gpuPowerMax(key, s, types));
+      const needed = supportAreaSqm(s) + gpuOthersUsage(key, s, types).area + gpuOccupiedArea(g, n);
+      const floor = Math.max(500, Math.min(2400, Math.ceil(needed / 100) * 100));
+      if (floor > (Number(s.floorAreaSqm) || 0)) s.floorAreaSqm = floor;
+    }
+    function toggleGpu(key) {
+      if (!GPU_KEYS.includes(key)) return;
+      if (gpuOn(key)) {
+        if (gpuActiveKeys().length <= 1) return; // 최소 1장은 켜 둔다
+        state['on_' + key] = false;
+        // 카드 1장만 남으면 그 카드를 잔여 상한까지 다시 채운다 (단일 선택 때의 동작과 동일)
+        const rest = gpuActiveKeys().filter(k => gpuSpecOk(gpuTypes[k]));
+        if (rest.length === 1) { growFloorForGpu(rest[0]); fillGpuMax(rest[0]); }
+      } else {
+        state['on_' + key] = true;
+        if (key === 'custom') state.customOpen = true;
+        growFloorForGpu(key);
+        fillGpuMax(key);
+      }
+      buildControls();
+      render();
+    }
+    function openCustomCard() {
+      state.customOpen = true;
+      state.on_custom = true;
+      fillGpuMax('custom');
+      render();
+    }
+    function applyOnlyGpu(key) {
+      if (!GPU_KEYS.includes(key)) return;
+      GPU_KEYS.forEach(k => { state['on_' + k] = k === key; });
+      if (key === 'custom') state.customOpen = true;
+      growFloorForGpu(key);
+      fillGpuMax(key);
+    }
+    function gpuMixText(s = state, types = gpuTypes, short = false) {
+      const parts = gpuActiveKeys(s).map(k => `${short ? gpuShortLabel(types[k], k) : gpuLabel(types[k], k)} ${nf.format(gpuCount(k, s))}${gpuUnitLabel(types[k])}`);
+      return parts.length ? parts.join(' + ') : '—';
+    }
+
+    // ---- rev36: 혼합 구성 계산 — 켜진 카드별 매출·CAPEX·전력·면적을 합산 ----
+    //  전기료: 기본요금 = 총 수전용량 × 기본요금 × 12 / 전력량요금 = 켜진 카드의 사용 IT 전력 합계 × PUE × 8,760h × 가동률 × 단가
+    //  기타 운영비(opexEok)는 서버형(B300)이 켜진 구성에만 계상 (랙 낱개 조달 모델의 별도 운영비를 승계)
+    function calcMix(inputState = state, inputTypes = gpuTypes, inputFacilityEok = null) {
+      const utils = getUtilizations(inputState);
+      const fxv = Number(inputState.fxKrwUsd) || 0;
+      const revenueByYear = Array.from({ length: YEARS }, () => 0);
+      let gpus = 0, racks = 0, totalFp4 = 0, itCapexUsd = 0, usedItPower = 0, occupiedArea = 0, hasServer = false;
+      const types = GPU_KEYS.filter(k => gpuOn(k, inputState)).map(key => {
+        const g = inputTypes[key];
+        const ok = gpuSpecOk(g);
+        const n = gpuCount(key, inputState);
+        const gpuN = ok ? n * (Number(g.gpusPerUnit) || 0) : 0;
+        const blended = blendedRateByYear(g, inputState);
+        const rev = blended.map(r => gpuN * HOURS * r / EOK);
+        const perUnitUsd = gpuCapexPerUnitUsd(g, inputState);
+        const capUsd = ok ? n * perUnitUsd : 0;
+        const kw = ok ? n * gpuUnitPowerKw(g) : 0;
+        const area = ok ? gpuOccupiedArea(g, n) : 0;
+        const rk = ok ? gpuRacks(g, n) : 0;
+        const fp4 = ok ? n * (Number(g.fp4PflopsPerUnit) || 0) : 0;
+        for (let y = 0; y < YEARS; y++) revenueByYear[y] += rev[y];
+        gpus += gpuN; racks += rk; totalFp4 += fp4; itCapexUsd += capUsd; usedItPower += kw; occupiedArea += area;
+        if (ok && g.kind === 'server') hasServer = true;
+        return {
+          key, type: g, kind: g.kind, ok, n, gpus: gpuN, racks: rk, fp4, perUnitUsd,
+          itCapexUsd: capUsd, itCapexEok: capUsd * fxv / EOK,
+          rates: contractRates(g, inputState), blended, annualRevenue: rev,
+          usedItPower: kw, occupiedArea: area,
+          maxUnits: gpuMaxUnits(key, inputState, inputTypes), powerMax: gpuPowerMax(key, inputState, inputTypes), areaMax: gpuAreaMax(key, inputState, inputTypes),
+          constraint: gpuConstraintType(key, inputState, inputTypes)
+        };
+      });
+      const itCapexEok = itCapexUsd * fxv / EOK;
+      const facilityEok = inputFacilityEok !== null ? inputFacilityEok : facilityTotalEok('pod', inputState);
+      const totalCapexEok = itCapexEok + facilityEok;
+      const totalPowerKw = Number(inputState.totalPowerKw) || 0;
+      const pue = getPue(inputState);
+      const baseEok = totalPowerKw * (Number(inputState.basicChargeKwMonth) || 0) * 12 / EOK;
+      const energyEok100 = usedItPower * pue * HOURS * (Number(inputState.energyCostRate) || 0) / EOK;
+      const energyByYear = utils.map(u => energyEok100 * u);
+      const electricityByYear = energyByYear.map(e => baseEok + e);
+      const swOpexEok = gpus * (Number(inputState.swSubUsdPerGpuYear) || 0) * fxv / EOK;
+      const swOpexByYear = utils.map(() => swOpexEok);
+      const opexEok = hasServer ? Math.max(0, Number(inputState.opexEok) || 0) : 0;
+      const depIncrements = getDepreciationIncrements(inputState);
+      const capexByYear = depIncrements.map(d => totalCapexEok * d);
+      const annualRevenue = revenueByYear;
+      const annualExpense = utils.map((u, i) => capexByYear[i] + electricityByYear[i] + swOpexByYear[i] + opexEok);
+      let sumR = 0, sumE = 0;
+      const cumRevenue = annualRevenue.map(v => (sumR += v));
+      const cumExpense = annualExpense.map(v => (sumE += v));
+      const cumProfit = cumRevenue.map((v, i) => v - cumExpense[i]);
+      const energyEok = energyByYear.reduce((a, b) => a + b, 0) / YEARS;
+      const electricityEok = baseEok + energyEok;
+      const itPowerKw = Number(inputState.itPowerKw) || 0;
+      const floorArea = Number(inputState.floorAreaSqm) || 0;
+      const supportArea = supportAreaSqm(inputState);
+      const usableArea = usableAreaSqm(inputState);
+      const allocationPct = itPowerKw ? usedItPower / itPowerKw * 100 : 0;
+      const areaPct = floorArea > 0 ? (supportArea + occupiedArea) / floorArea * 100 : 0;
+      // 부지 전체 제약: 전력·면적 중 어느 쪽 잔여 비율이 더 작은가
+      const pLeft = itPowerKw > 0 ? (itPowerKw - usedItPower) / itPowerKw : 0;
+      const aLeft = usableArea > 0 ? (usableArea - occupiedArea) / usableArea : 0;
+      const constraint = Math.abs(pLeft - aLeft) <= 0.05 ? 'balanced' : (pLeft < aLeft ? 'power' : 'area');
+      const primary = types.find(x => x.ok) || types[0] || null;
+      const fallback = inputTypes.gb300;
+      return {
+        key: 'mix', types, hasServer,
+        system: primary ? primary.type : fallback, systemKey: primary ? primary.key : null, su: primary ? primary.n : 0,
+        gpus, totalGpu: gpus, racks, totalFp4,
+        rates: primary ? primary.rates : contractRates(fallback, inputState), blended: primary ? primary.blended : utils.map(() => 0),
+        perSuUsd: primary ? primary.perUnitUsd : 0, itCapexUsd, itCapexEok, facilityEok, totalCapexEok,
+        annualRevenue, annualExpense, cumRevenue, cumExpense, cumProfit,
+        electricityByYear, energyByYear, capexByYear, swOpexEok, swOpexByYear, baseEok, energyEok, electricityEok,
+        opexEok, extraOpexEok: opexEok,
+        totalPowerKw, pue, utils, usedItPower, allocationPct,
+        floorArea, supportArea, usableArea, occupiedArea, areaPct, constraint,
+        configText: gpuMixText(inputState, inputTypes), shortConfigText: gpuMixText(inputState, inputTypes, true)
+      };
+    }
     function makeBaselineState() {
       // 새 기본 상태: [기존] 모드 · 연면적 500㎡ · 최대 수량 · 시설비 580/613억 (■8)
       return { ...DEFAULTS, lang: state.lang };
@@ -2112,8 +2504,9 @@
     }
     function getBaselineData() {
       const baselineState = makeBaselineState();
-      baselineState.suCount = podMaxSu(baselineState, SYSTEM_DEFAULTS);
-      return calcPod(baselineState, SYSTEM_DEFAULTS, baselineFacilityTotal('pod'));
+      if (baselineState.spaceMode === 'expand') baselineState.floorAreaSqm = minFloorAreaForPowerMax(baselineState, GPU_DEFAULTS);
+      fillGpuDefaults(baselineState, GPU_DEFAULTS);
+      return calcMix(baselineState, GPU_DEFAULTS, baselineFacilityTotal('pod'));
     }
     function getBaselineRackData() {
       const baselineState = makeBaselineState();
@@ -2124,7 +2517,7 @@
       return calcRack(baselineState, RACK_DEFAULTS, baselineFacilityTotal('rack'));
     }
     function getActiveData() {
-      return state.activeView === 'gpu' ? calcRack() : calcPod();
+      return calcMix();
     }
     function modelName(data) {
       return data.key === 'rack' ? t('rackModelName') : t('podModelName');
@@ -2141,17 +2534,13 @@
     function renderCards(data) {
       const root = document.getElementById('summaryCards');
       const isRack = data.key === 'rack';
-      const baseline = isRack ? getBaselineRackData() : getBaselineData();
+      const baseline = getBaselineData();
       const delta = data.annualRevenue[0] - baseline.annualRevenue[0];
       const profit = data.cumProfit[YEARS - 1];
       const deltaText = `${delta >= 0 ? '+' : ''}${eok(delta)}`;
       const revenueHint = t('vsBaseline', { delta: deltaText });
-      const cumulativeHint = isRack
-        ? t('gpuCumHint', { mix: rackMixText(), fp: nf.format(Math.round(data.totalFp4)) })
-        : t('podCumHint', { sys: data.system.shortLabel, n: nf.format(data.su), gpu: nf.format(data.gpus), fp: nf.format(Math.round(data.totalFp4)) });
-      const expenseHint = isRack
-        ? t('gpuExpenseHint', { a: eok(data.itCapexEok), b: eok(data.facilityEok) })
-        : t('podExpenseHint', { a: eok(data.itCapexEok), b: eok(data.facilityEok) });
+      const cumulativeHint = t('leaseCumHint', { mix: data.shortConfigText, gpu: nf.format(data.gpus) });
+      const expenseHint = t('leaseExpenseHint', { a: eok(data.itCapexEok), b: eok(data.facilityEok) });
       const profitHint = `${getBreakEvenText(data)} \u00B7 ${t('vsRevenuePct', { pct: data.cumRevenue[YEARS - 1] ? pct(profit / data.cumRevenue[YEARS - 1] * 100, 1) : '0%' })}`;
 
       root.innerHTML = '<div class="sg-inner">' + [
@@ -2361,6 +2750,290 @@
       `;
     }
 
+    // ---- rev36: GPU 카드 (B300 서버형 / GB300·VR·직접 입력 SU형) ----
+    const openCapexCards = new Set(GPU_KEYS);
+    function gpuNumInput(key, prop, value, attrs, cls) {
+      const v = (value === null || value === undefined || (Number(value) === 0 && prop !== 'baseRateUsd')) ? '' : value;
+      return `<span class="u ${cls || ''}"><input type="number" min="0" ${attrs || ''} value="${v}" placeholder="—" data-gpu-key="${key}" data-gpu-prop="${prop}" aria-label="${escAttr(prop)}" /></span>`;
+    }
+    function gpuCardHtml(key, data) {
+      const g = gpuTypes[key];
+      const on = gpuOn(key);
+      const n = gpuCount(key);
+      const ok = gpuSpecOk(g);
+      const isServer = g.kind === 'server';
+      const unit = gpuUnitLabel(g);
+      const td = data.types.find(x => x.key === key);
+      const sliderMax = gpuSliderMax(key);
+      const maxNow = gpuMaxUnits(key);
+      const overNow = on && ok && n > maxNow;
+      const fp4 = Number(g.fp4PflopsPerUnit) || 0;
+      const editableSu = !isServer && (key === 'vr' || key === 'custom');
+      const perUnit = gpuCapexPerUnitUsd(g);
+      const nameHtml = key === 'custom'
+        ? `<input type="text" class="sys-name" value="${escAttr(g.label || '')}" placeholder="${escAttr(t('gpuCustomNamePh'))}" data-gpu-key="custom" data-gpu-prop="label" aria-label="${escAttr(t('gpuCustomNamePh'))}" />`
+        : `<strong>${gpuLabel(g, key)}</strong>`;
+      const specHtml = editableSu
+        ? `<span class="spec">FP4: ${gpuNumInput(key, 'fp4PflopsPerUnit', fp4, 'step="10"', 'sm')} <small>PFLOPS/SU</small></span>`
+        : `<span class="spec">FP4: ${nf.format(fp4)} <small>PFLOPS/${isServer ? t('unitServer').trim() : 'SU'}</small></span>`;
+      const subHtml = isServer
+        ? `${t('gpuSuLineB300', { spr: nf.format(Number(g.serversPerRack) || 0) })} · ≈ ${nf1.format(gpuUnitPowerKw(g) * (Number(g.serversPerRack) || 0))}kW/${state.lang === 'en' ? 'rack' : '랙'}`
+        : editableSu
+          ? `1 SU = ${state.lang === 'en' ? '' : '랙 '}${gpuNumInput(key, 'racksPerUnit', g.racksPerUnit, 'step="1"', 'sm')}${state.lang === 'en' ? ' racks' : '대'} · GPU ${gpuNumInput(key, 'gpusPerUnit', g.gpusPerUnit, 'step="8"', 'sm')}${state.lang === 'en' ? ' GPUs' : '개'}${ok ? ` · ≈ ${fmtKwAsMw(gpuUnitPowerKw(g))}` : ''}`
+          : `${systemDesc(g)} · ≈ ${fmtKwAsMw(gpuUnitPowerKw(g))}`;
+      const maxNote = !ok ? t('gpuMaxNoteBlank') : (overNow ? `${t('gpuMaxNote', { n: nf.format(maxNow), u: unit })} · ${t('gpuOverNote')}` : t('gpuMaxNote', { n: nf.format(maxNow), u: unit }));
+      const specs = isServer
+        ? [
+            [t('specAreaPerRack'), gpuNumInput(key, 'rackAreaSqm', g.rackAreaSqm, 'step="0.1"'), '㎡'],
+            [t('specPowerPerServer'), gpuNumInput(key, 'unitItPowerKw', g.unitItPowerKw, 'step="0.5"'), 'kW'],
+            [t('specPricePerServer'), gpuNumInput(key, 'capex:server', g.capexUsd.server, 'step="1000"'), '$']
+          ]
+        : [
+            [t('specAreaPerRack'), gpuNumInput(key, 'rackAreaSqm', g.rackAreaSqm, 'step="0.5"'), '㎡'],
+            [t('specPowerPerRack'), gpuNumInput(key, 'rackKw', g.rackKw, 'step="5"'), 'kW'],
+            [t('specPricePerRack'), gpuNumInput(key, 'rackPriceUsd', g.rackPriceUsd, 'step="10000"'), '$']
+          ];
+      const capexItems = isServer
+        ? SERVER_ITEM_KEYS.map(k => [t(SERVER_ITEM_LABEL_KEYS[k], { m: nf1.format(Number(state.siMultiplier) || 1) }), usdPlain(g.capexUsd[k]), k === 'si' ? usdPlain((Number(g.capexUsd.si) || 0) * Math.max(1, Number(state.siMultiplier) || 1)) : ''])
+        : CAPEX_ITEM_KEYS.map(k => [capexItemLabel(g, k), k === 'nvl72' ? `<span title="${escAttr(t('capexNvl72Derived', { r: nf.format(Number(g.racksPerUnit) || 0) }))}">${usdM(g.capexUsd.nvl72)}</span>` : (editableSu ? gpuNumInput(key, 'capex:' + k, g.capexUsd[k], 'step="10000"', 'sm') : usdM(g.capexUsd[k])), '']);
+      const capexOpen = openCapexCards.has(key);
+      return `
+        <article class="sys-card ${on ? 'active' : ''} ${ok ? '' : 'blank'}" data-gpu-card="${key}" role="button" tabindex="0" aria-pressed="${on ? 'true' : 'false'}" style="--card-color:${g.color}">
+          <div class="sys-in">
+            <div class="sys-title">${nameHtml}${specHtml}</div>
+            <div class="sys-sub">${subHtml}</div>
+            ${ok ? '' : `<div class="sys-blank-note">${t('gpuBlankSpec')}</div>`}
+            <div class="su-big card-count">
+              <span class="u"><input type="number" min="0" max="${gpuAbsMax(g)}" step="1" value="${n}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} count" /></span>
+              <span class="unit">${unit}</span>
+              <span class="max ${overNow ? 'text-danger' : ''}" data-gpu-chip="${key}">${maxNote}</span>
+            </div>
+            <input type="range" class="track" min="0" max="${sliderMax}" step="1" value="${Math.min(n, sliderMax)}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} slider" ${ok ? '' : 'disabled'} />
+            ${rateBlockHtml(g, `data-gpu-key="${key}" data-gpu-prop="baseRateUsd"`, `gpu:${key}`)}
+            <div class="sys-specs2">
+              ${specs.map(([lab, input, u]) => `<div class="sys-spec"><span class="lab">${lab}</span><span class="v">${input}<span class="unit">${u}</span></span></div>`).join('')}
+            </div>
+            <div class="sys-capex-h ${capexOpen ? 'open' : ''}" data-capex-toggle="${key}" role="button" tabindex="0" aria-expanded="${capexOpen ? 'true' : 'false'}">
+              <span><span class="cx-tri"></span>${isServer ? t('capexHeadingServer') : t('capexTotalLabel')}</span>
+              <b data-gpu-capex-total="${key}">${usdWithKrw(perUnit)}</b>
+            </div>
+            <ul class="sys-capex ${capexOpen ? '' : 'collapsed'}">
+              ${capexItems.map(([lab, val, extra]) => `<li><span>${lab}</span><span class="cx-val">${extra ? `<span class="cx-extra">= ${extra}</span>` : ''}${val}</span></li>`).join('')}
+            </ul>
+          </div>
+        </article>`;
+    }
+    function renderGpuSelector(data) {
+      const cards = GPU_KEYS.map(key => {
+        if (key === 'custom' && !state.customOpen) {
+          return `<article class="sys-card add" data-gpu-add role="button" tabindex="0" aria-label="${escAttr(t('gpuCardAddLabel'))}" title="${escAttr(t('gpuCardAddLabel'))}"><span class="plus"></span></article>`;
+        }
+        return gpuCardHtml(key, data);
+      });
+      return `
+        <section class="sec sys-sec">
+          ${secHead(t('systemSelectorTitle').replace(/값$/, ''), { tri: false })}
+          <div class="sec-desc">${emphasizeSource(t('gpuSelectorDesc'))}</div>
+          <div class="sys-grid">${cards.join('')}</div>
+        </section>
+      `;
+    }
+
+    // ---- rev36: 매출·가동률 시뮬레이션 — 켜진 카드별 표를 쌓고 합계 행 ----
+    function mixTableHtml(entity, gpuCount, years, syncKey) {
+      const r = contractRates(entity);
+      const gpus = Math.max(0, Number(gpuCount) || 0);
+      const revOf = (sharePct, rateKrw) => gpus * HOURS * (sharePct / 100) * rateKrw / EOK;
+      const cell = (sharePct, rateKrw) => `<span class="mx-amt">${eok(revOf(sharePct, rateKrw))}</span><span class="mx-pct">${nf1.format(sharePct)}%</span>`;
+      const plain = (sharePct) => `<span class="mx-pct">${nf1.format(sharePct)}%</span>`;
+      const rows = [
+        [t('labelMix3Y'), formatHourlyRate(r.c3), years.map(p => cell(p.s3, r.c3))],
+        [t('labelMix1Y'), formatHourlyRate(r.c1), years.map(p => cell(p.s1, r.c1))],
+        [t('labelMixOD'), formatHourlyRate(r.od), years.map(p => cell(p.so, r.od))],
+        [t('labelMixIdle'), '–', years.map(p => plain(p.idle))],
+        [t('mixRowGap'), '–', years.map(p => plain(p.gap))]
+      ];
+      const totalRev = years.map(p => revOf(p.s3, r.c3) + revOf(p.s1, r.c1) + revOf(p.so, r.od));
+      return `
+          <div class="dt-wrap" style="margin-top:29.6px" ${syncKey ? `data-mix-table="${syncKey}"` : ''}>
+            <table class="dt mix">
+              <colgroup><col><col style="width:181px"><col style="width:181px"><col style="width:181px"><col style="width:181px"></colgroup>
+              <thead>
+                <tr>
+                  <th>${t('mixColItem')}</th>
+                  <th class="r">${t('mixColRate')}</th>
+                  ${years.map((p, i) => `<th class="r">${t('mixYearCol', { n: i + 1 })} ×${nf1.format(p.k * 100)}%</th>`).join('')}
+                </tr>
+              </thead>
+              <tbody>
+                ${rows.map(([label, rate, cells]) => `
+                  <tr><td>${label}</td><td class="r">${rate}</td>${cells.map(c => `<td class="r">${c}</td>`).join('')}</tr>
+                `).join('')}
+                <tr class="mx-total">
+                  <td>${t('mixRowTotal')}</td><td class="r">–</td>
+                  ${years.map(p => `<td class="r"><span class="mx-pct">${nf1.format(p.total)}%</span></td>`).join('')}
+                </tr>
+                <tr class="mx-rev">
+                  <td>${t('mixRowRevenue')}</td><td class="r">–</td>
+                  ${totalRev.map(v => `<td class="r">${eok(v)}</td>`).join('')}
+                </tr>
+              </tbody>
+            </table>
+          </div>`;
+    }
+    function renderMixSection(data) {
+      const years = portfolioByYear();
+      const basisNote = t('rateBasisNote', {
+        b: data.types.filter(x => x.ok).map(x => `$${nfEn(2).format(x.rates.baseUsd)}`).join(' / ') || '$0.00',
+        loc: nf1.format(Number(state.locPremiumPct) || 0),
+        d1: nf1.format(Number(state.disc1YPct) || 0),
+        d3: nf1.format(Number(state.disc3YPct) || 0)
+      });
+      const counts = data.types.map(td => `
+        <div class="mx-type ${td.ok ? '' : 'blank'}">
+          <span class="mx-type-lab">${gpuLabel(td.type, td.key)}</span>
+          <span class="mx-type-val"><span class="num" data-mix-count="${td.key}">${nf.format(td.n)}</span><span class="unit">${gpuUnitLabel(td.type)}</span></span>
+        </div>`).join('');
+      const okTypes = data.types.filter(td => td.ok);
+      const tables = okTypes.map(td => `
+        <div class="mx-block">
+          <div class="mx-sub">${t('mixTypeSub', { name: gpuLabel(td.type, td.key), g: nf.format(td.gpus), n: nf.format(td.n), u: gpuUnitLabel(td.type) })}</div>
+          ${mixTableHtml(td.type, td.gpus, years, td.key)}
+        </div>`).join('');
+      const totalRow = okTypes.length > 1 ? `
+          <div class="dt-wrap mx-sum" style="margin-top:29.6px">
+            <table class="dt mix">
+              <colgroup><col><col style="width:181px"><col style="width:181px"><col style="width:181px"><col style="width:181px"></colgroup>
+              <tbody>
+                <tr class="mx-rev"><td>${t('mixRowRevenueTotal')}</td><td class="r">–</td>${data.annualRevenue.map(v => `<td class="r">${eok(v)}</td>`).join('')}</tr>
+              </tbody>
+            </table>
+          </div>` : '';
+      return `
+        <section class="sec mt-116 mix-sec">
+          ${secHead(t('mixTableTitle').replace(/\s*\(.*\)\s*$/, ''))}
+          <div class="sec-desc">${t('mixSummary', { g: nf.format(data.gpus), fp: nf.format(Math.round(data.totalFp4)), capex: eok(data.itCapexEok) })}<br>${basisNote}</div>
+          <div class="mx-types">${counts}</div>
+          ${okTypes.length ? tables + totalRow : `<div class="notice warn">${t('mixNoType')}</div>`}
+        </section>
+      `;
+    }
+
+    // ---- rev36: 수전·면적 사용 현황 — 미터 + 카드별 임계표 ----
+    function powerCapTextMix(data) {
+      const over = data.allocationPct > 100;
+      return t('powerCapMix', { mix: data.shortConfigText, kw: fmtKwAsMw(data.usedItPower), it: fmtKwAsMw(state.itPowerKw) }) + (over ? ` · ${t('overCapacity')}` : '');
+    }
+    function renderTypeThreshold(td, data) {
+      const g = td.type;
+      const isServer = g.kind === 'server';
+      const others = gpuOthersUsage(td.key);
+      const support = data.supportArea + others.area;       // 부대공간 + 타 카드 점유
+      const itLeft = Math.max(0, (Number(state.itPowerKw) || 0) - others.kw);
+      const unit = gpuUnitLabel(g);
+      const name = gpuLabel(g, td.key);
+      const spr = isServer ? Math.max(1, Number(g.serversPerRack) || 1) : 1;
+      const unitsPerRow = isServer ? spr : 1;                // 서버형은 랙 단위 행
+      const curRows = Math.ceil(td.n / unitsPerRow);
+      const powerMaxRows = Math.floor(td.powerMax / unitsPerRow);
+      const absRows = Math.floor(gpuAbsMax(g) / unitsPerRow);
+      const areaPerRow = isServer ? (Number(g.rackAreaSqm) || 0) : gpuUnitAreaSqm(g);
+      const kwPerRow = unitsPerRow * gpuUnitPowerKw(g);
+      const needFor = rows => support + rows * areaPerRow;
+      let points;
+      if (isServer) {
+        points = [...new Set([1, Math.max(1, curRows - 5), Math.max(1, curRows - 1), curRows, curRows + 1, curRows + 5, powerMaxRows, powerMaxRows + 1].filter(r => r >= 1 && r <= Math.max(powerMaxRows + 1, curRows + 1)))].sort((a, b) => a - b);
+      } else {
+        const rowsMax = Math.min(SU_ABS_MAX, Math.max(powerMaxRows + 2, curRows + 1, 5));
+        points = Array.from({ length: rowsMax }, (_, i) => i + 1);
+      }
+      const rows = points.map(r => {
+        const need = needFor(r);
+        const overPower = r > powerMaxRows;
+        const overCap = r > absRows;
+        const reached = !overPower && data.floorArea >= need - 0.01;
+        const current = r === curRows;
+        const stateText = overCap ? t('thStateCap') : overPower ? t('thStatePower') : reached ? t('thStateOk') : t('thStateNeed', { v: nf.format(Math.ceil(need - data.floorArea)) });
+        const label = isServer ? `${nf.format(r)}<span class="suf">${state.lang === 'en' ? ' racks' : '랙'}</span> <span class="th-sub">(${nf.format(r * spr)}${unit})</span>` : `${nf.format(r)}<span class="suf">SU</span>`;
+        return `
+          <tr class="${current ? 'cur' : ''} ${overPower ? 'dis' : ''}" data-th-row="${r}">
+            <td>${label}${isServer && r === powerMaxRows ? ` <span class="tag-box" style="margin-left:6px">${t('thPowerCapPoint')}</span>` : ''}</td>
+            <td class="r">${nf.format(Math.ceil(need))}m²</td>
+            <td class="r">${nf.format(Math.round(r * kwPerRow))}kW</td>
+            <td class="r">${stateText}</td>
+          </tr>`;
+      }).join('');
+      const desc = isServer
+        ? t('thServerDesc', { name, spr: nf.format(spr), area: nf1.format(Number(g.rackAreaSqm) || 0), sup: nf.format(Math.round(data.supportArea)) })
+        : t('thTypeDescMix', { sys: name, area: nf.format(gpuUnitAreaSqm(g)), sup: nf.format(Math.round(data.supportArea)) });
+      return `
+        <div class="th-type" data-th-type="${td.key}" data-th-rows="${unitsPerRow}">
+          <div class="mx-sub">${name}</div>
+          <div class="dt-wrap th-table">
+            <table class="dt th" style="--gap:3.3px" aria-label="${escAttr(isServer ? t('thRackTitle') : t('thTitle'))}">
+              <colgroup><col style="width:318.7px"><col style="width:217px"><col style="width:220.4px"><col></colgroup>
+              <thead><tr><th>${isServer ? t('thColServerRack') : t('thColSu')}</th><th class="r">${t('thColArea')}</th><th class="r">${t('thColPower')}</th><th class="r">${t('thColState')}</th></tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+          <div class="foot-note">${desc}</div>
+          <div class="foot-note">${t('thPowerNoteMix', { max: nf.format(td.powerMax), u: unit, it: fmtKwAsMw(itLeft) })}</div>
+        </div>`;
+    }
+    function renderCapacitySection(data) {
+      const over = data.allocationPct > 100;
+      const areaOver = data.areaPct > 100.01;
+      const okTypes = data.types.filter(td => td.ok);
+      const primary = okTypes[0];
+      const baseNotice = (primary && state.spaceMode !== 'expand' && primary.areaMax < primary.powerMax)
+        ? `<div class="notice warn">${t('baseModeNotice', { p: nf.format(primary.powerMax), a: nf.format(primary.areaMax) })}</div>` : '';
+      const over4Notice = okTypes.some(td => td.kind === 'su' && td.n > 4) ? `<div class="notice info">${t('over4SuNotice')}</div>` : '';
+      return `
+        <section class="sec mt-100 su-sec">
+          ${secHead(t('capSecTitle'), { badge: constraintBadgeHtml(data.constraint, false), badgeCls: (over || areaOver) ? 'warn' : (data.constraint === 'balanced' ? 'ok' : '') })}
+          <div class="sec-desc">${t('capSecDesc')}</div>
+          ${baseNotice}${over4Notice}
+          <div class="meters">
+            ${powerMeterHtml(data, t('usageLabelMix'), powerCapTextMix(data), over, 'data-su-usage')}
+            ${areaMeterHtml(data, 'data-su-area-usage')}
+          </div>
+          ${okTypes.map(td => renderTypeThreshold(td, data)).join('')}
+        </section>
+      `;
+    }
+
+    // ---- rev36: 기준값 및 산식 (혼합 구성) ----
+    function renderFormulaPanelMix(data) {
+      const [util, tot, it, pue, floor, support, fac] = commonChipItems(data);
+      const okTypes = data.types.filter(td => td.ok);
+      const B = {
+        config: [t('blConfig'), data.shortConfigText],
+        mix: [t('blPortfolio'), portfolioSummaryText()],
+        rev: [t('blAnnualRevenue'), eok(data.annualRevenue[0]), 'res'],
+        fac: [t('blFacility'), eok(data.facilityEok)],
+        elec: [t('blElecCost'), eok(data.electricityEok), 'res'],
+        sw: [t('blSwOpex'), `${eok(data.swOpexEok)} (${formatSwSub(state.swSubUsdPerGpuYear)})`, 'res'],
+        opex: data.hasServer ? [t('blOtherOpex'), eok(data.opexEok)] : null,
+        util, tot, it, pue, floor, support,
+        energy: [t('chipEnergyRate'), formatRateText('energyCostRate', state.energyCostRate)],
+        basic: [t('chipBasicCharge'), formatRateText('basicChargeKwMonth', state.basicChargeKwMonth)],
+        fx: [t('chipFx'), `${nf.format(state.fxKrwUsd)}원/USD`],
+        swsub: [t('chipSwSub'), formatSwSub(state.swSubUsdPerGpuYear)]
+      };
+      const depTxt = `${getDepreciationText().replace(/\//g, ' / ')}%`;
+      const utilRow = [t('chipUtilYearly'), `${nf.format(state.utilY1)}-${nf.format(state.utilY2)}-${nf.format(state.utilY3)}%`];
+      const rateRows = okTypes.map(td => [t('blTypeRate', { name: gpuShortLabel(td.type, td.key) }), `${t('labelMixOD')} ${formatHourlyRate(td.rates.od)} / ${t('labelMix1Y')} ${formatHourlyRate(td.rates.c1)} / ${t('labelMix3Y')} ${formatHourlyRate(td.rates.c3)}`]);
+      const effRows = okTypes.map(td => [t('blTypeEff', { name: gpuShortLabel(td.type, td.key) }), effRateSummaryText(td.type)]);
+      const capexRows = okTypes.map(td => [t('blTypeCapex', { name: gpuShortLabel(td.type, td.key) }), `${eok(td.itCapexEok)} (${usdM(td.itCapexUsd)})`, 'res']);
+      const vars = { loc: nf1.format(Number(state.locPremiumPct) || 0), d1: nf1.format(Number(state.disc1YPct) || 0), d3: nf1.format(Number(state.disc3YPct) || 0) };
+      return formulaSectionHtml([
+        { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBodyMix', vars), items: [B.config, ...rateRows, B.mix, ...effRows, B.rev] },
+        { title: t('formulaCardCapexTitleMix'), body: t('formulaCardCapexBodyMix'), items: [...capexRows, [t('blItCapex'), `${eok(data.itCapexEok)} (${usdM(data.itCapexUsd)})`, 'res'], B.fac] },
+        { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyMix'), items: [B.elec, B.sw, B.opex, [t('blDep'), depTxt], utilRow, B.tot, B.it, B.pue] },
+        { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyMix'), items: [B.floor, B.support, B.fac, B.energy, B.basic, B.fx, B.swsub, [t('chipDep'), depTxt]] }
+      ]);
+    }
+
     function constraintBadgeHtml(type, capped) {
       if (capped) return t('badgeCap');
       const key = type === 'power' ? 'badgePower' : type === 'area' ? 'badgeArea' : 'badgeBalanced';
@@ -2419,6 +3092,7 @@
     // 시안: "(GB300 4SU ≈ 4.8MW / IT 수전용량 4.8MW)" — usageTextPod 에서 괄호 안 설명만 취함
     function powerCapText(data) {
       const over = data.allocationPct > 100;
+      if (data.key === 'mix') return powerCapTextMix(data);
       if (data.key === 'rack') {
         return `${rackMixText()} / IT ${nf.format(state.itPowerKw)}kW` + (over ? ` \u00B7 ${t('overCapacity')}` : '');
       }
@@ -2982,13 +3656,23 @@
       if (key === 'cumNI') return f(r.cumNI, 1) + unit;
       return '—';
     }
+    const CMP_COLORS = ['#606060', '#1ba85e', '#e84949', '#3b5bdb', '#f59e0b'];
+    // rev36: 켜진 카드별 단독 구성(전력·면적 내 최대 수량) + 2장 이상이면 현재 혼합 구성
     function getModelComparison() {
-      const pod = calcPod();
-      const rack = calcRack();
-      return [
-        { key: 'pod', name: t('podModelName'), view: 'superpod', color: 'var(--primary)', configText: `${pod.system.label} ${t('suCountChip', { n: nf.format(pod.su) })}`, data: pod },
-        { key: 'rack', name: t('rackModelName'), view: 'gpu', color: '#f59e0b', configText: rackMixText(), data: rack }
-      ];
+      const keys = gpuActiveKeys().filter(k => gpuSpecOk(gpuTypes[k]));
+      const models = keys.map((k, i) => {
+        const st = { ...state };
+        GPU_KEYS.forEach(j => { st['on_' + j] = j === k; });
+        if (st.spaceMode === 'expand') st.floorAreaSqm = minFloorAreaForPowerMax(st, gpuTypes);
+        st['n_' + k] = Math.max(1, gpuMaxUnits(k, st, gpuTypes, true));
+        const d = calcMix(st, gpuTypes);
+        return { key: k, name: gpuLabel(gpuTypes[k], k), view: 'superpod', applyKey: k, color: CMP_COLORS[i % CMP_COLORS.length], configText: d.shortConfigText, data: d };
+      });
+      if (keys.length >= 2) {
+        const d = calcMix();
+        models.push({ key: 'mix', name: t('compareMixName'), view: 'superpod', applyKey: '', color: CMP_COLORS[models.length % CMP_COLORS.length], configText: d.shortConfigText, data: d });
+      }
+      return models;
     }
 
     function renderProductComparePanel() {
@@ -3026,7 +3710,7 @@
           <div class="dt-wrap" style="margin-top:29.6px">
             <table class="dt wide">
               <colgroup><col style="width:220px"><col><col></colgroup>
-              <thead><tr><th>${t('prodColItem')}</th><th>${t('podModelName')}</th><th>${t('rackModelName')}</th></tr></thead>
+              <thead><tr><th>${t('prodColItem')}</th><th>${t('prodColPod')}</th><th>${t('prodColServer')}</th></tr></thead>
               <tbody>
                 ${rows.map(([key, a, b]) => `<tr><td><strong>${t(key)}</strong></td><td>${L(a)}</td><td>${L(b)}</td></tr>`).join('')}
               </tbody>
@@ -3038,48 +3722,44 @@
 
     // ---------- 3년 누적 P&L 손익 구조 비교 ----------
     function renderPnlPanel() {
-      const pod = calcPod();
-      const rack = calcRack();
+      const models = getModelComparison();
       const sum = a => a.reduce((x, y) => x + y, 0);
-      const build = (data, modelKey) => {
+      const build = (data) => {
         const revenue = sum(data.annualRevenue);
         const dep = sum(data.capexByYear);
         const elec = sum(data.electricityByYear);
         const sw = sum(data.swOpexByYear || []);
-        const opex = data.key === 'rack' ? (Number(state.opexEok) || 0) * YEARS : 0;
+        const opex = (data.key === 'rack' ? (Number(state.opexEok) || 0) : (Number(data.opexEok) || 0)) * YEARS;
         const expense = sum(data.annualExpense);
         const profit = data.cumProfit[YEARS - 1];
         return { revenue, dep, elec, sw, opex, expense, profit, margin: revenue ? profit / revenue * 100 : 0 };
       };
-      const P = build(pod, 'pod');
-      const R = build(rack, 'rack');
-      const line = (labelKey, tipKey, pv, rv, cls = '') => `
+      const cols = models.map(m => ({ m, v: build(m.data) }));
+      const colW = Math.max(150, Math.floor(620 / Math.max(1, cols.length)));
+      const line = (labelKey, tipKey, fn, cls = '') => `
         <tr class="${cls}">
           <td>${t(labelKey)}${tipKey ? infoIcon(t(tipKey), t(labelKey), true) : ''}</td>
-          <td class="r">${pv}</td>
-          <td class="r">${rv}</td>
+          ${cols.map(c => `<td class="r">${fn(c.v)}</td>`).join('')}
         </tr>
       `;
       const neg = v => `<span class="neg-val">(${eok(v)})</span>`;
       return `
         <section class="sec">
           ${secHead(t('pnlTitle'))}
-          <div class="sec-desc">${t('pnlDesc')}</div>
+          <div class="sec-desc">${t('pnlDesc')}<br>${t('pnlOtherOpexNote')}</div>
           <div class="dt-wrap" style="margin-top:29.6px">
             <table class="dt pnl">
-              <colgroup><col><col style="width:300px"><col style="width:300px"></colgroup>
-              <thead><tr><th>${t('pnlColItem')}</th><th class="r">${t('podModelName')}</th><th class="r">${t('rackModelName')}</th></tr></thead>
+              <colgroup><col>${cols.map(() => `<col style="width:${colW}px">`).join('')}</colgroup>
+              <thead><tr><th>${t('pnlColItem')}</th>${cols.map(c => `<th class="r">${c.m.name}</th>`).join('')}</tr></thead>
               <tbody>
-                ${line('pnlRevenue', 'pnlRevTip', `<strong>${eok(P.revenue)}</strong>`, `<strong>${eok(R.revenue)}</strong>`)}
-                ${line('pnlDep', 'pnlDepTip', neg(P.dep), neg(R.dep))}
-                ${line('pnlElec', 'pnlElecTip', neg(P.elec), neg(R.elec))}
-                ${line('pnlSw', 'pnlSwTip', neg(P.sw), neg(R.sw))}
-                ${line('pnlOpex', 'pnlOpexTip', P.opex > 0 ? neg(P.opex) : '–', R.opex > 0 ? neg(R.opex) : '–')}
-                ${line('pnlExpTotal', null, `<strong>${neg(P.expense)}</strong>`, `<strong>${neg(R.expense)}</strong>`, 'key')}
-                ${line('pnlProfit', null,
-                  `<strong class="${P.profit >= 0 ? 'text-success' : 'text-danger'}">${eok(P.profit)}</strong>`,
-                  `<strong class="${R.profit >= 0 ? 'text-success' : 'text-danger'}">${eok(R.profit)}</strong>`, 'key')}
-                ${line('pnlMargin', null, pct(P.margin, 1), pct(R.margin, 1))}
+                ${line('pnlRevenue', 'pnlRevTip', v => `<strong>${eok(v.revenue)}</strong>`)}
+                ${line('pnlDep', 'pnlDepTip', v => neg(v.dep))}
+                ${line('pnlElec', 'pnlElecTip', v => neg(v.elec))}
+                ${line('pnlSw', 'pnlSwTip', v => neg(v.sw))}
+                ${line('pnlOpex', 'pnlOpexTip', v => v.opex > 0 ? neg(v.opex) : '–')}
+                ${line('pnlExpTotal', null, v => `<strong>${neg(v.expense)}</strong>`, 'key')}
+                ${line('pnlProfit', null, v => `<strong class="${v.profit >= 0 ? 'text-success' : 'text-danger'}">${eok(v.profit)}</strong>`, 'key')}
+                ${line('pnlMargin', null, v => pct(v.margin, 1))}
               </tbody>
             </table>
           </div>
@@ -3123,11 +3803,12 @@
         [t('cmpFinDscr'), m => finMetric(m.data, 'dscr')],
         [t('cmpFinFcfe'), m => finMetric(m.data, 'fcfe')]
       ];
+      const colW = Math.max(150, Math.floor(620 / Math.max(1, models.length)));
       return `
         <section class="sec cmp-sec">
           ${secHead(t('compareTitle'), { tri: false })}
-          <div class="sec-desc">${t('compareDesc', { n: YEARS })}</div>
-          <div class="cmp-cards">
+          <div class="sec-desc">${t('compareDescMix', { n: YEARS })}</div>
+          <div class="cmp-cards" style="grid-template-columns:repeat(${Math.max(1, models.length)}, 1fr)">
             ${models.map(m => `
                 <article class="cmp-card">
                   <h3>${m.name}</h3>
@@ -3138,24 +3819,24 @@
                     <span>${t('compareMetricRevenue')}<b>${eok(m.data.annualRevenue[0])}</b></span>
                     <span>${t('compareMetricProfit', { n: YEARS })}<b class="${m.data.cumProfit[YEARS - 1] >= 0 ? 'text-success' : 'text-danger'}">${eok(m.data.cumProfit[YEARS - 1])}</b></span>
                   </div>
-                  <button type="button" class="goto" data-goto-view="${m.view}">${t('compareApplyBtn')}</button>
+                  <button type="button" class="goto" data-goto-view="${m.view}" data-apply-gpu="${m.applyKey || ''}">${m.applyKey ? t('compareApplyBtnMix') : t('compareGotoBtn')}</button>
                 </article>
               `).join('')}
           </div>
           <div class="dt-wrap" style="margin-top:40px">
             <table class="dt cmp">
-              <colgroup><col><col style="width:300px"><col style="width:300px"></colgroup>
+              <colgroup><col>${models.map(() => `<col style="width:${colW}px">`).join('')}</colgroup>
               <thead><tr><th>${t('compareColMetric')}</th>${models.map(m => `<th class="r">${m.name}</th>`).join('')}</tr></thead>
               <tbody>
                 ${metricRows.map(([label, fn]) => label === '__FINHEAD__' ? `
-                  <tr class="cmp-fin-head"><td colspan="3">${t('cmpFinSection')}</td></tr>
+                  <tr class="cmp-fin-head"><td colspan="${models.length + 1}">${t('cmpFinSection')}</td></tr>
                 ` : `
                   <tr><td>${label}</td>${models.map(m => `<td class="r">${fn(m)}</td>`).join('')}</tr>
                 `).join('')}
               </tbody>
             </table>
           </div>
-          <div class="foot-note">${t('compareCduNote')}</div>
+          <div class="foot-note">${t('compareNoteMix')}</div>
         </section>
       `;
     }
@@ -3249,7 +3930,7 @@
       const wrap = document.getElementById('chartWrap');
       const legend = document.getElementById('legend');
       if (!wrap) return;
-      const series = models.map((m, i) => ({ data: m.data.cumProfit, cls: i === 0 ? 'revenue' : 'profit', name: `${m.name} · ${t('legendProfit')}`, color: i === 0 ? '#606060' : '#1ba85e' }));
+      const series = models.map((m, i) => ({ data: m.data.cumProfit, cls: i === 0 ? 'revenue' : 'profit', name: `${m.name} · ${t('legendProfit')}`, color: m.color || CMP_COLORS[i % CMP_COLORS.length] }));
       wrap.innerHTML = lineChartSvg(series, t('compareChartTitle', { n: YEARS }));
       if (legend) legend.innerHTML = legendHtml(series);
 
@@ -3376,23 +4057,14 @@
       }
       if (state.activeView === 'compare') {
         const models = getModelComparison();
-        content.innerHTML = `${renderComparePanel()}${renderCompareChartPanel()}${renderPnlPanel()}${renderProductComparePanel()}${renderFacilityCapexPanel('pod')}${renderFacilityCapexPanel('rack')}`;
+        content.innerHTML = `${renderComparePanel()}${renderCompareChartPanel()}${renderPnlPanel()}${renderProductComparePanel()}${renderFacilityCapexPanel('pod')}`;
         renderCompareChart(models);
         fitInputs(content);
         return;
       }
-      if (state.activeView === 'gpu') {
-        // 개별 GPU 서버: 차트 → 연차표 → 랙 선택(+매출표) → 랙 구성(+임계표) → 부대장비/SI → 시설비 → 기준값 → 재무구조
-        const rackFinHtml = (typeof PODFIN !== 'undefined') ? PODFIN.html(data) : '';
-        content.innerHTML = `${renderChartPanel()}${renderTableHtml(data)}${renderRackSelector(data)}${renderRackAdjust(data)}${renderAuxSiPanel(data)}${renderFacilityCapexPanel('rack')}${renderRackFormulaPanel(data)}${rackFinHtml}`;
-        renderChart(data);
-        if (typeof PODFIN !== 'undefined') PODFIN.attach(content, data);
-        fitInputs(content);
-        return;
-      }
-      // SuperPOD (시안 순서): 차트 → 연차표 → 랙 시스템 선택(+매출표) → SU 구성(+임계표) → 시설비 → 기준값 → 재무구조
+      // GPU 임대 (rev36): 차트 → 연차표 → 랙 시스템 선택(4카드) → 매출·가동률(카드별 표) → 수전·면적 사용 현황 → 시설비 → 기준값 → 재무구조
       const podFinHtml = (typeof PODFIN !== 'undefined') ? PODFIN.html(data) : '';
-      content.innerHTML = `${renderChartPanel()}${renderTableHtml(data)}${renderSystemSelector(data)}${renderSuAdjust(data)}${renderFacilityCapexPanel('pod')}${renderFormulaPanel(data)}${podFinHtml}`;
+      content.innerHTML = `${renderChartPanel()}${renderTableHtml(data)}${renderGpuSelector(data)}${renderMixSection(data)}${renderCapacitySection(data)}${renderFacilityCapexPanel('pod')}${renderFormulaPanelMix(data)}${podFinHtml}`;
       renderChart(data);
       if (typeof PODFIN !== 'undefined') PODFIN.attach(content, data);
       fitInputs(content);
@@ -3487,11 +4159,6 @@
           ${ctlCols(['mix3Y', 'mix1Y', 'mixOD', 'mixIdle'], [t('labelMix3Y'), t('labelMix1Y'), t('labelMixOD'), t('labelMixIdle')], 'c4')}
           <div class="s-hint warn ${mixOk ? 'hidden' : ''}" data-mix-hint>${mixOk ? '' : t('mixSumWarn', { v: nf1.format(mix.total) })}</div>
         </section>
-        <section class="s-group bm" data-views="superpod,gpu,compare">
-          <span class="s-lab">${t('labelBmMode')}</span>
-          <div class="s-hint" data-bm-hint>${state.bmMode === 'B' ? t('bmBHint') : t('bmAHint')}</div>
-          ${segBtns('data-bm-mode', [['A', t('bmA').replace(/^A\)\s*/, '')], ['B', t('bmB').replace(/^B\)\s*/, '')]], state.bmMode === 'B' ? 'B' : 'A', true)}
-        </section>
         <section class="s-group space" data-views="superpod,gpu,compare">
           <span class="s-lab">${t('labelSpaceMode')}</span>
           <div class="s-hint">${t(spaceModeHintKey(state.spaceMode), { pod: eok(podBase), rack: eok(rackBase) })}</div>
@@ -3526,7 +4193,7 @@
         <section class="s-group sw last" data-views="superpod,gpu,compare">
           ${ctlRow('swSubUsdPerGpuYear', `${t('labelSwSubShort')}${infoIcon(swTip, t('labelSwSubShort'), true)}`, { pre: '$' })}
         </section>
-        <section class="s-group tight" data-views="gpu,compare">
+        <section class="s-group tight" data-views="superpod,compare" data-needs="b300">
           ${ctlRow('opexEok', t('labelOpex'))}
           ${ctlRow('siMultiplier', t('labelSiMultiplier'))}
           <div class="s-hint">${t('siMultiplierHint')}</div>
@@ -3590,9 +4257,11 @@
     }
 
     function refreshControlVisibility() {
+      const b300On = gpuOn('b300') && gpuSpecOk(gpuTypes.b300);
       document.querySelectorAll('[data-views]').forEach(group => {
         const views = String(group.dataset.views || '').split(',');
-        group.classList.toggle('hidden', !views.includes(state.activeView));
+        const needs = group.dataset.needs;
+        group.classList.toggle('hidden', !views.includes(state.activeView) || (needs === 'b300' && !b300On));
       });
     }
 
@@ -3628,7 +4297,7 @@
         cap.dataset.tipTitle = t('heroTitle').replace(/<br\s*\/?>/g, ' ');
       }
       document.querySelectorAll('[data-scenario="default"]').forEach(b => { b.title = t('btnDefault'); b.setAttribute('aria-label', t('btnDefault')); });
-      const tabs = { superpod: 'tabSuperpod', gpu: 'tabGpu', compare: 'tabCompare', finance: 'tabFinance' };
+      const tabs = { superpod: 'tabLease', compare: 'tabCompare', finance: 'tabFinance' };
       Object.keys(tabs).forEach(v => {
         const el = document.querySelector(`.view-tab[data-view="${v}"]`);
         if (el) el.textContent = t(tabs[v]);
@@ -3782,11 +4451,13 @@
       const currentLang = state.lang;
       systems = cloneSystems(SYSTEM_DEFAULTS);
       rackTypes = cloneRacks(RACK_DEFAULTS);
+      gpuTypes = cloneGpuTypes(GPU_DEFAULTS);
       facility = { pod: makeFacilityModel('pod'), rack: makeFacilityModel('rack') };
       state = { ...DEFAULTS, activeView: currentView, lang: currentLang };
       fillSelectedRack(state, rackTypes, state.selectedRack);
-      // 기본값은 보고 있는 탭과 무관하게 동일해야 한다 (탭에 따라 연면적이 800/900㎡로 달라지던 문제)
-      if (state.spaceMode === 'expand') state.floorAreaSqm = minFloorAreaForPowerMax({ ...state, activeView: 'superpod' });
+      // 기본값은 보고 있는 탭과 무관하게 동일해야 한다
+      if (state.spaceMode === 'expand') state.floorAreaSqm = minFloorAreaForPowerMax(state, gpuTypes);
+      fillGpuDefaults(state, gpuTypes);
       state.suCount = podMaxSu();
       // rev15: 헤더 '기본값'은 재무구조 조달 가정(자기자본·금리·상환·사업기구)도 함께 초기화 (사이드바 '초기화' 링크 대체)
       if (typeof PODFIN !== 'undefined' && PODFIN.resetP) PODFIN.resetP();
@@ -3803,19 +4474,14 @@
     }
 
     // [기존]/[확장] 토글 (rev06 '시설 유형' 대체)
-    function minFloorAreaForPowerMax(inputState = state) {
-      // 현재 전력 기준 최대 수량을 수용하는 최소 연면적 (step 100 올림, 500~2400 클램프)
+    function minFloorAreaForPowerMax(inputState = state, types = gpuTypes) {
+      // 켜진 카드들의 전력 기준 수량(단독)을 수용하는 최소 연면적 (step 100 올림, 500~2400 클램프) — 첫 번째 켜진 카드 기준
       const support = supportAreaSqm(inputState);
-      let needed;
-      if (inputState.activeView === 'gpu') {
-        const rack = rackTypes[inputState.selectedRack];
-        const n = Math.floor((Number(inputState.itPowerKw) || 0) / Math.max(1, rack.rackPowerKw));
-        needed = support + n * (rack.rackAreaSqm || 0);
-      } else {
-        const sys = systems[inputState.selectedSystem];
-        const n = Math.min(SU_ABS_MAX, Math.floor((Number(inputState.itPowerKw) || 0) / Math.max(1, sys.suItPowerKw)));
-        needed = support + n * (sys.suAreaSqm || 0);
-      }
+      const keys = gpuActiveKeys(inputState).filter(k => gpuSpecOk(types[k]));
+      const key = keys[0] || 'b300';
+      const g = types[key];
+      const n = Math.min(gpuAbsMax(g), gpuPowerMax(key, inputState, types, true));
+      const needed = support + gpuOccupiedArea(g, n);
       return Math.max(500, Math.min(2400, Math.ceil(needed / 100) * 100));
     }
     function spaceModeBtnKey(mode) { return mode === 'base' ? 'baseBtn' : mode === 'b1' ? 'b1Btn' : 'expandBtn'; }
@@ -3839,7 +4505,7 @@
 
     function exportCurrentTable() {
       const data = getActiveData();
-      const modeName = state.activeView === 'gpu' ? t('tabGpu') : state.activeView === 'compare' ? t('tabCompare') : t('tabSuperpod');
+      const modeName = state.activeView === 'compare' ? t('tabCompare') : t('tabLease');
       const header = state.lang === 'en'
         ? ['Model', 'Year', 'Annual Revenue (USD)', 'Annual Expense (USD)', 'Annual Profit (USD)', 'Cumulative Revenue (USD)', 'Cumulative Expense (USD)', 'Cumulative Profit (USD)', 'Annual Margin (%)']
         : ['\uBAA8\uB378', '\uC5F0\uCC28', '\uC5F0\uB9E4\uCD9C(\uC5B5\uC6D0)', '\uC5F0\uC9C0\uCD9C(\uC5B5\uC6D0)', '\uC5F0\uC190\uC775(\uC5B5\uC6D0)', '\uB204\uC801\uB9E4\uCD9C(\uC5B5\uC6D0)', '\uB204\uC801\uC9C0\uCD9C(\uC5B5\uC6D0)', '\uB204\uC801\uC190\uC775(\uC5B5\uC6D0)', '\uC5F0\uAC04 \uC190\uC775\uB960(%)'];
@@ -3847,7 +4513,7 @@
       const rows = Array.from({ length: YEARS }, (_, index) => {
         const annualProfit = data.annualRevenue[index] - data.annualExpense[index];
         const margin = data.annualRevenue[index] ? annualProfit / data.annualRevenue[index] * 100 : 0;
-        const configText = data.key === 'rack' ? rackMixText() : `${data.system.label} ${data.su}SU`;
+        const configText = data.configText || (data.key === 'rack' ? rackMixText() : `${data.system.label} ${data.su}SU`);
         return [
           `${modeName} (${configText})`,
           state.lang === 'en' ? `Yr${index + 1}` : `${index + 1}\uB144\uCC28`,
@@ -3944,6 +4610,85 @@
         if (!document.getElementById('chartWrap')) return;
         if (state.activeView === 'compare') renderCompareChart(getModelComparison());
         else renderChart(data);
+      });
+    }
+
+    // ---- rev36: 카드 입력 ----
+    function applyGpuCountInput(input, finalize = false) {
+      const key = input.dataset.gpuCount;
+      if (!GPU_KEYS.includes(key)) return false;
+      const v = readNumericInput(input);
+      if (v === null) return false;
+      state['n_' + key] = clampGpuCount(key, v);
+      if (finalize) input.value = state['n_' + key];
+      return true;
+    }
+    function applyGpuPropInput(input, finalize = false) {
+      const key = input.dataset.gpuKey;
+      const prop = input.dataset.gpuProp;
+      const g = gpuTypes[key];
+      if (!g || !prop) return false;
+      if (prop === 'label') {
+        g.label = String(input.value || '').slice(0, 40);
+        g.shortLabel = g.label.trim().split(/\s+/)[0].slice(0, 12);
+        return true;
+      }
+      const raw = readNumericInput(input);
+      if (raw === null) return false;
+      const v = Math.max(0, raw);
+      if (prop === 'baseRateUsd') {
+        g.baseRateUsd[bmMode()] = v;
+        if (finalize) input.value = nfPlain(v, 2);
+        syncDerivedRateHints();
+        return true;
+      }
+      if (prop.startsWith('capex:')) {
+        const item = prop.slice(6);
+        if (!(item in g.capexUsd)) return false;
+        g.capexUsd[item] = v;
+      } else if (['rackAreaSqm', 'rackKw', 'rackPriceUsd', 'unitItPowerKw', 'gpusPerUnit', 'racksPerUnit', 'fp4PflopsPerUnit', 'serversPerRack'].includes(prop)) {
+        g[prop] = (prop === 'gpusPerUnit' || prop === 'racksPerUnit' || prop === 'serversPerRack') ? Math.round(v) : v;
+      } else return false;
+      syncGpuDerived(g);
+      if (finalize) {
+        // 사양이 처음 채워진 카드는 잔여 상한으로 수량을 채운다
+        if (gpuOn(key) && gpuCount(key) === 0 && gpuSpecOk(g)) { growFloorForGpu(key); fillGpuMax(key); }
+      }
+      return true;
+    }
+    function syncGpuLive(activeInput = document.activeElement) {
+      const data = getActiveData();
+      syncPowerMeter(data, '[data-su-usage]');
+      syncAreaMeter(data);
+      const badge = document.querySelector('.su-sec .sec-title .tag-box');
+      if (badge) { const over = data.allocationPct > 100 || data.areaPct > 100.01; badge.classList.toggle('warn', over); badge.classList.toggle('ok', !over && data.constraint === 'balanced'); }
+      GPU_KEYS.forEach(key => {
+        if (!gpuOn(key)) return;
+        const g = gpuTypes[key];
+        const n = gpuCount(key);
+        const maxNow = gpuMaxUnits(key);
+        const ok = gpuSpecOk(g);
+        const chip = document.querySelector(`[data-gpu-chip="${key}"]`);
+        if (chip) {
+          const over = ok && n > maxNow;
+          chip.textContent = !ok ? t('gpuMaxNoteBlank') : (over ? `${t('gpuMaxNote', { n: nf.format(maxNow), u: gpuUnitLabel(g) })} · ${t('gpuOverNote')}` : t('gpuMaxNote', { n: nf.format(maxNow), u: gpuUnitLabel(g) }));
+          chip.classList.toggle('text-danger', over);
+        }
+        document.querySelectorAll(`[data-gpu-count="${key}"]`).forEach(control => {
+          if (control === activeInput) return;
+          control.value = n;
+          if (control.type === 'range') syncRangeFill(control); else fitInput(control);
+        });
+        const mc = document.querySelector(`[data-mix-count="${key}"]`);
+        if (mc) mc.textContent = nf.format(n);
+        const tot = document.querySelector(`[data-gpu-capex-total="${key}"]`);
+        if (tot) tot.innerHTML = usdWithKrw(gpuCapexPerUnitUsd(g));
+        const th = document.querySelector(`[data-th-type="${key}"]`);
+        if (th) {
+          const per = Math.max(1, Number(th.dataset.thRows) || 1);
+          const curRow = Math.ceil(n / per);
+          th.querySelectorAll('tbody tr').forEach(tr => tr.classList.toggle('cur', Number(tr.dataset.thRow) === curRow));
+        }
       });
     }
 
@@ -4105,7 +4850,7 @@
       document.querySelectorAll('[data-rate]').forEach(el => {
         const parts = String(el.dataset.rate).split(':');
         if (parts.length !== 3) return;
-        const ent = parts[0] === 'sys' ? systems[parts[1]] : rackTypes[parts[1]];
+        const ent = parts[0] === 'sys' ? systems[parts[1]] : parts[0] === 'gpu' ? gpuTypes[parts[1]] : rackTypes[parts[1]];
         if (!ent) return;
         const r = contractRates(ent);
         if (r[parts[2]] !== undefined) el.textContent = rateNum(r[parts[2]]);
@@ -4200,6 +4945,14 @@
 
     // ---------- events ----------    // ---------- events ----------
     document.addEventListener('input', event => {
+      if (event.target.matches('[data-gpu-count]')) {
+        if (applyGpuCountInput(event.target)) { syncGpuLive(event.target); refreshLiveMetrics(); }
+        return;
+      }
+      if (event.target.dataset.gpuKey && event.target.dataset.gpuProp) {
+        if (applyGpuPropInput(event.target)) { syncGpuLive(event.target); refreshLiveMetrics(); }
+        return;
+      }
       if (event.target.matches('[data-su-count]')) {
         if (applySuInput(event.target)) { syncSuLive(event.target); refreshLiveMetrics(); }
         return;
@@ -4283,6 +5036,8 @@
     });
 
     document.addEventListener('change', event => {
+      if (event.target.matches('[data-gpu-count]')) { applyGpuCountInput(event.target, true); render(); return; }
+      if (event.target.dataset.gpuKey && event.target.dataset.gpuProp) { applyGpuPropInput(event.target, true); buildControls(); render(); return; }
       if (event.target.matches('[data-su-count]')) { applySuInput(event.target, true); render(); return; }
       if (event.target.hasAttribute && event.target.hasAttribute('data-aux-mult')) {
         const v = readNumericInput(event.target);
@@ -4301,7 +5056,7 @@
 
     document.addEventListener('keydown', event => {
       if (event.key !== 'Enter') return;
-      if (event.target.matches('[data-su-count]') || (event.target.hasAttribute && event.target.hasAttribute('data-aux-mult')) || event.target.dataset.rackCount || (event.target.dataset.rackKey && event.target.dataset.rackProp) || (event.target.dataset.sysKey && event.target.dataset.sysProp) || event.target.classList.contains('fac-input')) event.target.blur();
+      if (event.target.matches('[data-gpu-count]') || (event.target.dataset.gpuKey && event.target.dataset.gpuProp) || event.target.matches('[data-su-count]') || (event.target.hasAttribute && event.target.hasAttribute('data-aux-mult')) || event.target.dataset.rackCount || (event.target.dataset.rackKey && event.target.dataset.rackProp) || (event.target.dataset.sysKey && event.target.dataset.sysProp) || event.target.classList.contains('fac-input')) event.target.blur();
     });
 
     document.addEventListener('click', event => {
@@ -4356,7 +5111,21 @@
       if (viewButton) { state.activeView = viewButton.dataset.view; buildControls(); render(); return; }
 
       const gotoButton = event.target.closest('[data-goto-view]');
-      if (gotoButton) { state.activeView = gotoButton.dataset.gotoView; buildControls(); render(); return; }
+      if (gotoButton) {
+        if (gotoButton.dataset.applyGpu) applyOnlyGpu(gotoButton.dataset.applyGpu);
+        state.activeView = gotoButton.dataset.gotoView; buildControls(); render(); return;
+      }
+      // rev36: 카드 CAPEX 목록 접기/펴기
+      const cxToggle = event.target.closest('[data-capex-toggle]');
+      if (cxToggle) {
+        const key = cxToggle.dataset.capexToggle;
+        if (openCapexCards.has(key)) openCapexCards.delete(key); else openCapexCards.add(key);
+        const open = openCapexCards.has(key);
+        cxToggle.classList.toggle('open', open); cxToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        const list = cxToggle.nextElementSibling; if (list) list.classList.toggle('collapsed', !open);
+        return;
+      }
+      if (event.target.closest('[data-gpu-add]')) { openCustomCard(); return; }
 
       const scenarioButton = event.target.closest('[data-scenario]');
       if (scenarioButton) {
@@ -4373,6 +5142,8 @@
       const spaceModeButton = event.target.closest('[data-space-mode]');
       if (spaceModeButton) { applySpaceMode(spaceModeButton.dataset.spaceMode); return; }
 
+      const gpuCard = event.target.closest('[data-gpu-card]');
+      if (gpuCard) { if (Date.now() - cardPickAt > 600) toggleGpu(gpuCard.dataset.gpuCard); return; }
       const systemButton = event.target.closest('[data-select-system]');
       if (systemButton) { if (Date.now() - cardPickAt > 600 && systemButton.dataset.selectSystem !== state.selectedSystem) selectSystem(systemButton.dataset.selectSystem); return; }
 
@@ -4387,7 +5158,9 @@
     let cardPickAt = 0;
     document.addEventListener('mousedown', event => {
       if (event.button !== 0) return;
-      if (event.target.closest('input, textarea, select, label.fac-manual, .info-dot, button')) return;
+      if (event.target.closest('input, textarea, select, label.fac-manual, .info-dot, button, [data-capex-toggle], .sys-capex')) return;
+      const gpuCard = event.target.closest('[data-gpu-card]');
+      if (gpuCard) { cardPickAt = Date.now(); toggleGpu(gpuCard.dataset.gpuCard); return; }
       const sysCard = event.target.closest('[data-select-system]');
       if (sysCard) { cardPickAt = Date.now(); if (sysCard.dataset.selectSystem !== state.selectedSystem) selectSystem(sysCard.dataset.selectSystem); return; }
       const rackCard = event.target.closest('[data-select-rack]');
@@ -4396,8 +5169,11 @@
     // 카드(role=button) 키보드 접근성
     document.addEventListener('keydown', event => {
       if (event.key !== 'Enter' && event.key !== ' ') return;
-      const card = event.target.closest && event.target.closest('[data-select-system], [data-select-rack]');
+      const card = event.target.closest && event.target.closest('[data-select-system], [data-select-rack], [data-gpu-card], [data-gpu-add], [data-capex-toggle]');
       if (!card || event.target !== card) return;
+      if (card.hasAttribute('data-gpu-card')) { event.preventDefault(); toggleGpu(card.dataset.gpuCard); return; }
+      if (card.hasAttribute('data-gpu-add')) { event.preventDefault(); openCustomCard(); return; }
+      if (card.hasAttribute('data-capex-toggle')) { event.preventDefault(); card.click(); return; }
       event.preventDefault();
       card.click();
     });
@@ -4578,6 +5354,7 @@
     // ---------- init ----------
     fillSelectedRack(state, rackTypes, state.selectedRack);
     if (state.spaceMode === 'expand') state.floorAreaSqm = minFloorAreaForPowerMax();
+    fillGpuDefaults(state, gpuTypes);
     state.suCount = podMaxSu();
     applyStaticI18n();
     buildControls();
@@ -5254,7 +6031,8 @@ const PODFIN = (function () {
   // 재무구조 탭 모델 선택: 'pod' | 'rack' | 'both'
   let finModel = 'pod';
   function dataFor(key) {
-    try { return key === 'rack' ? calcRack() : calcPod(); } catch (e) { return null; }
+    // rev36: GPU 임대 통합 모델 — 모델 구분 없이 현재 구성(calcMix) 하나만 쓴다
+    try { return (typeof calcMix === 'function') ? calcMix() : (key === 'rack' ? calcRack() : calcPod()); } catch (e) { return null; }
   }
   const P = { eq: 30, ir: 8.5, repay: 'equal', veh: 'corp', cur: 'usd', d2: 0, d3: 0 };
   const DEF = { ...P };
@@ -5303,7 +6081,7 @@ const PODFIN = (function () {
     const adj = revAdjust();
     const rev = data.annualRevenue.map((v, i) => v * (adj[i] == null ? 1 : adj[i]));
     // 임대 모델은 전기료·SW 외에 별도 운영비(state.opexEok, 연간 고정)가 계상된다 — 누락 시 EBITDA 과대계상
-    const extraOpex = (data.key === 'rack' && typeof state !== 'undefined') ? (Number(state.opexEok) || 0) : 0;
+    const extraOpex = data.extraOpexEok != null ? (Number(data.extraOpexEok) || 0) : ((data.key === 'rack' && typeof state !== 'undefined') ? (Number(state.opexEok) || 0) : 0);
     const opex = data.annualRevenue.map((_, i) => (data.electricityByYear[i] || 0) + (data.swOpexByYear[i] || 0) + extraOpex);
     const dep = data.capexByYear.slice();
     const capex = data.totalCapexEok;
@@ -5428,15 +6206,12 @@ const PODFIN = (function () {
         <div class="fin-aside-inner">
           <div class="fin-aside-head">
             <h2>${L('재무구조 가정', 'Financing assumptions')}</h2>
-            <p>${L('규모·환율·단가·가동률은 각 모델 탭의 입력값을 그대로 사용합니다. 조달 가정은 두 모델에 공통 적용되어, 재무구조만의 차이를 비교할 수 있습니다.', 'Scale, FX, rates and utilization come from each model tab. Funding assumptions are shared across both models so that only the financing difference is compared.')}</p>
+            <p>${L('규모·환율·단가·가동률은 GPU 임대 탭의 입력값(켜진 카드의 혼합 구성)을 그대로 사용합니다. 조달 가정만 바꿔 재무구조의 차이를 확인할 수 있습니다.', 'Scale, FX, rates and utilization come from the GPU Leasing tab (the mix of active cards). Change only the funding assumptions to see how the financing structure differs.')}</p>
           </div>
           <div class="fin-aside-body">${assumptions(true)}</div>
         </div>
       </aside>
       <div class="fin-main">
-        <div class="fin-modelbar">
-          ${modelSeg()}
-        </div>
         ${single
         ? `<div id="podFinPanel">${panelBody('')}</div>`
         : `<div id="pfinCompare"></div>
@@ -5558,9 +6333,9 @@ const PODFIN = (function () {
     const id = sfx || '';
     const r = build(d);
     const q = k => panel.querySelector('#' + k + id) || document.getElementById(k + id);
-    const label = d.key === 'rack'
+    const label = d.shortConfigText ? d.shortConfigText : (d.key === 'rack'
       ? L('개별GPU 서버', 'Standalone GPU servers')
-      : ((d.system && d.system.shortLabel ? d.system.shortLabel : 'SuperPOD') + ' ' + d.su + 'SU');
+      : ((d.system && d.system.shortLabel ? d.system.shortLabel : 'SuperPOD') + ' ' + d.su + 'SU'));
     const set = (k, v) => { const el = q(k); if (el) el.innerHTML = v; };
     set('pfinKpis', FINVIEW.kpisFull(r, { ir: P.ir }));
     set('pfinChips', FINVIEW.chips(r, [
@@ -5574,7 +6349,7 @@ const PODFIN = (function () {
     set('pfinTable', FINVIEW.table(r));
     set('pfinFinal', FINVIEW.finalStructure(r, P.veh));
     if (typeof applyCollapsedSecs === 'function') applyCollapsedSecs(panel);
-    const extra = (d.key === 'rack' && typeof state !== 'undefined') ? (Number(state.opexEok) || 0) : 0;
+    const extra = d.extraOpexEok != null ? (Number(d.extraOpexEok) || 0) : ((d.key === 'rack' && typeof state !== 'undefined') ? (Number(state.opexEok) || 0) : 0);
     set('pfinNote', L(
       '※ 매출·운영비·감가상각은 본 모델의 입력값에서 그대로 가져옵니다(운영비 = 전기료 + SW 구독료'
       + (extra > 0 ? ' + 별도 운영비 ' + FINVIEW.fmt(extra, 1) + '억/년' : '')
