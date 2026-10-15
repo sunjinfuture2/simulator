@@ -553,6 +553,34 @@
     .th-type .mx-sub { margin-top: 0; }
     .th-type .th-table { margin-top: 12px; }
     .th-sub { font-size: 12px; color: var(--g77); margin-left: 2px; }
+    /* rev37: 운영 방식 · NeoCloud */
+    .s-rule.mid { margin-top: 60.9px; }
+    .s-group.after-rule { padding-top: 78px; }
+    .s-group.rate.off { opacity: 0.4; }
+    .s-group.rate.off input { pointer-events: none; }
+    .s-selwrap { display: inline-flex; align-items: baseline; margin-right: 12px; font-size: 15px; font-weight: 700; color: var(--k100); position: relative; top: -2px; }
+    .s-selwrap::before { content: "\25BE"; font-size: 11px; margin-right: 4px; color: var(--k100); }
+    .s-sel { appearance: none; -webkit-appearance: none; border: 0; background: transparent; font: inherit; font-weight: 700; color: inherit; padding: 0; cursor: pointer; letter-spacing: inherit; }
+    .s-sel:focus { outline: none; }
+    .sec.indent { padding-left: 32px; }
+    .sys-neo { margin-top: 26px; font-size: 12px; font-weight: 600; color: var(--k100); line-height: 16.3px; }
+    .sys-neo.warn { color: var(--red); }
+    .dim-rates { opacity: 0.35; }
+    .dim-rates input { pointer-events: none; }
+    .sys-neo + .dim-rates .sys-rates { margin-top: 12px; }
+    .neo-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+    .neo-chip { display: inline-block; border: 1px solid var(--k100); padding: 0 8px; font-size: 12px; font-weight: 500; line-height: 22px; color: var(--k100); white-space: nowrap; }
+    .neo-chip b { font-weight: 700; }
+    .neo-chip.ok { border-color: var(--green); color: var(--green); }
+    .neo-chip.warn { border-color: var(--red); color: var(--red); }
+    .sens-target { display: inline-flex; align-items: baseline; gap: 8px; }
+    .sens-target .lab { font-size: 12px; font-weight: 500; color: var(--g60); }
+    .sens-target .u { font-size: 24px; font-weight: 500; color: var(--k100); line-height: 32.5px; }
+    .sens-target .unit { font-size: 11px; font-weight: 600; color: var(--g77); }
+    .dt.sens th, .dt.sens td { font-size: 13px; }
+    .dt.cmp tr.wrap td { white-space: normal; line-height: 18px; padding-top: 6px; padding-bottom: 6px; height: auto; font-size: 13px; }
+    .dt.sens tbody tr.cur td { background: var(--gf2, #f2f2f2); font-weight: 600; }
+    .dt.neo tbody tr.mx-rev td { font-weight: 600; }
     .sec-after-cards { margin-top: 116.5px; }
 
     /* =====================================================================
@@ -1019,9 +1047,9 @@
       selectedSystem: 'gb300',
       suCount: 1,
       bmMode: 'A',            // A) 전문 GPU 클라우드 사업자 | B) 하이퍼스케일러
-      utilY1: 90,             // 연차별 가동률 계수(%) — 보고서 6장
-      utilY2: 80,
-      utilY3: 80,
+      utilY1: 100,            // 연차별 가동률 계수(%) — VSLAI rev1.2 기본값 100/100/100 (보고서 6장은 90/80/80)
+      utilY2: 100,
+      utilY3: 100,
       mix3Y: 50,              // 3년 약정 비중(%)
       mix1Y: 30,              // 1년 약정 비중(%)
       mixOD: 10,              // 온디맨드 비중(%)
@@ -1046,19 +1074,94 @@
       opexEok: 50,
       rackAuxUsdPerRack: RACK_AUX_USD_PER_RACK,
       rackSiUsdPerRack: RACK_SI_USD_PER_RACK,
-      siMultiplier: 1.3,
+      siMultiplier: 1.0,      // rev37: VSLAI rev1.2 B300 모델은 SI 할증 없음 (1.0 = 턴키 동일)
       depY1: 33,
       depY2: 66,
       depY3: 99,
       // rev36: GPU 임대 통합 — 카드별 포함 여부·수량 (초기 수량은 fillGpuDefaults 가 전력·면적 상한으로 채움)
       on_b300: true, on_gb300: false, on_vr: false, on_custom: false,
       n_b300: 0, n_gb300: 0, n_vr: 0, n_custom: 0,
-      customOpen: false
+      customOpen: false,
+      // rev37: 운영 방식 — 'csp'(직접 영업·운영) | 'neo'(NeoCloud 경유). 기본값과 NeoCloud 조건은 VSLAI rev1.2 값
+      opMode: 'neo',
+      neoPriceKey: 'b300',
+      neoPrice_b300: 7.38,     // NeoCloud 공개 소비자가 ($/GPU·h) — B300
+      neoPrice_gb300: 0,       // 자료 없음 — 빈칸(0)이면 매출 0
+      neoPrice_vr: 0,
+      neoPrice_custom: 0,
+      neoMarginPct: 20,        // NeoCloud 사업자 마진율(%) — 공개가에서 차감
+      neoUtilPct: 90,          // 가동비중(%) — 연차 구분 없이 고정, 나머지는 정비·유휴
+      neoSwUsdPerGpuYear: 0,   // NeoCloud 플랫폼 운영 전제 SW 구독 0
+      neoOpexEok: 0,           // 기타 운영비(억/년)
+      neoTargetIrrPct: 15      // 협상 판단용 목표 Equity IRR(%)
     };
     // ---------- i18n dictionary ----------
     const T = {
       // ---- rev36: GPU 임대 통합 탭 · 다중 카드 ----
       tabLease: { ko: 'GPU 임대', en: 'GPU Leasing' },
+      // ---- rev37: 운영 방식 CSP / NeoCloud ----
+      labelOpMode: { ko: '운영 방식', en: 'Operating model' },
+      opModeCsp: { ko: 'CSP', en: 'CSP' },
+      opModeNeo: { ko: 'NeoCloud', en: 'NeoCloud' },
+      opModeCspHint: { ko: 'CSP — 당사가 GPU 클라우드를 직접 영업·운영합니다. 계약 포트폴리오(약정·온디맨드)와 할인율로 매출을 산출합니다.', en: 'CSP — we sell and operate the GPU cloud ourselves. Revenue follows the contract portfolio (reserved / on-demand) and discounts.' },
+      opModeNeoHint: { ko: 'NeoCloud — 네오클라우드 사업자가 영업·운영을 맡고 당사는 인프라를 공급합니다. 공개 소비자가에서 사업자 마진을 뺀 금액을 매출로 인식하며, 아래 관련 입력값이 열립니다.', en: 'NeoCloud — a neocloud operator handles sales and operations on our infrastructure. Revenue is the public list price less the operator margin; the related inputs open below.' },
+      labelNeoPrice: { ko: 'GPU 소비자가', en: 'GPU list price' },
+      labelNeoMargin: { ko: '마진율', en: 'Operator margin' },
+      labelNeoUtil: { ko: '가동비중', en: 'Utilized share' },
+      labelNeoSw: { ko: 'SW구독단가', en: 'SW subscription' },
+      labelNeoOpex: { ko: '기타 운영비(연간)', en: 'Other opex (per yr)' },
+      neoPriceBlank: { ko: '소비자가 미입력 — 매출 0으로 계산', en: 'No list price — revenue counted as 0' },
+      neoNetChip: { ko: 'NeoCloud 순단가 {net}/GPU·h = 소비자가 {gross} − 마진 {m}%', en: 'NeoCloud net rate {net}/GPU·h = list {gross} − margin {m}%' },
+      neoTermsTitle: { ko: 'NeoCloud 공급 조건 · 매출 구조', en: 'NeoCloud supply terms · revenue structure' },
+      neoTermsDesc: { ko: '공개 소비자가에서 NeoCloud 사업자 마진을 뺀 금액을 당사 매출로 인식합니다. 가동비중은 연차 구분 없이 고정이며, 계약 포트폴리오·입지 프리미엄·약정 할인은 적용하지 않습니다(공개가가 이미 시장가이므로).', en: 'We recognize the public list price less the NeoCloud operator margin as revenue. The utilized share is flat across years; no contract portfolio, location premium or term discounts apply, since the list price is already a market price.' },
+      neoCol3y: { ko: '3년 합계', en: '3-yr total' },
+      neoRowUtil: { ko: '가동비중 (유휴 제외)', en: 'Utilized share' },
+      neoRowHours: { ko: 'GPU·시간', en: 'GPU-hours' },
+      neoRowGross: { ko: '과금액 (소비자가 기준)', en: 'Billings (list price)' },
+      neoRowTake: { ko: 'NeoCloud 마진 ({m})', en: 'NeoCloud margin ({m})' },
+      neoRowNet: { ko: '당사 인식 매출', en: 'Recognized revenue' },
+      neoRowNetTotal: { ko: '당사 인식 매출 합계', en: 'Total recognized revenue' },
+      neoTypeSub: { ko: '{name} · GPU {g}개 · 소비자가 {gross} → 순단가 {net}/GPU·h', en: '{name} · {g} GPUs · list {gross} → net {net}/GPU·h' },
+      neoTermsNote: { ko: '실효 가동률 = 가동비중(좌측 입력). 나머지는 정비·유휴로 매출이 발생하지 않습니다.', en: 'Effective utilization = utilized share (left). The remainder is maintenance/idle with no revenue.' },
+      neoSensTitle: { ko: 'NeoCloud 마진율 민감도 · 협상 범위', en: 'NeoCloud margin sensitivity · negotiating range' },
+      neoSensDesc: { ko: '마진율만 바꾸고 나머지 입력(규모·환율·가동비중·조달구조)은 현재 값으로 고정해 주주수익률을 다시 계산합니다. 조달 가정은 재무구조 탭과 공유합니다.', en: 'Only the margin varies; scale, FX, utilization and funding stay at current values. Funding assumptions are shared with the financing tab.' },
+      neoTargetIrr: { ko: '목표 Equity IRR', en: 'Target equity IRR' },
+      neoSensColMargin: { ko: '마진율', en: 'Margin' },
+      neoSensColNet: { ko: '순단가', en: 'Net rate' },
+      neoSensColRev: { ko: '3년 매출', en: '3-yr revenue' },
+      neoSensColTake: { ko: '3년 마진액', en: '3-yr margin' },
+      neoSensColFcfe: { ko: '3년 누적 FCFE', en: '3-yr FCFE' },
+      neoSensColIrr: { ko: 'Equity IRR', en: 'Equity IRR' },
+      neoSensColMoic: { ko: 'MOIC', en: 'MOIC' },
+      neoSensColNpv: { ko: 'NPV', en: 'NPV' },
+      neoSensColDscr: { ko: '최소 DSCR', en: 'Min DSCR' },
+      neoSensCur: { ko: ' (현재)', en: ' (current)' },
+      neoSensChipCur: { ko: '현재 마진 {m} → IRR {irr}', en: 'Current margin {m} → IRR {irr}' },
+      neoSensChipMax: { ko: '목표 IRR {t} 유지 최대 마진 {m}', en: 'Max margin for {t} IRR: {m}' },
+      neoSensChipBe: { ko: 'IRR 0% 손익분기 마진 {m}', en: 'Break-even margin (IRR 0%): {m}' },
+      neoSensNone: { ko: '마진 0%에서도 미달', en: 'unmet even at 0%' },
+      neoSensAll: { ko: '99% 이상에서도 충족', en: 'met even at 99%' },
+      neoSensOk: { ko: '현재 마진에서 목표 IRR 충족 (여유 {h})', en: 'Target met at current margin (headroom {h})' },
+      neoSensWarn: { ko: '현재 마진에서 목표 IRR 미달', en: 'Target not met at current margin' },
+      neoSensNote: { ko: '※ 초록 = 목표 IRR 이상, 빨강 = 미달. 「목표 IRR 유지 최대 마진」은 당사가 수용할 수 있는 NeoCloud 마진의 상한(협상 하한선)이며, 「손익분기 마진」은 주주 IRR이 0%가 되는 지점입니다. 조달 가정을 바꾸면 표 전체가 달라집니다.', en: '※ Green = at or above target IRR, red = below. "Max margin for target IRR" is the ceiling on the NeoCloud margin we can accept (our negotiating floor); the break-even margin is where equity IRR reaches 0%. Changing funding assumptions shifts the whole table.' },
+      neoNA: { ko: '산출불가', en: 'n/a' },
+      neoNoDebt: { ko: '무차입', en: 'No debt' },
+      mixNeoNote: { ko: 'NeoCloud 모드에서는 계약유형별 단가 대신 소비자가 − 마진율에 가동비중을 곱해 매출을 산출합니다. 연차별 내역은 위 「NeoCloud 공급 조건 · 매출 구조」 표에 있습니다.', en: 'In NeoCloud mode revenue is list price − margin × utilized share instead of contract rates. The yearly breakdown is in the "NeoCloud supply terms · revenue structure" table above.' },
+      blNeoPrice: { ko: '{name} 소비자가 → 순단가', en: '{name} list → net rate' },
+      blNeoUtil: { ko: '가동비중', en: 'Utilized share' },
+      blNeoMargin: { ko: 'NeoCloud 마진율', en: 'NeoCloud margin' },
+      blSwOpexNeo: { ko: 'SW 구독료(연, NeoCloud)', en: 'SW subscription (per yr, NeoCloud)' },
+      blOtherOpexNeo: { ko: '기타 운영비(연)', en: 'Other opex (per yr)' },
+      chipSwSubNeo: { ko: 'SW 구독 (NeoCloud)', en: 'SW subscription (NeoCloud)' },
+      formulaCardGpuBodyNeo: { ko: 'Σ(GPU 종류별 수량 × 단위당 GPU 수 × 8,760시간 × 가동비중 × 소비자가($) × (1 − 마진율) × 환율) ※ 계약 포트폴리오·입지 프리미엄·약정 할인 미적용', en: 'Σ(per GPU type: units × GPUs/unit × 8,760 hrs × utilized share × list price ($) × (1 − margin) × FX) — no contract mix, location premium or term discounts' },
+      formulaCardOpexBodyNeo: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동비중 × 전력량 단가] + SW 구독료[GPU 수 × NeoCloud SW 구독단가 × 환율] + 기타 운영비', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 hrs × Utilized share × Energy rate] + SW subscription [GPUs × NeoCloud SW rate × FX] + other opex' },
+      cmpModeTitle: { ko: '운영 방식 비교 (현재 구성)', en: 'Operating model comparison (current configuration)' },
+      cmpModeDesc: { ko: '현재 켜진 카드 구성을 CSP와 NeoCloud로 각각 계산해 비교합니다. 다른 입력값은 동일합니다.', en: 'The current card configuration calculated under CSP and under NeoCloud with all other inputs equal.' },
+      cmpModeRowBasis: { ko: '단가 기준', en: 'Rate basis' },
+      cmpModeBasisCsp: { ko: '기초단가 × 입지 × 약정할인 · 포트폴리오 · 연차 가동률', en: 'Base rate × location × term discounts · portfolio · yearly utilization' },
+      cmpModeBasisNeo: { ko: '소비자가 − 마진 {m}% · 가동비중 {u}%', en: 'List price − margin {m}% · utilized share {u}%' },
+      labelDisc3YShort: { ko: '3년 할인율', en: '3-Yr discount' },
+      labelDisc1YShort: { ko: '1년 할인율', en: '1-Yr discount' },
       unitServer: { ko: '대', en: ' srv' },
       gpuSelectorDesc: { ko: "'GB200 NVL72 SuperPOD CAPEX & OPEX 추산' 자료의 초기 투자비(CAPEX) 항목별 추산치와 연차별 GPU 임대단가·GPU FP4 성능 기준.<br>GB300 SuperPOD은 NVL72 항목에 GPU 단가 표준 비율 1.3배를 적용(그 외 항목·OPEX·내장 SW 사양 동일). 카드를 누르면 구성에 넣고 빼며, 여러 장을 켜면 혼합 구성으로 계산됩니다.", en: "Based on the per-item initial CAPEX estimates from the 'GB200 NVL72 SuperPOD CAPEX & OPEX' report, plus per-year GPU rental rates and GPU FP4 performance.<br>GB300 SuperPOD applies a 1.3x GPU price ratio to the NVL72 line item (all other items, OPEX, and bundled SW identical). Click a card to add or remove it; several cards on at once form a mixed configuration." },
       gpuCardAddLabel: { ko: '직접 입력 시스템 추가', en: 'Add a custom system' },
@@ -1616,9 +1719,9 @@
       basicChargeKwMonth: 'kwmonth'
     };
     // eok-denominated controls: state stays in 억 (100M KRW); shown as $M only in EN.
-    const EOK_KIND = { opexEok: true };
+    const EOK_KIND = { opexEok: true, neoOpexEok: true };
     // usd-denominated controls: same numeric value in KO/EN (no FX conversion of the input itself).
-    const USD_KIND = { swSubUsdPerGpuYear: true };
+    const USD_KIND = { swSubUsdPerGpuYear: true, neoSwUsdPerGpuYear: true };
 
     function cloneSystems(source) {
       return Object.fromEntries(Object.entries(source).map(([key, value]) => [key, { ...value, capexUsd: { ...value.capexUsd }, baseRateUsd: { ...value.baseRateUsd } }]));
@@ -1928,6 +2031,21 @@
         ]
       },
       {
+        titleKey: 'labelOpMode', scopeKey: 'groupCommonScope',
+        views: ['superpod', 'compare'],
+        controls: [
+          { id: 'neoPrice_b300', labelKey: 'labelNeoPrice', min: 0, max: 100, step: 0.01 },
+          { id: 'neoPrice_gb300', labelKey: 'labelNeoPrice', min: 0, max: 100, step: 0.01 },
+          { id: 'neoPrice_vr', labelKey: 'labelNeoPrice', min: 0, max: 100, step: 0.01 },
+          { id: 'neoPrice_custom', labelKey: 'labelNeoPrice', min: 0, max: 100, step: 0.01 },
+          { id: 'neoMarginPct', labelKey: 'labelNeoMargin', min: 0, max: 60, step: 1 },
+          { id: 'neoUtilPct', labelKey: 'labelNeoUtil', min: 50, max: 100, step: 1 },
+          { id: 'neoSwUsdPerGpuYear', labelKey: 'labelNeoSw', min: 0, max: 20000, step: 100 },
+          { id: 'neoOpexEok', labelKey: 'labelNeoOpex', min: 0, max: 500, step: 5 },
+          { id: 'neoTargetIrrPct', labelKey: 'neoTargetIrr', min: 0, max: 200, step: 0.5 }
+        ]
+      },
+      {
         titleKey: 'groupRateTitle', scopeKey: 'groupRateScope',
         views: ['superpod', 'gpu', 'compare'],
         controls: [
@@ -2106,7 +2224,8 @@
     function formatControlValue(id, value) {
       if (EOK_KIND[id]) return eok(value);
       if (RATE_KIND[id]) return formatRateText(id, value);
-      if (id === 'swSubUsdPerGpuYear') return formatSwSub(value);
+      if (id === 'swSubUsdPerGpuYear' || id === 'neoSwUsdPerGpuYear') return formatSwSub(value);
+      if (id.startsWith('neoPrice_')) return `$${nfEn(2).format(value)}/GPU·h`;
       if (id === 'fxKrwUsd') return state.lang === 'en' ? `\u20A9${nf.format(value)}/$` : `${nf.format(value)}\uC6D0/USD`;
       if (id === 'totalPowerKw' || id === 'itPowerKw') return `${nf.format(value)}kW`;
       if (id === 'floorAreaSqm') return `${nf.format(value)}\u33A1`;
@@ -2413,13 +2532,30 @@
       return parts.length ? parts.join(' + ') : '—';
     }
 
+    // ---- rev37: 운영 방식 ----
+    function isNeo(s = state) { return s.opMode === 'neo'; }
+    function neoPriceOf(key, s = state) { return Math.max(0, Number(s['neoPrice_' + key]) || 0); }
+    function neoMargin(s = state) { return Math.max(0, Math.min(100, Number(s.neoMarginPct) || 0)) / 100; }
+    function neoNetUsd(key, s = state) { return neoPriceOf(key, s) * (1 - neoMargin(s)); }
+    function neoUtil(s = state) { return Math.max(0, Math.min(100, Number(s.neoUtilPct) || 0)) / 100; }
+    function applyOpMode(mode) {
+      const next = mode === 'neo' ? 'neo' : 'csp';
+      if (state.opMode === next) return;
+      state.opMode = next;
+      buildControls();
+      render();
+    }
+
     // ---- rev36: 혼합 구성 계산 — 켜진 카드별 매출·CAPEX·전력·면적을 합산 ----
     //  전기료: 기본요금 = 총 수전용량 × 기본요금 × 12 / 전력량요금 = 켜진 카드의 사용 IT 전력 합계 × PUE × 8,760h × 가동률 × 단가
     //  기타 운영비(opexEok)는 서버형(B300)이 켜진 구성에만 계상 (랙 낱개 조달 모델의 별도 운영비를 승계)
     function calcMix(inputState = state, inputTypes = gpuTypes, inputFacilityEok = null) {
-      const utils = getUtilizations(inputState);
+      const neo = isNeo(inputState);
+      const nu = neoUtil(inputState);
+      const utils = neo ? Array.from({ length: YEARS }, () => nu) : getUtilizations(inputState);
       const fxv = Number(inputState.fxKrwUsd) || 0;
       const revenueByYear = Array.from({ length: YEARS }, () => 0);
+      const grossByYear = Array.from({ length: YEARS }, () => 0);
       let gpus = 0, racks = 0, totalFp4 = 0, itCapexUsd = 0, usedItPower = 0, occupiedArea = 0, hasServer = false;
       const types = GPU_KEYS.filter(k => gpuOn(k, inputState)).map(key => {
         const g = inputTypes[key];
@@ -2427,7 +2563,13 @@
         const n = gpuCount(key, inputState);
         const gpuN = ok ? n * (Number(g.gpusPerUnit) || 0) : 0;
         const blended = blendedRateByYear(g, inputState);
-        const rev = blended.map(r => gpuN * HOURS * r / EOK);
+        const priceUsd = neo ? neoPriceOf(key, inputState) : 0;
+        const netUsd = neo ? neoNetUsd(key, inputState) : 0;
+        const gpuHours = utils.map(u => gpuN * HOURS * u);
+        const rev = neo ? gpuHours.map(h => h * netUsd * fxv / EOK) : blended.map(r => gpuN * HOURS * r / EOK);
+        const gross = neo ? gpuHours.map(h => h * priceUsd * fxv / EOK) : rev.slice();
+        const take = gross.map((v, i) => v - rev[i]);
+        for (let y = 0; y < YEARS; y++) grossByYear[y] += gross[y];
         const perUnitUsd = gpuCapexPerUnitUsd(g, inputState);
         const capUsd = ok ? n * perUnitUsd : 0;
         const kw = ok ? n * gpuUnitPowerKw(g) : 0;
@@ -2441,6 +2583,7 @@
           key, type: g, kind: g.kind, ok, n, gpus: gpuN, racks: rk, fp4, perUnitUsd,
           itCapexUsd: capUsd, itCapexEok: capUsd * fxv / EOK,
           rates: contractRates(g, inputState), blended, annualRevenue: rev,
+          priceUsd, netUsd, gpuHours, grossByYear: gross, takeByYear: take,
           usedItPower: kw, occupiedArea: area,
           maxUnits: gpuMaxUnits(key, inputState, inputTypes), powerMax: gpuPowerMax(key, inputState, inputTypes), areaMax: gpuAreaMax(key, inputState, inputTypes),
           constraint: gpuConstraintType(key, inputState, inputTypes)
@@ -2455,9 +2598,10 @@
       const energyEok100 = usedItPower * pue * HOURS * (Number(inputState.energyCostRate) || 0) / EOK;
       const energyByYear = utils.map(u => energyEok100 * u);
       const electricityByYear = energyByYear.map(e => baseEok + e);
-      const swOpexEok = gpus * (Number(inputState.swSubUsdPerGpuYear) || 0) * fxv / EOK;
+      const swRateUsd = neo ? (Number(inputState.neoSwUsdPerGpuYear) || 0) : (Number(inputState.swSubUsdPerGpuYear) || 0);
+      const swOpexEok = gpus * swRateUsd * fxv / EOK;
       const swOpexByYear = utils.map(() => swOpexEok);
-      const opexEok = hasServer ? Math.max(0, Number(inputState.opexEok) || 0) : 0;
+      const opexEok = neo ? Math.max(0, Number(inputState.neoOpexEok) || 0) : (hasServer ? Math.max(0, Number(inputState.opexEok) || 0) : 0);
       const depIncrements = getDepreciationIncrements(inputState);
       const capexByYear = depIncrements.map(d => totalCapexEok * d);
       const annualRevenue = revenueByYear;
@@ -2482,6 +2626,8 @@
       const fallback = inputTypes.gb300;
       return {
         key: 'mix', types, hasServer,
+        mode: neo ? 'neo' : 'csp', neoMarginPct: neoMargin(inputState) * 100, neoUtilPct: nu * 100, swRateUsd,
+        grossByYear, takeByYear: grossByYear.map((v, i) => v - revenueByYear[i]), gpuHours: utils.map(u => gpus * HOURS * u),
         system: primary ? primary.type : fallback, systemKey: primary ? primary.key : null, su: primary ? primary.n : 0,
         gpus, totalGpu: gpus, racks, totalFp4,
         rates: primary ? primary.rates : contractRates(fallback, inputState), blended: primary ? primary.blended : utils.map(() => 0),
@@ -2504,7 +2650,7 @@
     }
     function getBaselineData() {
       const baselineState = makeBaselineState();
-      if (baselineState.spaceMode === 'expand') baselineState.floorAreaSqm = minFloorAreaForPowerMax(baselineState, GPU_DEFAULTS);
+      if (baselineState.spaceMode === 'expand') baselineState.floorAreaSqm = minFloorAreaForPowerMax(baselineState, GPU_DEFAULTS, 'gb300');
       fillGpuDefaults(baselineState, GPU_DEFAULTS);
       return calcMix(baselineState, GPU_DEFAULTS, baselineFacilityTotal('pod'));
     }
@@ -2794,7 +2940,7 @@
             [t('specPricePerRack'), gpuNumInput(key, 'rackPriceUsd', g.rackPriceUsd, 'step="10000"'), '$']
           ];
       const capexItems = isServer
-        ? SERVER_ITEM_KEYS.map(k => [t(SERVER_ITEM_LABEL_KEYS[k], { m: nf1.format(Number(state.siMultiplier) || 1) }), usdPlain(g.capexUsd[k]), k === 'si' ? usdPlain((Number(g.capexUsd.si) || 0) * Math.max(1, Number(state.siMultiplier) || 1)) : ''])
+        ? SERVER_ITEM_KEYS.map(k => [k === 'si' && !((Number(state.siMultiplier) || 1) > 1) ? t('capexItemSi').replace(/\s*\(.*\)\s*$/, '') : t(SERVER_ITEM_LABEL_KEYS[k], { m: nf1.format(Number(state.siMultiplier) || 1) }), usdPlain(g.capexUsd[k]), (k === 'si' && (Number(state.siMultiplier) || 1) > 1) ? usdPlain((Number(g.capexUsd.si) || 0) * Math.max(1, Number(state.siMultiplier) || 1)) : ''])
         : CAPEX_ITEM_KEYS.map(k => [capexItemLabel(g, k), k === 'nvl72' ? `<span title="${escAttr(t('capexNvl72Derived', { r: nf.format(Number(g.racksPerUnit) || 0) }))}">${usdM(g.capexUsd.nvl72)}</span>` : (editableSu ? gpuNumInput(key, 'capex:' + k, g.capexUsd[k], 'step="10000"', 'sm') : usdM(g.capexUsd[k])), '']);
       const capexOpen = openCapexCards.has(key);
       return `
@@ -2809,7 +2955,8 @@
               <span class="max ${overNow ? 'text-danger' : ''}" data-gpu-chip="${key}">${maxNote}</span>
             </div>
             <input type="range" class="track" min="0" max="${sliderMax}" step="1" value="${Math.min(n, sliderMax)}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} slider" ${ok ? '' : 'disabled'} />
-            ${rateBlockHtml(g, `data-gpu-key="${key}" data-gpu-prop="baseRateUsd"`, `gpu:${key}`)}
+            ${isNeo() ? `<div class="sys-neo ${neoPriceOf(key) > 0 ? '' : 'warn'}">${neoPriceOf(key) > 0 ? t('neoNetChip', { net: `$${nfEn(2).format(neoNetUsd(key))}`, gross: `$${nfEn(2).format(neoPriceOf(key))}`, m: nf1.format(Number(state.neoMarginPct) || 0) }) : t('neoPriceBlank')}</div>` : ''}
+            <div class="${isNeo() ? 'dim-rates' : ''}">${rateBlockHtml(g, `data-gpu-key="${key}" data-gpu-prop="baseRateUsd"`, `gpu:${key}`)}</div>
             <div class="sys-specs2">
               ${specs.map(([lab, input, u]) => `<div class="sys-spec"><span class="lab">${lab}</span><span class="v">${input}<span class="unit">${u}</span></span></div>`).join('')}
             </div>
@@ -2883,7 +3030,7 @@
     }
     function renderMixSection(data) {
       const years = portfolioByYear();
-      const basisNote = t('rateBasisNote', {
+      const basisNote = isNeo() ? '' : t('rateBasisNote', {
         b: data.types.filter(x => x.ok).map(x => `$${nfEn(2).format(x.rates.baseUsd)}`).join(' / ') || '$0.00',
         loc: nf1.format(Number(state.locPremiumPct) || 0),
         d1: nf1.format(Number(state.disc1YPct) || 0),
@@ -2912,9 +3059,167 @@
       return `
         <section class="sec mt-116 mix-sec">
           ${secHead(t('mixTableTitle').replace(/\s*\(.*\)\s*$/, ''))}
-          <div class="sec-desc">${t('mixSummary', { g: nf.format(data.gpus), fp: nf.format(Math.round(data.totalFp4)), capex: eok(data.itCapexEok) })}<br>${basisNote}</div>
+          <div class="sec-desc">${t('mixSummary', { g: nf.format(data.gpus), fp: nf.format(Math.round(data.totalFp4)), capex: eok(data.itCapexEok) })}${basisNote ? '<br>' + basisNote : ''}</div>
           <div class="mx-types">${counts}</div>
-          ${okTypes.length ? tables + totalRow : `<div class="notice warn">${t('mixNoType')}</div>`}
+          ${isNeo() ? `<div class="notice info">${t('mixNeoNote')}</div>` : (okTypes.length ? tables + totalRow : `<div class="notice warn">${t('mixNoType')}</div>`)}
+        </section>
+      `;
+    }
+
+    // ---- rev37: NeoCloud 공급 조건 · 매출 구조 ----
+    function neoTermsTable(rows, cols) {
+      return `
+          <div class="dt-wrap" style="margin-top:12px">
+            <table class="dt mix neo">
+              <colgroup><col><col style="width:181px"><col style="width:181px"><col style="width:181px"><col style="width:181px"></colgroup>
+              <thead><tr><th>${t('mixColItem')}</th>${cols.map(c => `<th class="r">${c}</th>`).join('')}</tr></thead>
+              <tbody>${rows.map(([label, cells, cls]) => `<tr class="${cls || ''}"><td>${label}</td>${cells.map(c => `<td class="r">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+            </table>
+          </div>`;
+    }
+    function renderNeoTermsSection(data) {
+      const sum = a => a.reduce((x, y) => x + y, 0);
+      const usd = v => `$${nfEn(2).format(v)}`;
+      const cols = [1, 2, 3].map(n => t('mixYearCol', { n })).concat([t('neoCol3y')]);
+      const mTxt = pct(data.neoMarginPct, 1);
+      const okTypes = data.types.filter(td => td.ok);
+      const blocks = okTypes.map(td => {
+        const rows = [
+          [t('neoRowUtil'), data.utils.map(u => pct(u * 100, 1)).concat(['—'])],
+          [t('neoRowHours'), td.gpuHours.map(h => nf.format(Math.round(h))).concat([nf.format(Math.round(sum(td.gpuHours)))])],
+          [t('neoRowGross'), td.grossByYear.map(eok).concat([eok(sum(td.grossByYear))])],
+          [t('neoRowTake', { m: mTxt }), td.takeByYear.map(v => `−${eok(v)}`).concat([`−${eok(sum(td.takeByYear))}`])],
+          [t('neoRowNet'), td.annualRevenue.map(v => `<b>${eok(v)}</b>`).concat([`<b>${eok(sum(td.annualRevenue))}</b>`]), 'mx-rev']
+        ];
+        const sub = td.priceUsd > 0
+          ? t('neoTypeSub', { name: gpuLabel(td.type, td.key), g: nf.format(td.gpus), gross: usd(td.priceUsd), net: usd(td.netUsd) })
+          : `${gpuLabel(td.type, td.key)} · <span class="text-danger">${t('neoPriceBlank')}</span>`;
+        return `<div class="mx-block"><div class="mx-sub">${sub}</div>${neoTermsTable(rows, cols)}</div>`;
+      }).join('');
+      const total = okTypes.length > 1 ? `
+          <div class="dt-wrap mx-sum" style="margin-top:29.6px">
+            <table class="dt mix neo">
+              <colgroup><col><col style="width:181px"><col style="width:181px"><col style="width:181px"><col style="width:181px"></colgroup>
+              <tbody>
+                <tr><td>${t('neoRowGross')}</td>${data.grossByYear.map(v => `<td class="r">${eok(v)}</td>`).join('')}<td class="r">${eok(sum(data.grossByYear))}</td></tr>
+                <tr><td>${t('neoRowTake', { m: mTxt })}</td>${data.takeByYear.map(v => `<td class="r">−${eok(v)}</td>`).join('')}<td class="r">−${eok(sum(data.takeByYear))}</td></tr>
+                <tr class="mx-rev"><td>${t('neoRowNetTotal')}</td>${data.annualRevenue.map(v => `<td class="r">${eok(v)}</td>`).join('')}<td class="r">${eok(sum(data.annualRevenue))}</td></tr>
+              </tbody>
+            </table>
+          </div>` : '';
+      return `
+        <section class="sec mt-116 indent neo-terms-sec">
+          ${secHead(t('neoTermsTitle'))}
+          <div class="sec-desc">${t('neoTermsDesc')}</div>
+          ${okTypes.length ? blocks + total : `<div class="notice warn">${t('mixNoType')}</div>`}
+          <div class="foot-note">${t('neoTermsNote')}</div>
+        </section>
+      `;
+    }
+
+    // ---- rev37: NeoCloud 마진율 민감도 · 협상 범위 ----
+    function neoMetricsAt(marginPct) {
+      if (typeof PODFIN === 'undefined' || !PODFIN.metrics) return null;
+      const st = { ...state, opMode: 'neo', neoMarginPct: marginPct };
+      const d = calcMix(st, gpuTypes);
+      const r = PODFIN.metrics(d);
+      return r ? { d, r } : null;
+    }
+    // IRR이 target 이상을 유지하는 최대 마진(%) — 마진이 오르면 IRR은 단조 감소
+    function neoSolveMargin(targetIrr) {
+      const irrAt = m => { const x = neoMetricsAt(m); return x && x.r.irr != null ? x.r.irr : -1; };
+      if (irrAt(0) < targetIrr) return { kind: 'none' };
+      if (irrAt(99) >= targetIrr) return { kind: 'all' };
+      let lo = 0, hi = 99;
+      for (let k = 0; k < 40; k++) { const mid = (lo + hi) / 2; if (irrAt(mid) >= targetIrr) lo = mid; else hi = mid; }
+      return { kind: 'ok', m: lo };
+    }
+    function renderNeoSensSection(data) {
+      const target = (Number(state.neoTargetIrrPct) || 0) / 100;
+      const cur = Number(state.neoMarginPct) || 0;
+      const base = [10, 15, 20, 25, 30, 35, 40];
+      const list = base.includes(cur) ? base.slice() : base.concat([cur]).sort((a, b) => a - b);
+      const sum = a => a.reduce((x, y) => x + y, 0);
+      const fp = v => v == null ? t('neoNA') : (v * 100).toFixed(1) + '%';
+      const unitB = state.lang === 'en' ? 'B' : '억';
+      const rows = list.map(m => {
+        const x = neoMetricsAt(m);
+        if (!x) return '';
+        const { d, r } = x;
+        const below = r.irr == null || r.irr < target;
+        const isCur = Math.abs(m - cur) < 1e-9;
+        return `<tr class="${isCur ? 'cur' : ''}">
+          <td>${pct(m, 1)}${isCur ? t('neoSensCur') : ''}</td>
+          <td class="r">${d.types.filter(td => td.ok && td.priceUsd > 0).map(td => `$${nfEn(2).format(td.netUsd)}`).join(' / ') || '—'}</td>
+          <td class="r">${eok(sum(d.annualRevenue))}</td>
+          <td class="r">${eok(sum(d.takeByYear))}</td>
+          <td class="r">${eok(r.cumFcfe)}</td>
+          <td class="r ${below ? 'text-danger' : 'text-success'}"><b>${fp(r.irr)}</b></td>
+          <td class="r">${r.moic == null ? '—' : r.moic.toFixed(2) + (state.lang === 'en' ? 'x' : '배')}</td>
+          <td class="r">${eok(r.npv)}</td>
+          <td class="r">${r.minDscr == null ? t('neoNoDebt') : r.minDscr.toFixed(2)}</td>
+        </tr>`;
+      }).join('');
+      const solveTxt = sol => sol.kind === 'none' ? t('neoSensNone') : sol.kind === 'all' ? t('neoSensAll') : pct(sol.m, 1);
+      const solT = neoSolveMargin(target);
+      const sol0 = neoSolveMargin(0);
+      const curX = neoMetricsAt(cur);
+      const curIrr = curX ? curX.r.irr : null;
+      const ok = curIrr != null && curIrr >= target;
+      const headroom = solT.kind === 'ok' ? ((solT.m - cur) >= 0 ? '+' : '') + (solT.m - cur).toFixed(1) + '%p' : '—';
+      const targetInput = `<span class="sens-target"><span class="lab">${t('neoTargetIrr')}</span><span class="u"><input type="number" min="0" max="200" step="0.5" value="${nfPlain(state.neoTargetIrrPct, 2)}" data-input="neoTargetIrrPct" aria-label="${escAttr(t('neoTargetIrr'))}" /></span><span class="unit">%</span></span>`;
+      return `
+        <section class="sec mt-100 indent neo-sens-sec">
+          ${secHead(t('neoSensTitle'), { tools: targetInput })}
+          <div class="sec-desc">${t('neoSensDesc')}</div>
+          <div class="neo-chips">
+            <span class="neo-chip">${t('neoSensChipCur', { m: pct(cur, 1), irr: `<b>${fp(curIrr)}</b>` })}</span>
+            <span class="neo-chip">${t('neoSensChipMax', { t: pct(target * 100, 1), m: `<b>${solveTxt(solT)}</b>` })}</span>
+            <span class="neo-chip">${t('neoSensChipBe', { m: `<b>${solveTxt(sol0)}</b>` })}</span>
+            <span class="neo-chip ${ok ? 'ok' : 'warn'}">${ok ? t('neoSensOk', { h: headroom }) : t('neoSensWarn')}</span>
+          </div>
+          <div class="dt-wrap" style="margin-top:22px">
+            <table class="dt sens" aria-label="${escAttr(t('neoSensTitle'))}">
+              <colgroup><col style="width:118px"><col><col><col><col><col><col><col><col></colgroup>
+              <thead><tr>
+                <th>${t('neoSensColMargin')}</th><th class="r">${t('neoSensColNet')}</th><th class="r">${t('neoSensColRev')}</th><th class="r">${t('neoSensColTake')}</th><th class="r">${t('neoSensColFcfe')}</th><th class="r">${t('neoSensColIrr')}</th><th class="r">${t('neoSensColMoic')}</th><th class="r">${t('neoSensColNpv')} @12%</th><th class="r">${t('neoSensColDscr')}</th>
+              </tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+          <div class="foot-note">${t('neoSensNote')}</div>
+        </section>
+      `;
+    }
+
+    // ---- rev37: 운영 방식 비교 (현재 구성을 CSP / NeoCloud 로 각각 계산) ----
+    function renderModeComparePanel() {
+      const dc = calcMix({ ...state, opMode: 'csp' }, gpuTypes);
+      const dn = calcMix({ ...state, opMode: 'neo' }, gpuTypes);
+      const cols = [{ name: t('opModeCsp'), d: dc }, { name: t('opModeNeo'), d: dn }];
+      const rows = [
+        [t('cmpModeRowBasis'), d => d.mode === 'neo' ? t('cmpModeBasisNeo', { m: nf1.format(d.neoMarginPct), u: nf1.format(d.neoUtilPct) }) : t('cmpModeBasisCsp'), 'wrap'],
+        [t('compareRowRevenueY1'), d => eok(d.annualRevenue[0])],
+        [t('compareRowCumRevenue', { n: YEARS }), d => eok(d.cumRevenue[YEARS - 1])],
+        [t('compareRowCumExpense', { n: YEARS }), d => eok(d.cumExpense[YEARS - 1])],
+        [t('compareRowCumProfit', { n: YEARS }), d => { const v = d.cumProfit[YEARS - 1]; return `<strong class="${v >= 0 ? 'text-success' : 'text-danger'}">${eok(v)}</strong>`; }],
+        [t('compareRowBep'), d => getBreakEvenText(d)],
+        [t('cmpFinIrr'), d => finMetric(d, 'irr')],
+        [t('cmpFinMoic'), d => finMetric(d, 'moic')],
+        [t('cmpFinDscr'), d => finMetric(d, 'dscr')],
+        [t('cmpFinFcfe'), d => finMetric(d, 'fcfe')]
+      ];
+      return `
+        <section class="sec">
+          ${secHead(t('cmpModeTitle'))}
+          <div class="sec-desc">${t('cmpModeDesc')}</div>
+          <div class="dt-wrap" style="margin-top:29.6px">
+            <table class="dt cmp">
+              <colgroup><col><col style="width:300px"><col style="width:300px"></colgroup>
+              <thead><tr><th>${t('compareColMetric')}</th>${cols.map(c => `<th class="r ${c.d.mode === state.opMode ? '' : ''}">${c.name}${c.d.mode === (isNeo() ? 'neo' : 'csp') ? t('neoSensCur') : ''}</th>`).join('')}</tr></thead>
+              <tbody>${rows.map(([label, fn, cls]) => `<tr class="${cls || ''}"><td>${label}</td>${cols.map(c => `<td class="r">${fn(c.d)}</td>`).join('')}</tr>`).join('')}</tbody>
+            </table>
+          </div>
         </section>
       `;
     }
@@ -3006,6 +3311,32 @@
     function renderFormulaPanelMix(data) {
       const [util, tot, it, pue, floor, support, fac] = commonChipItems(data);
       const okTypes = data.types.filter(td => td.ok);
+      if (data.mode === 'neo') {
+        const usd = v => `$${nfEn(2).format(v)}`;
+        const priceRows = okTypes.map(td => [t('blNeoPrice', { name: gpuShortLabel(td.type, td.key) }), td.priceUsd > 0 ? `${usd(td.priceUsd)} → ${usd(td.netUsd)} (${formatHourlyRate(td.netUsd * fx())})` : t('neoPriceBlank')]);
+        const capexRows = okTypes.map(td => [t('blTypeCapex', { name: gpuShortLabel(td.type, td.key) }), `${eok(td.itCapexEok)} (${usdM(td.itCapexUsd)})`, 'res']);
+        const depTxt = `${getDepreciationText().replace(/\//g, ' / ')}%`;
+        const utilRow = [t('blNeoUtil'), `${nf1.format(data.neoUtilPct)}%`];
+        const B = {
+          config: [t('blConfig'), data.shortConfigText],
+          margin: [t('blNeoMargin'), `${nf1.format(data.neoMarginPct)}%`],
+          rev: [t('blAnnualRevenue'), eok(data.annualRevenue[0]), 'res'],
+          fac: [t('blFacility'), eok(data.facilityEok)],
+          elec: [t('blElecCost'), eok(data.electricityEok), 'res'],
+          sw: [t('blSwOpexNeo'), `${eok(data.swOpexEok)} (${formatSwSub(data.swRateUsd)})`, 'res'],
+          opex: [t('blOtherOpexNeo'), eok(data.opexEok)],
+          energy: [t('chipEnergyRate'), formatRateText('energyCostRate', state.energyCostRate)],
+          basic: [t('chipBasicCharge'), formatRateText('basicChargeKwMonth', state.basicChargeKwMonth)],
+          fx: [t('chipFx'), `${nf.format(state.fxKrwUsd)}원/USD`],
+          swsub: [t('chipSwSubNeo'), formatSwSub(data.swRateUsd)]
+        };
+        return formulaSectionHtml([
+          { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBodyNeo'), items: [B.config, ...priceRows, B.margin, utilRow, B.rev] },
+          { title: t('formulaCardCapexTitleMix'), body: t('formulaCardCapexBodyMix'), items: [...capexRows, [t('blItCapex'), `${eok(data.itCapexEok)} (${usdM(data.itCapexUsd)})`, 'res'], B.fac] },
+          { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyNeo'), items: [B.elec, B.sw, B.opex, [t('blDep'), depTxt], utilRow, tot, it, pue] },
+          { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyMix'), items: [floor, support, B.fac, B.energy, B.basic, B.fx, B.swsub, [t('chipDep'), depTxt]] }
+        ]);
+      }
       const B = {
         config: [t('blConfig'), data.shortConfigText],
         mix: [t('blPortfolio'), portfolioSummaryText()],
@@ -4057,14 +4388,15 @@
       }
       if (state.activeView === 'compare') {
         const models = getModelComparison();
-        content.innerHTML = `${renderComparePanel()}${renderCompareChartPanel()}${renderPnlPanel()}${renderProductComparePanel()}${renderFacilityCapexPanel('pod')}`;
+        content.innerHTML = `${renderComparePanel()}${renderCompareChartPanel()}${renderModeComparePanel()}${renderPnlPanel()}${renderProductComparePanel()}${renderFacilityCapexPanel('pod')}`;
         renderCompareChart(models);
         fitInputs(content);
         return;
       }
       // GPU 임대 (rev36): 차트 → 연차표 → 랙 시스템 선택(4카드) → 매출·가동률(카드별 표) → 수전·면적 사용 현황 → 시설비 → 기준값 → 재무구조
       const podFinHtml = (typeof PODFIN !== 'undefined') ? PODFIN.html(data) : '';
-      content.innerHTML = `${renderChartPanel()}${renderTableHtml(data)}${renderGpuSelector(data)}${renderMixSection(data)}${renderCapacitySection(data)}${renderFacilityCapexPanel('pod')}${renderFormulaPanelMix(data)}${podFinHtml}`;
+      const neoHtml = data.mode === 'neo' ? `${renderNeoTermsSection(data)}${renderNeoSensSection(data)}` : '';
+      content.innerHTML = `${renderChartPanel()}${renderTableHtml(data)}${neoHtml}${renderGpuSelector(data)}${renderMixSection(data)}${renderCapacitySection(data)}${renderFacilityCapexPanel('pod')}${renderFormulaPanelMix(data)}${podFinHtml}`;
       renderChart(data);
       if (typeof PODFIN !== 'undefined') PODFIN.attach(content, data);
       fitInputs(content);
@@ -4079,8 +4411,8 @@
         case 'basicChargeKwMonth': return en ? '$/kW-mo' : '원/kW·월';
         case 'totalPowerKw': case 'itPowerKw': return 'kW';
         case 'floorAreaSqm': case 'supportAreaBase': case 'supportAreaFixed': return '㎡';
-        case 'swSubUsdPerGpuYear': return en ? 'GPU·yr' : 'GPU·년';
-        case 'opexEok': return en ? '$M' : '억';
+        case 'swSubUsdPerGpuYear': case 'neoSwUsdPerGpuYear': return en ? 'GPU·yr' : 'GPU·년';
+        case 'opexEok': case 'neoOpexEok': return en ? '$M' : '억';
         case 'siMultiplier': return en ? '×' : '배';
         default: return '%';
       }
@@ -4149,17 +4481,61 @@
       const utilTip = t('utilAnchorTip') + '\n' + t('utilBaseHint');
       const swTip = t('labelSwSub') + '\n' + t('baseHintPrefix') + ' ' + formatControlValue('swSubUsdPerGpuYear', DEFAULTS.swSubUsdPerGpuYear);
       const yr = n => t('yearLabel', { n });
-      const common = `
-        <section class="s-group util" data-views="superpod,gpu,compare">
+      const neo = isNeo();
+      const b300on = gpuOn('b300') && gpuSpecOk(gpuTypes.b300);
+      const priceKey = GPU_KEYS.includes(state.neoPriceKey) && (state.neoPriceKey !== 'custom' || state.customOpen) ? state.neoPriceKey : 'b300';
+      const priceVal = neoPriceOf(priceKey) > 0 ? nfPlain(neoPriceOf(priceKey), 2) : '';
+      const priceOpts = GPU_KEYS.filter(k => k !== 'custom' || state.customOpen).map(k => `<option value="${k}" ${k === priceKey ? 'selected' : ''}>${escAttr(gpuShortLabel(gpuTypes[k], k))}</option>`).join('');
+      // 운영 방식 (시안 순서: 운영 방식 → 모드별 입력 → 굵은 룰 → 공통)
+      const modeHtml = `
+        <section class="s-group mode" data-views="superpod,compare">
+          <span class="s-lab">${t('labelOpMode')}</span>
+          <div class="s-hint" data-opmode-hint>${neo ? t('opModeNeoHint') : t('opModeCspHint')}</div>
+          ${segBtns('data-op-mode', [['csp', t('opModeCsp')], ['neo', t('opModeNeo')]], neo ? 'neo' : 'csp', true)}
+        </section>`;
+      const neoHtml = `
+        <section class="s-group neo-price" data-views="superpod,compare">
+          <div class="s-row">
+            <span class="s-lab">${t('labelNeoPrice')}</span>
+            <span class="s-val"><span class="s-selwrap"><select class="s-sel" data-neo-key aria-label="${escAttr(t('labelNeoPrice'))}">${priceOpts}</select></span><span class="u"><input type="number" min="0" max="100" step="0.01" value="${priceVal}" placeholder="—" data-input="neoPrice_${priceKey}" aria-label="${escAttr(t('labelNeoPrice'))}" /></span><span class="unit ins">$/GPU·h</span></span>
+          </div>
+        </section>
+        <section class="s-group neo-rate" data-views="superpod,compare">
+          ${ctlSlider('neoMarginPct', t('labelNeoMargin'), { lg: true })}
+          ${ctlSlider('neoUtilPct', t('labelNeoUtil'), { lg: true })}
+        </section>
+        <section class="s-group neo-opex last" data-views="superpod,compare">
+          ${ctlRow('neoSwUsdPerGpuYear', t('labelNeoSw'), { pre: '$' })}
+          ${ctlRow('neoOpexEok', t('labelNeoOpex'))}
+        </section>`;
+      const cspHtml = `
+        <section class="s-group util" data-views="superpod,compare">
           <span class="s-lab">${t('labelUtilYears')}${infoIcon(utilTip + '\n' + t('utilAvgPrefix') + ' ' + nf.format(Math.round(utilAvgPct())) + '%', t('labelUtilYears'), true).replace('class="ico-i', 'data-util-avg class="ico-i')}</span>
           ${ctlCols(['utilY1', 'utilY2', 'utilY3'], [yr(1), yr(2), yr(3)], 'c3 util')}
         </section>
-        <section class="s-group mix" data-views="superpod,gpu,compare">
+        <section class="s-group mix last" data-views="superpod,compare">
           <span class="s-lab" data-mix-sum title="${escAttr(t('mixHint') + ' · ' + t('mixSumLabel') + ' ' + nf1.format(mix.total) + '%')}">${t('labelPortfolio')}</span>
           ${ctlCols(['mix3Y', 'mix1Y', 'mixOD', 'mixIdle'], [t('labelMix3Y'), t('labelMix1Y'), t('labelMixOD'), t('labelMixIdle')], 'c4')}
           <div class="s-hint warn ${mixOk ? 'hidden' : ''}" data-mix-hint>${mixOk ? '' : t('mixSumWarn', { v: nf1.format(mix.total) })}</div>
+          ${ctlSlider('disc3YPct', t('labelDisc3YShort'))}
+          ${ctlSlider('disc1YPct', t('labelDisc1YShort'))}
+        </section>`;
+      const common = modeHtml + (neo ? neoHtml : cspHtml) + `
+        <div class="s-rule mid" data-views="superpod,compare"></div>
+        <section class="s-group after-rule" data-views="superpod,compare">
+          ${ctlRow('fxKrwUsd', t('labelFx'))}
         </section>
-        <section class="s-group space" data-views="superpod,gpu,compare">
+        <section class="s-group" data-views="superpod,compare">
+          ${ctlRow('energyCostRate', t('labelEnergyCostRate'))}
+          ${ctlRow('basicChargeKwMonth', t('labelBasicCharge'))}
+        </section>
+        <section class="s-group power" data-views="superpod,compare">
+          ${ctlSlider('totalPowerKw', t('labelTotalPowerKw'), { lg: true, unitCls: 'ins' })}
+          ${ctlSlider('itPowerKw', t('labelItPowerKw'), { lg: true, unitCls: 'ins' })}
+          ${ctlSlider('pue', t('labelPue'), { lg: true, unit: '', unitCls: '', attr: 'data-pue-badge' })}
+          <div class="s-hint">${t('pueHint')}</div>
+        </section>
+        <section class="s-group space" data-views="superpod,compare">
           <span class="s-lab">${t('labelSpaceMode')}</span>
           <div class="s-hint">${t(spaceModeHintKey(state.spaceMode), { pod: eok(podBase), rack: eok(rackBase) })}</div>
           ${segBtns('data-space-mode', [['base', t('baseBtn')], ['expand', t('expandBtn')], ['b1', t('b1Btn')]], state.spaceMode)}
@@ -4167,37 +4543,24 @@
           ${ctlRow('supportAreaBase', `${t('labelSupportArea')}${infoIcon(supportTip, t('labelSupportArea'), true).replace('class="ico-i', 'data-support-hint class="ico-i')}`, { cls: 'has-sub', sub: '4.8MW' })}
           ${ctlRow('supportAreaFixed', `${t('labelSupportAreaFixed')}${infoIcon(t('supportAreaFixedTip'), t('labelSupportAreaFixed'), true)}`)}
         </section>
-        <section class="s-group power" data-views="superpod,gpu,compare">
-          ${ctlSlider('totalPowerKw', t('labelTotalPowerKw'), { lg: true, unitCls: 'ins' })}
-          ${ctlSlider('itPowerKw', t('labelItPowerKw'), { lg: true, unitCls: 'ins' })}
-          ${ctlSlider('pue', t('labelPue'), { lg: true, unit: '', unitCls: '', attr: 'data-pue-badge' })}
-          <div class="s-hint">${t('pueHint')}</div>
-        </section>
-        <section class="s-group" data-views="superpod,gpu,compare">
-          ${ctlRow('energyCostRate', t('labelEnergyCostRate'))}
-          ${ctlRow('basicChargeKwMonth', t('labelBasicCharge'))}
-        </section>
-        <section class="s-group rate" data-views="superpod,gpu,compare">
+        <section class="s-group rate ${neo ? 'off' : ''}" data-views="superpod,compare">
           <span class="s-lab sm">${t('groupRateTitle')}</span>
-          ${ctlRow('locPremiumPct', t('labelLocPremium'), { cls: 'rate-row', unitCls: 'pct' })}
-          ${ctlSlider('disc1YPct', t('labelDisc1Y'))}
-          ${ctlSlider('disc3YPct', t('labelDisc3Y'))}
+          ${ctlRow('locPremiumPct', t('labelLocPremium'), { cls: 'rate-row', unitCls: 'pct', extra: neo ? 'disabled' : '' })}
         </section>
-        <section class="s-group" data-views="superpod,gpu,compare">
-          ${ctlRow('fxKrwUsd', t('labelFx'))}
-        </section>
-        <section class="s-group dep" data-views="superpod,gpu,compare">
+        <section class="s-group dep ${(neo && !b300on) ? 'last' : ''}" data-views="superpod,compare">
           <span class="s-lab">${t('labelDepGroup')}</span>
           ${ctlCols(['depY1', 'depY2', 'depY3'], [yr(1), yr(2), yr(3)], 'c3')}
         </section>
-        <section class="s-group sw last" data-views="superpod,gpu,compare">
+        ${neo ? '' : `
+        <section class="s-group sw last" data-views="superpod,compare">
           ${ctlRow('swSubUsdPerGpuYear', `${t('labelSwSubShort')}${infoIcon(swTip, t('labelSwSubShort'), true)}`, { pre: '$' })}
-        </section>
-        <section class="s-group tight" data-views="superpod,compare" data-needs="b300">
-          ${ctlRow('opexEok', t('labelOpex'))}
+        </section>`}
+        ${b300on ? `
+        <section class="s-group ${neo ? '' : 'tight'} last" data-views="superpod,compare" data-needs="b300">
+          ${neo ? '' : ctlRow('opexEok', t('labelOpex'))}
           ${ctlRow('siMultiplier', t('labelSiMultiplier'))}
           <div class="s-hint">${t('siMultiplierHint')}</div>
-        </section>`;
+        </section>` : ''}`;
       const fin = (typeof PODFIN !== 'undefined' && PODFIN.sidebarHtml) ? PODFIN.sidebarHtml() : '';
       root.innerHTML = common + fin;
       refreshControlVisibility();
@@ -4216,6 +4579,8 @@
             input.value = +(((state[id] * EOK) / fx()) / 1e6).toFixed(1);
           } else if (id === 'pue') {
             input.value = nf2.format(state.pue).replace(/,/g, '');
+          } else if (id.startsWith('neoPrice_')) {
+            input.value = Number(state[id]) > 0 ? nfPlain(Number(state[id]), 2) : '';
           } else {
             input.value = state[id];
           }
@@ -4231,6 +4596,10 @@
       document.querySelectorAll('[data-space-mode]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.spaceMode === state.spaceMode);
       });
+      document.querySelectorAll('[data-op-mode]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.opMode === (isNeo() ? 'neo' : 'csp'));
+      });
+      document.querySelectorAll('[data-opmode-hint]').forEach(h => { h.textContent = isNeo() ? t('opModeNeoHint') : t('opModeCspHint'); });
       document.querySelectorAll('[data-bm-mode]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.bmMode === (state.bmMode === 'B' ? 'B' : 'A'));
       });
@@ -4456,7 +4825,7 @@
       state = { ...DEFAULTS, activeView: currentView, lang: currentLang };
       fillSelectedRack(state, rackTypes, state.selectedRack);
       // 기본값은 보고 있는 탭과 무관하게 동일해야 한다
-      if (state.spaceMode === 'expand') state.floorAreaSqm = minFloorAreaForPowerMax(state, gpuTypes);
+      if (state.spaceMode === 'expand') state.floorAreaSqm = minFloorAreaForPowerMax(state, gpuTypes, 'gb300');
       fillGpuDefaults(state, gpuTypes);
       state.suCount = podMaxSu();
       // rev15: 헤더 '기본값'은 재무구조 조달 가정(자기자본·금리·상환·사업기구)도 함께 초기화 (사이드바 '초기화' 링크 대체)
@@ -4474,11 +4843,13 @@
     }
 
     // [기존]/[확장] 토글 (rev06 '시설 유형' 대체)
-    function minFloorAreaForPowerMax(inputState = state, types = gpuTypes) {
-      // 켜진 카드들의 전력 기준 수량(단독)을 수용하는 최소 연면적 (step 100 올림, 500~2400 클램프) — 첫 번째 켜진 카드 기준
+    function minFloorAreaForPowerMax(inputState = state, types = gpuTypes, refKey = null) {
+      // 전력 기준 수량(단독)을 수용하는 최소 연면적 (step 100 올림, 500~2400 클램프)
+      //  · refKey 지정 시 그 카드 기준 (기본값·초기화는 SuperPOD(GB300) 기준 800㎡ — VSLAI rev1.2와 동일)
+      //  · 미지정 시 첫 번째 켜진 카드 기준 (공간 모드 전환 때)
       const support = supportAreaSqm(inputState);
       const keys = gpuActiveKeys(inputState).filter(k => gpuSpecOk(types[k]));
-      const key = keys[0] || 'b300';
+      const key = (refKey && types[refKey] && gpuSpecOk(types[refKey])) ? refKey : (keys[0] || 'b300');
       const g = types[key];
       const n = Math.min(gpuAbsMax(g), gpuPowerMax(key, inputState, types, true));
       const needed = support + gpuOccupiedArea(g, n);
@@ -5036,6 +5407,7 @@
     });
 
     document.addEventListener('change', event => {
+      if (event.target.matches('[data-neo-key]')) { state.neoPriceKey = event.target.value; buildControls(); refreshControls(); return; }
       if (event.target.matches('[data-gpu-count]')) { applyGpuCountInput(event.target, true); render(); return; }
       if (event.target.dataset.gpuKey && event.target.dataset.gpuProp) { applyGpuPropInput(event.target, true); buildControls(); render(); return; }
       if (event.target.matches('[data-su-count]')) { applySuInput(event.target, true); render(); return; }
@@ -5134,6 +5506,8 @@
         applyScenario(scenarioButton.dataset.scenario); return;
       }
 
+      const opButton = event.target.closest('[data-op-mode]');
+      if (opButton) { applyOpMode(opButton.dataset.opMode); return; }
       const bmButton = event.target.closest('[data-bm-mode]');
       if (bmButton) { applyBmMode(bmButton.dataset.bmMode); return; }
 
@@ -5353,7 +5727,7 @@
 
     // ---------- init ----------
     fillSelectedRack(state, rackTypes, state.selectedRack);
-    if (state.spaceMode === 'expand') state.floorAreaSqm = minFloorAreaForPowerMax();
+    if (state.spaceMode === 'expand') state.floorAreaSqm = minFloorAreaForPowerMax(state, gpuTypes, 'gb300');
     fillGpuDefaults(state, gpuTypes);
     state.suCount = podMaxSu();
     applyStaticI18n();
