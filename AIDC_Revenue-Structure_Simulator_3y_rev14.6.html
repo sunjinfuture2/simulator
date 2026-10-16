@@ -5426,7 +5426,7 @@
         { cells: [L('SW 구독', 'SW subscription'), perYr(eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)), formatSwSub(d.swRateUsd)] },
         { cells: [L('기타 운영비', 'Other opex'), perYr(eok(opexSum)), neo ? L('NeoCloud 기타 운영비', 'NeoCloud other opex') : L('서버형(B300) 별도 운영비', 'Separate opex for the server type (B300)')] },
         { cells: [L('감가상각(1년차)', 'Depreciation (Y1)'), perYr(eok(d.capexByYear[0])), `${t('labelDepGroup')} ${nf1.format(state.depY1)} / ${nf1.format(state.depY2)} / ${nf1.format(state.depY3)}%`] }
-      ], { align: ['center', 'right', 'left'] });
+      ], { align: ['center', 'center', 'left'] });
       // ③ 수익 지표 (재무구조 반영 전)
       const pnlRows = Array.from({ length: YEARS }, (_, i) => {
         const profit = d.annualRevenue[i] - d.annualExpense[i];
@@ -5438,7 +5438,7 @@
         { head: true, cells: [L('연차', 'Year'), L('매출', 'Revenue'), L('지출', 'Expense'), L('손익', 'Profit'), L('누적 손익', 'Cum. profit'), L('손익률', 'Margin')] },
         ...pnlRows,
         { bold: true, cells: [L(`${YEARS}년 합계`, `${YEARS}-yr total`), eok(d.cumRevenue[last]), eok(d.cumExpense[last]), { t: eok(d.cumProfit[last]), color: OR }, { t: eok(d.cumProfit[last]), color: OR }, pct(cumMarginPct, 1)] }
-      ], { align: ['center', 'right', 'right', 'right', 'right', 'right'] });
+      ], { align: ['center', 'center', 'center', 'center', 'center', 'center'] });
       const s3note = dxPara([{ t: getBreakEvenText(d), b: true, color: OR }, ` · ${L('누적 매출 대비 손익률', 'Cumulative margin')} ${pct(cumMarginPct, 1)} · ${L('재무구조 반영 전(전기료·SW·운영비·감가상각 차감)', 'Before financing (after electricity, SW, opex, depreciation)')}`], { before: 60, sz: 14 });
       // ④ 재무구조·주주수익률
       const fm = key => finMetric(d, key);
@@ -5449,7 +5449,7 @@
         { cells: [t('cmpFinNpv'), fm('npv'), t('cmpFinMoic'), fm('moic')] },
         { cells: [t('cmpFinDscr'), fm('dscr'), t('cmpFinFcfe'), fm('fcfe')] },
         { cells: [t('cmpFinNi'), fm('cumNI'), t('cmpFinCost'), fm('cumCost')] }
-      ], { align: ['center', 'left', 'center', 'left'] });
+      ], { align: ['center', 'center', 'center', 'center'] });
       // ⑤ 주요 가정
       const assumeRows = [
         { cells: [t('labelFx'), `${nf.format(state.fxKrwUsd)} ${L('원/USD', 'KRW/USD')}`] },
@@ -5464,16 +5464,23 @@
       const s5 = dxTable([1900, W - 1900], assumeRows);
       const spacer = '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="260" w:lineRule="exact"/><w:rPr><w:sz w:val="8"/></w:rPr></w:pPr></w:p>';
       const sections = [
-        [L('구성 개요', 'Configuration'), s1],
-        [L('투자·운영비', 'Capex & Opex'), s2],
-        [L('수익 지표', 'P&L Summary'), s3 + s3note],
-        [L('재무구조·주주수익률', 'Financing & Equity Returns'), s4],
-        [L('주요 가정', 'Key Assumptions'), s5]
+        [L('구성 개요', 'Configuration'), s1, true],
+        [L('투자·운영비', 'Capex & Opex'), s2, true],
+        [L('수익 지표', 'P&L Summary'), s3 + s3note, false],
+        [L('재무구조·주주수익률', 'Financing & Equity Returns'), s4, true],
+        [L('주요 가정', 'Key Assumptions'), s5, false]
       ];
-      const outer = dxTable([2410, W], sections.map(([title, body]) => ({
-        cells: [dxPara({ t: title, b: true, color: OR, sz: 21 }, { before: 40 }), body + spacer],
-        cellOpts: [{ raw: true, vAlign: 'top', pad: 0 }, { raw: true, vAlign: 'top', pad: 0 }]
-      })), { noBorder: true, padX: 0 });
+      const gapRow = '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="200" w:lineRule="exact"/><w:rPr><w:sz w:val="14"/></w:rPr></w:pPr></w:p>';
+      const outerRows = [];
+      sections.forEach(([title, body, gapAfter]) => {
+        outerRows.push({
+          cells: [dxPara({ t: title, b: true, color: OR, sz: 21 }, { before: 40 }), body + spacer],
+          cellOpts: [{ raw: true, vAlign: 'top', pad: 0 }, { raw: true, vAlign: 'top', pad: 0 }]
+        });
+        // 섹션 사이 빈 행 (문단 띄어쓰기) — 메모가 붙는 섹션 뒤는 제외
+        if (gapAfter) outerRows.push({ cells: [gapRow, gapRow], cellOpts: [{ raw: true, vAlign: 'top', pad: 0 }, { raw: true, vAlign: 'top', pad: 0 }] });
+      });
+      const outer = dxTable([2410, W], outerRows, { noBorder: true, padX: 0 });
       const title = dxPara({ t: L('AI Data Center GPU 임대', 'AI Data Center GPU Leasing'), b: true, sz: 30, color: '000000' }, { before: 20 })
         + dxPara({ t: L('수익구조 시뮬레이션 요약', 'Revenue Structure Summary'), b: true, sz: 30, color: '000000' }, { before: 20 })
         + dxPara(`${gpuMixText(state, gpuTypes, true)} · ${neo ? t('opModeNeo') : t('opModeCsp')} · ${ymd}`, { before: 60, after: 260, sz: 15, color: '7F7F7F' });
