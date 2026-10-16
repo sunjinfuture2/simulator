@@ -568,8 +568,8 @@
     .s-group.after-rule { padding-top: 78px; }
     .s-group.rate.off { opacity: 0.4; }
     .s-group.rate.off input { pointer-events: none; }
-    .s-selwrap { display: inline-flex; align-items: baseline; margin-right: 12px; font-size: 15px; font-weight: 700; color: var(--k100); position: relative; top: -2px; }
-    .s-selwrap::before { content: "\25BE"; font-size: 11px; margin-right: 4px; color: var(--k100); }
+    .s-selwrap { display: inline-flex; align-items: baseline; margin-right: 8px; font-size: 15px; font-weight: 700; color: var(--k100); position: relative; top: -2px; }
+    .s-selwrap::before { content: "\25BE"; font-size: 14px; margin-right: 5px; color: var(--k100); }
     .s-sel { appearance: none; -webkit-appearance: none; border: 0; background: transparent; font: inherit; font-weight: 700; color: inherit; padding: 0; cursor: pointer; letter-spacing: inherit; }
     .s-sel:focus { outline: none; }
     .sec.indent { padding-left: 32px; }
@@ -586,7 +586,7 @@
     .sens-target { display: inline-flex; align-items: baseline; gap: 8px; }
     .sens-target .lab { font-size: 12px; font-weight: 500; color: var(--g60); }
     .sens-target .u { font-size: 24px; font-weight: 500; color: var(--k100); line-height: 32.5px; }
-    .sens-target .unit { font-size: 11px; font-weight: 600; color: var(--g77); }
+    .sens-target .unit { font-size: 11px; font-weight: 600; color: var(--g77); margin-left: -5px; }
     .dt.sens th, .dt.sens td { font-size: 13px; }
     .dt.cmp tr.wrap td { white-space: normal; line-height: 18px; padding-top: 6px; padding-bottom: 6px; height: auto; font-size: 13px; }
     .dt.sens tbody tr.cur td { background: transparent; font-weight: 600; color: var(--k100); }
@@ -600,7 +600,7 @@
     .sys-card .track::-webkit-slider-thumb { background: var(--k100); }
     .sys-card .track::-moz-range-thumb { background: var(--k100); }
     .s-group.neo-top .s-row + .s-slider { margin-top: 22px; }
-    .s-group.neo-top .s-slider + .s-slider { margin-top: 14px; }
+    .s-group.neo-top .s-slider + .s-slider { margin-top: 30px; }
     .s-group.mix .s-slider + .s-slider { margin-top: 30px; }
     .dt.neo tbody tr.mx-rev td { font-weight: 600; }
     /* rev38: HGX(B300) 서버 구성 */
@@ -839,15 +839,15 @@
     .dt.wide td { white-space: normal; line-height: 21px; padding: 8px 12px 8px 0; height: auto; vertical-align: top; }
     .dt.wide td:first-child, .dt.wide th:first-child { width: 220px; }
     .cmp-cards { display: grid; grid-template-columns: repeat(2, 549.3px); column-gap: 18.9px; margin-top: 40px; }
-    .cmp-card { border: var(--hair) solid var(--gcc); padding: 29.3px 41.6px 31.9px 29.5px; }
+    .cmp-card { position: relative; border: var(--hair) solid var(--gcc); padding: 29.3px 41.6px 24px 29.5px; }
     .cmp-card h3 { font-size: 24px; font-weight: 700; color: var(--k100); line-height: 32.5px; }
     .cmp-card > p { margin-top: 3.4px; font-size: 12px; color: var(--ga0); line-height: 16.3px; }
-    .cmp-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 30px; }
+    .cmp-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px; }
     .cmp-metrics span { display: block; font-size: 12px; font-weight: 500; color: var(--g60); line-height: 16.3px; }
     .cmp-metrics span b { display: block; margin-top: 4px; font-size: 22px; font-weight: 500; color: var(--k100); line-height: 29.8px; }
     .cmp-metrics span b.text-success { color: var(--green); }
     .cmp-metrics span b.text-danger { color: var(--red); }
-    .cmp-card .goto { margin-top: 26px; height: 30.8px; padding: 0 22px; background: var(--k100); color: #fff; font-size: 15px; font-weight: 600; }
+    .cmp-card .goto { position: absolute; top: 30px; right: 29.5px; margin: 0; height: 30.8px; padding: 0 22px; background: var(--k100); color: #fff; font-size: 15px; font-weight: 600; }
     .dt tr.cmp-fin-head td { background: var(--gf4); color: var(--k100); font-weight: 600; padding-left: 6px; }
     .text-success { color: var(--green) !important; }
     .text-danger { color: var(--red) !important; }
@@ -1146,7 +1146,7 @@
       depY2: 66,
       depY3: 99,
       // rev36: GPU 임대 통합 — 카드별 포함 여부·수량 (초기 수량은 fillGpuDefaults 가 전력·면적 상한으로 채움)
-      on_b300: true, on_gb300: true, on_vr: false, on_custom: false,   // rev39: GB300은 켜 두되 0 SU에서 시작
+      on_b300: true, on_gb300: false, on_vr: false, on_custom: false,  // rev40: GB300은 기본 꺼짐 (켜면 0 SU에서 시작, 슬라이더를 올리면 B300이 잔여 상한에 맞춰 줄어듦)
       n_b300: 0, n_gb300: 0, n_vr: 0, n_custom: 0,
       customOpen: false,
       // rev37: 운영 방식 — 'csp'(직접 영업·운영) | 'neo'(NeoCloud 경유). 기본값과 NeoCloud 조건은 VSLAI rev1.2 값
@@ -2600,7 +2600,7 @@
     function fillGpuDefaults(s = state, types = gpuTypes) {
       GPU_DEFAULT_ZERO.forEach(k => { s['n_' + k] = 0; });
       GPU_KEYS.forEach(k => {
-        if (GPU_DEFAULT_ZERO.includes(k) && gpuOn(k, s)) return;
+        if (GPU_DEFAULT_ZERO.includes(k)) return; // rev40: 꺼져 있어도 0으로 표시 (켜면 0에서 시작)
         s['n_' + k] = gpuSpecOk(types[k]) ? Math.max(1, gpuMaxUnits(k, s, types, !gpuOn(k, s))) : 0;
       });
     }
@@ -4348,7 +4348,8 @@
       if (key === 'cumNI') return f(r.cumNI, 1) + unit;
       return '—';
     }
-    const CMP_COLORS = ['#606060', '#1ba85e', '#e84949', '#3b5bdb', '#f59e0b'];
+    const CMP_COLORS = ['#606060', '#1ba85e', '#e84949', '#f59e0b', '#8b5cf6'];
+    const CMP_MIX_COLOR = '#2563eb'; // rev40: 현재 구성(혼합) 누적 손익 선은 파란색 고정
     // rev36: 켜진 카드별 단독 구성(전력·면적 내 최대 수량) + 2장 이상이면 현재 혼합 구성
     function getModelComparison() {
       const keys = gpuActiveKeys().filter(k => gpuSpecOk(gpuTypes[k]));
@@ -4362,7 +4363,7 @@
       });
       if (keys.length >= 2) {
         const d = calcMix();
-        models.push({ key: 'mix', name: t('compareMixName'), view: 'superpod', applyKey: '', color: CMP_COLORS[models.length % CMP_COLORS.length], configText: d.shortConfigText, data: d });
+        models.push({ key: 'mix', name: t('compareMixName'), view: 'superpod', applyKey: '', color: CMP_MIX_COLOR, configText: d.shortConfigText, data: d });
       }
       return models;
     }
