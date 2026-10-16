@@ -5049,8 +5049,40 @@
       document.documentElement.lang = state.lang;
     }
 
+    // rev42: 재렌더 스크롤 앵커 — 마지막으로 조작한 섹션(없으면 화면 맨 위에 보이는 섹션)이 화면에서 같은 위치에 남도록 보정
+    //        (카드 토글·수량 변경으로 위쪽 표의 높이가 바뀌어도 랙 시스템 카드가 튀지 않음)
+    let anchorSec = null;
+    document.addEventListener('mousedown', e => { if (e.target instanceof Element) anchorSec = e.target.closest('#mainContent > *'); }, true);
+    document.addEventListener('input', e => { if (e.target instanceof Element) { const sec = e.target.closest('#mainContent > *'); if (sec) anchorSec = sec; } }, true);
+    function captureScrollAnchor() {
+      const y0 = window.scrollY;
+      const kids = [...document.querySelectorAll('#mainContent > *')];
+      if (!kids.length) return { y0 };
+      const sg = document.getElementById('summaryCards');
+      const line = (sg && sg.offsetParent !== null && sg.classList.contains('stuck')) ? sg.getBoundingClientRect().bottom + 1 : 1;
+      let idx = -1;
+      if (anchorSec && anchorSec.isConnected) {
+        const r = anchorSec.getBoundingClientRect();
+        if (r.bottom > line && r.top < window.innerHeight) idx = kids.indexOf(anchorSec);
+      }
+      if (idx < 0) idx = kids.findIndex(e => e.getBoundingClientRect().bottom > line);
+      if (idx < 0) return { y0 };
+      return { y0, idx, cls: kids[idx].className, top: kids[idx].getBoundingClientRect().top };
+    }
+    function restoreScrollAnchor(a) {
+      if (a && a.idx != null) {
+        const el = document.querySelectorAll('#mainContent > *')[a.idx];
+        if (el && el.className === a.cls) {
+          const delta = el.getBoundingClientRect().top - a.top;
+          const target = Math.max(0, window.scrollY + delta);
+          if (Math.abs(delta) > 0.5) window.scrollTo(0, target);
+          return;
+        }
+      }
+      if (a && Math.abs(window.scrollY - a.y0) > 0.5) window.scrollTo(0, a.y0);
+    }
     function render() {
-      const scrollY0 = window.scrollY;
+      const scrollAnchor = captureScrollAnchor();
       refreshTabs();
       refreshControlVisibility();
       refreshControls();
@@ -5061,8 +5093,8 @@
       applyCollapsedSecs();
       syncStickyCards();
       if (typeof syncSideViewport === 'function') syncSideViewport();
-      // rev39: 재렌더로 문서 높이가 잠시 바뀌어도 보던 위치를 유지
-      if (Math.abs(window.scrollY - scrollY0) > 0.5) window.scrollTo(0, scrollY0);
+      // rev39/42: 재렌더로 문서 높이가 바뀌어도 보던 섹션이 같은 자리에 남도록 보정
+      restoreScrollAnchor(scrollAnchor);
     }
     // rev16: 접힌 섹션 상태(제목 기준)를 재렌더 후에도 유지
     const collapsedSecs = new Set();
