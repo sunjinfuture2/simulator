@@ -4857,7 +4857,6 @@
       const floorTip = (state.spaceMode === 'base' ? t('floorAreaLockedHint') : state.spaceMode === 'b1' ? t('floorAreaHintB1') : t('floorAreaHint')) + '\n' + t('baseHintPrefix') + ' ' + formatControlValue('floorAreaSqm', DEFAULTS.floorAreaSqm);
       const supportTip = t('supportAreaTip') + '\n' + t('supportAreaHint', { v: nf1.format(supportAreaSqm()), pct: pct(state.floorAreaSqm > 0 ? usableAreaSqm() / state.floorAreaSqm * 100 : 0, 0) });
       const utilTip = t('utilAnchorTip') + '\n' + t('utilBaseHint');
-      const swTip = t('labelSwSub') + '\n' + t('baseHintPrefix') + ' ' + formatControlValue('swSubUsdPerGpuYear', DEFAULTS.swSubUsdPerGpuYear);
       const yr = n => t('yearLabel', { n });
       const neo = isNeo();
       const b300on = gpuOn('b300') && gpuSpecOk(gpuTypes.b300);
@@ -4889,12 +4888,16 @@
           <span class="s-lab md">${t('labelUtilYears')}${infoIcon(utilTip + '\n' + t('utilAvgPrefix') + ' ' + nf.format(Math.round(utilAvgPct())) + '%', t('labelUtilYears'), true).replace('class="ico-i', 'data-util-avg class="ico-i')}</span>
           ${ctlCols(['utilY1', 'utilY2', 'utilY3'], [yr(1), yr(2), yr(3)], 'c3 util')}
         </section>
-        <section class="s-group mix last" data-views="superpod,compare">
+        <section class="s-group mix" data-views="superpod,compare">
           <span class="s-lab md" data-mix-sum title="${escAttr(t('mixHint') + ' · ' + t('mixSumLabel') + ' ' + nf1.format(mix.total) + '%')}">${t('labelPortfolio')}</span>
           ${ctlCols(['mix3Y', 'mix1Y', 'mixOD', 'mixIdle'], [t('labelMix3Y'), t('labelMix1Y'), t('labelMixOD'), t('labelMixIdle')], 'c4')}
           <div class="s-hint warn ${mixOk ? 'hidden' : ''}" data-mix-hint>${mixOk ? '' : t('mixSumWarn', { v: nf1.format(mix.total) })}</div>
           ${ctlSlider('disc3YPct', t('labelDisc3YShort'))}
           ${ctlSlider('disc1YPct', t('labelDisc1YShort'))}
+        </section>
+        <section class="s-group neo-opex last" data-views="superpod,compare">
+          ${ctlRow('swSubUsdPerGpuYear', t('labelNeoSw'), { pre: '$', labCls: 'md' })}
+          ${ctlRow('opexEok', t('labelNeoOpex'), { labCls: 'md' })}
         </section>`;
       const common = modeHtml + (neo ? neoHtml : cspHtml) + `
         <div class="s-rule mid" data-views="superpod,compare"></div>
@@ -4923,14 +4926,10 @@
           <span class="s-lab sm">${t('groupRateTitle')}</span>
           ${ctlRow('locPremiumPct', t('labelLocPremium'), { cls: 'rate-row', unitCls: 'pct', extra: neo ? 'disabled' : '' })}
         </section>
-        <section class="s-group dep ${neo ? 'last' : ''}" data-views="superpod,compare">
+        <section class="s-group dep last" data-views="superpod,compare">
           <span class="s-lab">${t('labelDepGroup')}</span>
           ${ctlCols(['depY1', 'depY2', 'depY3'], [yr(1), yr(2), yr(3)], 'c3')}
         </section>
-        ${neo ? '' : `
-        <section class="s-group sw last" data-views="superpod,compare">
-          ${ctlRow('swSubUsdPerGpuYear', `${t('labelSwSubShort')}${infoIcon(swTip, t('labelSwSubShort'), true)}`, { pre: '$' })}
-        </section>`}
         `;
       const fin = (typeof PODFIN !== 'undefined' && PODFIN.sidebarHtml) ? PODFIN.sidebarHtml() : '';
       root.innerHTML = common + fin;
