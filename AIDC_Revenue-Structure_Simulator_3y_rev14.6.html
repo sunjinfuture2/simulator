@@ -3470,12 +3470,12 @@
                     <span class="aux-mult"><span class="u"><input type="number" min="1" max="5" step="0.1" value="${nf1.format(a.mult)}" data-aux-mult aria-label="${escAttr(t('labelSiMultiplier'))}" /></span><span class="unit">${state.lang === 'en' ? '×' : '배'}</span></span>
                   </td>
                   <td data-aux-cell="si">${eok(a.siEok)}</td>
-                  <td class="r dim" data-aux-cell="aux">${eok(a.auxEok)}</td>
+                  <td class="dim" data-aux-cell="aux">${eok(a.auxEok)}</td>
                   <td data-aux-cell="itcapex"><strong>${eok(a.itCapexEok)}</strong></td>
-                  <td class="r dim" data-aux-cell="sw">${eok(a.swEok3)}</td>
+                  <td class="dim" data-aux-cell="sw">${eok(a.swEok3)}</td>
                   <td data-aux-cell="capexexp">${eok(a.capexExp)}</td>
                   <td data-aux-cell="add3">${eok(a.add3)}</td>
-                  <td data-aux-cell="profit3" class="r ${a.profit3 >= 0 ? 'text-success' : 'text-danger'}"><strong>${eok(a.profit3)}</strong></td>
+                  <td data-aux-cell="profit3" class="${a.profit3 >= 0 ? 'text-success' : 'text-danger'}"><strong>${eok(a.profit3)}</strong></td>
                 </tr>
                 <tr class="aux-breakeven-row">
                   <td><strong>${t('auxBreakevenLabel')}</strong></td>
@@ -3890,9 +3890,9 @@
                     <span class="aux-mult"><span class="u"><input type="number" min="1" max="5" step="0.1" value="${nf1.format(mult)}" data-aux-mult aria-label="${escAttr(t('labelSiMultiplier'))}" /></span><span class="unit">${state.lang === 'en' ? '×' : '배'}</span></span>
                   </td>
                   <td class="r" data-aux-cell="si">${eok(siEok)}</td>
-                  <td class="r dim" data-aux-cell="aux">${eok(auxEok)}</td>
+                  <td class="dim" data-aux-cell="aux">${eok(auxEok)}</td>
                   <td class="r" data-aux-cell="itcapex"><strong>${eok(data.itCapexEok)}</strong></td>
-                  <td class="r dim" data-aux-cell="sw">${eok(swEok3)}</td>
+                  <td class="dim" data-aux-cell="sw">${eok(swEok3)}</td>
                   <td class="r" data-aux-cell="capexexp">${eok(capexExp)}</td>
                   <td class="r" data-aux-cell="add3">${eok(add3)}</td>
                   <td data-aux-cell="profit3" class="r ${profit3 >= 0 ? 'text-success' : 'text-danger'}"><strong>${eok(profit3)}</strong></td>
@@ -5802,7 +5802,7 @@
       const pEl = document.querySelector('[data-aux-cell="profit3"]');
       if (pEl) {
         pEl.innerHTML = `<strong>${eok(profit3)}</strong>`;
-        pEl.className = 'r ' + (profit3 >= 0 ? 'text-success' : 'text-danger');
+        pEl.className = (profit3 >= 0 ? 'text-success' : 'text-danger');
       }
       const siPer = rackSiEokPerMultiplier();
       const slope = siPer * depRatio;
