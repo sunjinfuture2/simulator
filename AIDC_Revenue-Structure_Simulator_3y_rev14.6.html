@@ -537,7 +537,7 @@
     .sys-spec .v .u { font-size: 22px; }
     .sys-spec .v .u input { min-width: 1.4em; }
     .sys-spec .v .unit { font-size: 11px; font-weight: 600; color: var(--g77); margin-left: 3px; }
-    .sys-capex-h { display: flex; justify-content: space-between; align-items: baseline; cursor: pointer; user-select: none; border-bottom: var(--hair) solid var(--gcc); padding-bottom: 6px; }
+    .sys-capex-h { display: flex; justify-content: space-between; align-items: baseline; border-bottom: var(--hair) solid var(--gcc); padding-bottom: 6px; }
     .sys-capex-h b { font-size: 15px; font-weight: 600; color: var(--g60); }
     .cx-tri { display: inline-block; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 6px solid var(--g60); margin-right: 6px; vertical-align: 2px; transition: transform .15s; }
     .sys-capex-h:not(.open) .cx-tri { transform: rotate(-90deg); }
@@ -594,13 +594,14 @@
     /* rev39: 새 표(NeoCloud·민감도·서버 CAPEX·부대장비/SI)는 기준값 및 산식 표 기준 — 행 가름선 #ccc, 머리글·묶음 경계 검정, 배경 채움 없음 */
     .dt.neo td::after, .dt.sens td::after, .dt.srv-capex td::after, .dt.aux td::after { background: var(--gcc); }
     .dt.neo tbody tr.mx-rev td::after { background: var(--k100); }
-    .dt.aux .aux-sub { display: inline; margin-left: 4px; }
+    .dt.aux th .aux-sub { display: inline; margin-left: 4px; white-space: nowrap; }
+    .dt.aux th { white-space: nowrap; }
     .dt.aux tr.aux-value-row td { height: 56px; padding-top: 6px; }
-    .dt.aux tr.aux-breakeven-row td { text-align: right; }
     .sys-card .track::-webkit-slider-thumb { background: var(--k100); }
     .sys-card .track::-moz-range-thumb { background: var(--k100); }
     .s-group.neo-top .s-row + .s-slider { margin-top: 22px; }
     .s-group.neo-top .s-slider + .s-slider { margin-top: 14px; }
+    .s-group.mix .s-slider + .s-slider { margin-top: 30px; }
     .dt.neo tbody tr.mx-rev td { font-weight: 600; }
     /* rev38: HGX(B300) 서버 구성 */
     .sec.indent2 { padding-left: 48px; }
@@ -624,6 +625,13 @@
     .dt.srv-capex tbody tr.key td { font-weight: 600; color: var(--g60); background: transparent; }
     .dt.srv-capex tbody tr.key td:first-child { padding-left: 0; }
     .dt.srv-capex tbody tr.total td { border-top: var(--hair) solid var(--k100); }
+    .srv-h2 { margin-top: 40px; }
+    .cmp-mix { margin-top: 36px; }
+    .cmp-mix .mx-sub { margin-top: 0; }
+    .cmp-mix .mx-types { margin-top: 14px; }
+    .cmp-mix-sum { margin-top: 16px; font-size: 13px; color: var(--g60); line-height: 21px; }
+    .cmp-mix-sum b { font-weight: 600; }
+    .cmp-mix + .cmp-cards { margin-top: 40px; }
     .srv-aux { margin-top: 44px; }
     .srv-aux .mx-sub { display: inline-flex; align-items: center; margin-top: 0; }
     .srv-note { margin-top: 8px; font-size: 12px; color: var(--g77); line-height: 17px; word-break: keep-all; }
@@ -1191,16 +1199,18 @@
       srvCapexFac: { ko: '시설비 (구성 전체 공유)', en: 'Facility (shared by the whole configuration)' },
       srvCapexTotal: { ko: '총 CAPEX (B300 + 시설)', en: 'Total capex (B300 + facility)' },
       srvOpexHead: { ko: '기타 운영비 (연간)', en: 'Other opex (per yr)' },
+      srvOpexRowCsp: { ko: '서버형(B300) 별도 운영비', en: 'Separate opex for the server type (B300)' },
+      srvOpexRowNeo: { ko: 'NeoCloud 기타 운영비', en: 'NeoCloud other opex' },
       srvOpexNeoNote: { ko: 'NeoCloud 모드: 사이드바 「기타 운영비(연간)」 값 적용', en: 'NeoCloud mode: uses the sidebar "Other opex (per yr)" value' },
-      srvOpexCspHint: { ko: 'CSP 모드에서 서버형(B300)에 계상되는 별도 운영비', en: 'Separate operating cost for the server type (B300) in CSP mode' },
+      srvOpexCspHint: { ko: 'CSP 모드에서만 계상 (억/년)', en: 'Charged in CSP mode only' },
       auxBreakevenNoPrice: { ko: 'GB300 소비자가 미입력 — [SuperPOD] 기준 손익 산출 불가 (사이드바 GPU 소비자가에 GB300 입력)', en: 'GB300 list price blank — [SuperPOD] profit not available (enter GB300 under GPU list price)' },
       srvAuxDesc: { ko: 'SI 할증 배수를 바꾸면 SW Setup·SI 항목이 그 배수로 계상됩니다. 손익 역전 배수는 같은 부지를 GB300 SuperPOD만으로 채웠을 때의 3년 누적 손익과 비교합니다.', en: 'Changing the SI premium multiplier scales the SW setup · SI item. The break-even multiplier compares against the 3-yr cumulative profit of the same site filled with GB300 SuperPOD only.' },
       // ---- rev37: 운영 방식 CSP / NeoCloud ----
       labelOpMode: { ko: '운영 방식', en: 'Operating model' },
       opModeCsp: { ko: 'CSP', en: 'CSP' },
       opModeNeo: { ko: 'NeoCloud', en: 'NeoCloud' },
-      opModeCspHint: { ko: 'CSP — 당사가 GPU 클라우드를 직접 영업·운영합니다. 계약 포트폴리오(예약·온디맨드)와 할인율로 매출을 산출합니다.', en: 'CSP — we sell and operate the GPU cloud ourselves. Revenue follows the contract portfolio (reserve / on-demand) and discounts.' },
-      opModeNeoHint: { ko: 'NeoCloud — 네오클라우드 사업자가 영업·운영을 맡고 당사는 인프라를 공급합니다. 공개 소비자가에서 사업자 마진을 뺀 금액을 매출로 인식합니다.', en: 'NeoCloud — a neocloud operator handles sales and operations on our infrastructure. Revenue is the public list price less the operator margin.' },
+      opModeCspHint: { ko: '당사가 GPU 클라우드를 직접 영업·운영합니다. 계약 포트폴리오(예약·온디맨드)와 할인율로 매출을 산출합니다.', en: 'We sell and operate the GPU cloud ourselves. Revenue follows the contract portfolio (reserve / on-demand) and discounts.' },
+      opModeNeoHint: { ko: '네오클라우드 사업자가 영업·운영을 맡고 당사는 인프라를 공급합니다. 공개 소비자가에서 사업자 마진을 뺀 금액을 매출로 인식합니다.', en: 'A neocloud operator handles sales and operations on our infrastructure. Revenue is the public list price less the operator margin.' },
       labelNeoPrice: { ko: 'GPU 소비자가', en: 'GPU list price' },
       labelNeoMargin: { ko: '마진율', en: 'Operator margin' },
       labelNeoUtil: { ko: '가동비중', en: 'Utilized share' },
@@ -3124,11 +3134,11 @@
             <div class="sys-specs2">
               ${specs.map(([lab, input, u]) => `<div class="sys-spec"><span class="lab">${lab}</span><span class="v">${input}<span class="unit">${u}</span></span></div>`).join('')}
             </div>
-            <div class="sys-capex-h ${capexOpen ? 'open' : ''}" data-capex-toggle="${key}" role="button" tabindex="0" aria-expanded="${capexOpen ? 'true' : 'false'}">
-              <span><span class="cx-tri"></span>${isServer ? t('capexHeadingServer') : t('capexTotalLabel')}</span>
+            <div class="sys-capex-h">
+              <span>${isServer ? t('capexHeadingServer') : t('capexTotalLabel')}</span>
               <b data-gpu-capex-total="${key}">${usdWithKrw(perUnit)}</b>
             </div>
-            <ul class="sys-capex ${capexOpen ? '' : 'collapsed'}">
+            <ul class="sys-capex">
               ${capexItems.map(([lab, val, extra]) => `<li><span>${lab}</span><span class="cx-val">${extra ? `<span class="cx-extra">= ${extra}</span>` : ''}${val}</span></li>`).join('')}
             </ul>
           </div>
@@ -3443,32 +3453,32 @@
               <colgroup><col style="width:180px"><col><col><col><col><col><col><col></colgroup>
               <thead>
                 <tr>
-                  <th class="r">${t('auxColMultiplier')}<span class="aux-sub">${t('auxColMultiplierSub')}</span></th>
-                  <th class="r">${t('auxColSi')}</th>
-                  <th class="r">${t('auxColAux')}</th>
-                  <th class="r">${t('auxColItCapex')}</th>
-                  <th class="r">${t('auxColSw')}</th>
-                  <th class="r">${t('auxColCapexExp')}</th>
-                  <th class="r">${t('auxColAdd3')}</th>
-                  <th class="r">${t('auxColProfit3')}</th>
+                  <th>${t('auxColMultiplier')}<span class="aux-sub">${t('auxColMultiplierSub')}</span></th>
+                  <th>${t('auxColSi')}</th>
+                  <th>${t('auxColAux')}</th>
+                  <th>${t('auxColItCapex')}</th>
+                  <th>${t('auxColSw')}</th>
+                  <th>${t('auxColCapexExp')}</th>
+                  <th>${t('auxColAdd3')}</th>
+                  <th>${t('auxColProfit3')}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr class="aux-value-row">
-                  <td class="r">
+                  <td>
                     <span class="aux-mult"><span class="u"><input type="number" min="1" max="5" step="0.1" value="${nf1.format(a.mult)}" data-aux-mult aria-label="${escAttr(t('labelSiMultiplier'))}" /></span><span class="unit">${state.lang === 'en' ? '×' : '배'}</span></span>
                   </td>
-                  <td class="r" data-aux-cell="si">${eok(a.siEok)}</td>
+                  <td data-aux-cell="si">${eok(a.siEok)}</td>
                   <td class="r dim" data-aux-cell="aux">${eok(a.auxEok)}</td>
-                  <td class="r" data-aux-cell="itcapex"><strong>${eok(a.itCapexEok)}</strong></td>
+                  <td data-aux-cell="itcapex"><strong>${eok(a.itCapexEok)}</strong></td>
                   <td class="r dim" data-aux-cell="sw">${eok(a.swEok3)}</td>
-                  <td class="r" data-aux-cell="capexexp">${eok(a.capexExp)}</td>
-                  <td class="r" data-aux-cell="add3">${eok(a.add3)}</td>
+                  <td data-aux-cell="capexexp">${eok(a.capexExp)}</td>
+                  <td data-aux-cell="add3">${eok(a.add3)}</td>
                   <td data-aux-cell="profit3" class="r ${a.profit3 >= 0 ? 'text-success' : 'text-danger'}"><strong>${eok(a.profit3)}</strong></td>
                 </tr>
                 <tr class="aux-breakeven-row">
-                  <td class="r"><strong>${t('auxBreakevenLabel')}</strong></td>
-                  <td class="r" colspan="7" data-aux-cell="breakeven">${a.breakevenHtml}</td>
+                  <td><strong>${t('auxBreakevenLabel')}</strong></td>
+                  <td colspan="7" data-aux-cell="breakeven">${a.breakevenHtml}</td>
                 </tr>
               </tbody>
             </table>
@@ -3527,9 +3537,13 @@
       const sub = items.reduce((a, b) => a + b[1], 0);
       const total = sub + data.facilityEok;
       const capRow = (label, v, cls) => `<tr class="${cls || ''}"><td>${label}</td><td class="r">${eok(v)}</td><td class="r">${total > 0 ? pct(v / total * 100, 1) : '—'}</td></tr>`;
+      const opexVal = isNeo() ? (Number(state.neoOpexEok) || 0) : (Number(state.opexEok) || 0);
       const opexRow = isNeo()
-        ? row(t('srvOpexHead'), `<span class="u u-off"><input type="number" value="${nfPlain(Number(state.neoOpexEok) || 0, 1)}" disabled aria-label="${escAttr(t('srvOpexHead'))}" /></span><span class="unit">${unitOf('neoOpexEok')}</span>`, t('srvOpexNeoNote'))
-        : row(t('srvOpexHead'), `<span class="u"><input type="number" min="0" max="1000" step="10" value="${nfPlain(Number(state.opexEok) || 0, 1)}" data-input="opexEok" aria-label="${escAttr(t('srvOpexHead'))}" /></span><span class="unit">${unitOf('opexEok')}</span>`, t('srvOpexCspHint'));
+        ? row(t('srvOpexRowNeo'), `<span class="u u-off"><input type="number" value="${nfPlain(opexVal, 1)}" disabled aria-label="${escAttr(t('srvOpexHead'))}" /></span><span class="unit">${unitOf('neoOpexEok')}</span>`, t('srvOpexNeoNote'))
+        : row(t('srvOpexRowCsp'), `<span class="u"><input type="number" min="0" max="1000" step="10" value="${nfPlain(opexVal, 1)}" data-input="opexEok" aria-label="${escAttr(t('srvOpexHead'))}" /></span><span class="unit">${unitOf('opexEok')}</span>`, t('srvOpexCspHint'));
+      const opexBlock = `
+              <div class="srv-h srv-h2"><span>${t('srvOpexHead')}</span><b>${eok(opexVal)}</b></div>
+              ${opexRow}`;
       return `
         <section class="sec mt-116 indent2 srv-sec">
           ${secHead(t('srvSecTitle'))}
@@ -3547,7 +3561,7 @@
           <div class="srv-cols">
             <div class="srv-col">
               <div class="srv-h"><span>${t('srvCostHead')}</span><b data-gpu-capex-total="b300">${usdWithKrw(gpuCapexPerUnitUsd(g))}</b></div>
-              ${costRows}${opexRow}
+              ${costRows}${opexBlock}
             </div>
             <div class="srv-col">
               <div class="srv-h"><span>${t('srvSpecHead')}</span><b>${t('srvTotalKw', { v: nf2.format(gpuUnitPowerKw(g)) })}</b></div>
@@ -4482,12 +4496,25 @@
         [t('cmpFinFcfe'), m => finMetric(m.data, 'fcfe')]
       ];
       const colW = Math.max(150, Math.floor(620 / Math.max(1, models.length)));
+      const mixModel = models.find(m => m.key === 'mix');
+      const cardModels = models.filter(m => m.key !== 'mix');
+      const mixBlock = mixModel ? `
+          <div class="cmp-mix">
+            <div class="mx-sub">${t('compareMixName')}</div>
+            <div class="mx-types">${mixModel.data.types.map(td => `
+              <div class="mx-type ${td.ok ? '' : 'blank'}">
+                <span class="mx-type-lab">${gpuLabel(td.type, td.key)}</span>
+                <span class="mx-type-val"><span class="num">${nf.format(td.n)}</span><span class="unit">${gpuUnitLabel(td.type)}</span></span>
+              </div>`).join('')}</div>
+            <div class="cmp-mix-sum">${t('mixSummary', { g: nf.format(mixModel.data.gpus), fp: nf.format(Math.round(mixModel.data.totalFp4)), capex: eok(mixModel.data.itCapexEok) })} · ${t('compareRowRevenueY1')} ${eok(mixModel.data.annualRevenue[0])} · ${t('compareRowCumProfit', { n: YEARS })} <b class="${mixModel.data.cumProfit[YEARS - 1] >= 0 ? 'text-success' : 'text-danger'}">${eok(mixModel.data.cumProfit[YEARS - 1])}</b></div>
+          </div>` : '';
       return `
         <section class="sec cmp-sec">
           ${secHead(t('compareTitle'), { tri: false })}
           <div class="sec-desc">${t('compareDescMix', { n: YEARS })}</div>
-          <div class="cmp-cards" style="grid-template-columns:repeat(${Math.max(1, models.length)}, 1fr)">
-            ${models.map(m => `
+          ${mixBlock}
+          <div class="cmp-cards" style="grid-template-columns:repeat(${Math.max(1, cardModels.length)}, 1fr)">
+            ${cardModels.map(m => `
                 <article class="cmp-card">
                   <h3>${m.name}</h3>
                   <p>${m.configText}</p>
@@ -4577,8 +4604,10 @@
       }
       const paths = series.map(item => {
         const points = [`${xMonth(0)},${y(0)}`].concat(item.data.map((value, index) => `${x(index)},${y(value)}`)).join(' ');
-        const dots = item.data.map((value, index) => `<circle class="dot ${item.cls}" cx="${x(index)}" cy="${y(value)}" data-series="${item.cls}" data-index="${index}"></circle>`).join('');
-        return `<polyline class="line ${item.cls}" points="${points}"></polyline>${dots}`;
+        const colorStyle = item.color ? ` style="stroke:${item.color}"` : '';
+        const dotStyle = item.color ? ` style="fill:${item.color}"` : '';
+        const dots = item.data.map((value, index) => `<circle class="dot ${item.cls}" cx="${x(index)}" cy="${y(value)}" data-series="${item.cls}" data-index="${index}"${dotStyle}></circle>`).join('');
+        return `<polyline class="line ${item.cls}" points="${points}"${colorStyle}></polyline>${dots}`;
       }).join('');
       const hoverLines = Array.from({ length: YEARS }, (_, index) => `
         <line class="hover-line" data-hover-index="${index}" x1="${x(index)}" y1="${plotTop}" x2="${x(index)}" y2="${plotBottom}"></line>
@@ -4838,7 +4867,7 @@
       const modeHtml = `
         <section class="s-group mode" data-views="superpod,compare">
           <span class="s-lab">${t('labelOpMode')}</span>
-          <div class="s-hint">${t('opModeCspHint')}<br>${t('opModeNeoHint')}</div>
+          <div class="s-hint" data-opmode-hint>${neo ? t('opModeNeoHint') : t('opModeCspHint')}</div>
           ${segBtns('data-op-mode', [['csp', t('opModeCsp')], ['neo', t('opModeNeo')]], neo ? 'neo' : 'csp', true)}
         </section>`;
       const neoHtml = `
@@ -4940,6 +4969,7 @@
       document.querySelectorAll('[data-op-mode]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.opMode === (isNeo() ? 'neo' : 'csp'));
       });
+      document.querySelectorAll('[data-opmode-hint]').forEach(h => { h.textContent = isNeo() ? t('opModeNeoHint') : t('opModeCspHint'); });
       document.querySelectorAll('[data-bm-mode]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.bmMode === (state.bmMode === 'B' ? 'B' : 'A'));
       });
