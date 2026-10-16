@@ -1498,6 +1498,7 @@
       facilityTotalNote: { ko: '리모델링의 경우 신축({a}) 대비 총 {b}(약 {c}%)이 절감됩니다.', en: 'Compared to new build ({a}), remodeling saves a total of {b} (about {c}%).' },
       facInputAria: { ko: '{item} {col} 직접 입력', en: 'Direct input for {item} {col}' },
       exportBtn: { ko: 'CSV \uB0B4\uBCF4\uB0B4\uAE30', en: 'Export CSV' },
+      exportDocxBtn: { ko: 'Word 보고서', en: 'Word report' },
       tableTitle: { ko: '연차별 수익구조', en: 'Year-by-Year Revenue Structure' },
       tableDesc: { ko: '연도별 매출·지출·손익과 누적 손익을 표로 확인합니다. 지출은 감가상각(CAPEX)과 연간 OPEX(전기료+SW 구독)를 합산한 값입니다.', en: 'Yearly revenue, expense, profit, and cumulative profit in table form. Expense combines depreciated CAPEX with annual OPEX (electricity + SW subscription).' },
       colYear: { ko: '연차', en: 'Year' },
@@ -4160,7 +4161,7 @@
     function renderChartPanel() {
       return `
         <section class="sec mt-66 chart-sec">
-          ${secHead(`<span title="${escAttr(t('chartDesc'))}">${t('chartTitle', { n: YEARS })}</span>`, { tools: `<div class="legend" id="legend"></div><button type="button" class="lnk muted" data-export>${t('exportBtn')} ↓</button>` })}
+          ${secHead(`<span title="${escAttr(t('chartDesc'))}">${t('chartTitle', { n: YEARS })}</span>`, { tools: `<div class="legend" id="legend"></div><button type="button" class="lnk muted" data-export-docx>${t('exportDocxBtn')} ↓</button><button type="button" class="lnk muted" data-export>${t('exportBtn')} ↓</button>` })}
           <div class="chart-wrap" id="chartWrap"></div>
         </section>
       `;
@@ -5247,6 +5248,217 @@
       return text;
     }
 
+
+    // ---- rev41: 1장 요약 보고서 (Word .docx) — 첨부 가이드 서식(A4 · Pretendard · 좌측 주황 섹션 제목 · 회색 머리글 표 · SUNJIN 바닥글) ----
+    const DOCX_LOGO_B64 = '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';
+    const DOCX_NS = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"';
+    let CRC_TABLE = null;
+    function crc32(bytes) {
+      if (!CRC_TABLE) { CRC_TABLE = new Int32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1); CRC_TABLE[n] = c; } }
+      let crc = -1;
+      for (let i = 0; i < bytes.length; i++) crc = CRC_TABLE[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
+      return (crc ^ -1) >>> 0;
+    }
+    // 무압축(STORED) ZIP — docx 컨테이너용 (외부 라이브러리 없이 단일 파일 유지)
+    function zipStore(files) {
+      const enc = new TextEncoder();
+      const now = new Date();
+      const dosTime = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1);
+      const dosDate = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+      const u16 = v => [v & 0xFF, (v >>> 8) & 0xFF];
+      const u32 = v => [v & 0xFF, (v >>> 8) & 0xFF, (v >>> 16) & 0xFF, (v >>> 24) & 0xFF];
+      const locals = [], centrals = [];
+      let offset = 0;
+      files.forEach(f => {
+        const name = enc.encode(f.name);
+        const data = typeof f.data === 'string' ? enc.encode(f.data) : f.data;
+        const crc = crc32(data);
+        const head = new Uint8Array([...u32(0x04034b50), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(dosTime), ...u16(dosDate), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(name.length), ...u16(0)]);
+        locals.push(head, name, data);
+        centrals.push(new Uint8Array([...u32(0x02014b50), ...u16(20), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(dosTime), ...u16(dosDate), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(name.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(offset)]), name);
+        offset += head.length + name.length + data.length;
+      });
+      const cdSize = centrals.reduce((sum, c) => sum + c.length, 0);
+      const eocd = new Uint8Array([...u32(0x06054b50), ...u16(0), ...u16(0), ...u16(files.length), ...u16(files.length), ...u32(cdSize), ...u32(offset), ...u16(0)]);
+      return new Blob([...locals, ...centrals, eocd], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    }
+    function xEsc(v) { return String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    // run: 문자열 또는 { t, b, i, color, sz }
+    function dxRun(r, base = {}) {
+      const o = typeof r === 'string' ? { t: r } : r;
+      const sz = o.sz || base.sz || 14;
+      const color = o.color || base.color;
+      const b = o.b != null ? o.b : base.b;
+      return `<w:r><w:rPr>${b ? '<w:b/><w:bCs/>' : ''}${o.i ? '<w:i/>' : ''}${color ? `<w:color w:val="${color}"/>` : ''}<w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/></w:rPr><w:t xml:space="preserve">${xEsc(o.t)}</w:t></w:r>`;
+    }
+    function dxPara(runs, opt = {}) {
+      const list = (Array.isArray(runs) ? runs : [runs]).filter(r => r != null && r !== '');
+      const sp = `<w:spacing w:before="${opt.before || 0}" w:after="${opt.after || 0}" w:line="${opt.line || 252}" w:lineRule="auto"/>`;
+      return `<w:p><w:pPr>${sp}${opt.jc ? `<w:jc w:val="${opt.jc}"/>` : ''}</w:pPr>${list.map(r => dxRun(r, opt)).join('')}</w:p>`;
+    }
+    function dxCell(content, w, opt = {}) {
+      const pad = opt.pad == null ? 42 : opt.pad;
+      const mar = `<w:tcMar><w:top w:w="${pad}" w:type="dxa"/><w:left w:w="${opt.padX == null ? 60 : opt.padX}" w:type="dxa"/><w:bottom w:w="${pad}" w:type="dxa"/><w:right w:w="${opt.padX == null ? 60 : opt.padX}" w:type="dxa"/></w:tcMar>`;
+      const body = opt.raw ? content : dxPara(content, { jc: opt.jc, sz: opt.sz || 14, b: opt.b, color: opt.color });
+      const borders = opt.noBorder ? '<w:tcBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/></w:tcBorders>' : '';
+      return `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${opt.span ? `<w:gridSpan w:val="${opt.span}"/>` : ''}${borders}${opt.fill ? `<w:shd w:val="clear" w:color="auto" w:fill="${opt.fill}"/>` : ''}${mar}<w:vAlign w:val="${opt.vAlign || 'center'}"/></w:tcPr>${body}</w:tc>`;
+    }
+    // cols: 열 너비(twips) · rows: [{ cells: [...], head?, bold?, cellOpts? }] · opt.align: 열별 정렬
+    function dxTable(cols, rows, opt = {}) {
+      const W = cols.reduce((sum, v) => sum + v, 0);
+      const line = '<w:$1 w:val="single" w:sz="4" w:space="0" w:color="auto"/>';
+      const borders = opt.noBorder
+        ? '<w:tblBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/><w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders>'
+        : '<w:tblBorders>' + ['top', 'left', 'bottom', 'right', 'insideH', 'insideV'].map(k => line.replace('$1', k)).join('') + '</w:tblBorders>';
+      const trs = rows.map(row => `<w:tr>${row.head ? '<w:trPr><w:tblHeader/></w:trPr>' : ''}${row.cells.map((c, i) => {
+        const co = (row.cellOpts && row.cellOpts[i]) || {};
+        const jc = co.jc || (row.head ? 'center' : (opt.align && opt.align[i]) || (i === 0 ? 'center' : 'left'));
+        return dxCell(c, cols[i], { fill: row.head ? 'F2F2F2' : co.fill, b: row.head || row.bold || co.b, jc, sz: row.head ? 15 : (co.sz || 14), color: co.color, raw: co.raw, span: co.span, pad: co.pad, noBorder: opt.noBorder, vAlign: co.vAlign, padX: opt.padX });
+      }).join('')}</w:tr>`).join('');
+      return `<w:tbl><w:tblPr><w:tblW w:w="${W}" w:type="dxa"/>${borders}<w:tblLayout w:type="fixed"/><w:tblLook w:val="04A0" w:firstRow="1" w:lastRow="0" w:firstColumn="1" w:lastColumn="0" w:noHBand="0" w:noVBand="1"/></w:tblPr><w:tblGrid>${cols.map(w => `<w:gridCol w:w="${w}"/>`).join('')}</w:tblGrid>${trs}</w:tbl>`;
+    }
+    function buildReportDocx() {
+      const en = state.lang === 'en';
+      const L = (ko, e) => (en ? e : ko);
+      const d = calcMix(state, gpuTypes);
+      const P = (typeof PODFIN !== 'undefined' && PODFIN.getP) ? PODFIN.getP() : { eq: 30, ir: 8.5, repay: 'equal', veh: 'corp' };
+      const neo = isNeo();
+      const now = new Date();
+      const ymd = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+      const OR = 'E36C0A';
+      const last = YEARS - 1;
+      const yrLbl = i => (en ? `Yr${i + 1}` : `${i + 1}년차`);
+      const perYr = v => `${v}/${L('년', 'yr')}`;
+      const krw = v => (en ? `KRW ${nf1.format(v)}` : `${nf1.format(v)}원`);
+      const sqm = v => `${nf.format(Math.round(v))}㎡`;
+      const kw = v => `${nf.format(Math.round(v))}kW`;
+      const pc = v => `${nf1.format(Number(v) || 0)}%`;
+      const activeKeys = GPU_KEYS.filter(k => gpuOn(k) && gpuCount(k) > 0 && gpuSpecOk(gpuTypes[k]));
+      const spaceModeName = state.spaceMode === 'expand' ? t('expandBtn') : (state.spaceMode === 'b1' ? t('b1Btn') : t('baseBtn'));
+      const repayName = ({ equal: L('원금균등', 'Equal'), balloon: L('만기일시', 'Balloon'), sweep: L('현금스윕', 'Sweep') })[P.repay] || P.repay;
+      const vehName = ({ corp: L('일반법인', 'Corporate'), flow: L('PFV·리츠', 'PFV / REIT') })[P.veh] || P.veh;
+      // 운영 방식 설명
+      let modeText;
+      if (neo) {
+        const prices = activeKeys.map(k => `${gpuShortLabel(gpuTypes[k], k)} $${nf2.format(neoPriceOf(k))}`).join(' · ');
+        modeText = [{ t: `${t('opModeNeo')} — `, b: true }, `${t('labelNeoPrice')} ${prices}/GPU·h · ${t('labelNeoMargin')} ${pc(state.neoMarginPct)} · ${t('labelNeoUtil')} ${pc(state.neoUtilPct)}`];
+      } else {
+        modeText = [{ t: `${t('opModeCsp')} — `, b: true }, `${t('labelMix3Y')} ${pc(state.mix3Y)} / ${t('labelMix1Y')} ${pc(state.mix1Y)} / ${t('labelMixOD')} ${pc(state.mixOD)} / ${t('labelMixIdle')} ${pc(state.mixIdle)} · ${t('labelDisc3YShort')} ${pc(state.disc3YPct)} · ${t('labelDisc1YShort')} ${pc(state.disc1YPct)}`];
+      }
+      const cumMarginPct = d.cumRevenue[last] ? d.cumProfit[last] / d.cumRevenue[last] * 100 : 0;
+      const W = 7909; // 우측 내용 폭
+      // ① 구성 개요
+      const s1 = dxTable([1300, W - 1300], [
+        { head: true, cells: [L('구분', 'Item'), L('내용', 'Detail')] },
+        { cells: [L('운영 방식', 'Operating model'), modeText] },
+        { cells: [L('GPU 구성', 'GPU configuration'), [{ t: gpuMixText(state, gpuTypes, false), b: true }, ` · ${L('총', 'Total')} ${nf.format(d.totalGpu)} GPU · FP4 ${nf.format(Math.round(d.totalFp4))} PFLOPS`]] },
+        { cells: [L('전력', 'Power'), `${t('labelTotalPowerKw')} ${kw(state.totalPowerKw)} · ${t('labelItPowerKw')} ${kw(state.itPowerKw)} · PUE ${nf2.format(d.pue)} · ${L('사용 IT 전력', 'IT power used')} ${kw(d.usedItPower)} (${pct(d.allocationPct, 1)})`] },
+        { cells: [L('면적', 'Space'), `${t('labelFloorArea')} ${sqm(d.floorArea)} (${L('가용', 'usable')} ${sqm(d.usableArea)} · ${L('부대', 'support')} ${sqm(d.supportArea)}) · ${L('점유', 'occupied')} ${sqm(d.occupiedArea)} (${pct(d.areaPct, 1)}) · ${t('labelSpaceMode')} ${spaceModeName}`] }
+      ]);
+      // ② 투자·운영비
+      const opexSum = (Number(d.opexEok) || 0) + (Number(d.extraOpexEok) || 0);
+      const s2 = dxTable([1300, 1500, W - 2800], [
+        { head: true, cells: [L('항목', 'Item'), L('금액', 'Amount'), L('비고', 'Note')] },
+        { cells: [L('IT 장비 CAPEX', 'IT equipment capex'), eok(d.itCapexEok), `${L('GPU당', 'per GPU')} ${fmtUsdLarge(d.itCapexUsd / Math.max(1, d.totalGpu))} · ${L('합계', 'total')} ${fmtUsdLarge(d.itCapexUsd)}`] },
+        { cells: [L('시설 CAPEX', 'Facility capex'), eok(d.facilityEok), `${L('연면적', 'Floor area')} ${sqm(d.floorArea)} ${L('기준', 'basis')} · ${t('labelSpaceMode')} ${spaceModeName}`] },
+        { bold: true, cells: [L('총 CAPEX', 'Total capex'), { t: eok(d.totalCapexEok), color: OR }, L('IT 장비 + 시설', 'IT equipment + facility')] },
+        { cells: [L('연간 전기료', 'Electricity (Y1)'), perYr(eok(d.electricityByYear[0])), `${L('전력량', 'Energy')} ${eok(d.energyByYear[0])} + ${L('기본요금', 'basic charge')} ${eok(d.baseEok)} (${krw(state.energyCostRate)}/kWh · ${krw(state.basicChargeKwMonth)}/kW·${L('월', 'mo')})`] },
+        { cells: [L('SW 구독', 'SW subscription'), perYr(eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)), formatSwSub(d.swRateUsd)] },
+        { cells: [L('기타 운영비', 'Other opex'), perYr(eok(opexSum)), neo ? L('NeoCloud 기타 운영비', 'NeoCloud other opex') : L('서버형(B300) 별도 운영비', 'Separate opex for the server type (B300)')] },
+        { cells: [L('감가상각(1년차)', 'Depreciation (Y1)'), perYr(eok(d.capexByYear[0])), `${t('labelDepGroup')} ${nf1.format(state.depY1)} / ${nf1.format(state.depY2)} / ${nf1.format(state.depY3)}%`] }
+      ], { align: ['center', 'right', 'left'] });
+      // ③ 수익 지표 (재무구조 반영 전)
+      const pnlRows = Array.from({ length: YEARS }, (_, i) => {
+        const profit = d.annualRevenue[i] - d.annualExpense[i];
+        const m = d.annualRevenue[i] ? profit / d.annualRevenue[i] * 100 : 0;
+        return { cells: [yrLbl(i), eok(d.annualRevenue[i]), eok(d.annualExpense[i]), eok(profit), eok(d.cumProfit[i]), pct(m, 1)] };
+      });
+      const cw3 = Math.round((W - 1100) / 5);
+      const s3 = dxTable([1100, cw3, cw3, cw3, cw3, W - 1100 - cw3 * 4], [
+        { head: true, cells: [L('연차', 'Year'), L('매출', 'Revenue'), L('지출', 'Expense'), L('손익', 'Profit'), L('누적 손익', 'Cum. profit'), L('손익률', 'Margin')] },
+        ...pnlRows,
+        { bold: true, cells: [L(`${YEARS}년 합계`, `${YEARS}-yr total`), eok(d.cumRevenue[last]), eok(d.cumExpense[last]), { t: eok(d.cumProfit[last]), color: OR }, { t: eok(d.cumProfit[last]), color: OR }, pct(cumMarginPct, 1)] }
+      ], { align: ['center', 'right', 'right', 'right', 'right', 'right'] });
+      const s3note = dxPara([{ t: getBreakEvenText(d), b: true, color: OR }, ` · ${L('누적 매출 대비 손익률', 'Cumulative margin')} ${pct(cumMarginPct, 1)} · ${L('재무구조 반영 전(전기료·SW·운영비·감가상각 차감)', 'Before financing (after electricity, SW, opex, depreciation)')}`], { before: 60, sz: 14 });
+      // ④ 재무구조·주주수익률
+      const fm = key => finMetric(d, key);
+      const s4 = dxTable([1700, 1900, 2500, W - 6100], [
+        { cells: [L('자기자본 비율', 'Equity ratio'), pc(P.eq), L('PF 금리', 'PF interest rate'), pc(P.ir)] },
+        { cells: [L('상환방식', 'Repayment'), repayName, L('사업기구', 'Vehicle'), vehName] },
+        { cells: [t('cmpFinIrr'), { t: fm('irr'), b: true, color: OR }, t('cmpFinMirr'), fm('mirr')] },
+        { cells: [t('cmpFinNpv'), fm('npv'), t('cmpFinMoic'), fm('moic')] },
+        { cells: [t('cmpFinDscr'), fm('dscr'), t('cmpFinFcfe'), fm('fcfe')] },
+        { cells: [t('cmpFinNi'), fm('cumNI'), t('cmpFinCost'), fm('cumCost')] }
+      ], { align: ['center', 'left', 'center', 'left'] });
+      // ⑤ 주요 가정
+      const assumeRows = [
+        { cells: [t('labelFx'), `${nf.format(state.fxKrwUsd)} ${L('원/USD', 'KRW/USD')}`] },
+        { cells: [t('labelUtilYears'), `${nf1.format(state.utilY1)} / ${nf1.format(state.utilY2)} / ${nf1.format(state.utilY3)}%`] },
+        { cells: [t('labelLocPremium'), pc(state.locPremiumPct)] }
+      ];
+      if (activeKeys.includes('b300')) {
+        const cooling = b300CoolingKey() === 'air' ? L('공랭 8U', 'Air 8U') : L('수랭 4U (DLC)', 'Liquid 4U (DLC)');
+        const net = b300NetKey() === '800' ? '800G XDR' : '400G NDR';
+        assumeRows.push({ cells: [L('서버 구성 (B300)', 'Server config (B300)'), `${cooling} · ${net}`] });
+      }
+      const s5 = dxTable([1900, W - 1900], assumeRows);
+      const spacer = '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="120" w:lineRule="exact"/><w:rPr><w:sz w:val="8"/></w:rPr></w:pPr></w:p>';
+      const sections = [
+        [L('구성 개요', 'Configuration'), s1],
+        [L('투자·운영비', 'Capex & Opex'), s2],
+        [L('수익 지표', 'P&L Summary'), s3 + s3note],
+        [L('재무구조·주주수익률', 'Financing & Equity Returns'), s4],
+        [L('주요 가정', 'Key Assumptions'), s5]
+      ];
+      const outer = dxTable([2410, W], sections.map(([title, body]) => ({
+        cells: [dxPara({ t: title, b: true, color: OR, sz: 21 }, { before: 40 }), body + spacer],
+        cellOpts: [{ raw: true, vAlign: 'top', pad: 0 }, { raw: true, vAlign: 'top', pad: 0 }]
+      })), { noBorder: true, padX: 0 });
+      const title = dxPara({ t: L('AI Data Center GPU 임대', 'AI Data Center GPU Leasing'), b: true, sz: 30, color: '000000' }, { before: 20 })
+        + dxPara({ t: L('수익구조 시뮬레이션 요약', 'Revenue Structure Summary'), b: true, sz: 30, color: '000000' }, { before: 20 })
+        + dxPara(`${gpuMixText(state, gpuTypes, true)} · ${neo ? t('opModeNeo') : t('opModeCsp')} · ${ymd}`, { before: 60, after: 200, sz: 15, color: '7F7F7F' });
+      const foot = dxPara(L('※ 수익 지표는 재무구조 반영 전(매출 − 전기료·SW·운영비·감가상각) 기준이며, 재무구조·주주수익률은 자기자본 비율·PF 금리·상환방식·사업기구를 반영한 주주 관점 기준입니다. AI Data Center 수익구조 시뮬레이션에서 생성.', '※ P&L figures are before financing (revenue − electricity, SW, opex, depreciation); financing metrics reflect equity ratio, PF rate, repayment and vehicle from the shareholder view. Generated by the AI Data Center revenue-structure simulator.'), { before: 160, sz: 13, color: '7F7F7F' });
+      const sectPr = '<w:sectPr><w:headerReference w:type="default" r:id="rId3"/><w:footerReference w:type="default" r:id="rId4"/><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="993" w:right="566" w:bottom="454" w:left="1021" w:header="425" w:footer="510" w:gutter="0"/><w:cols w:space="720"/><w:docGrid w:linePitch="360"/></w:sectPr>';
+      const XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+      const documentXml = `${XML}<w:document ${DOCX_NS}><w:body>${title}${outer}${foot}${sectPr}</w:body></w:document>`;
+      const stylesXml = `${XML}<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Pretendard" w:eastAsia="Pretendard" w:hAnsi="Pretendard" w:cs="Pretendard"/><w:color w:val="222222"/><w:sz w:val="18"/><w:szCs w:val="18"/><w:lang w:val="en-US" w:eastAsia="ko-KR" w:bidi="ar-SA"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style><w:style w:type="table" w:default="1" w:styleId="TableNormal"><w:name w:val="Normal Table"/><w:tblPr><w:tblInd w:w="0" w:type="dxa"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="108" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="108" w:type="dxa"/></w:tblCellMar></w:tblPr></w:style></w:styles>`;
+      const headerXml = `${XML}<w:hdr ${DOCX_NS}>${dxPara(`${L('전략사업실 Rev. Date: ', 'Rev. Date: ')}${ymd}`, { jc: 'right', sz: 14, color: '7F7F7F' })}</w:hdr>`;
+      const logo = '<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="590550" cy="104775"/><wp:docPr id="1" name="logo"/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="0" name="logo.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rId1"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="590550" cy="104775"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>';
+      const pageNo = '<w:r><w:tab/></w:r><w:fldSimple w:instr="PAGE"><w:r><w:rPr><w:b/><w:bCs/><w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr><w:t>1</w:t></w:r></w:fldSimple><w:r><w:rPr><w:color w:val="7F7F7F"/><w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr><w:t xml:space="preserve"> / </w:t></w:r><w:fldSimple w:instr="NUMPAGES"><w:r><w:rPr><w:color w:val="7F7F7F"/><w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr><w:t>1</w:t></w:r></w:fldSimple>';
+      const footerXml = `${XML}<w:ftr ${DOCX_NS}><w:p><w:pPr><w:tabs><w:tab w:val="right" w:pos="10319"/></w:tabs><w:spacing w:before="40" w:after="0"/></w:pPr>${logo}${pageNo}</w:p></w:ftr>`;
+      const RELNS = 'xmlns="http://schemas.openxmlformats.org/package/2006/relationships"';
+      const RT = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/';
+      const rootRels = `${XML}<Relationships ${RELNS}><Relationship Id="rId1" Type="${RT}officeDocument" Target="word/document.xml"/></Relationships>`;
+      const docRels = `${XML}<Relationships ${RELNS}><Relationship Id="rId1" Type="${RT}styles" Target="styles.xml"/><Relationship Id="rId3" Type="${RT}header" Target="header1.xml"/><Relationship Id="rId4" Type="${RT}footer" Target="footer1.xml"/></Relationships>`;
+      const footerRels = `${XML}<Relationships ${RELNS}><Relationship Id="rId1" Type="${RT}image" Target="media/logo.png"/></Relationships>`;
+      const CT = 'application/vnd.openxmlformats-officedocument.wordprocessingml.';
+      const contentTypes = `${XML}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/word/document.xml" ContentType="${CT}document.main+xml"/><Override PartName="/word/styles.xml" ContentType="${CT}styles+xml"/><Override PartName="/word/header1.xml" ContentType="${CT}header+xml"/><Override PartName="/word/footer1.xml" ContentType="${CT}footer+xml"/></Types>`;
+      const logoBytes = Uint8Array.from(atob(DOCX_LOGO_B64), c => c.charCodeAt(0));
+      return zipStore([
+        { name: '[Content_Types].xml', data: contentTypes },
+        { name: '_rels/.rels', data: rootRels },
+        { name: 'word/document.xml', data: documentXml },
+        { name: 'word/styles.xml', data: stylesXml },
+        { name: 'word/header1.xml', data: headerXml },
+        { name: 'word/footer1.xml', data: footerXml },
+        { name: 'word/_rels/document.xml.rels', data: docRels },
+        { name: 'word/_rels/footer1.xml.rels', data: footerRels },
+        { name: 'word/media/logo.png', data: logoBytes }
+      ]);
+    }
+    function exportWordReport() {
+      const blob = buildReportDocx();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const today = new Date().toISOString().slice(0, 10);
+      link.href = url;
+      link.download = `aidc_report_${state.lang}_${today}.docx`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }
+
     function exportCurrentTable() {
       const data = getActiveData();
       const modeName = state.activeView === 'compare' ? t('tabCompare') : t('tabLease');
@@ -5921,6 +6133,7 @@
       if (event.target.closest('[data-reset-rack]')) { resetSelectedRackDefaults(); return; }
       if (event.target.closest('[data-reset-selected]')) { resetSelectedSystemDefaults(); return; }
       if (event.target.closest('[data-export]')) exportCurrentTable();
+      if (event.target.closest('[data-export-docx]')) exportWordReport();
     });
     // 카드 선택은 mousedown 시점에 처리 — 포커스된 입력의 change → 재렌더가 click 전에 일어나도 선택이 유실되지 않음
     let cardPickAt = 0;
