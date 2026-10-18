@@ -2795,7 +2795,7 @@
     }
     function makeBaselineState() {
       // 새 기본 상태: [기존] 모드 · 연면적 500㎡ · 최대 수량 · 시설비 580/613억 (■8)
-      return { ...DEFAULTS, lang: state.lang };
+      return { ...DEFAULTS, lang: state.lang, opMode: state.opMode }; // rev44: 기본값 대비는 현재 운영 방식의 기본값 기준
     }
     function baselineFacilityTotal(modelKey) {
       const rows = makeFacilityRows(modelKey);
@@ -4338,15 +4338,15 @@
       const r = PODFIN.metrics(data);
       if (!r) return '—';
       const f = (v, d) => v == null ? '—' : v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
-      const unit = state.lang === 'en' ? 'B' : '억';
+      const money = v => (v == null ? '—' : (state.lang === 'en' ? eok(v) : f(v, 1) + '억')); // rev44: 영문은 $M 환산
       if (key === 'irr') return r.irr == null ? (state.lang === 'en' ? 'n/a' : '산출불가') : (r.irr * 100).toFixed(2) + '%';
       if (key === 'mirr') return r.mirr == null ? '—' : (r.mirr * 100).toFixed(2) + '%';
-      if (key === 'npv') return f(r.npv, 1) + unit;
+      if (key === 'npv') return money(r.npv);
       if (key === 'moic') return r.moic == null ? '—' : r.moic.toFixed(2) + (state.lang === 'en' ? 'x' : '배');
       if (key === 'dscr') return r.minDscr == null ? (state.lang === 'en' ? 'No debt' : '무차입') : r.minDscr.toFixed(2);
-      if (key === 'fcfe') return f(r.cumFcfe, 1) + unit;
-      if (key === 'cumCost') return f(r.cumCost, 1) + unit;
-      if (key === 'cumNI') return f(r.cumNI, 1) + unit;
+      if (key === 'fcfe') return money(r.cumFcfe);
+      if (key === 'cumCost') return money(r.cumCost);
+      if (key === 'cumNI') return money(r.cumNI);
       return '—';
     }
     const CMP_COLORS = ['#606060', '#1ba85e', '#e84949', '#f59e0b', '#8b5cf6'];
