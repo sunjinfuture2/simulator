@@ -2701,7 +2701,7 @@
 
     // ---- rev36: 혼합 구성 계산 — 켜진 카드별 매출·CAPEX·전력·면적을 합산 ----
     //  전기료: 기본요금 = 총 수전용량 × 기본요금 × 12 / 전력량요금 = 켜진 카드의 사용 IT 전력 합계 × PUE × 8,760h × 가동률 × 단가
-    //  기타 운영비(opexEok)는 서버형(B300)이 켜진 구성에만 계상 (랙 낱개 조달 모델의 별도 운영비를 승계)
+    //  기타 운영비(opexEok)는 서버형(B300) 수량이 1대 이상인 구성에만 계상 (랙 낱개 조달 모델의 별도 운영비를 승계)
     function calcMix(inputState = state, inputTypes = gpuTypes, inputFacilityEok = null) {
       const neo = isNeo(inputState);
       const nu = neoUtil(inputState);
@@ -2731,7 +2731,7 @@
         const fp4 = ok ? n * (Number(g.fp4PflopsPerUnit) || 0) : 0;
         for (let y = 0; y < YEARS; y++) revenueByYear[y] += rev[y];
         gpus += gpuN; racks += rk; totalFp4 += fp4; itCapexUsd += capUsd; usedItPower += kw; occupiedArea += area;
-        if (ok && g.kind === 'server') hasServer = true;
+        if (ok && g.kind === 'server' && n > 0) hasServer = true; // rev43: 서버 수량이 0이면 별도 운영비 미계상
         return {
           key, type: g, kind: g.kind, ok, n, gpus: gpuN, racks: rk, fp4, perUnitUsd,
           itCapexUsd: capUsd, itCapexEok: capUsd * fxv / EOK,
@@ -5416,7 +5416,7 @@
         { cells: [L('면적', 'Space'), `${t('labelFloorArea')} ${sqm(d.floorArea)} (${L('가용', 'usable')} ${sqm(d.usableArea)} · ${L('부대', 'support')} ${sqm(d.supportArea)}) · ${L('점유', 'occupied')} ${sqm(d.occupiedArea)} (${pct(d.areaPct, 1)}) · ${t('labelSpaceMode')} ${spaceModeName}`] }
       ]);
       // ② 투자·운영비
-      const opexSum = (Number(d.opexEok) || 0) + (Number(d.extraOpexEok) || 0);
+      const opexSum = Number(d.opexEok) || 0;
       const s2 = dxTable([1300, 1500, W - 2800], [
         { head: true, cells: [L('항목', 'Item'), L('금액', 'Amount'), L('비고', 'Note')] },
         { cells: [L('IT 장비 CAPEX', 'IT equipment capex'), eok(d.itCapexEok), `${L('GPU당', 'per GPU')} ${fmtUsdLarge(d.itCapexUsd / Math.max(1, d.totalGpu))} · ${L('합계', 'total')} ${fmtUsdLarge(d.itCapexUsd)}`] },
