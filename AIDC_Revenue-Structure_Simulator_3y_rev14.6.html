@@ -1214,7 +1214,7 @@
       labelNeoPrice: { ko: 'GPU 소비자가', en: 'GPU list price' },
       labelNeoMargin: { ko: '마진율', en: 'Operator margin' },
       labelNeoUtil: { ko: '가동비중', en: 'Utilized share' },
-      labelNeoSw: { ko: 'SW구독단가', en: 'SW subscription' },
+      labelNeoSw: { ko: 'SW구독단가 (서버형)', en: 'SW subscription (server type)' },
       labelNeoOpex: { ko: '기타 운영비(연간)', en: 'Other opex (per yr)' },
       neoPriceBlank: { ko: '소비자가 미입력 — 매출 0으로 계산', en: 'No list price — revenue counted as 0' },
       neoNetChip: { ko: 'NeoCloud 순단가 {net}/GPU·h = 소비자가 {gross} − 마진 {m}%', en: 'NeoCloud net rate {net}/GPU·h = list {gross} − margin {m}%' },
@@ -1256,7 +1256,7 @@
       blNeoPrice: { ko: '{name} 소비자가 → 순단가', en: '{name} list → net rate' },
       blNeoUtil: { ko: '가동비중', en: 'Utilized share' },
       blNeoMargin: { ko: 'NeoCloud 마진율', en: 'NeoCloud margin' },
-      blSwOpexNeo: { ko: 'SW 구독료(연, NeoCloud)', en: 'SW subscription (per yr, NeoCloud)' },
+      blSwOpexNeo: { ko: 'SW 구독료(연, 서버형 GPU)', en: 'SW subscription (per yr, server-type GPUs)' },
       blOtherOpexNeo: { ko: '기타 운영비(연)', en: 'Other opex (per yr)' },
       chipSwSubNeo: { ko: 'SW 구독 (NeoCloud)', en: 'SW subscription (NeoCloud)' },
       formulaCardGpuBodyNeo: { ko: 'Σ(GPU 종류별 수량 × 단위당 GPU 수 × 8,760시간 × 가동비중 × 소비자가($) × (1 − 마진율) × 환율) ※ 계약 포트폴리오·입지 프리미엄·예약 할인 미적용', en: 'Σ(per GPU type: units × GPUs/unit × 8,760 hrs × utilized share × list price ($) × (1 − margin) × FX) — no contract mix, location premium or reserve discounts' },
@@ -1481,7 +1481,7 @@
       blFacility: { ko: '시설 CAPEX', en: 'Facility CAPEX' },
       blServerCapex: { ko: '서버 CAPEX', en: 'Server CAPEX' },
       blElecCost: { ko: '전기료(연평균)', en: 'Electricity (yearly avg.)' },
-      blSwOpex: { ko: 'SW 구독료(연)', en: 'SW subscription (per yr)' },
+      blSwOpex: { ko: 'SW 구독료(연, 서버형 GPU)', en: 'SW subscription (per yr, server-type GPUs)' },
       blDep: { ko: '감가상각(누적)', en: 'Depreciation (cum.)' },
       facilityTitle: { ko: '시설비 CAPEX 세부 내역', en: 'Facility CAPEX Breakdown' },
       facilityDesc: { ko: "신축·리모델링 기준 시설비 계산표입니다. 각 항목 수치 아래 입력칸에서 예산을 직접 조정(Scalable)할 수 있으며, 적용 중인 시설 유형의 합계가 시설 CAPEX에 자동 반영됩니다. 상단 '시설 유형' 토글로 신축/리모델링을 전환할 수 있습니다.", en: "Facility cost breakdown for new build vs. remodel. Each item's budget can be adjusted directly (scalable) in the input below its value; the total of the applied facility type feeds Facility CAPEX automatically. Use the 'Facility Type' toggle above to switch between new build and remodel." },
@@ -2709,7 +2709,7 @@
       const fxv = Number(inputState.fxKrwUsd) || 0;
       const revenueByYear = Array.from({ length: YEARS }, () => 0);
       const grossByYear = Array.from({ length: YEARS }, () => 0);
-      let gpus = 0, racks = 0, totalFp4 = 0, itCapexUsd = 0, usedItPower = 0, occupiedArea = 0, hasServer = false;
+      let gpus = 0, racks = 0, totalFp4 = 0, itCapexUsd = 0, usedItPower = 0, occupiedArea = 0, hasServer = false, swGpus = 0;
       const types = GPU_KEYS.filter(k => gpuOn(k, inputState)).map(key => {
         const g = inputTypes[key];
         const ok = gpuSpecOk(g);
@@ -2732,6 +2732,7 @@
         for (let y = 0; y < YEARS; y++) revenueByYear[y] += rev[y];
         gpus += gpuN; racks += rk; totalFp4 += fp4; itCapexUsd += capUsd; usedItPower += kw; occupiedArea += area;
         if (ok && g.kind === 'server' && n > 0) hasServer = true; // rev43: 서버 수량이 0이면 별도 운영비 미계상
+        if (ok && g.kind === 'server') swGpus += gpuN; // rev44: SW 구독은 서버형(B300) GPU에만 — SuperPOD은 CAPEX에 SW 라이선스 포함
         return {
           key, type: g, kind: g.kind, ok, n, gpus: gpuN, racks: rk, fp4, perUnitUsd,
           itCapexUsd: capUsd, itCapexEok: capUsd * fxv / EOK,
@@ -2752,7 +2753,7 @@
       const energyByYear = utils.map(u => energyEok100 * u);
       const electricityByYear = energyByYear.map(e => baseEok + e);
       const swRateUsd = neo ? (Number(inputState.neoSwUsdPerGpuYear) || 0) : (Number(inputState.swSubUsdPerGpuYear) || 0);
-      const swOpexEok = gpus * swRateUsd * fxv / EOK;
+      const swOpexEok = swGpus * swRateUsd * fxv / EOK;
       const swOpexByYear = utils.map(() => swOpexEok);
       const opexEok = neo ? Math.max(0, Number(inputState.neoOpexEok) || 0) : (hasServer ? Math.max(0, Number(inputState.opexEok) || 0) : 0);
       const depIncrements = getDepreciationIncrements(inputState);
@@ -2779,7 +2780,7 @@
       const fallback = inputTypes.gb300;
       return {
         key: 'mix', types, hasServer,
-        mode: neo ? 'neo' : 'csp', neoMarginPct: neoMargin(inputState) * 100, neoUtilPct: nu * 100, swRateUsd,
+        mode: neo ? 'neo' : 'csp', neoMarginPct: neoMargin(inputState) * 100, neoUtilPct: nu * 100, swRateUsd, swGpus,
         grossByYear, takeByYear: grossByYear.map((v, i) => v - revenueByYear[i]), gpuHours: utils.map(u => gpus * HOURS * u),
         system: primary ? primary.type : fallback, systemKey: primary ? primary.key : null, su: primary ? primary.n : 0,
         gpus, totalGpu: gpus, racks, totalFp4,
@@ -5423,7 +5424,7 @@
         { cells: [L('시설 CAPEX', 'Facility capex'), eok(d.facilityEok), `${L('연면적', 'Floor area')} ${sqm(d.floorArea)} ${L('기준', 'basis')} · ${t('labelSpaceMode')} ${spaceModeName}`] },
         { bold: true, cells: [L('총 CAPEX', 'Total capex'), { t: eok(d.totalCapexEok), color: OR }, L('IT 장비 + 시설', 'IT equipment + facility')] },
         { cells: [L('연간 전기료', 'Electricity (Y1)'), perYr(eok(d.electricityByYear[0])), `${L('전력량', 'Energy')} ${eok(d.energyByYear[0])} + ${L('기본요금', 'basic charge')} ${eok(d.baseEok)} (${krw(state.energyCostRate)}/kWh · ${krw(state.basicChargeKwMonth)}/kW·${L('월', 'mo')})`] },
-        { cells: [L('SW 구독', 'SW subscription'), perYr(eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)), formatSwSub(d.swRateUsd)] },
+        { cells: [L('SW 구독', 'SW subscription'), perYr(eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)), `${formatSwSub(d.swRateUsd)} × ${L('서버형(B300) GPU', 'server-type (B300) GPUs')} ${nf.format(d.swGpus || 0)}`] },
         { cells: [L('기타 운영비', 'Other opex'), perYr(eok(opexSum)), neo ? L('NeoCloud 기타 운영비', 'NeoCloud other opex') : L('서버형(B300) 별도 운영비', 'Separate opex for the server type (B300)')] },
         { cells: [L('감가상각(1년차)', 'Depreciation (Y1)'), perYr(eok(d.capexByYear[0])), `${t('labelDepGroup')} ${nf1.format(state.depY1)} / ${nf1.format(state.depY2)} / ${nf1.format(state.depY3)}%`] }
       ], { align: ['center', 'center', 'left'] });
