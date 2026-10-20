@@ -1128,7 +1128,9 @@
       pue: 1.25,
       itPowerKw: 4800,
       floorAreaSqm: 2400,
-      supportAreaBase: 300,    // IT 수전용량 비례 부대공간(㎡ @4,800kW) — [확장] 기준: 전기실·발전기실·UPS는 신축 700㎡ 전력동이 흡수
+      greySpaceSqm: 300,       // rev47: 그레이스페이스(㎡) — 기계실·전기실·복도·반입구·감시실 등 지원 공간 (전기실·발전기실·UPS는 신축 700㎡ 전력동이 흡수)
+      whiteSpaceSqm: 500,      // rev47: 화이트스페이스(㎡) = 연면적 − 그레이스페이스 (파생값, 표시용)
+      supportAreaBase: 300,    // (구) IT 수전용량 비례 부대공간 — greySpaceSqm으로 대체
       supportAreaFixed: 0,   // 전력과 무관한 고정 부대공간(㎡) — 코어·계단·EV·복도·샤프트·창고·벽체 // 부대공간 기준면적(㎡) @ IT 4,800kW — IT 용량 비례 환산
       spaceMode: 'expand', // 'base'([기존]) | 'expand'([확장]) | 'b1'([B1 전체]) — rev13.4 기준안: [확장](신축 전력동 700㎡ 확정)
       energyCostRate: 121.7,
@@ -1300,8 +1302,8 @@
       usageLabelMix: { ko: '전력 사용률', en: 'Power Utilization' },
       powerCapMix: { ko: '({mix} ≈ {kw} / IT 수전용량 {it})', en: '({mix} ≈ {kw} / IT power {it})' },
       thColServerRack: { ko: '랙 수 (서버 수)', en: 'Racks (servers)' },
-      thServerDesc: { ko: '{name} 기준 · 랙당 {spr}대 · 랙당 {area}㎡ · 부대공간 {sup}㎡ — 다른 활성 카드가 쓰는 전력·면적을 뺀 잔여분 기준', en: '{name} · {spr} per rack · {area}㎡/rack · support {sup}㎡ — based on the remainder after other active cards' },
-      thTypeDescMix: { ko: '{sys} 기준 · SU당 {area}㎡ · 부대공간 {sup}㎡ — 다른 활성 카드가 쓰는 전력·면적을 뺀 잔여분 기준 (필요 연면적 = 부대공간 + 타 카드 점유 + SU수 × SU당 면적)', en: '{sys} · {area}㎡/SU · support {sup}㎡ — based on the remainder after other active cards (required area = support + other cards + SU × area/SU)' },
+      thServerDesc: { ko: '{name} 기준 · 랙당 {spr}대 · 랙당 {area}㎡ · 그레이스페이스 {sup}㎡ — 다른 활성 카드가 쓰는 전력·면적을 뺀 잔여분 기준', en: '{name} · {spr} per rack · {area}㎡/rack · grey space {sup}㎡ — based on the remainder after other active cards' },
+      thTypeDescMix: { ko: '{sys} 기준 · SU당 {area}㎡ · 그레이스페이스 {sup}㎡ — 다른 활성 카드가 쓰는 전력·면적을 뺀 잔여분 기준 (필요 연면적 = 그레이스페이스 + 타 카드 점유 + SU수 × SU당 면적)', en: '{sys} · {area}㎡/SU · grey space {sup}㎡ — based on the remainder after other active cards (required area = support + other cards + SU × area/SU)' },
       thPowerNoteMix: { ko: '전력 기준 상한 {max}{u} (잔여 IT {it}) — 이후 행은 IT 수전용량 증설 또는 다른 카드 축소 시에만 도달 가능', en: 'Power cap {max}{u} (remaining IT {it}) — rows beyond need more IT power or fewer units on other cards' },
       leaseCumHint: { ko: '{mix} · 총 {gpu} GPU', en: '{mix} · {gpu} GPUs' },
       leaseExpenseHint: { ko: 'IT CAPEX {a} + 시설 {b}<br>(감가상각 반영)', en: 'IT CAPEX {a} + Facility {b}<br>(depreciated)' },
@@ -1317,7 +1319,7 @@
       formulaCardDepBodyMix: { ko: '(IT 장비 CAPEX + 시설 CAPEX) × 연차별 감가상각 증가율[기본 33→66→99% 누적] + 연간 OPEX', en: '(IT equipment CAPEX + Facility CAPEX) × Yearly depreciation increment [default 33→66→99% cumulative] + Annual OPEX' },
       compareDescMix: { ko: '켜진 카드의 GPU 종류별로 각각 단독 구성(전력·면적 제약 내 최대 수량)했을 때의 {n}년 수익구조를 비교합니다. 카드가 2장 이상 켜져 있으면 현재 혼합 구성도 함께 보입니다. 전기료는 모두 사용 IT 전력 × PUE 기준입니다.', en: 'Compares the {n}-yr revenue structure of each active GPU type configured on its own (max units within power and area limits). With two or more cards on, the current mix is shown as well. Electricity is based on used IT power × PUE for all columns.' },
       compareMixName: { ko: '현재 구성(혼합)', en: 'Current mix' },
-      compareNoteMix: { ko: '※ [확장] 공간 모드에서는 단독 구성 열마다 전력 기준 수량에 맞춰 연면적을 자동 산출하므로 시설 CAPEX가 열에 따라 다를 수 있습니다. 기타 운영비는 서버형(B300)이 포함된 열에만 계상됩니다.', en: '※ In [Expansion] space mode each standalone column sizes its floor area to the power-limited unit count, so facility CAPEX can differ by column. Other opex applies only to columns that include the server type (B300).' },
+      compareNoteMix: { ko: '※ 단독 구성 열마다 전력 기준 수량에 맞춰 연면적을 자동 산출하므로 시설 CAPEX가 열에 따라 다를 수 있습니다. 기타 운영비는 서버형(B300)이 포함된 열에만 계상됩니다.', en: '※ Each standalone column sizes its floor area to the power-limited unit count, so facility CAPEX can differ by column. Other opex applies only to columns that include the server type (B300).' },
       compareApplyBtnMix: { ko: '이 구성만 적용', en: 'Use this configuration' },
       compareGotoBtn: { ko: 'GPU 임대 탭으로 이동', en: 'Open GPU Leasing tab' },
       prodColPod: { ko: 'SuperPOD형 (GB300 · VR)', en: 'SuperPOD type (GB300 · VR)' },
@@ -1640,7 +1642,12 @@
       spaceModeHintExpand: { ko: '[확장] B1 연면적을 조정하고 시설비를 면적·용량 단가로 자동 산출 — 신축 전력동 700㎡ 별동 전제', en: '[Expansion] adjustable B1 floor area with unit-rate auto costing — assumes a separate 700㎡ power building' },
       spaceModeHintB1: { ko: '[B1 전체] 신축 전력동을 폐지하고 그 설비(수배전·UPS·발전기·급수탱크)를 B1으로 흡수 · 연면적 상한 2,400㎡ · 시설비는 리모델링 단일 항목', en: '[Full B1] the new power building is dropped and its equipment (switchgear, UPS, generators, water tank) is absorbed into B1 · floor area capped at 2,400㎡ · facility CAPEX becomes remodel-only' },
       spaceModeHint: { ko: '[기존] 연면적 500㎡ 고정 · 시설비 고정값(SuperPOD {pod} / 임대 {rack}) — [확장] 연면적 확장 · 시설비 단가 자동 산출', en: '[Base] floor area fixed at 500㎡ with fixed facility CAPEX (SuperPOD {pod} / Rental {rack}) — [Expansion] adjustable floor area with unit-rate auto costing' },
-      labelFloorArea: { ko: '(B1) 연면적', en: 'Gross Floor Area (B1)' },
+      labelFloorArea: { ko: '연면적', en: 'Gross floor area' },
+      labelWhiteSpace: { ko: '화이트스페이스', en: 'White space' },
+      labelGreySpace: { ko: '그레이스페이스', en: 'Grey space' },
+      floorAreaTip: { ko: '연면적(Gross Floor Area): 데이터센터로 쓰는 B1 바닥 면적 전체 = 화이트스페이스 + 그레이스페이스. 상한 2,400㎡(B1 연면적 2,439.76㎡ 절사). 신축 전력동 700㎡(전기실·발전기실·UPS)는 별동이라 포함하지 않습니다.', en: 'Gross floor area: the whole B1 floor used for the data center = white space + grey space. Cap 2,400㎡ (B1 total 2,439.76㎡). The separate 700㎡ power building (switchgear, generators, UPS) is excluded.' },
+      whiteSpaceTip: { ko: '화이트스페이스(White Space): 랙을 놓는 전산실 면적 = 연면적 − 그레이스페이스. 랙당 면적(통로·CDU 포함) × 랙 수가 이 값을 넘을 수 없습니다. 값을 바꾸면 그레이스페이스가 그만큼 조정됩니다.', en: 'White space: the data-hall area where racks sit = gross floor area − grey space. Racks × area per rack (incl. aisles and CDU) cannot exceed it. Editing it adjusts the grey space accordingly.' },
+      greySpaceTip: { ko: '그레이스페이스(Grey Space): 기계실·냉동기·CRAC·복도·반입구·감시실 등 IT 장비가 아닌 지원 공간. 전기실·발전기실·UPS는 신축 전력동에 있어 제외. 값을 바꾸면 화이트스페이스가 그만큼 조정됩니다.', en: 'Grey space: support areas that hold no IT equipment, such as mechanical rooms, chillers, CRACs, corridors, loading dock and monitoring room. Electrical, generator and UPS rooms sit in the separate power building. Editing it adjusts the white space accordingly.' },
       floorAreaHint: { ko: '상한 2,400㎡ = B1 전체 연면적 2,439.76㎡ 절사 · 작업장/하역장/주차 구간 전부 비우는 전제 · 신축 전력동 700㎡는 별동(미포함)', en: 'Cap 2,400㎡ (B1 total 2,439.76㎡, floored) · assumes workshops/loading/parking fully vacated · the new 700㎡ power building is separate (excluded)' },
       floorAreaLockedHint: { ko: '[기존] 모드에서는 500㎡ 고정 — [확장]/[B1 전체] 전환 시 조정 가능', en: 'Fixed at 500㎡ in [Base] mode — switch to [Expansion]/[Full B1] to adjust' },
       floorAreaHintB1: { ko: '[B1 전체] 상한 2,400㎡ = B1 연면적 2,439.76㎡ 절사 · 신축 전력동 폐지분(전기실·발전기실·UPS)까지 B1에 수용하는 전제', en: '[Full B1] cap 2,400㎡ (B1 total 2,439.76㎡, floored) — assumes the dropped power building (electrical/generator/UPS rooms) is accommodated inside B1' },
@@ -1654,13 +1661,13 @@
       badgeBalanced: { ko: '균형', en: 'Balanced' },
       badgeCap: { ko: '10 SU 슬라이더 상한', en: '10 SU slider cap' },
       areaUsageLabel: { ko: '면적 사용률', en: 'Area Utilization' },
-      areaUsageText: { ko: '{pct} (부대 {sup}㎡ + 랙 {occ}㎡ / 연면적 {floor}㎡)', en: '{pct} (support {sup}㎡ + racks {occ}㎡ / {floor}㎡ gross)' },
+      areaUsageText: { ko: '{pct} (그레이 {sup}㎡ + 랙 {occ}㎡ / 연면적 {floor}㎡)', en: '{pct} (grey {sup}㎡ + racks {occ}㎡ / {floor}㎡ gross)' },
       overFloorCapacity: { ko: '연면적 초과', en: 'Exceeds floor area' },
-      baseModeNotice: { ko: '현재 연면적이 병목입니다 — 전력 기준 {p} SU 가능하나 면적 기준 {a} SU. 연면적을 늘리거나 부대공간·IT 수전용량을 조정하세요.', en: 'Floor area is the bottleneck — {p} SU by power vs {a} SU by area. Increase the floor area or adjust the support area / IT power.' },
+      baseModeNotice: { ko: '현재 연면적이 병목입니다 — 전력 기준 {p} SU 가능하나 면적 기준 {a} SU. 연면적을 늘리거나 그레이스페이스·IT 수전용량을 조정하세요.', en: 'Floor area is the bottleneck — {p} SU by power vs {a} SU by area. Increase the floor area or adjust the support area / IT power.' },
       over4SuNotice: { ko: 'NVIDIA RA 기준 2 SU까지가 사전 검증 구성이며, 4 SU 초과는 NVIDIA와 별도 협의가 필요한 커스텀 구성입니다.', en: 'Per the NVIDIA RA, configurations are pre-validated up to 2 SUs; beyond 4 SUs requires custom engagement with NVIDIA.' },
       suMaxChip: { ko: '최대 {n}', en: 'max {n}' },
       thTitle: { ko: 'SU 임계 면적표', en: 'SU Area Threshold Table' },
-      thDesc: { ko: '{sys} 기준 · SU당 {area}㎡ · 부대공간 {sup}㎡ — 연면적 확장 시 SU가 늘어나는 지점 (필요 연면적 = 부대공간 + SU수 × SU당 면적)', en: '{sys} · {area}㎡/SU · support {sup}㎡ — floor-area thresholds where the SU count steps up (required area = support + SU × area/SU)' },
+      thDesc: { ko: '{sys} 기준 · SU당 {area}㎡ · 그레이스페이스 {sup}㎡ — 연면적 확장 시 SU가 늘어나는 지점 (필요 연면적 = 그레이스페이스 + SU수 × SU당 면적)', en: '{sys} · {area}㎡/SU · grey space {sup}㎡ — floor-area thresholds where the SU count steps up (required area = support + SU × area/SU)' },
       thColSu: { ko: 'SU 수', en: 'SU Count' },
       thColArea: { ko: '필요 연면적', en: 'Required Floor Area' },
       thColPower: { ko: 'IT 전력', en: 'IT Power' },
@@ -1676,7 +1683,7 @@
       thNextPowerLimited: { ko: '여기서부터는 면적을 더 늘려도 SU가 증가하지 않습니다 — IT 수전용량을 함께 올려야 합니다.', en: 'From here, adding floor area alone does not increase SUs — IT power capacity must be raised as well.' },
       thPowerNote: { ko: '전력 기준 상한 {max} SU (IT {it}) — 이후 행은 IT 수전용량 증설 시에만 도달 가능 (10 SU 예: IT 12MW · GB200 1,750㎡ / GB300 1,950㎡)', en: 'Power cap {max} SU at IT {it} — rows beyond require additional IT power (10 SU e.g.: IT 12MW · GB200 1,750㎡ / GB300 1,950㎡)' },
       thRackTitle: { ko: '랙 임계 면적표', en: 'Rack Area Threshold Table' },
-      thRackDesc: { ko: '{rack} 기준 · 랙당 {area}㎡ · 부대공간 {sup}㎡ — 현재 수량 전후 구간과 전력 상한 도달점 요약', en: '{rack} · {area}㎡/rack · support {sup}㎡ — thresholds around the current count and the power-cap point' },
+      thRackDesc: { ko: '{rack} 기준 · 랙당 {area}㎡ · 그레이스페이스 {sup}㎡ — 현재 수량 전후 구간과 전력 상한 도달점 요약', en: '{rack} · {area}㎡/rack · grey space {sup}㎡ — thresholds around the current count and the power-cap point' },
       thColRack: { ko: '랙 수', en: 'Rack Count' },
       thRackPowerNote: { ko: '전력 기준 상한 {max}랙 (IT {it}) — 이후는 IT 수전용량 증설 필요', en: 'Power cap {max} racks at IT {it} — beyond requires more IT power' },
       specAreaLabel: { ko: '랙당 소요면적(㎡)', en: 'Area / Rack (㎡)' },
@@ -1695,7 +1702,7 @@
       facManualBadge: { ko: '고정값(수동)', en: 'Fixed (manual)' },
       facAutoCell: { ko: '자동', en: 'auto' },
       facManualToggle: { ko: '수동 전환', en: 'Manual override' },
-      facilityDescV7: { ko: '신축 전력동(700㎡)과 리모델링(B1)을 병행하는 구조로 두 열의 합이 총 시설비입니다. [확장] 모드에서는 면적·용량 단가로 자동 산출되며(행별 수동 전환 가능), 단가 입력은 억 원 단위입니다.<br>면적비례 단가는 고하중 보강·매트슬래브 레벨다운을 포함한 리모델링 기준이므로 확장 구간에서는 보수적(고가)으로 산출될 수 있습니다.', en: 'The new power building (700㎡) and B1 remodeling run in parallel — the two columns sum to the total. In [Expansion] mode, costs are auto-derived from area/capacity unit rates (per-row manual override available); rate inputs are in 0.1B KRW. The area rate reflects heavy-duty remodeling (slab reinforcement, mat-slab level-down), so expansion-zone estimates are conservative.' },
+      facilityDescV7: { ko: '신축 전력동(700㎡)과 리모델링(B1)을 병행하는 구조로 두 열의 합이 총 시설비입니다. 면적·용량 단가로 자동 산출되며(행별 수동 전환 가능), 단가 입력은 억 원 단위입니다.<br>면적비례 단가는 고하중 보강·매트슬래브 레벨다운을 포함한 리모델링 기준이므로 확장 구간에서는 보수적(고가)으로 산출될 수 있습니다.', en: 'The new power building (700㎡) and B1 remodeling run in parallel — the two columns sum to the total. Costs are auto-derived from area/capacity unit rates (per-row manual override available); rate inputs are in 0.1B KRW. The area rate reflects heavy-duty remodeling (slab reinforcement, mat-slab level-down), so expansion-zone estimates are conservative.' },
       facilityGrandBadge: { ko: '합계 {v}', en: 'Total {v}' },
       facilityColShare: { ko: '구성비', en: 'Share' },
       facilityTotalNoteV7: { ko: '신축 소계 {a} + 리모델링 소계 {b} = 시설비 CAPEX 합계 {c}', en: 'New-build subtotal {a} + remodel subtotal {b} = facility CAPEX total {c}' },
@@ -1705,12 +1712,12 @@
       facilityCduNotePod: { ko: '※ CDU 본체는 IT 장비 CAPEX(SuperPOD CAPEX 내역)에 포함되어 본 시설비에서 제외 — 이중계상 방지 (기준 합계 약 580억)', en: '※ CDU units are included in IT equipment CAPEX (SuperPOD CAPEX breakdown) and excluded here to avoid double counting (baseline total ≈ 58.0B KRW)' },
       facilityCduNoteRack: { ko: '※ CDU 본체는 랙 구매가에 포함되지 않아 본 시설비 공조/냉각에 계상 (기준 합계 약 613억)', en: '※ CDU units are not included in rack purchase prices and are carried under mechanical/cooling here (baseline total ≈ 61.3B KRW)' },
       chipFloorArea: { ko: '연면적', en: 'Floor area' },
-      chipSupportArea: { ko: '부대공간', en: 'Support area' },
+      chipSupportArea: { ko: '그레이스페이스', en: 'Grey space' },
       compareRowFloorArea: { ko: '연면적', en: 'Gross Floor Area' },
-      compareRowUsableArea: { ko: '가용면적', en: 'Usable Area' },
+      compareRowUsableArea: { ko: '화이트스페이스', en: 'White space' },
       compareRowAreaUsage: { ko: '면적 사용률', en: 'Area Utilization' },
       compareRowConstraint: { ko: '제약 유형', en: 'Binding Constraint' },
-      compareSupportNote: { ko: '부대공간 {v}㎡ 제외', en: 'excl. {v}㎡ support' },
+      compareSupportNote: { ko: '그레이스페이스 {v}㎡ 제외', en: 'excl. {v}㎡ grey space' },
       compareCduNote: { ko: '※ 시설 CAPEX 차이(기준 580억 vs 613억)는 CDU 본체 계상 방식(SuperPOD: IT 장비 CAPEX 포함 / 임대: 시설비 계상)에서 비롯됩니다. 전기료 기준: SuperPOD은 계약전력(총 수전용량), 임대는 사용 IT 전력 × PUE 기준입니다.', en: '※ The facility CAPEX gap (58.0B vs 61.3B baseline) stems from CDU accounting (SuperPOD: in IT CAPEX / Rental: in facility). Electricity basis: SuperPOD bills at contracted total power; Rental bills at used IT power × PUE.' }
     };
     const UTIL_NOTES = {
@@ -1807,7 +1814,7 @@
           detailsKoB1: ['개념/기본/실시 설계비, PM/CM 및 책임 감리비', '인허가 — 신축 인허가 불요, 기존동 용도변경·대수선 인허가 및 예비비'],
           detailsEn: ['Conceptual/basic/detailed design fees, PM/CM and supervision', 'Permitting (new power building permit, change-of-use for the existing building) and contingency'],
           detailsEnB1: ['Conceptual/basic/detailed design fees, PM/CM and supervision', 'Permitting — no new-build permit required; change-of-use / major-renovation permits and contingency'],
-          logicKo: '간접비율 항목 — [확장] 자동 모드에서 직접공사비 합계의 10% 연동',
+          logicKo: '간접비율 항목 — 자동 산출 시 직접공사비 합계의 10% 연동',
           logicKoB1: '간접비율 항목 — 직접공사비 합계의 10% 연동(전액 리모델링분)',
           logicEn: 'Indirect-ratio item — in Expansion auto mode, linked to 10% of total direct construction cost.',
           logicEnB1: 'Indirect-ratio item — 10% of total direct construction cost (entirely within the remodel column).'
@@ -1845,6 +1852,8 @@
     // ---- 공통 물리 제약 (연면적·부대공간) ----
     // 부대공간 = 전력비례분 x (IT수전/4,800kW) + 고정분(코어·복도 등, 전력과 무관)
     function supportAreaSqm(inputState = state) {
+      // rev47: 그레이스페이스 고정값 (구 버전 상태에는 전력비례분 + 고정분으로 폴백)
+      if (inputState.greySpaceSqm != null) return Math.max(0, Number(inputState.greySpaceSqm) || 0);
       const scaled = Math.max(0, Number(inputState.supportAreaBase) || 0);
       const fixed = Math.max(0, Number(inputState.supportAreaFixed) || 0);
       return scaled * ((Number(inputState.itPowerKw) || 0) / 4800) + fixed;
@@ -2127,10 +2136,9 @@
           { id: 'utilYears', type: 'utilYears' },
           { id: 'portfolio', type: 'portfolio' },
           { id: 'bmMode', labelKey: 'labelBmMode', type: 'bmToggle' },
-          { id: 'spaceMode', labelKey: 'labelSpaceMode', type: 'segmented' },
           { id: 'floorAreaSqm', labelKey: 'labelFloorArea', min: 500, max: 2400, step: 100 },
-          { id: 'supportAreaBase', labelKey: 'labelSupportArea', min: 0, max: 2000, step: 10, numberOnly: true },
-          { id: 'supportAreaFixed', labelKey: 'labelSupportAreaFixed', min: 0, max: 1500, step: 10, numberOnly: true },
+          { id: 'whiteSpaceSqm', labelKey: 'labelWhiteSpace', min: 0, max: 2400, step: 10, numberOnly: true },
+          { id: 'greySpaceSqm', labelKey: 'labelGreySpace', min: 0, max: 2000, step: 10, numberOnly: true },
           { id: 'totalPowerKw', labelKey: 'labelTotalPowerKw', min: 1, max: 30000, step: 10, numberOnly: true },
           { id: 'itPowerKw', labelKey: 'labelItPowerKw', min: 100, max: 12000, step: 100 },
           { id: 'pue', labelKey: 'labelPue', min: 1, max: 3, step: 0.01 },
@@ -4792,7 +4800,7 @@
         case 'energyCostRate': return en ? '$/kWh' : '원/kWh';
         case 'basicChargeKwMonth': return en ? '$/kW-mo' : '원/kW·월';
         case 'totalPowerKw': case 'itPowerKw': return 'kW';
-        case 'floorAreaSqm': case 'supportAreaBase': case 'supportAreaFixed': return '㎡';
+        case 'floorAreaSqm': case 'supportAreaBase': case 'supportAreaFixed': case 'whiteSpaceSqm': case 'greySpaceSqm': return '㎡';
         case 'swSubUsdPerGpuYear': case 'neoSwUsdPerGpuYear': return en ? 'GPU·yr' : 'GPU·년';
         case 'opexEok': case 'neoOpexEok': return en ? '$M' : '억';
         case 'siMultiplier': return en ? '×' : '배';
@@ -4858,8 +4866,6 @@
       const rackBase = baselineFacilityTotal('rack');
       const mix = portfolioMix();
       const mixOk = Math.abs(mix.total - 100) < 0.01;
-      const floorTip = (state.spaceMode === 'base' ? t('floorAreaLockedHint') : state.spaceMode === 'b1' ? t('floorAreaHintB1') : t('floorAreaHint')) + '\n' + t('baseHintPrefix') + ' ' + formatControlValue('floorAreaSqm', DEFAULTS.floorAreaSqm);
-      const supportTip = t('supportAreaTip') + '\n' + t('supportAreaHint', { v: nf1.format(supportAreaSqm()), pct: pct(state.floorAreaSqm > 0 ? usableAreaSqm() / state.floorAreaSqm * 100 : 0, 0) });
       const utilTip = t('utilAnchorTip') + '\n' + t('utilBaseHint');
       const yr = n => t('yearLabel', { n });
       const neo = isNeo();
@@ -4919,12 +4925,9 @@
           <div class="s-hint">${t('pueHint')}</div>
         </section>
         <section class="s-group space" data-views="superpod,compare">
-          <span class="s-lab">${t('labelSpaceMode')}</span>
-          <div class="s-hint">${t(spaceModeHintKey(state.spaceMode), { pod: eok(podBase), rack: eok(rackBase) })}</div>
-          ${segBtns('data-space-mode', [['base', t('baseBtn')], ['expand', t('expandBtn')], ['b1', t('b1Btn')]], state.spaceMode)}
-          ${ctlRow('floorAreaSqm', `${t('labelFloorArea')}${infoIcon(floorTip, t('labelFloorArea'), true)}`, { cls: 'after-btns' })}
-          ${ctlRow('supportAreaBase', `${t('labelSupportArea')}${infoIcon(supportTip, t('labelSupportArea'), true).replace('class="ico-i', 'data-support-hint class="ico-i')}`, { cls: 'has-sub', sub: '4.8MW' })}
-          ${ctlRow('supportAreaFixed', `${t('labelSupportAreaFixed')}${infoIcon(t('supportAreaFixedTip'), t('labelSupportAreaFixed'), true)}`)}
+          ${ctlRow('floorAreaSqm', `${t('labelFloorArea')}${infoIcon(t('floorAreaTip'), t('labelFloorArea'), true)}`)}
+          ${ctlRow('whiteSpaceSqm', `${t('labelWhiteSpace')}${infoIcon(t('whiteSpaceTip'), t('labelWhiteSpace'), true)}`)}
+          ${ctlRow('greySpaceSqm', `${t('labelGreySpace')}${infoIcon(t('greySpaceTip'), t('labelGreySpace'), true)}`)}
         </section>
         <section class="s-group rate ${neo ? 'off' : ''}" data-views="superpod,compare">
           <span class="s-lab sm">${t('groupRateTitle')}</span>
@@ -4942,6 +4945,7 @@
     }
 
     function refreshControls() {
+      state.whiteSpaceSqm = Math.max(0, Math.round(usableAreaSqm())); // rev47: 파생값 동기화
       document.querySelectorAll('[data-input]').forEach(input => {
         const id = input.dataset.input;
         if (state[id] !== undefined && document.activeElement !== input) {
@@ -4991,11 +4995,6 @@
         input.disabled = state.spaceMode === 'base';
         const u = input.closest('.u');
         if (u) u.classList.toggle('u-off', input.disabled);
-      });
-      document.querySelectorAll('[data-support-hint]').forEach(hint => {
-        const txt = t('supportAreaHint', { v: nf1.format(supportAreaSqm()), pct: pct(state.floorAreaSqm > 0 ? usableAreaSqm() / state.floorAreaSqm * 100 : 0, 0) });
-        if (hint.dataset.tip !== undefined) hint.dataset.tip = t('supportAreaTip') + '\n' + txt;
-        else hint.textContent = txt;
       });
     }
 
@@ -5397,7 +5396,6 @@
       const kw = v => `${nf.format(Math.round(v))}kW`;
       const pc = v => `${nf1.format(Number(v) || 0)}%`;
       const activeKeys = GPU_KEYS.filter(k => gpuOn(k) && gpuCount(k) > 0 && gpuSpecOk(gpuTypes[k]));
-      const spaceModeName = state.spaceMode === 'expand' ? t('expandBtn') : (state.spaceMode === 'b1' ? t('b1Btn') : t('baseBtn'));
       const repayName = ({ equal: L('원금균등', 'Equal'), balloon: L('만기일시', 'Balloon'), sweep: L('현금스윕', 'Sweep') })[P.repay] || P.repay;
       const vehName = ({ corp: L('일반법인', 'Corporate'), flow: L('PFV·리츠', 'PFV / REIT') })[P.veh] || P.veh;
       // 운영 방식 설명
@@ -5416,14 +5414,14 @@
         { cells: [L('운영 방식', 'Operating model'), modeText] },
         { cells: [L('GPU 구성', 'GPU configuration'), [{ t: gpuMixText(state, gpuTypes, false), b: true }, ` · ${L('총', 'Total')} ${nf.format(d.totalGpu)} GPU · FP4 ${nf.format(Math.round(d.totalFp4))} PFLOPS`]] },
         { cells: [L('전력', 'Power'), `${t('labelTotalPowerKw')} ${kw(state.totalPowerKw)} · ${t('labelItPowerKw')} ${kw(state.itPowerKw)} · PUE ${nf2.format(d.pue)} · ${L('사용 IT 전력', 'IT power used')} ${kw(d.usedItPower)} (${pct(d.allocationPct, 1)})`] },
-        { cells: [L('면적', 'Space'), `${t('labelFloorArea')} ${sqm(d.floorArea)} (${L('가용', 'usable')} ${sqm(d.usableArea)} · ${L('부대', 'support')} ${sqm(d.supportArea)}) · ${L('점유', 'occupied')} ${sqm(d.occupiedArea)} (${pct(d.areaPct, 1)}) · ${t('labelSpaceMode')} ${spaceModeName}`] }
+        { cells: [L('면적', 'Space'), `${t('labelFloorArea')} ${sqm(d.floorArea)} (${L('화이트스페이스', 'white space')} ${sqm(d.usableArea)} · ${L('그레이스페이스', 'grey space')} ${sqm(d.supportArea)}) · ${L('랙 점유', 'rack footprint')} ${sqm(d.occupiedArea)} (${pct(d.areaPct, 1)})`] }
       ]);
       // ② 투자·운영비
       const opexSum = Number(d.opexEok) || 0;
       const s2 = dxTable([1300, 1500, W - 2800], [
         { head: true, cells: [L('항목', 'Item'), L('금액', 'Amount'), L('비고', 'Note')] },
         { cells: [L('IT 장비 CAPEX', 'IT equipment capex'), eok(d.itCapexEok), `${L('GPU당', 'per GPU')} ${fmtUsdLarge(d.itCapexUsd / Math.max(1, d.totalGpu))} · ${L('합계', 'total')} ${fmtUsdLarge(d.itCapexUsd)}`] },
-        { cells: [L('시설 CAPEX', 'Facility capex'), eok(d.facilityEok), `${L('연면적', 'Floor area')} ${sqm(d.floorArea)} ${L('기준', 'basis')} · ${t('labelSpaceMode')} ${spaceModeName}`] },
+        { cells: [L('시설 CAPEX', 'Facility capex'), eok(d.facilityEok), `${L('연면적', 'Floor area')} ${sqm(d.floorArea)} ${L('기준', 'basis')}`] },
         { bold: true, cells: [L('총 CAPEX', 'Total capex'), { t: eok(d.totalCapexEok), color: OR }, L('IT 장비 + 시설', 'IT equipment + facility')] },
         { cells: [L('연간 전기료', 'Electricity (Y1)'), perYr(eok(d.electricityByYear[0])), `${L('전력량', 'Energy')} ${eok(d.energyByYear[0])} + ${L('기본요금', 'basic charge')} ${eok(d.baseEok)} (${krw(state.energyCostRate)}/kWh · ${krw(state.basicChargeKwMonth)}/kW·${L('월', 'mo')})`] },
         { cells: [L('SW 구독', 'SW subscription'), perYr(eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)), `${formatSwSub(d.swRateUsd)} × ${L('서버형(B300) GPU', 'server-type (B300) GPUs')} ${nf.format(d.swGpus || 0)}`] },
@@ -6081,12 +6079,18 @@
         if (/^utilY[123]$/.test(inputId)) baseValue = Math.max(0, Math.min(100, baseValue));
         if (/^mix(3Y|1Y|OD|Idle)$/.test(inputId)) baseValue = Math.max(0, Math.min(100, baseValue));
         if (/^depY[123]$/.test(inputId)) baseValue = Math.max(0, Math.min(100, baseValue));
+        if (inputId === 'whiteSpaceSqm') {
+          // rev47: 화이트스페이스 = 연면적 − 그레이스페이스 → 화이트스페이스를 바꾸면 그레이스페이스를 역산
+          const floor = Number(state.floorAreaSqm) || 0;
+          baseValue = Math.max(0, Math.min(floor, baseValue));
+          state.greySpaceSqm = Math.max(0, floor - baseValue);
+        }
         state[inputId] = baseValue;
         if (/^utilY[123]$/.test(inputId) && activeUtilYear) refreshUtilTip(activeUtilYear);
         // 총 수전 / IT 수전 / PUE 3자 연동
         if (inputId === 'pue' || inputId === 'itPowerKw') syncPowerFromPue(state);
         else if (inputId === 'totalPowerKw') syncPueFromPower(state);
-        if (inputId === 'itPowerKw' || inputId === 'floorAreaSqm' || inputId === 'supportAreaBase'
+        if (inputId === 'itPowerKw' || inputId === 'floorAreaSqm' || inputId === 'greySpaceSqm' || inputId === 'whiteSpaceSqm'
             || inputId === 'pue' || inputId === 'totalPowerKw') handlePhysicalChange();
         refreshControls();
         render();
