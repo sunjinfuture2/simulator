@@ -1043,7 +1043,7 @@
     // ---- rev36: GPU 종류 통합 모델 — SuperPOD형(SU 단위)과 HGX 서버형(대 단위)을 같은 카드 구조로 다룬다 ----
     //  · SU형: rackKw·rackAreaSqm·rackPriceUsd(랙당) × racksPerUnit → SU당 전력·면적·NVL72 항목 (GB300 = SuperPOD 추산 자료 1.2MW/120㎡/$32.5M ÷ 8)
     //  · 서버형(B300): VSLAI rev1.2 HGX B300 NVL8 가정값 — 서버 본체 $451,400(NVL72 GPU당 단가 × 8), 네트워크 $66,000, 스토리지·관리 $31,900, CDU $27,800, SW Setup·SI $48,600
-    //    서버 1대 IT 부하 15kW(본체 14 + 네트워크 0.6 + 스토리지·관리 0.4), 수랭 4U 기준 랙당 8대 · 랙당 4.8㎡
+    //    서버 1대 IT 부하 15kW(본체 14 + 네트워크 0.6 + 스토리지·관리 0.4), 수랭 4U 기준 랙당 8대 · 랙당 15㎡ (SuperPOD과 같은 기준: SU 120㎡ ÷ 8랙 — 랙 발자국은 NVL72와 동일한 600 × 1,068~1,200mm)
     //  · 기초단가: B300은 NeoCloud 공개 소비자가 $7.38/GPU·h를 온디맨드 기초단가 가정값으로 사용 (카드에서 수정 가능)
     //  · VR SuperPOD · 직접 입력: 확인된 사양이 없어 빈칸(0) — 값을 넣기 전까지는 계산에 0으로 반영
     const GPU_KEYS = ['b300', 'gb300', 'vr', 'custom'];
@@ -1054,7 +1054,7 @@
       b300: {
         kind: 'server', label: 'B300 NVL8 HGX', shortLabel: 'B300', rackName: 'HGX B300 NVL8',
         processorKo: '서버 1대 = HGX B300 NVL8 · 8 Blackwell Ultra GPU', processorEn: '1 server = HGX B300 NVL8 · 8 Blackwell Ultra GPUs',
-        gpusPerUnit: 8, serversPerRack: 8, rackAreaSqm: 4.8, unitItPowerKw: 15, serverKw: 14, netKw: 0.6, auxKw: 0.4,
+        gpusPerUnit: 8, serversPerRack: 8, rackAreaSqm: 15, unitItPowerKw: 15, serverKw: 14, netKw: 0.6, auxKw: 0.4,
         baseRateUsd: { A: 7.38, B: 7.38 },
         fp4PflopsPerUnit: 120,
         capexUsd: { server: 451400, network: 66000, storage: 31900, cdu: 27800, si: 48600 },
@@ -1093,9 +1093,9 @@
     };
     // rev38: HGX B300 냉각·네트워크 프리셋 — 토글 시 아래 값을 입력칸에 채움(이후 개별 수정 가능)
     const B300_COOLING = {
-      air: { ko: '공랭 8U', en: 'Air-cooled 8U', serversPerRack: 2, rackAreaSqm: 4.0, cduUsd: 0,
-        noteKo: '랙당 2대(28kW) — 일반 공랭 랙의 냉각 한계 고려', noteEn: '2 per rack (28kW) — typical air-cooled rack limit' },
-      liquid: { ko: '수랭 4U (DLC)', en: 'Liquid-cooled 4U (DLC)', serversPerRack: 8, rackAreaSqm: 4.8, cduUsd: 27800,
+      air: { ko: '공랭 8U', en: 'Air-cooled 8U', serversPerRack: 4, rackAreaSqm: 15, cduUsd: 0,
+        noteKo: '랙당 4대(56kW) — 공랭 8U × 4, 벤더 표준 배치 (고밀도 전산실 전제)', noteEn: '4 per rack (56kW) — 4× 8U air-cooled, vendor reference layout' },
+      liquid: { ko: '수랭 4U (DLC)', en: 'Liquid-cooled 4U (DLC)', serversPerRack: 8, rackAreaSqm: 15, cduUsd: 27800,
         noteKo: '랙당 8대(112kW) — CDU 서버당 $27,800 추가', noteEn: '8 per rack (112kW) — adds $27,800/server for CDU' }
     };
     const B300_NET = {
