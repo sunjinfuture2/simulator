@@ -1171,7 +1171,7 @@
       tabLease: { ko: 'GPU 임대', en: 'GPU Leasing' },
       // ---- rev38: HGX(B300) 서버 구성 ----
       srvSecTitle: { ko: 'HGX(B300) 서버 구성', en: 'HGX (B300) server configuration' },
-      srvSecDesc: { ko: '8-GPU NVLink 도메인(NVL8) 서버 단위로 구성합니다. 서버 1대의 IT 부하는 서버 본체 + 네트워크 + 스토리지·관리 전력의 합이며, 서버 수는 IT 수전용량과 사용가능 면적 중 작은 쪽으로 제한됩니다. 서버 단가·전력과 냉각·네트워크 프리셋은 Foxconn 공식 견적 전 가정값입니다.', en: 'Built in 8-GPU NVLink-domain (NVL8) servers. IT load per server = server + network + storage/management power; the count is limited by the smaller of IT power and usable floor area. Server price/power and the cooling/network presets are placeholders pending Foxconn quotes.' },
+      srvSecDesc: { ko: '8-GPU NVLink 도메인(NVL8) 서버 단위로 구성합니다. 서버 1대의 IT 부하는 서버 본체 + 네트워크 + 스토리지·관리 전력의 합이며, 서버 수는 IT 수전용량과 사용가능 면적 중 작은 쪽으로 제한됩니다.<br>서버 단가·전력과 냉각·네트워크 프리셋은 Foxconn 공식 견적 전 가정값입니다.', en: 'Built in 8-GPU NVLink-domain (NVL8) servers. IT load per server = server + network + storage/management power; the count is limited by the smaller of IT power and usable floor area. Server price/power and the cooling/network presets are placeholders pending Foxconn quotes.' },
       srvCooling: { ko: '냉각 방식', en: 'Cooling' },
       srvNetwork: { ko: '스케일아웃 네트워크', en: 'Scale-out network' },
       srvCostHead: { ko: '서버 1대당 원가 (USD)', en: 'Cost per server (USD)' },
@@ -1209,8 +1209,8 @@
       labelOpMode: { ko: '운영 방식', en: 'Operating model' },
       opModeCsp: { ko: 'CSP 직접운영', en: 'CSP (direct)' },
       opModeNeo: { ko: 'CSP 타사위탁', en: 'CSP (outsourced)' },
-      opModeCspHint: { ko: '당사가 GPU 클라우드를 직접 영업·운영합니다. 계약 포트폴리오(예약·온디맨드)와 할인율로 매출을 산출합니다.', en: 'We sell and operate the GPU cloud ourselves. Revenue follows the contract portfolio (reserve / on-demand) and discounts.' },
-      opModeNeoHint: { ko: '타사 CSP 사업자에게 영업·운영을 위탁하고 당사는 인프라를 공급합니다. 공개 소비자가에서 위탁 사업자 마진을 뺀 금액을 매출로 인식합니다.', en: 'Sales and operations are outsourced to a third-party CSP on our infrastructure. Revenue is the public list price less the operator margin.' },
+      opModeCspHint: { ko: '당사가 GPU 클라우드를 직접 영업·운영합니다.<br>계약 포트폴리오(예약·온디맨드)와 할인율로 매출을 산출합니다.', en: 'We sell and operate the GPU cloud ourselves. Revenue follows the contract portfolio (reserve / on-demand) and discounts.' },
+      opModeNeoHint: { ko: '타사 CSP 사업자에게 영업·운영을 위탁하고 당사는 인프라를 공급합니다.<br>공개 소비자가에서 위탁 사업자 마진을 뺀 금액을 매출로 인식합니다.', en: 'Sales and operations are outsourced to a third-party CSP on our infrastructure. Revenue is the public list price less the operator margin.' },
       labelNeoPrice: { ko: 'GPU 소비자가', en: 'GPU list price' },
       labelNeoMargin: { ko: '마진율', en: 'Operator margin' },
       labelNeoUtil: { ko: '가동비중', en: 'Utilized share' },
@@ -1695,7 +1695,7 @@
       facManualBadge: { ko: '고정값(수동)', en: 'Fixed (manual)' },
       facAutoCell: { ko: '자동', en: 'auto' },
       facManualToggle: { ko: '수동 전환', en: 'Manual override' },
-      facilityDescV7: { ko: '신축 전력동(700㎡)과 리모델링(B1)을 병행하는 구조로 두 열의 합이 총 시설비입니다. [확장] 모드에서는 면적·용량 단가로 자동 산출되며(행별 수동 전환 가능), 단가 입력은 억 원 단위입니다. 면적비례 단가는 고하중 보강·매트슬래브 레벨다운을 포함한 리모델링 기준이므로 확장 구간에서는 보수적(고가)으로 산출될 수 있습니다.', en: 'The new power building (700㎡) and B1 remodeling run in parallel — the two columns sum to the total. In [Expansion] mode, costs are auto-derived from area/capacity unit rates (per-row manual override available); rate inputs are in 0.1B KRW. The area rate reflects heavy-duty remodeling (slab reinforcement, mat-slab level-down), so expansion-zone estimates are conservative.' },
+      facilityDescV7: { ko: '신축 전력동(700㎡)과 리모델링(B1)을 병행하는 구조로 두 열의 합이 총 시설비입니다. [확장] 모드에서는 면적·용량 단가로 자동 산출되며(행별 수동 전환 가능), 단가 입력은 억 원 단위입니다.<br>면적비례 단가는 고하중 보강·매트슬래브 레벨다운을 포함한 리모델링 기준이므로 확장 구간에서는 보수적(고가)으로 산출될 수 있습니다.', en: 'The new power building (700㎡) and B1 remodeling run in parallel — the two columns sum to the total. In [Expansion] mode, costs are auto-derived from area/capacity unit rates (per-row manual override available); rate inputs are in 0.1B KRW. The area rate reflects heavy-duty remodeling (slab reinforcement, mat-slab level-down), so expansion-zone estimates are conservative.' },
       facilityGrandBadge: { ko: '합계 {v}', en: 'Total {v}' },
       facilityColShare: { ko: '구성비', en: 'Share' },
       facilityTotalNoteV7: { ko: '신축 소계 {a} + 리모델링 소계 {b} = 시설비 CAPEX 합계 {c}', en: 'New-build subtotal {a} + remodel subtotal {b} = facility CAPEX total {c}' },
@@ -2578,7 +2578,8 @@
     // 카드 슬라이더 범위: 단독 구성 기준 최대 (잔여 초과분은 빨갛게 표시)
     function gpuSliderMax(key, types = gpuTypes) {
       const g = types[key];
-      return Math.max(1, Math.min(gpuAbsMax(g), gpuPowerMax(key, state, types, true)));
+      // rev46: 전력·면적 중 작은 쪽의 단독 상한 — 최댓값에서 바가 끝에 온다
+      return Math.max(1, Math.min(gpuAbsMax(g), gpuMaxUnits(key, state, types, true)));
     }
     function gpuConstraintType(key, s = state, types = gpuTypes) {
       const g = types[key];
@@ -4972,7 +4973,7 @@
       document.querySelectorAll('[data-op-mode]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.opMode === (isNeo() ? 'neo' : 'csp'));
       });
-      document.querySelectorAll('[data-opmode-hint]').forEach(h => { h.textContent = isNeo() ? t('opModeNeoHint') : t('opModeCspHint'); });
+      document.querySelectorAll('[data-opmode-hint]').forEach(h => { h.innerHTML = isNeo() ? t('opModeNeoHint') : t('opModeCspHint'); });
       document.querySelectorAll('[data-bm-mode]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.bmMode === (state.bmMode === 'B' ? 'B' : 'A'));
       });
