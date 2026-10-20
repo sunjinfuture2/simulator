@@ -1100,7 +1100,7 @@
     };
     const B300_NET = {
       '400': { ko: '400G NDR InfiniBand', en: '400G NDR InfiniBand', netUsd: 66000, netKw: 0.6,
-        noteKo: 'NeoCloud 공개 사양과 동일 · SuperPOD 네트워크 항목 GPU당 환산', noteEn: 'Matches the NeoCloud listing · SuperPOD network item per GPU' },
+        noteKo: '공개 소비자가 사양과 동일 · SuperPOD 네트워크 항목 GPU당 환산', noteEn: 'Matches the public listing · SuperPOD network item per GPU' },
       '800': { ko: '800G XDR (Quantum-X800)', en: '800G XDR (Quantum-X800)', netUsd: 105600, netKw: 1.0,
         noteKo: 'ConnectX-8 네이티브 대역폭 · 400G 대비 단가 1.6배 가정', noteEn: 'Native ConnectX-8 bandwidth · 1.6x the 400G cost (assumed)' }
     };
@@ -1200,36 +1200,36 @@
       srvCapexTotal: { ko: '총 CAPEX (B300 + 시설)', en: 'Total capex (B300 + facility)' },
       srvOpexHead: { ko: '기타 운영비 (연간)', en: 'Other opex (per yr)' },
       srvOpexRowCsp: { ko: '서버형(B300) 별도 운영비', en: 'Separate opex for the server type (B300)' },
-      srvOpexRowNeo: { ko: 'NeoCloud 기타 운영비', en: 'NeoCloud other opex' },
-      srvOpexNeoNote: { ko: 'NeoCloud 모드: 사이드바 「기타 운영비(연간)」 값 적용', en: 'NeoCloud mode: uses the sidebar "Other opex (per yr)" value' },
-      srvOpexCspHint: { ko: 'CSP 모드에서만 계상 (억/년)', en: 'Charged in CSP mode only' },
+      srvOpexRowNeo: { ko: '타사위탁 기타 운영비', en: 'Outsourced other opex' },
+      srvOpexNeoNote: { ko: '타사위탁 모드: 사이드바 「기타 운영비(연간)」 값 적용', en: 'Outsourced mode: uses the sidebar "Other opex (per yr)" value' },
+      srvOpexCspHint: { ko: '직접운영 모드에서만 계상 (억/년)', en: 'Charged in direct-operation mode only' },
       auxBreakevenNoPrice: { ko: 'GB300 소비자가 미입력 — [SuperPOD] 기준 손익 산출 불가 (사이드바 GPU 소비자가에 GB300 입력)', en: 'GB300 list price blank — [SuperPOD] profit not available (enter GB300 under GPU list price)' },
       srvAuxDesc: { ko: 'SI 할증 배수를 바꾸면 SW Setup·SI 항목이 그 배수로 계상됩니다. 손익 역전 배수는 같은 부지를 GB300 SuperPOD만으로 채웠을 때의 3년 누적 손익과 비교합니다.', en: 'Changing the SI premium multiplier scales the SW setup · SI item. The break-even multiplier compares against the 3-yr cumulative profit of the same site filled with GB300 SuperPOD only.' },
       // ---- rev37: 운영 방식 CSP / NeoCloud ----
       labelOpMode: { ko: '운영 방식', en: 'Operating model' },
-      opModeCsp: { ko: 'CSP', en: 'CSP' },
-      opModeNeo: { ko: 'NeoCloud', en: 'NeoCloud' },
+      opModeCsp: { ko: 'CSP 직접운영', en: 'CSP (direct)' },
+      opModeNeo: { ko: 'CSP 타사위탁', en: 'CSP (outsourced)' },
       opModeCspHint: { ko: '당사가 GPU 클라우드를 직접 영업·운영합니다. 계약 포트폴리오(예약·온디맨드)와 할인율로 매출을 산출합니다.', en: 'We sell and operate the GPU cloud ourselves. Revenue follows the contract portfolio (reserve / on-demand) and discounts.' },
-      opModeNeoHint: { ko: '네오클라우드 사업자가 영업·운영을 맡고 당사는 인프라를 공급합니다. 공개 소비자가에서 사업자 마진을 뺀 금액을 매출로 인식합니다.', en: 'A neocloud operator handles sales and operations on our infrastructure. Revenue is the public list price less the operator margin.' },
+      opModeNeoHint: { ko: '타사 CSP 사업자에게 영업·운영을 위탁하고 당사는 인프라를 공급합니다. 공개 소비자가에서 위탁 사업자 마진을 뺀 금액을 매출로 인식합니다.', en: 'Sales and operations are outsourced to a third-party CSP on our infrastructure. Revenue is the public list price less the operator margin.' },
       labelNeoPrice: { ko: 'GPU 소비자가', en: 'GPU list price' },
       labelNeoMargin: { ko: '마진율', en: 'Operator margin' },
       labelNeoUtil: { ko: '가동비중', en: 'Utilized share' },
       labelNeoSw: { ko: 'SW구독단가 (서버형)', en: 'SW subscription (server type)' },
       labelNeoOpex: { ko: '기타 운영비(연간)', en: 'Other opex (per yr)' },
       neoPriceBlank: { ko: '소비자가 미입력 — 매출 0으로 계산', en: 'No list price — revenue counted as 0' },
-      neoNetChip: { ko: 'NeoCloud 순단가 {net}/GPU·h = 소비자가 {gross} − 마진 {m}%', en: 'NeoCloud net rate {net}/GPU·h = list {gross} − margin {m}%' },
-      neoTermsTitle: { ko: 'NeoCloud 공급 조건 · 매출 구조', en: 'NeoCloud supply terms · revenue structure' },
-      neoTermsDesc: { ko: '공개 소비자가에서 NeoCloud 사업자 마진을 뺀 금액을 당사 매출로 인식합니다. 가동비중은 연차 구분 없이 고정이며, 계약 포트폴리오·입지 프리미엄·예약 할인은 적용하지 않습니다(공개가가 이미 시장가이므로).', en: 'We recognize the public list price less the NeoCloud operator margin as revenue. The utilized share is flat across years; no contract portfolio, location premium or reserve discounts apply, since the list price is already a market price.' },
+      neoNetChip: { ko: '타사위탁 순단가 {net}/GPU·h = 소비자가 {gross} − 마진 {m}%', en: 'Outsourced net rate {net}/GPU·h = list {gross} − margin {m}%' },
+      neoTermsTitle: { ko: '타사위탁 공급 조건 · 매출 구조', en: 'Outsourced supply terms · revenue structure' },
+      neoTermsDesc: { ko: '공개 소비자가에서 위탁 사업자 마진을 뺀 금액을 당사 매출로 인식합니다. 가동비중은 연차 구분 없이 고정이며, 계약 포트폴리오·입지 프리미엄·예약 할인은 적용하지 않습니다(공개가가 이미 시장가이므로).', en: 'We recognize the public list price less the outsourced operator margin as revenue. The utilized share is flat across years; no contract portfolio, location premium or reserve discounts apply, since the list price is already a market price.' },
       neoCol3y: { ko: '3년 합계', en: '3-yr total' },
       neoRowUtil: { ko: '가동비중 (유휴 제외)', en: 'Utilized share' },
       neoRowHours: { ko: 'GPU·시간', en: 'GPU-hours' },
       neoRowGross: { ko: '과금액 (소비자가 기준)', en: 'Billings (list price)' },
-      neoRowTake: { ko: 'NeoCloud 마진 ({m})', en: 'NeoCloud margin ({m})' },
+      neoRowTake: { ko: '위탁 사업자 마진 ({m})', en: 'Operator margin ({m})' },
       neoRowNet: { ko: '당사 인식 매출', en: 'Recognized revenue' },
       neoRowNetTotal: { ko: '당사 인식 매출 합계', en: 'Total recognized revenue' },
       neoTypeSub: { ko: '{name} · GPU {g}개 · 소비자가 {gross} → 순단가 {net}/GPU·h', en: '{name} · {g} GPUs · list {gross} → net {net}/GPU·h' },
       neoTermsNote: { ko: '실효 가동률 = 가동비중(좌측 입력). 나머지는 정비·유휴로 매출이 발생하지 않습니다.', en: 'Effective utilization = utilized share (left). The remainder is maintenance/idle with no revenue.' },
-      neoSensTitle: { ko: 'NeoCloud 마진율 민감도 · 협상 범위', en: 'NeoCloud margin sensitivity · negotiating range' },
+      neoSensTitle: { ko: '타사위탁 마진율 민감도 · 협상 범위', en: 'Outsourced margin sensitivity · negotiating range' },
       neoSensDesc: { ko: '마진율만 바꾸고 나머지 입력(규모·환율·가동비중·조달구조)은 현재 값으로 고정해 주주수익률을 다시 계산합니다. 조달 가정은 재무구조 탭과 공유합니다.', en: 'Only the margin varies; scale, FX, utilization and funding stay at current values. Funding assumptions are shared with the financing tab.' },
       neoTargetIrr: { ko: '목표 Equity IRR', en: 'Target equity IRR' },
       neoSensColMargin: { ko: '마진율', en: 'Margin' },
@@ -1249,20 +1249,20 @@
       neoSensAll: { ko: '99% 이상에서도 충족', en: 'met even at 99%' },
       neoSensOk: { ko: '현재 마진에서 목표 IRR 충족 (여유 {h})', en: 'Target met at current margin (headroom {h})' },
       neoSensWarn: { ko: '현재 마진에서 목표 IRR 미달', en: 'Target not met at current margin' },
-      neoSensNote: { ko: '※ 초록 = 목표 IRR 이상, 빨강 = 미달. 「목표 IRR 유지 최대 마진」은 당사가 수용할 수 있는 NeoCloud 마진의 상한(협상 하한선)이며, 「손익분기 마진」은 주주 IRR이 0%가 되는 지점입니다. 조달 가정을 바꾸면 표 전체가 달라집니다.', en: '※ Green = at or above target IRR, red = below. "Max margin for target IRR" is the ceiling on the NeoCloud margin we can accept (our negotiating floor); the break-even margin is where equity IRR reaches 0%. Changing funding assumptions shifts the whole table.' },
+      neoSensNote: { ko: '※ 초록 = 목표 IRR 이상, 빨강 = 미달. 「목표 IRR 유지 최대 마진」은 당사가 수용할 수 있는 위탁 사업자 마진의 상한(협상 하한선)이며, 「손익분기 마진」은 주주 IRR이 0%가 되는 지점입니다. 조달 가정을 바꾸면 표 전체가 달라집니다.', en: '※ Green = at or above target IRR, red = below. "Max margin for target IRR" is the ceiling on the operator margin we can accept (our negotiating floor); the break-even margin is where equity IRR reaches 0%. Changing funding assumptions shifts the whole table.' },
       neoNA: { ko: '산출불가', en: 'n/a' },
       neoNoDebt: { ko: '무차입', en: 'No debt' },
-      mixNeoNote: { ko: 'NeoCloud 모드에서는 계약유형별 단가 대신 소비자가 − 마진율에 가동비중을 곱해 매출을 산출합니다. 연차별 내역은 위 「NeoCloud 공급 조건 · 매출 구조」 표에 있습니다.', en: 'In NeoCloud mode revenue is list price − margin × utilized share instead of contract rates. The yearly breakdown is in the "NeoCloud supply terms · revenue structure" table above.' },
+      mixNeoNote: { ko: '타사위탁 모드에서는 계약유형별 단가 대신 소비자가 − 마진율에 가동비중을 곱해 매출을 산출합니다. 연차별 내역은 위 「타사위탁 공급 조건 · 매출 구조」 표에 있습니다.', en: 'In outsourced mode revenue is list price − margin × utilized share instead of contract rates. The yearly breakdown is in the "Outsourced supply terms · revenue structure" table above.' },
       blNeoPrice: { ko: '{name} 소비자가 → 순단가', en: '{name} list → net rate' },
       blNeoUtil: { ko: '가동비중', en: 'Utilized share' },
-      blNeoMargin: { ko: 'NeoCloud 마진율', en: 'NeoCloud margin' },
+      blNeoMargin: { ko: '위탁 사업자 마진율', en: 'Operator margin' },
       blSwOpexNeo: { ko: 'SW 구독료(연, 서버형 GPU)', en: 'SW subscription (per yr, server-type GPUs)' },
       blOtherOpexNeo: { ko: '기타 운영비(연)', en: 'Other opex (per yr)' },
-      chipSwSubNeo: { ko: 'SW 구독 (NeoCloud)', en: 'SW subscription (NeoCloud)' },
+      chipSwSubNeo: { ko: 'SW 구독 (타사위탁)', en: 'SW subscription (outsourced)' },
       formulaCardGpuBodyNeo: { ko: 'Σ(GPU 종류별 수량 × 단위당 GPU 수 × 8,760시간 × 가동비중 × 소비자가($) × (1 − 마진율) × 환율) ※ 계약 포트폴리오·입지 프리미엄·예약 할인 미적용', en: 'Σ(per GPU type: units × GPUs/unit × 8,760 hrs × utilized share × list price ($) × (1 − margin) × FX) — no contract mix, location premium or reserve discounts' },
-      formulaCardOpexBodyNeo: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동비중 × 전력량 단가] + SW 구독료[GPU 수 × NeoCloud SW 구독단가 × 환율] + 기타 운영비', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 hrs × Utilized share × Energy rate] + SW subscription [GPUs × NeoCloud SW rate × FX] + other opex' },
+      formulaCardOpexBodyNeo: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동비중 × 전력량 단가] + SW 구독료[서버형 GPU 수 × SW 구독단가 × 환율] + 기타 운영비', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 hrs × Utilized share × Energy rate] + SW subscription [server-type GPUs × SW rate × FX] + other opex' },
       cmpModeTitle: { ko: '운영 방식 비교 (현재 구성)', en: 'Operating model comparison (current configuration)' },
-      cmpModeDesc: { ko: '현재 켜진 카드 구성을 CSP와 NeoCloud로 각각 계산해 비교합니다. 다른 입력값은 동일합니다.', en: 'The current card configuration calculated under CSP and under NeoCloud with all other inputs equal.' },
+      cmpModeDesc: { ko: '현재 켜진 카드 구성을 CSP 직접운영과 CSP 타사위탁으로 각각 계산해 비교합니다. 다른 입력값은 동일합니다.', en: 'The current card configuration calculated under direct and outsourced operation with all other inputs equal.' },
       cmpModeRowBasis: { ko: '단가 기준', en: 'Rate basis' },
       cmpModeBasisCsp: { ko: '기초단가 × 입지 × 예약할인 · 포트폴리오 · 연차 가동률', en: 'Base rate × location × reserve discounts · portfolio · yearly utilization' },
       cmpModeBasisNeo: { ko: '소비자가 − 마진 {m}% · 가동비중 {u}%', en: 'List price − margin {m}% · utilized share {u}%' },
@@ -1284,7 +1284,7 @@
       specPricePerRack: { ko: '랙당 구매가', en: 'Price / rack' },
       specPowerPerServer: { ko: '대당 사용 전력', en: 'Power / server' },
       specPricePerServer: { ko: '대당 구매가', en: 'Price / server' },
-      capexHeadingServer: { ko: 'CAPEX 합계 (서버 1대)', en: 'CAPEX Total (per server)' },
+      capexHeadingServer: { ko: 'CAPEX 합계 (랙 1대 · 서버 {n}대)', en: 'CAPEX Total (per rack · {n} servers)' },
       capexNvl72Derived: { ko: '랙당 구매가 × {r}', en: 'price/rack × {r}' },
       capexItemServer: { ko: '서버 본체 (HGX B300 NVL8)', en: 'Server (HGX B300 NVL8)' },
       capexItemNet: { ko: '네트워크 ({g}G 스위치·NIC·광모듈)', en: 'Network ({g}G switches · NICs · optics)' },
@@ -3092,6 +3092,7 @@
       const fp4 = Number(g.fp4PflopsPerUnit) || 0;
       const editableSu = !isServer && (key === 'vr' || key === 'custom');
       const perUnit = gpuCapexPerUnitUsd(g);
+      const spr = isServer ? Math.max(1, Number(g.serversPerRack) || 1) : 1; // rev45: 서버형 카드는 랙당(서버 spr대) 기준으로 표기
       const nameHtml = key === 'custom'
         ? `<input type="text" class="sys-name" value="${escAttr(g.label || '')}" placeholder="${escAttr(t('gpuCustomNamePh'))}" data-gpu-key="custom" data-gpu-prop="label" aria-label="${escAttr(t('gpuCustomNamePh'))}" />`
         : `<strong>${gpuLabel(g, key)}</strong>`;
@@ -3107,8 +3108,8 @@
       const specs = isServer
         ? [
             [t('specAreaPerRack'), gpuNumInput(key, 'rackAreaSqm', g.rackAreaSqm, 'step="0.1"'), '㎡'],
-            [t('specPowerPerServer'), gpuNumInput(key, 'unitItPowerKw', g.unitItPowerKw, 'step="0.5"'), 'kW'],
-            [t('specPricePerServer'), gpuNumInput(key, 'capex:server', g.capexUsd.server, 'step="1000"'), '$']
+            [t('specPowerPerRack'), gpuNumInput(key, 'rackKwServer', gpuUnitPowerKw(g) * spr, 'step="5"'), 'kW'],
+            [t('specPricePerRack'), gpuNumInput(key, 'rackPriceServer', (Number(g.capexUsd.server) || 0) * spr, 'step="10000"'), '$']
           ]
         : [
             [t('specAreaPerRack'), gpuNumInput(key, 'rackAreaSqm', g.rackAreaSqm, 'step="0.5"'), '㎡'],
@@ -3116,7 +3117,7 @@
             [t('specPricePerRack'), gpuNumInput(key, 'rackPriceUsd', g.rackPriceUsd, 'step="10000"'), '$']
           ];
       const capexItems = isServer
-        ? SERVER_ITEM_KEYS.map(k => [k === 'si' && !((Number(state.siMultiplier) || 1) > 1) ? t('capexItemSi').replace(/\s*\(.*\)\s*$/, '') : t(SERVER_ITEM_LABEL_KEYS[k], { m: nf1.format(Number(state.siMultiplier) || 1), g: b300NetKey() }), usdPlain(g.capexUsd[k]), (k === 'si' && (Number(state.siMultiplier) || 1) > 1) ? usdPlain((Number(g.capexUsd.si) || 0) * Math.max(1, Number(state.siMultiplier) || 1)) : ''])
+        ? SERVER_ITEM_KEYS.map(k => [k === 'si' && !((Number(state.siMultiplier) || 1) > 1) ? t('capexItemSi').replace(/\s*\(.*\)\s*$/, '') : t(SERVER_ITEM_LABEL_KEYS[k], { m: nf1.format(Number(state.siMultiplier) || 1), g: b300NetKey() }), usdPlain((Number(g.capexUsd[k]) || 0) * spr), (k === 'si' && (Number(state.siMultiplier) || 1) > 1) ? usdPlain((Number(g.capexUsd.si) || 0) * Math.max(1, Number(state.siMultiplier) || 1) * spr) : ''])
         : CAPEX_ITEM_KEYS.map(k => [capexItemLabel(g, k), k === 'nvl72' ? `<span title="${escAttr(t('capexNvl72Derived', { r: nf.format(Number(g.racksPerUnit) || 0) }))}">${usdM(g.capexUsd.nvl72)}</span>` : (editableSu ? gpuNumInput(key, 'capex:' + k, g.capexUsd[k], 'step="10000"', 'sm') : usdM(g.capexUsd[k])), '']);
       const capexOpen = openCapexCards.has(key);
       return `
@@ -3137,8 +3138,8 @@
               ${specs.map(([lab, input, u]) => `<div class="sys-spec"><span class="lab">${lab}</span><span class="v">${input}<span class="unit">${u}</span></span></div>`).join('')}
             </div>
             <div class="sys-capex-h">
-              <span>${isServer ? t('capexHeadingServer') : t('capexTotalLabel')}</span>
-              <b data-gpu-capex-total="${key}">${usdWithKrw(perUnit)}</b>
+              <span>${isServer ? t('capexHeadingServer', { n: nf.format(spr) }) : t('capexTotalLabel')}</span>
+              <b data-gpu-capex-total="${key}">${usdWithKrw(perUnit * spr)}</b>
             </div>
             <ul class="sys-capex">
               ${capexItems.map(([lab, val, extra]) => `<li><span>${lab}</span><span class="cx-val">${extra ? `<span class="cx-extra">= ${extra}</span>` : ''}${val}</span></li>`).join('')}
@@ -5425,7 +5426,7 @@
         { bold: true, cells: [L('총 CAPEX', 'Total capex'), { t: eok(d.totalCapexEok), color: OR }, L('IT 장비 + 시설', 'IT equipment + facility')] },
         { cells: [L('연간 전기료', 'Electricity (Y1)'), perYr(eok(d.electricityByYear[0])), `${L('전력량', 'Energy')} ${eok(d.energyByYear[0])} + ${L('기본요금', 'basic charge')} ${eok(d.baseEok)} (${krw(state.energyCostRate)}/kWh · ${krw(state.basicChargeKwMonth)}/kW·${L('월', 'mo')})`] },
         { cells: [L('SW 구독', 'SW subscription'), perYr(eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)), `${formatSwSub(d.swRateUsd)} × ${L('서버형(B300) GPU', 'server-type (B300) GPUs')} ${nf.format(d.swGpus || 0)}`] },
-        { cells: [L('기타 운영비', 'Other opex'), perYr(eok(opexSum)), neo ? L('NeoCloud 기타 운영비', 'NeoCloud other opex') : L('서버형(B300) 별도 운영비', 'Separate opex for the server type (B300)')] },
+        { cells: [L('기타 운영비', 'Other opex'), perYr(eok(opexSum)), neo ? L('타사위탁 기타 운영비', 'Outsourced other opex') : L('서버형(B300) 별도 운영비', 'Separate opex for the server type (B300)')] },
         { cells: [L('감가상각(1년차)', 'Depreciation (Y1)'), perYr(eok(d.capexByYear[0])), `${t('labelDepGroup')} ${nf1.format(state.depY1)} / ${nf1.format(state.depY2)} / ${nf1.format(state.depY3)}%`] }
       ], { align: ['center', 'center', 'left'] });
       // ③ 수익 지표 (재무구조 반영 전)
@@ -5678,7 +5679,14 @@
         syncDerivedRateHints();
         return true;
       }
-      if (prop.startsWith('capex:')) {
+      if (prop === 'rackKwServer' && g.kind === 'server') {
+        // rev45: 카드의 '랙당 사용 전력' = 서버 1대 IT 부하 × 랙당 서버 수 — 네트워크·스토리지 몫을 뺀 나머지를 서버 본체 전력으로
+        const perServer = Math.max(0.1, v / Math.max(1, Number(g.serversPerRack) || 1));
+        g.serverKw = Math.max(0.1, perServer - (Number(g.netKw) || 0) - (Number(g.auxKw) || 0));
+      } else if (prop === 'rackPriceServer' && g.kind === 'server') {
+        // rev45: 카드의 '랙당 구매가' = 서버 본체 가격 × 랙당 서버 수
+        g.capexUsd.server = Math.max(0, v / Math.max(1, Number(g.serversPerRack) || 1));
+      } else if (prop.startsWith('capex:')) {
         const item = prop.slice(6);
         if (!(item in g.capexUsd)) return false;
         g.capexUsd[item] = v;
@@ -5720,8 +5728,11 @@
         });
         const mc = document.querySelector(`[data-mix-count="${key}"]`);
         if (mc) mc.textContent = nf.format(n);
-        const tot = document.querySelector(`[data-gpu-capex-total="${key}"]`);
-        if (tot) tot.innerHTML = usdWithKrw(gpuCapexPerUnitUsd(g));
+        document.querySelectorAll(`[data-gpu-capex-total="${key}"]`).forEach(tot => {
+          // rev45: 카드는 랙당(서버 수 배), 서버 구성 섹션은 서버 1대당
+          const k = (g.kind === 'server' && tot.closest('.sys-card')) ? Math.max(1, Number(g.serversPerRack) || 1) : 1;
+          tot.innerHTML = usdWithKrw(gpuCapexPerUnitUsd(g) * k);
+        });
         const th = document.querySelector(`[data-th-type="${key}"]`);
         if (th) {
           const per = Math.max(1, Number(th.dataset.thRows) || 1);
