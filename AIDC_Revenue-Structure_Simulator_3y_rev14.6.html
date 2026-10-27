@@ -473,7 +473,7 @@
     .sys-grid { display: grid; grid-template-columns: repeat(2, 549.3px); column-gap: 18.9px; margin-top: 40px; }
     .sys-grid.three { grid-template-columns: repeat(3, 1fr); column-gap: 18.9px; }
     .sys-card { position: relative; border: var(--hair) solid var(--gcc); background: #fff; padding: 29.3px 41.6px 31.9px 29.5px; cursor: pointer; text-align: left; }
-    .sys-card.active { border-color: var(--k100); background: #fff; }
+    .sys-card.active { border-color: var(--k100); background: #f8f8f8; }
     .sys-card:not(.active) .sys-in { opacity: 0.42; }
     .sys-card:not(.active):hover .sys-in { opacity: 0.7; }
     .sys-title { display: flex; align-items: baseline; white-space: nowrap; margin-left: -3px; }
@@ -836,7 +836,7 @@
     .dt.aux .aux-mult .u { font-size: 22px; font-weight: 500; color: var(--k100); line-height: 29.8px; }
     .dt.aux .aux-mult .u input { width: 2.4em; }
     .dt.aux .aux-mult .unit { font-size: 12px; font-weight: 500; color: var(--g77); margin-left: 3px; }
-    .dt.aux tr.aux-breakeven-row td { white-space: normal; line-height: 20.3px; padding: 6.5px 0; height: auto; color: var(--g60); font-size: 15px; }
+    .dt.aux tr.aux-breakeven-row td { white-space: normal; line-height: 20.3px; padding: 11px 0; height: auto; color: var(--g60); font-size: 15px; }
     .dt.aux tr.aux-breakeven-row td b { color: var(--k100); }
     .dt.wide td { white-space: normal; line-height: 21px; padding: 8px 12px 8px 0; height: auto; vertical-align: top; }
     .dt.wide td:first-child, .dt.wide th:first-child { width: 220px; }
@@ -3465,7 +3465,7 @@
       return `
           <div class="mx-sub">${t('auxSiTitle')}${infoIcon(t('auxSiTip'), t('auxSiTitle'), true)}</div>
           <div class="srv-note">${t('srvAuxDesc')}</div>
-          <div class="dt-wrap" style="margin-top:12px">
+          <div class="dt-wrap" style="margin-top:20px">
             <table class="dt aux">
               <colgroup><col style="width:180px"><col><col><col><col><col><col><col></colgroup>
               <thead>
