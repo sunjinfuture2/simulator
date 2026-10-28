@@ -5347,6 +5347,7 @@
     // run: 문자열 또는 { t, b, i, color, sz }
     function dxRun(r, base = {}) {
       const o = typeof r === 'string' ? { t: r } : r;
+      if (o.br) return '<w:r><w:br/></w:r>';
       const sz = o.sz || base.sz || 14;
       const color = o.color || base.color;
       const b = o.b != null ? o.b : base.b;
@@ -5373,20 +5374,35 @@
       const borders = opt.noBorder
         ? '<w:tblBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/><w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders>'
         : '<w:tblBorders>' + ['top', 'left', 'bottom', 'right', 'insideH', 'insideV'].map(k => line.replace('$1', k)).join('') + '</w:tblBorders>';
-      const trs = rows.map(row => `<w:tr>${row.head ? '<w:trPr><w:tblHeader/></w:trPr>' : ''}${row.cells.map((c, i) => {
+      const trs = rows.map(row => `<w:tr>${(row.head || opt.cantSplit || row.cantSplit) ? `<w:trPr>${(opt.cantSplit || row.cantSplit) ? '<w:cantSplit/>' : ''}${row.head ? '<w:tblHeader/>' : ''}</w:trPr>` : ''}${row.cells.map((c, i) => {
         const co = (row.cellOpts && row.cellOpts[i]) || {};
         const jc = co.jc || (row.head ? 'center' : (opt.align && opt.align[i]) || (i === 0 ? 'center' : 'left'));
-        return dxCell(c, cols[i], { fill: row.head ? 'F2F2F2' : co.fill, b: row.head || row.bold || co.b, jc, sz: row.head ? (opt.hsz || 15) : (co.sz || opt.sz || 14), color: co.color, raw: co.raw, span: co.span, pad: co.pad != null ? co.pad : opt.pad, noBorder: opt.noBorder, vAlign: co.vAlign, padX: opt.padX });
+        return dxCell(c, cols[i], { fill: row.head ? (opt.headFill || 'F2F2F2') : (co.label ? (opt.labelFill || 'F2F2F2') : co.fill), b: row.head || row.bold || co.b, jc, sz: row.head ? (opt.hsz || 15) : (co.sz || opt.sz || 14), color: co.color || (co.label ? RPT.DARK : undefined), raw: co.raw, span: co.span, pad: co.pad != null ? co.pad : opt.pad, noBorder: opt.noBorder, vAlign: co.vAlign, padX: opt.padX });
       }).join('')}</w:tr>`).join('');
       return `<w:tbl><w:tblPr><w:tblW w:w="${W}" w:type="dxa"/>${borders}<w:tblLayout w:type="fixed"/><w:tblLook w:val="04A0" w:firstRow="1" w:lastRow="0" w:firstColumn="1" w:lastColumn="0" w:noHBand="0" w:noVBand="1"/></w:tblPr><w:tblGrid>${cols.map(w => `<w:gridCol w:w="${w}"/>`).join('')}</w:tblGrid>${trs}</w:tbl>`;
     }
-    // ---- rev51: 보고서 공통 콘텐츠 모델 (Word·PDF 공용) — 가이드 양식: 좌측 주황 제목 / 우측 내용, 본문 최소 9pt ----
-    // block: title | sec{title, body[]} | page{hard}
-    // sec.body: strip{items}(큰 숫자) | table{cols(twips), rows, align, labelCols} | p{runs} | note | sub | gap
-    // run: 문자열 또는 { t, b, color, sz(half-pt) } · 셀 문자열의 '\n' 은 줄바꿈
-    const RPT = { OR: 'E36C0A', GREEN: '1BA85E', RED: 'E84949', GREY: '7F7F7F', DARK: '4A4A4A', INK: '111111', FILL: 'F2F2F2', LINE: 'BFBFBF', W: 7200, WL: 2689, SZ: 18 };
+    // ---- rev52: 보고서 공통 콘텐츠 모델 (Word·PDF 공용) — 가이드 양식, 본문 최소 9pt, 그룹별 색 구분 ----
+    // block: title{lines, sub} | sec{title, group, body[]} | page(강제 쪽 나눔)
+    // sec.body: strip{items}(큰 숫자) | table{cols(twips), rows, align} | p{runs} | note | sub | gap
+    // run: 문자열 또는 { t, b, color, sz(half-pt) } · 셀 문자열의 '\n' 은 줄바꿈 · cellOpts.label = 라벨 칸(그룹 색 연한 바탕)
+    const RPT = { OR: 'E36C0A', GREEN: '1BA85E', RED: 'E84949', GREY: '7F7F7F', DARK: '4A4A4A', INK: '111111', LINE: 'BFBFBF', W: 7200, WL: 2689, SZ: 18 };
+    // 그룹 색: pre = 재무구조 반영 전(주황) · post = 반영 후(청색) · cmp = 비교(녹색) · app = 개요·부록(회색)
+    const RPT_GROUPS = {
+      pre: { c: 'E36C0A', head: 'FBE3D1', label: 'FDF2EA' },
+      post: { c: '156082', head: 'D5E5EE', label: 'EAF2F7' },
+      cmp: { c: '1A8A5A', head: 'D4EFE1', label: 'EAF7F0' },
+      app: { c: '595959', head: 'E4E4E4', label: 'F2F2F2' }
+    };
+    const rptGroup = g => RPT_GROUPS[g] || RPT_GROUPS.app;
     function stripTags(html) {
       return String(html ?? '').replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/\s+/g, ' ').trim();
+    }
+    // 긴 줄표(—) 금지: ' — ' → ' · ', 나머지 '—' → '-'
+    function rptCleanDash(v) {
+      if (typeof v === 'string') return v.replace(/\s*—\s*/g, ' · ').replace(/—/g, '-');
+      if (Array.isArray(v)) return v.map(rptCleanDash);
+      if (v && typeof v === 'object') { Object.keys(v).forEach(k => { v[k] = rptCleanDash(v[k]); }); return v; }
+      return v;
     }
     function buildReportModel() {
       const en = state.lang === 'en';
@@ -5397,7 +5413,7 @@
       const neo = isNeo();
       const now = new Date();
       const ymd = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
-      const OR = RPT.OR, W = RPT.W;
+      const W = RPT.W;
       const last = YEARS - 1;
       const yrLbl = i => (en ? `Yr${i + 1}` : `${i + 1}년차`);
       const perYr = v => `${v}/${L('년', 'yr')}`;
@@ -5420,19 +5436,19 @@
       const bep = getBreakEvenText(d);
       const bepIdx = d.cumProfit.findIndex(v => v >= 0);
       const blocks = [];
-      const sec = (title, ...body) => blocks.push({ type: 'sec', title, body: body.flat().filter(Boolean) });
-      // labelCols: 연한 회색 라벨 열 번호 — 가이드 양식(F2F2F2)
+      const sec = (group, title, ...body) => blocks.push({ type: 'sec', group, title, body: body.flat().filter(Boolean) });
+      const pageBreak = () => blocks.push({ type: 'page' });
       const table = (cols, rows, opt = {}) => {
         const lc = opt.labelCols || [0];
         rows.forEach(row => {
           if (row.head) return;
           row.cellOpts = row.cellOpts || [];
-          lc.forEach(i => { if (i < row.cells.length) row.cellOpts[i] = { fill: RPT.FILL, color: RPT.DARK, ...(row.cellOpts[i] || {}) }; });
+          lc.forEach(i => { if (i < row.cells.length) row.cellOpts[i] = { label: true, ...(row.cellOpts[i] || {}) }; });
         });
-        return { type: 'table', cols, rows, align: opt.align, sz: opt.sz, hsz: opt.hsz };
+        return { type: 'table', cols, rows, align: opt.align };
       };
-      const grid = (cols, rows, opt) => table(cols, rows, { labelCols: [0], ...opt });     // 라벨 | 값
-      const grid2 = (pairs) => {                                                            // 라벨 | 값 | 라벨 | 값 (2열 격자)
+      const grid = (cols, rows, opt) => table(cols, rows, { labelCols: [0], ...opt });
+      const grid2 = (pairs) => {
         const rows = [];
         for (let i = 0; i < pairs.length; i += 2) {
           const a = pairs[i], b = pairs[i + 1] || ['', ''];
@@ -5447,55 +5463,75 @@
       const strip = items => ({ type: 'strip', items });
       const split = (total, n, first) => { const rest = Math.floor((total - first) / n); return [first, ...Array.from({ length: n }, (_, i) => (i === n - 1 ? total - first - rest * (n - 1) : rest))]; };
       const ctr = n => Array.from({ length: n }, (_, i) => (i === 0 ? 'left' : 'center'));
+      const opexSum = Number(d.opexEok) || 0;
 
-      // ═════════ 1p. 요약: 재무구조 반영 전 → 후 → 개요 → 주요 설정값 ═════════
-      blocks.push({ type: 'title', text: L('AI Data Center GPU 임대 수익구조 분석', 'AI Data Center GPU Leasing — Revenue Structure Analysis'), sub: `${gpuMixText(state, gpuTypes, true)} · ${modeName} · ${nf.format(d.gpus)} GPU · ${ymd}` });
-      // ① 재무구조 반영 전
-      sec(L('재무구조 반영 전', 'Before financing'),
+      // ═════════ 1p. 요약 ═════════
+      blocks.push({ type: 'title', lines: [L('AI Data Center GPU 임대', 'AI Data Center GPU Leasing'), L('수익구조 분석', 'Revenue Structure Analysis')], sub: `${gpuMixText(state, gpuTypes, true)} · ${modeName} · ${nf.format(d.gpus)} GPU · ${ymd}` });
+      // ① 재무구조 반영 전 (5개)
+      sec('pre', L('재무구조 반영 전', 'Before financing'),
         strip([
+          { label: t('cardAnnualRevenue'), value: eok(d.annualRevenue[0]) },
           { label: t('cardCumRevenue', { n: YEARS }), value: eok(d.cumRevenue[last]) },
-          { label: L(`${YEARS}년 누적 지출`, `${YEARS}-yr cumulative expense`), value: eok(d.cumExpense[last]), color: RPT.RED },
-          { label: L(`${YEARS}년 누적 손익`, `${YEARS}-yr cumulative profit`), value: eok(profit3), color: colorOf(profit3) },
+          { label: L(`${YEARS}년 누적 지출`, `${YEARS}-yr cum. expense`), value: eok(d.cumExpense[last]), color: RPT.RED },
+          { label: L(`${YEARS}년 누적 손익`, `${YEARS}-yr cum. profit`), value: eok(profit3), color: colorOf(profit3) },
           { label: L('손익분기점', 'Break-even'), value: bepIdx >= 0 ? L(`${bepIdx + 1}년차`, `Yr ${bepIdx + 1}`) : L('3년 내 미달', 'Not in 3 yrs'), color: bepIdx >= 0 ? RPT.GREEN : RPT.RED }
         ]),
-        para(L(`${YEARS}년간 매출 `, `Over ${YEARS} years, revenue of `), B(eok(d.cumRevenue[last])),
+        para(L('1년차 매출 ', 'Year-1 revenue is '), B(eok(d.annualRevenue[0])), L(`, 연간 지출 `, ' against annual expense of '), B(eok(d.annualExpense[0])),
+          L(`입니다. ${YEARS}년간 매출 `, `. Over ${YEARS} years, revenue of `), B(eok(d.cumRevenue[last])),
           L('에서 전기료·SW·운영비·감가상각 등 지출 ', ' less expenses (electricity, SW, opex, depreciation) of '), B(eok(d.cumExpense[last])),
           L('을 차감한 누적 손익은 ', ' leaves a cumulative profit of '), B(eok(profit3), colorOf(profit3)), ` (${L('매출 대비', 'margin')} ${pct(cumMarginPct, 1)})`,
-          L('이며, ', ', with '), B(bep), L('입니다. 1년차 매출은 ', '. Year-1 revenue is '), B(eok(d.annualRevenue[0])), L(`, 연간 지출은 `, ' and annual expense '), B(eok(d.annualExpense[0])), L('입니다.', '.'))
+          L('이며, ', ', with '), B(bep), L('입니다.', '.'))
       );
-      // ② 재무구조 반영 후
+      // ② 재무구조 반영 후 (5개)
       if (R) {
-        const dscrOk = R.minDscr == null ? null : R.minDscr >= 1.2;
-        sec(L('재무구조 반영 후', 'After financing'),
+        const cums = []; let c = 0; R.rows.forEach(x => { c += x.fcfe; cums.push(c); });
+        let payback = null;
+        for (let i = 0; i < R.rows.length; i++) { if (cums[i] >= R.E && payback === null) { const prev = i === 0 ? 0 : cums[i - 1]; payback = i + (R.rows[i].fcfe > 0 ? (R.E - prev) / R.rows[i].fcfe : 1); } }
+        const recovPct = R.E > 0 ? R.cumFcfe / R.E * 100 : 0;
+        sec('post', L('재무구조 반영 후', 'After financing'),
           strip([
             { label: L('자기자본 투입', 'Equity invested'), value: eok(R.E) },
+            { label: L('PF 차입', 'PF debt'), value: eok(R.D0) },
+            { label: L(`${YEARS}년 세후 순이익`, `${YEARS}-yr net income`), value: eok(R.cumNI), color: colorOf(R.cumNI) },
             { label: t('cmpFinFcfe'), value: fm('fcfe'), color: colorOf(R.cumFcfe) },
-            { label: t('cmpFinIrr'), value: fm('irr'), color: R.irr == null ? RPT.RED : colorOf(R.irr) },
-            { label: 'MoIC', value: fm('moic') },
-            { label: t('cmpFinDscr'), value: fm('dscr'), color: dscrOk == null ? undefined : (dscrOk ? RPT.GREEN : RPT.RED) }
+            { label: L('투자원금 회수', 'Equity payback'), value: payback === null ? L('3년 내 미회수', 'Not in 3 yrs') : L(`${payback.toFixed(1)}년차`, `Yr ${payback.toFixed(1)}`), color: payback === null ? RPT.RED : RPT.GREEN }
           ]),
           para(L('총 CAPEX ', 'Of total capex '), B(eok(d.totalCapexEok)), L(' 중 자기자본 ', ', equity of '), B(eok(R.E)), ` (${pc(P.eq)})`,
             L('을 투입하고 PF ', ' is invested and PF debt of '), B(eok(R.D0)), ` (${L('금리', 'rate')} ${pc(P.ir)} · ${repayName} · ${vehName})`,
-            L('를 조달하면, 이자·법인세·원금상환 후 ', ' is raised. After interest, tax and principal, '), L(`${YEARS}년간 주주에게 귀속되는 현금(FCFE)은 `, `cash to equity (FCFE) over ${YEARS} years is `), B(fm('fcfe'), colorOf(R.cumFcfe)),
-            L('으로 Equity IRR ', ', giving an equity IRR of '), B(fm('irr'), R.irr == null ? RPT.RED : colorOf(R.irr)), ', MoIC ', B(fm('moic')), `, NPV@12% ${fm('npv')}`,
+            L('를 조달합니다. 이자·법인세 차감 후 ', ' is raised. After interest and tax, '), L(`${YEARS}년 누적 세후 순이익은 `, `${YEARS}-yr net income is `), B(eok(R.cumNI), colorOf(R.cumNI)),
+            L(', 원금상환까지 마친 뒤 주주에게 귀속되는 현금(FCFE)은 ', ' and, after principal repayment, cash to equity (FCFE) is '), B(fm('fcfe'), colorOf(R.cumFcfe)),
+            L('으로 투자원금의 ', ', recovering '), B(pct(recovPct, 1)), L('를 회수합니다', ' of the equity invested'),
+            payback === null ? L(' (3년 내 원금 미회수).', ' (not fully recovered within 3 years).') : L(` (회수 시점 약 ${payback.toFixed(1)}년차).`, ` (payback at about year ${payback.toFixed(1)}).`))
+        );
+        // ③ 주주수익률 지표 (5개)
+        const dscrOk = R.minDscr == null ? null : R.minDscr >= 1.2;
+        sec('post', L('주주수익률 지표', 'Equity return metrics'),
+          strip([
+            { label: t('cmpFinIrr'), value: fm('irr'), color: R.irr == null ? RPT.RED : colorOf(R.irr) },
+            { label: t('cmpFinMirr'), value: fm('mirr') },
+            { label: t('cmpFinNpv'), value: fm('npv'), color: R.npv == null ? undefined : colorOf(R.npv) },
+            { label: 'MoIC', value: fm('moic') },
+            { label: t('cmpFinDscr'), value: fm('dscr'), color: dscrOk == null ? undefined : (dscrOk ? RPT.GREEN : RPT.RED) }
+          ]),
+          para('Equity IRR ', B(fm('irr'), R.irr == null ? RPT.RED : colorOf(R.irr)), L('는 요구수익률 12%를 ', ' is '), B(R.irr != null && R.irr >= 0.12 ? L('충족', 'above') : L('미달', 'below'), R.irr != null && R.irr >= 0.12 ? RPT.GREEN : RPT.RED), L('하고, NPV@12% ', ' the 12% hurdle; NPV@12% is '), B(fm('npv')), L(', MoIC ', ', MoIC '), B(fm('moic')),
             L(', 최소 DSCR ', ', min DSCR '), B(fm('dscr')), dscrOk == null ? '' : (dscrOk ? L(' (PF 약정요건 1.20 충족)', ' (meets the 1.20 covenant)') : L(' (PF 약정요건 1.20 미달)', ' (below the 1.20 covenant)')), L('입니다.', '.'))
         );
       }
-      // ③ 개요
+      // ④ 개요
       const priceLine = neo
         ? `${activeTypes.map(td => `${gpuShortLabel(td.type, td.key)} ${usd2(td.priceUsd)}`).join(' · ')}/GPU·h · ${t('labelNeoMargin')} ${pc(state.neoMarginPct)} → ${L('순단가', 'net')} ${activeTypes.map(td => usd2(td.netUsd)).join(' / ')}/GPU·h · ${t('labelNeoUtil')} ${pc(state.neoUtilPct)}`
         : `${t('labelMix3Y')} ${pc(state.mix3Y)} / ${t('labelMix1Y')} ${pc(state.mix1Y)} / ${t('labelMixOD')} ${pc(state.mixOD)} / ${t('labelMixIdle')} ${pc(state.mixIdle)} · ${t('labelDisc3YShort')} ${pc(state.disc3YPct)} · ${t('labelDisc1YShort')} ${pc(state.disc1YPct)}`;
-      sec(L('개요', 'Overview'),
+      sec('app', L('개요', 'Overview'),
         grid([1555, W - 1555], [
-          { cells: [L('운영 방식', 'Operating model'), [B(modeName), ` — ${priceLine}`]] },
+          { cells: [L('운영 방식', 'Operating model'), [B(modeName), ` · ${priceLine}`]] },
           { cells: [L('GPU 구성', 'GPU configuration'), [B(gpuMixText(state, gpuTypes, false)), ` · ${L('총', 'total')} ${nf.format(d.totalGpu)} GPU · ${L('랙', 'racks')} ${nf.format(d.racks)} · FP4 ${nf.format(Math.round(d.totalFp4))} PFLOPS`]] },
           { cells: [L('전력·면적', 'Power & space'), `${t('labelItPowerKw')} ${kw(state.itPowerKw)} ${L('중', 'of which')} ${kw(d.usedItPower)} ${L('사용', 'used')} (${pct(d.allocationPct, 1)}) · ${t('labelFloorArea')} ${sqm(d.floorArea)} ${L('중', 'of which')} ${sqm(d.supportArea + d.occupiedArea)} ${L('사용', 'used')} (${pct(d.areaPct, 1)})`] },
-          { cells: [L('투자비', 'Capex'), [B(`${L('총 CAPEX', 'Total capex')} ${eok(d.totalCapexEok)}`, OR), ` = IT ${L('장비', 'equipment')} ${eok(d.itCapexEok)} (${fmtUsdLarge(d.itCapexUsd)}) + ${L('시설', 'facility')} ${eok(d.facilityEok)}`]] },
-          { cells: [L('연간 운영비(1년차)', 'Annual opex (Y1)'), `${L('전기료', 'Electricity')} ${eok(d.electricityByYear[0])} · SW ${eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)} · ${L('기타', 'other')} ${eok(Number(d.opexEok) || 0)} · ${L('감가상각', 'depreciation')} ${eok(d.capexByYear[0])}`] },
+          { cells: [L('투자비', 'Capex'), [B(`${L('총 CAPEX', 'Total capex')} ${eok(d.totalCapexEok)}`, RPT.OR), ` = IT ${L('장비', 'equipment')} ${eok(d.itCapexEok)} (${fmtUsdLarge(d.itCapexUsd)}) + ${L('시설', 'facility')} ${eok(d.facilityEok)}`]] },
+          { cells: [L('연간 운영비(1년차)', 'Annual opex (Y1)'), `${L('전기료', 'Electricity')} ${eok(d.electricityByYear[0])} · SW ${eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)} · ${L('기타', 'other')} ${eok(opexSum)} · ${L('감가상각', 'depreciation')} ${eok(d.capexByYear[0])}`] },
           ...(R ? [{ cells: [L('조달 구조', 'Financing'), `${L('자기자본', 'Equity')} ${pc(P.eq)} (${eok(R.E)}) · PF ${eok(R.D0)} · ${L('금리', 'rate')} ${pc(P.ir)} · ${repayName} · ${vehName}`] }] : [])
         ], { align: ['left', 'left'] })
       );
-      // ④ 주요 설정값
+      // [app] 주요 설정값
       const settingRows = [
         [t('labelFx'), `${nf.format(state.fxKrwUsd)} ${L('원/USD', 'KRW/USD')}`],
         [L('전기요금', 'Electricity tariff'), `${krw(state.energyCostRate)}/kWh · ${L('기본요금', 'basic')} ${krw(state.basicChargeKwMonth)}/kW·${L('월', 'mo')}`],
@@ -5503,7 +5539,7 @@
         [t('labelDepGroup'), `${nf1.format(state.depY1)} / ${nf1.format(state.depY2)} / ${nf1.format(state.depY3)}%`],
         [L('수전용량', 'Power capacity'), `${L('총', 'Total')} ${kw(state.totalPowerKw)} · IT ${kw(state.itPowerKw)} · PUE ${nf2.format(d.pue)}`],
         [L('공간', 'Space'), `${t('labelFloorArea')} ${sqm(d.floorArea)} · ${L('그레이', 'grey')} ${sqm(d.supportArea)} · ${L('화이트', 'white')} ${sqm(d.usableArea)}`],
-        [L('SW 구독 · 기타 운영비', 'SW · other opex'), `${formatSwSub(d.swRateUsd)} · ${perYr(eok(Number(d.opexEok) || 0))}`],
+        [L('SW 구독 · 기타 운영비', 'SW · other opex'), `${formatSwSub(d.swRateUsd)} · ${perYr(eok(opexSum))}`],
         [t('labelLocPremium'), pc(state.locPremiumPct)]
       ];
       if (neo) settingRows.push([t('neoTargetIrr'), pc(state.neoTargetIrrPct)]);
@@ -5511,29 +5547,29 @@
         const cooling = b300CoolingKey() === 'air' ? L('공랭 8U', 'Air 8U') : L('수랭 4U (DLC)', 'Liquid 4U (DLC)');
         settingRows.push([L('서버 구성 (B300)', 'Server config (B300)'), `${cooling} · ${b300NetKey() === '800' ? '800G XDR' : '400G NDR'} · ${L('SI 할증', 'SI premium')} ${nf1.format(Math.max(1, Number(state.siMultiplier) || 1))}${L('배', 'x')}`]);
       }
-      sec(L('주요 설정값', 'Key settings'), grid2(settingRows));
-      blocks.push({ type: 'page', hard: true });
+      sec('app', L('주요 설정값', 'Key settings'), grid2(settingRows));
+      pageBreak();
 
-      // ═════════ 2p~. 상세 ─ 재무구조 반영 전 ═════════
+      // ═════════ 2p~. 상세 (그룹별 색) ═════════
       const yearCols = [1, 2, 3].map(n => t('mixYearCol', { n }));
       const cY = Math.floor((W - 1900) / 4);
       const colsY = [1900, cY, cY, cY, W - 1900 - cY * 3];
-      // 수익 지표
+      // [pre] 수익 지표
       const pnlRows = Array.from({ length: YEARS }, (_, i) => {
         const profit = d.annualRevenue[i] - d.annualExpense[i];
         const m = d.annualRevenue[i] ? profit / d.annualRevenue[i] * 100 : 0;
         return { cells: [yrLbl(i), eok(d.annualRevenue[i]), eok(d.annualExpense[i]), { t: eok(profit), color: colorOf(profit) }, { t: eok(d.cumProfit[i]), color: colorOf(d.cumProfit[i]) }, pct(m, 1)] };
       });
       const cw3 = Math.floor((W - 1300) / 5);
-      sec(L('① 재무구조 반영 전 — 수익 지표', '① Before financing — P&L'),
+      sec('pre', L('① 재무구조 반영 전: 수익 지표', '① Before financing: P&L'),
         table([1300, cw3, cw3, cw3, cw3, W - 1300 - cw3 * 4], [
           head([L('연차', 'Year'), L('매출', 'Revenue'), L('지출', 'Expense'), L('손익', 'Profit'), L('누적 손익', 'Cum. profit'), L('손익률', 'Margin')]),
           ...pnlRows,
-          { bold: true, cells: [L(`${YEARS}년 합계`, `${YEARS}-yr total`), eok(d.cumRevenue[last]), eok(d.cumExpense[last]), { t: eok(profit3), color: OR }, { t: eok(profit3), color: OR }, pct(cumMarginPct, 1)] }
+          { bold: true, cells: [L(`${YEARS}년 합계`, `${YEARS}-yr total`), eok(d.cumRevenue[last]), eok(d.cumExpense[last]), { t: eok(profit3), color: RPT.OR }, { t: eok(profit3), color: RPT.OR }, pct(cumMarginPct, 1)] }
         ], { align: ctr(6) }),
         note(L('지출 = 감가상각 + 전기료 + SW 구독 + 기타 운영비 (이자·법인세 반영 전). 손익률 = 손익 ÷ 매출.', 'Expense = depreciation + electricity + SW subscription + other opex (before interest and tax). Margin = profit ÷ revenue.'))
       );
-      // 매출 구조
+      // [pre] 매출 구조
       if (neo) {
         const mTxt = pct(d.neoMarginPct, 1);
         const body = [para(stripTags(t('neoTermsDesc')))];
@@ -5541,11 +5577,11 @@
           body.push(sub(td.priceUsd > 0 ? stripTags(t('neoTypeSub', { name: gpuLabel(td.type, td.key), g: nf.format(td.gpus), gross: usd2(td.priceUsd), net: usd2(td.netUsd) })) : `${gpuLabel(td.type, td.key)} · ${t('neoPriceBlank')}`));
           body.push(table(colsY, [
             head([t('mixColItem'), ...yearCols, t('neoCol3y')]),
-            { cells: [t('neoRowUtil'), ...d.utils.map(u => pct(u * 100, 1)), '—'] },
+            { cells: [t('neoRowUtil'), ...d.utils.map(u => pct(u * 100, 1)), '-'] },
             { cells: [t('neoRowHours'), ...td.gpuHours.map(h => nf.format(Math.round(h))), nf.format(Math.round(sum(td.gpuHours)))] },
             { cells: [t('neoRowGross'), ...td.grossByYear.map(eok), eok(sum(td.grossByYear))] },
             { cells: [t('neoRowTake', { m: mTxt }), ...td.takeByYear.map(v => `−${eok(v)}`), `−${eok(sum(td.takeByYear))}`] },
-            { bold: true, cells: [t('neoRowNet'), ...td.annualRevenue.map(eok), { t: eok(sum(td.annualRevenue)), color: OR }] }
+            { bold: true, cells: [t('neoRowNet'), ...td.annualRevenue.map(eok), { t: eok(sum(td.annualRevenue)), color: RPT.OR }] }
           ], { align: ctr(5) }));
         });
         if (activeTypes.length > 1) {
@@ -5553,11 +5589,11 @@
           body.push(table(colsY, [
             { cells: [t('neoRowGross'), ...d.grossByYear.map(eok), eok(sum(d.grossByYear))] },
             { cells: [t('neoRowTake', { m: mTxt }), ...d.takeByYear.map(v => `−${eok(v)}`), `−${eok(sum(d.takeByYear))}`] },
-            { bold: true, cells: [t('neoRowNetTotal'), ...d.annualRevenue.map(eok), { t: eok(sum(d.annualRevenue)), color: OR }] }
+            { bold: true, cells: [t('neoRowNetTotal'), ...d.annualRevenue.map(eok), { t: eok(sum(d.annualRevenue)), color: RPT.OR }] }
           ], { align: ctr(5) }));
         }
         body.push(note(stripTags(t('neoTermsNote'))));
-        sec(L('매출 구조 — 타사위탁 공급 조건', 'Revenue structure — outsourced supply terms'), ...body);
+        sec('pre', L('매출 구조: 타사위탁 공급 조건', 'Revenue structure: outsourced supply terms'), ...body);
       } else {
         const years = portfolioByYear();
         const body = [para(stripTags(t('rateBasisNote', { b: activeTypes.map(x => usd2(x.rates.baseUsd)).join(' / ') || '$0.00', loc: nf1.format(Number(state.locPremiumPct) || 0), d1: nf1.format(Number(state.disc1YPct) || 0), d3: nf1.format(Number(state.disc3YPct) || 0) })))];
@@ -5573,27 +5609,26 @@
             { cells: [t('labelMix3Y'), formatHourlyRate(r.c3), ...years.map(p => cell(p.s3, r.c3))] },
             { cells: [t('labelMix1Y'), formatHourlyRate(r.c1), ...years.map(p => cell(p.s1, r.c1))] },
             { cells: [t('labelMixOD'), formatHourlyRate(r.od), ...years.map(p => cell(p.so, r.od))] },
-            { cells: [t('labelMixIdle'), '–', ...years.map(p => `${nf1.format(p.idle)}%`)] },
-            { cells: [t('mixRowGap'), '–', ...years.map(p => `${nf1.format(p.gap)}%`)] },
-            { bold: true, cells: [t('mixRowRevenue'), '–', ...totalRev.map(v => ({ t: eok(v), color: OR }))] }
+            { cells: [t('labelMixIdle'), '-', ...years.map(p => `${nf1.format(p.idle)}%`)] },
+            { cells: [t('mixRowGap'), '-', ...years.map(p => `${nf1.format(p.gap)}%`)] },
+            { bold: true, cells: [t('mixRowRevenue'), '-', ...totalRev.map(v => ({ t: eok(v), color: RPT.OR }))] }
           ], { align: ctr(5) }));
         });
         if (activeTypes.length > 1) {
           body.push(sub(L('합계', 'Total')));
           body.push(table([2900, cZ, cZ, W - 2900 - cZ * 2], [
-            { bold: true, cells: [t('mixRowRevenueTotal'), ...d.annualRevenue.map(v => ({ t: eok(v), color: OR }))] }
+            { bold: true, cells: [t('mixRowRevenueTotal'), ...d.annualRevenue.map(v => ({ t: eok(v), color: RPT.OR }))] }
           ], { align: ctr(4) }));
         }
-        sec(L('매출 구조 — 계약 포트폴리오', 'Revenue structure — contract portfolio'), ...body);
+        sec('pre', L('매출 구조: 계약 포트폴리오', 'Revenue structure: contract portfolio'), ...body);
       }
-      // 투자·운영비
-      const opexSum = Number(d.opexEok) || 0;
-      sec(L('투자·운영비', 'Capex & opex'),
+      // [pre] 투자·운영비
+      sec('pre', L('투자·운영비', 'Capex & opex'),
         table([1800, 1500, W - 3300], [
           head([L('항목', 'Item'), L('금액', 'Amount'), L('산출 근거', 'Basis')]),
           { cells: [L('IT 장비 CAPEX', 'IT equipment capex'), eok(d.itCapexEok), `${L('GPU당', 'per GPU')} ${fmtUsdLarge(d.itCapexUsd / Math.max(1, d.totalGpu))} × ${nf.format(d.totalGpu)} GPU = ${fmtUsdLarge(d.itCapexUsd)}`] },
-          { cells: [L('시설 CAPEX', 'Facility capex'), eok(d.facilityEok), `${L('연면적', 'Floor area')} ${sqm(d.floorArea)} · ${L('총 수전', 'total power')} ${kw(state.totalPowerKw)} ${L('기준 (내역 아래)', 'basis (breakdown below)')}`] },
-          { bold: true, cells: [L('총 CAPEX', 'Total capex'), { t: eok(d.totalCapexEok), color: OR }, L('IT 장비 + 시설', 'IT equipment + facility')] },
+          { cells: [L('시설 CAPEX', 'Facility capex'), eok(d.facilityEok), `${L('연면적', 'Floor area')} ${sqm(d.floorArea)} · ${L('총 수전', 'total power')} ${kw(state.totalPowerKw)} ${L('기준 (내역은 시설 CAPEX 내역 참조)', 'basis (see facility breakdown)')}`] },
+          { bold: true, cells: [L('총 CAPEX', 'Total capex'), { t: eok(d.totalCapexEok), color: RPT.OR }, L('IT 장비 + 시설', 'IT equipment + facility')] },
           { cells: [L('연간 전기료', 'Electricity (Y1)'), perYr(eok(d.electricityByYear[0])), `${L('전력량', 'Energy')} ${eok(d.energyByYear[0])} + ${L('기본요금', 'basic charge')} ${eok(d.baseEok)}`] },
           { cells: [L('SW 구독', 'SW subscription'), perYr(eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)), `${formatSwSub(d.swRateUsd)} × ${L('서버형(B300) GPU', 'server-type (B300) GPUs')} ${nf.format(d.swGpus || 0)}`] },
           { cells: [L('기타 운영비', 'Other opex'), perYr(eok(opexSum)), neo ? L('타사위탁 기타 운영비', 'Outsourced other opex') : L('서버형(B300) 별도 운영비', 'Separate opex for the server type (B300)')] },
@@ -5601,22 +5636,22 @@
           { bold: true, cells: [L('연간 지출(1년차)', 'Annual expense (Y1)'), perYr(eok(d.annualExpense[0])), L('감가상각 + 전기료 + SW + 기타 운영비', 'Depreciation + electricity + SW + other opex')] }
         ], { align: ['left', 'center', 'left'] })
       );
-      // 시설 CAPEX 내역
+      // [pre] 시설 CAPEX 내역
       let fac = null;
       try { fac = computeFacility('pod'); } catch (e) { fac = null; }
       if (fac && fac.rows.length) {
-        sec(L('시설 CAPEX 내역', 'Facility capex breakdown'),
+        sec('pre', L('시설 CAPEX 내역', 'Facility capex breakdown'),
           table([2600, 1500, 1500, W - 5600], [
             head([L('항목', 'Item'), L('신축', 'New build'), L('리모델링', 'Remodel'), L('합계', 'Total')]),
             ...fac.rows.map(r => ({ cells: [en ? r.def.labelEn : r.def.labelKo, eok(r.newbuild), eok(r.remodel), eok(r.total)] })),
-            { bold: true, cells: [L('시설 CAPEX 합계', 'Facility capex total'), eok(fac.newbuildSum), eok(fac.remodelSum), { t: eok(fac.total), color: OR }] }
+            { bold: true, cells: [L('시설 CAPEX 합계', 'Facility capex total'), eok(fac.newbuildSum), eok(fac.remodelSum), { t: eok(fac.total), color: RPT.OR }] }
           ], { align: ctr(4) })
         );
       }
-      // 부대장비 및 SI CAPEX (B300)
+      // [pre] 부대장비 및 SI CAPEX (B300)
       if (activeKeys.includes('b300')) {
         const a = b300AuxCalc(d);
-        sec(t('auxSiTitle'),
+        sec('pre', t('auxSiTitle'),
           para(stripTags(t('srvAuxDesc'))),
           grid2([
             [`${t('auxColMultiplier')} ${t('auxColMultiplierSub')}`, B(`${nf1.format(a.mult)}${L('배', 'x')}`)], [t('auxColSi'), eok(a.siEok)],
@@ -5627,10 +5662,10 @@
           para(B(`${t('auxBreakevenLabel')}: `), stripTags(a.breakevenHtml))
         );
       }
-      // 수전·면적 사용 현황
+      // [pre] 수전·면적 사용 현황
       const whitePct = d.usableArea > 0 ? d.occupiedArea / d.usableArea * 100 : 0;
       const conName = type => constraintBadgeHtml(type, type === 'cap');
-      sec(t('capSecTitle'),
+      sec('pre', t('capSecTitle'),
         grid([1555, W - 1555], [
           { cells: [L('IT 전력', 'IT power'), [B(`${kw(d.usedItPower)} / ${kw(state.itPowerKw)}`), ` (${pct(d.allocationPct, 1)}) · ${L('총 수전', 'total power')} ${kw(state.totalPowerKw)} · PUE ${nf2.format(d.pue)}`]] },
           { cells: [t('labelFloorArea'), [B(`${sqm(d.supportArea + d.occupiedArea)} / ${sqm(d.floorArea)}`), ` (${pct(d.areaPct, 1)}) = ${L('그레이스페이스', 'grey space')} ${sqm(d.supportArea)} + ${L('랙 점유', 'rack footprint')} ${sqm(d.occupiedArea)}`]] },
@@ -5640,20 +5675,20 @@
         note(stripTags(t('capSecDesc')))
       );
 
-      // ═════════ 상세 ─ 재무구조 반영 후 ═════════
+      // [post] 재무구조 반영 후
       if (R) {
         const zero = en ? 'Yr 0' : '0년차';
         const cf = Math.floor((W - 1750) / 5);
         const colsF = [1750, cf, cf, cf, cf, W - 1750 - cf * 4];
-        const frow = (lab, fn, opt = {}) => ({ bold: opt.bold, cells: [lab, opt.zero === undefined ? '-' : eok(opt.zero), ...R.rows.map(x => eok(fn(x))), { t: eok(R.rows.reduce((s, x) => s + fn(x), 0)), color: opt.bold ? OR : undefined }] });
-        sec(L('② 재무구조 반영 후 — 조달 가정', '② After financing — assumptions'),
+        const frow = (lab, fn, opt = {}) => ({ bold: opt.bold, cells: [lab, opt.zero === undefined ? '-' : eok(opt.zero), ...R.rows.map(x => eok(fn(x))), { t: eok(R.rows.reduce((s, x) => s + fn(x), 0)), color: opt.bold ? RPT.OR : undefined }] });
+        sec('post', L('② 재무구조 반영 후: 조달 가정', '② After financing: assumptions'),
           grid2([
             [L('자기자본 비율', 'Equity ratio'), pc(P.eq)], [L('PF 금리', 'PF interest rate'), pc(P.ir)],
             [L('상환방식', 'Repayment'), repayName], [L('사업기구', 'Vehicle'), vehName],
             [L('자기자본 투입', 'Equity invested'), B(eok(R.E))], [L('PF 차입', 'PF debt'), B(eok(R.D0))]
           ])
         );
-        sec(L('연차별 손익·주주 현금흐름', 'Annual P&L and cash flow to equity'),
+        sec('post', L('연차별 손익·주주 현금흐름', 'Annual P&L and cash flow to equity'),
           table(colsF, [
             head([L('구분', 'Item'), zero, ...R.rows.map(x => (en ? `Yr ${x.y}` : `${x.y}년차`)), L('누계', 'Total')]),
             frow(L('매출액', 'Revenue'), x => x.R),
@@ -5668,20 +5703,11 @@
             frow(L('주주 현금흐름(FCFE)', 'Free cash flow to equity'), x => x.fcfe, { bold: true, zero: -R.E }),
             { cells: [L('부채잔액 / DSCR', 'Debt balance / DSCR'), `${eok(R.D0)} / -`, ...R.rows.map(x => `${eok(x.bal)} / ${x.dscr == null ? '-' : x.dscr.toFixed(2)}`), '-'] }
           ], { align: ctr(6) }),
-          note(L('0년차 = 투자 실행 시점(자기자본 납입·PF 인출). FCFE = EBITDA − PF 이자 − 법인세 − 원금상환, 3년차에는 감가상각 잔존가액 회수분 ' + eok(R.resid) + ' 포함.', 'Yr 0 = investment date (equity paid in, PF drawn). FCFE = EBITDA − PF interest − tax − principal; Yr 3 adds ' + eok(R.resid) + ' recovered as undepreciated residual.'))
-        );
-        sec(L('주주수익률 지표', 'Equity return metrics'),
-          strip([
-            { label: t('cmpFinIrr'), value: fm('irr'), color: R.irr == null ? RPT.RED : colorOf(R.irr) },
-            { label: t('cmpFinMirr'), value: fm('mirr') },
-            { label: t('cmpFinNpv'), value: fm('npv'), color: R.npv == null ? undefined : colorOf(R.npv) },
-            { label: 'MoIC', value: fm('moic') },
-            { label: t('cmpFinDscr'), value: fm('dscr'), color: R.minDscr == null ? undefined : (R.minDscr >= 1.2 ? RPT.GREEN : RPT.RED) }
-          ]),
-          note(L('Equity IRR = 자기자본 대비 3년 FCFE의 내부수익률(요구수익률 12%) · MIRR = 재투자 3% 가정 · NPV@12% = 12% 할인 FCFE − 자기자본(0 초과 시 충족) · MoIC = 회수 현금 합계 ÷ 자기자본 · 최소 DSCR = (EBITDA − 법인세) ÷ 연간 원리금의 3개년 최저값(PF 요건 1.20 이상)', 'Equity IRR = IRR of 3-yr FCFE vs equity (12% hurdle) · MIRR = reinvestment at 3% · NPV@12% = FCFE discounted at 12% less equity · MoIC = cash returned ÷ equity · Min DSCR = lowest annual (EBITDA − tax) ÷ debt service (covenant ≥ 1.20)'))
+          note(L('0년차 = 투자 실행 시점(자기자본 납입·PF 인출). FCFE = EBITDA − PF 이자 − 법인세 − 원금상환, 3년차에는 감가상각 잔존가액 회수분 ' + eok(R.resid) + ' 포함.', 'Yr 0 = investment date (equity paid in, PF drawn). FCFE = EBITDA − PF interest − tax − principal; Yr 3 adds ' + eok(R.resid) + ' recovered as undepreciated residual.')),
+          note(L('지표 정의: Equity IRR = 자기자본 대비 3년 FCFE의 내부수익률 · MIRR = 재투자 3% 가정 · NPV@12% = 12% 할인 FCFE − 자기자본 · MoIC = 회수 현금 합계 ÷ 자기자본 · 최소 DSCR = (EBITDA − 법인세) ÷ 연간 원리금의 3개년 최저값 (PF 요건 1.20 이상)', 'Definitions: Equity IRR = IRR of 3-yr FCFE vs equity · MIRR = reinvestment at 3% · NPV@12% = FCFE discounted at 12% less equity · MoIC = cash returned ÷ equity · Min DSCR = lowest annual (EBITDA − tax) ÷ debt service (covenant ≥ 1.20)'))
         );
       }
-      // 타사위탁 마진율 민감도
+      // [post] 타사위탁 마진율 민감도
       if (neo && typeof neoMetricsAt === 'function') {
         const target = (Number(state.neoTargetIrrPct) || 0) / 100;
         const cur = Number(state.neoMarginPct) || 0;
@@ -5696,7 +5722,7 @@
           const isCur = Math.abs(m - cur) < 1e-9;
           return { bold: isCur, cells: [
             `${pct(m, 1)}${isCur ? stripTags(t('neoSensCur')) : ''}`,
-            dm.types.filter(td => td.ok && td.n > 0 && td.priceUsd > 0).map(td => usd2(td.netUsd)).join(' / ') || '—',
+            dm.types.filter(td => td.ok && td.n > 0 && td.priceUsd > 0).map(td => usd2(td.netUsd)).join(' / ') || '-',
             eok(sum(dm.annualRevenue)), eok(sum(dm.takeByYear)), eok(r.cumFcfe),
             { t: fp(r.irr), b: true, color: below ? RPT.RED : RPT.GREEN },
             r.minDscr == null ? t('neoNoDebt') : r.minDscr.toFixed(2)
@@ -5707,12 +5733,12 @@
         const curX = neoMetricsAt(cur);
         const curIrr = curX ? curX.r.irr : null;
         const ok = curIrr != null && curIrr >= target;
-        const headroom = solT.kind === 'ok' ? ((solT.m - cur) >= 0 ? '+' : '') + (solT.m - cur).toFixed(1) + '%p' : '—';
+        const headroom = solT.kind === 'ok' ? ((solT.m - cur) >= 0 ? '+' : '') + (solT.m - cur).toFixed(1) + '%p' : '-';
         const c9 = Math.floor((W - 1300) / 6);
-        sec(t('neoSensTitle'),
+        sec('post', t('neoSensTitle'),
           para(stripTags(t('neoSensDesc'))),
           grid2([
-            [L('현재 마진 → IRR', 'Current margin → IRR'), B(`${pct(cur, 1)} → ${fp(curIrr)}`)], [L(`목표 IRR ${pct(target * 100, 1)} 유지 최대 마진`, `Max margin for ${pct(target * 100, 1)} IRR`), B(solveTxt(solT), OR)],
+            [L('현재 마진 → IRR', 'Current margin → IRR'), B(`${pct(cur, 1)} → ${fp(curIrr)}`)], [L(`목표 IRR ${pct(target * 100, 1)} 유지 최대 마진`, `Max margin for ${pct(target * 100, 1)} IRR`), B(solveTxt(solT), RPT.OR)],
             [L('IRR 0% 손익분기 마진', 'Break-even margin (IRR 0%)'), B(solveTxt(sol0))], [L('판정', 'Verdict'), B(ok ? t('neoSensOk', { h: headroom }) : t('neoSensWarn'), ok ? RPT.GREEN : RPT.RED)]
           ]),
           table([1300, c9, c9, c9, c9, c9, W - 1300 - c9 * 5], [
@@ -5722,13 +5748,37 @@
           note(stripTags(t('neoSensNote')))
         );
       }
-      // 모델 비교 (켜진 카드별 단독 구성 + 혼합)
+      // [cmp] 운영 방식 비교
+      try {
+        const dc = calcMix({ ...state, opMode: 'csp' }, gpuTypes);
+        const dn = calcMix({ ...state, opMode: 'neo' }, gpuTypes);
+        const pair = [dc, dn];
+        const cur = x => (x.mode === (neo ? 'neo' : 'csp') ? stripTags(t('neoSensCur')) : '');
+        const crow = (lab, fn, opt = {}) => ({ bold: opt.bold, cells: [lab, ...pair.map(fn)] });
+        const half = Math.floor((W - 2300) / 2);
+        sec('cmp', t('cmpModeTitle').replace(/\s*\(.*\)\s*$/, ''),
+          table([2300, half, W - 2300 - half], [
+            head([t('compareColMetric'), `${t('opModeCsp')}${cur(dc)}`, `${t('opModeNeo')}${cur(dn)}`]),
+            crow(t('cmpModeRowBasis'), x => (x.mode === 'neo' ? t('cmpModeBasisNeo', { m: nf1.format(x.neoMarginPct), u: nf1.format(x.neoUtilPct) }) : t('cmpModeBasisCsp'))),
+            crow(t('compareRowRevenueY1'), x => eok(x.annualRevenue[0])),
+            crow(t('compareRowCumRevenue', { n: YEARS }), x => eok(x.cumRevenue[last])),
+            crow(L(`${YEARS}년 누적 지출`, `${YEARS}-yr cum. expense`), x => eok(x.cumExpense[last])),
+            crow(L(`${YEARS}년 누적 손익`, `${YEARS}-yr cum. profit`), x => B(eok(x.cumProfit[last]), colorOf(x.cumProfit[last]))),
+            crow(t('compareRowBep'), x => getBreakEvenText(x)),
+            crow(t('cmpFinIrr'), x => B(finMetric(x, 'irr'), RPT.OR)),
+            crow('MoIC', x => finMetric(x, 'moic')),
+            crow(t('cmpFinDscr'), x => finMetric(x, 'dscr')),
+            crow(t('cmpFinFcfe'), x => finMetric(x, 'fcfe'))
+          ], { align: ctr(3) })
+        );
+      } catch (e) { /* 비교 생략 */ }
+      // [cmp] 모델 비교 (켜진 카드별 단독 구성 + 혼합)
       let models = [];
       try { models = getModelComparison(); } catch (e) { models = []; }
       if (models.length >= 2) {
         const colsM = split(W, models.length, 2000);
         const mrow = (lab, fn, opt = {}) => ({ bold: opt.bold, cells: [lab, ...models.map(fn)] });
-        sec(L('모델 비교', 'Model comparison'),
+        sec('cmp', L('모델 비교', 'Model comparison'),
           para(L('각 유형은 전력·면적 안에서 가능한 최대 수량의 단독 구성이고, 「현재 구성(혼합)」은 지금 설정 그대로입니다.', 'Each type at its standalone maximum within power and area; "current mix" is the configuration as set.')),
           table(colsM, [
             head([t('compareColMetric'), ...models.map(m => m.name)]),
@@ -5738,38 +5788,14 @@
             mrow(t('compareRowCumRevenue', { n: YEARS }), m => eok(m.data.cumRevenue[last])),
             mrow(L(`${YEARS}년 누적 손익`, `${YEARS}-yr cum. profit`), m => B(eok(m.data.cumProfit[last]), colorOf(m.data.cumProfit[last]))),
             mrow(t('compareRowBep'), m => getBreakEvenText(m.data)),
-            mrow(t('cmpFinIrr'), m => B(finMetric(m.data, 'irr'), OR)),
+            mrow(t('cmpFinIrr'), m => B(finMetric(m.data, 'irr'), RPT.OR)),
             mrow('MoIC', m => finMetric(m.data, 'moic')),
             mrow(t('cmpFinDscr'), m => finMetric(m.data, 'dscr')),
             mrow(t('cmpFinFcfe'), m => finMetric(m.data, 'fcfe'))
           ], { align: ctr(models.length + 1) })
         );
       }
-      // 운영 방식 비교
-      try {
-        const dc = calcMix({ ...state, opMode: 'csp' }, gpuTypes);
-        const dn = calcMix({ ...state, opMode: 'neo' }, gpuTypes);
-        const pair = [dc, dn];
-        const cur = x => (x.mode === (neo ? 'neo' : 'csp') ? stripTags(t('neoSensCur')) : '');
-        const crow = (lab, fn, opt = {}) => ({ bold: opt.bold, cells: [lab, ...pair.map(fn)] });
-        const half = Math.floor((W - 2300) / 2);
-        sec(t('cmpModeTitle').replace(/\s*\(.*\)\s*$/, ''),
-          table([2300, half, W - 2300 - half], [
-            head([t('compareColMetric'), `${t('opModeCsp')}${cur(dc)}`, `${t('opModeNeo')}${cur(dn)}`]),
-            crow(t('cmpModeRowBasis'), x => (x.mode === 'neo' ? t('cmpModeBasisNeo', { m: nf1.format(x.neoMarginPct), u: nf1.format(x.neoUtilPct) }) : t('cmpModeBasisCsp'))),
-            crow(t('compareRowRevenueY1'), x => eok(x.annualRevenue[0])),
-            crow(t('compareRowCumRevenue', { n: YEARS }), x => eok(x.cumRevenue[last])),
-            crow(L(`${YEARS}년 누적 지출`, `${YEARS}-yr cum. expense`), x => eok(x.cumExpense[last])),
-            crow(L(`${YEARS}년 누적 손익`, `${YEARS}-yr cum. profit`), x => B(eok(x.cumProfit[last]), colorOf(x.cumProfit[last]))),
-            crow(t('compareRowBep'), x => getBreakEvenText(x)),
-            crow(t('cmpFinIrr'), x => B(finMetric(x, 'irr'), OR)),
-            crow('MoIC', x => finMetric(x, 'moic')),
-            crow(t('cmpFinDscr'), x => finMetric(x, 'dscr')),
-            crow(t('cmpFinFcfe'), x => finMetric(x, 'fcfe'))
-          ], { align: ctr(3) })
-        );
-      } catch (e) { /* 비교 생략 */ }
-      // 랙 시스템 구성·단가 (부록)
+      // [app] 랙 시스템 구성·단가
       if (activeTypes.length) {
         const nT = activeTypes.length;
         const cols = split(W, nT, 1900);
@@ -5780,7 +5806,7 @@
         rows.push(row(L('수량 · GPU', 'Units · GPUs'), td => `${nf.format(td.n)}${gpuUnitLabel(td.type)} · ${nf.format(td.gpus)} GPU · ${L('랙', 'racks')} ${nf.format(td.racks)} · FP4 ${nf.format(Math.round(td.fp4))} PFLOPS`));
         if (neo) {
           rows.push(row(t('labelNeoPrice'), td => (td.priceUsd > 0 ? `${usd2(td.priceUsd)}/GPU·h` : t('neoPriceBlank'))));
-          rows.push(row(L('순단가 (마진 차감)', 'Net rate (after margin)'), td => (td.priceUsd > 0 ? B(`${usd2(td.netUsd)}/GPU·h`) : '—')));
+          rows.push(row(L('순단가 (마진 차감)', 'Net rate (after margin)'), td => (td.priceUsd > 0 ? B(`${usd2(td.netUsd)}/GPU·h`) : '-')));
         } else {
           rows.push(row(t('labelMixOD'), td => `${usd2(td.rates.odUsd)}/GPU·h (${formatHourlyRate(td.rates.od)})`));
           rows.push(row(t('labelMix1Y'), td => `${usd2(td.rates.c1Usd)}/GPU·h (${formatHourlyRate(td.rates.c1)})`));
@@ -5798,20 +5824,20 @@
           }
           return CAPEX_ITEM_KEYS.map(k => `${stripTags(capexItemLabel(g, k))} ${usdM(g.capexUsd[k])}`).join(' · ');
         }));
-        rows.push(row(L('IT CAPEX', 'IT CAPEX'), td => B(`${usdWithKrw(td.perUnitUsd * spr(td))} (${unitOf(td)}) · ${L('합계', 'total')} ${eok(td.itCapexEok)}`, OR)));
-        sec(L('랙 시스템 구성·단가', 'Rack systems & pricing'), table(cols, rows, { align: Array.from({ length: nT + 1 }, () => 'left') }),
+        rows.push(row(L('IT CAPEX', 'IT CAPEX'), td => B(`${usdWithKrw(td.perUnitUsd * spr(td))} (${unitOf(td)}) · ${L('합계', 'total')} ${eok(td.itCapexEok)}`, RPT.OR)));
+        sec('app', L('랙 시스템 구성·단가', 'Rack systems & pricing'), table(cols, rows, { align: Array.from({ length: nT + 1 }, () => 'left') }),
           note(L('※ 재무구조 반영 전 = 매출 − 전기료·SW·운영비·감가상각, 반영 후 = 자기자본·PF 금리·상환방식·사업기구를 반영한 주주 관점. AI Data Center 수익구조 시뮬레이션에서 생성.', '※ Before financing = revenue − electricity, SW, opex, depreciation; after financing = shareholder view with equity, PF rate, repayment and vehicle. Generated by the AI Data Center revenue-structure simulator.')));
       }
-      return { blocks, ymd, header: `${L('전략사업실 Rev. Date: ', 'Rev. Date: ')}${ymd}`, title: L('AI Data Center GPU 임대 수익구조 분석', 'AI Data Center GPU Leasing — Revenue Structure Analysis') };
+      return rptCleanDash({ blocks, ymd, header: `${L('전략사업실 Rev. Date: ', 'Rev. Date: ')}${ymd}`, title: L('AI Data Center GPU 임대 수익구조 분석', 'AI Data Center GPU Leasing: Revenue Structure Analysis') });
     }
 
     // ---- Word 렌더러 (모델 → OOXML) ----
-    const DX_GAP = '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="120" w:lineRule="exact"/><w:rPr><w:sz w:val="8"/></w:rPr></w:pPr></w:p>';
-    function dxBlock(b) {
-      if (b.type === 'table') return dxTable(b.cols, b.rows, { align: b.align, sz: b.sz || RPT.SZ, hsz: b.hsz || RPT.SZ, pad: 46, padX: 90 }) + DX_GAP;
-      if (b.type === 'p') return dxPara(b.runs || b.text, { before: b.before == null ? 30 : b.before, after: b.after == null ? 50 : b.after, sz: b.sz || RPT.SZ, color: b.color || RPT.INK, b: b.b, line: 264 });
-      if (b.type === 'note') return dxPara(b.runs || b.text, { before: 20, after: 60, sz: RPT.SZ, color: RPT.GREY, line: 264 });
-      if (b.type === 'sub') return dxPara({ t: b.text, b: true, color: RPT.DARK }, { before: 100, after: 30, sz: RPT.SZ, keepNext: true });
+    const DX_GAP = '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="140" w:lineRule="exact"/><w:rPr><w:sz w:val="8"/></w:rPr></w:pPr></w:p>';
+    function dxBlock(b, g) {
+      if (b.type === 'table') return dxTable(b.cols, b.rows, { align: b.align, sz: RPT.SZ, hsz: RPT.SZ, pad: 46, padX: 90, headFill: g.head, labelFill: g.label, cantSplit: true }) + DX_GAP;
+      if (b.type === 'p') return dxPara(b.runs || b.text, { before: 50, after: 90, sz: RPT.SZ, color: RPT.INK, line: 264 });
+      if (b.type === 'note') return dxPara(b.runs || b.text, { before: 30, after: 80, sz: RPT.SZ, color: RPT.GREY, line: 264 });
+      if (b.type === 'sub') return dxPara({ t: b.text, b: true, color: RPT.DARK }, { before: 140, after: 40, sz: RPT.SZ, keepNext: true });
       if (b.type === 'strip') return dxStrip(b);
       if (b.type === 'gap') return DX_GAP;
       return '';
@@ -5831,25 +5857,30 @@
       });
       return dxTable(cols, [{ cells, cellOpts }], { noBorder: true, padX: 0 }) + DX_GAP;
     }
-    function docxBody(model) {
+    // pageOf: 최상위 블록별 쪽 번호(PDF 배치 결과) — Word도 같은 자리에서 쪽을 나눔
+    function docxBody(model, pageOf) {
       const parts = [];
       let outerRows = [];
       const co = [{ raw: true, vAlign: 'top', pad: 0 }, { raw: true, vAlign: 'top', pad: 0 }];
       const spacer = '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="200" w:lineRule="exact"/><w:rPr><w:sz w:val="8"/></w:rPr></w:pPr></w:p>';
-      const gapRow = '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="220" w:lineRule="exact"/><w:rPr><w:sz w:val="14"/></w:rPr></w:pPr></w:p>';
-      const flush = () => { if (outerRows.length) { parts.push(dxTable([RPT.WL, RPT.W], outerRows, { noBorder: true, padX: 0 })); outerRows = []; } };
-      model.blocks.forEach(b => {
+      const gapRow = '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="360" w:lineRule="exact"/><w:rPr><w:sz w:val="14"/></w:rPr></w:pPr></w:p>';
+      const flush = () => { if (outerRows.length) { parts.push(dxTable([RPT.WL, RPT.W], outerRows, { noBorder: true, padX: 0, cantSplit: true })); outerRows = []; } };
+      const pageBreak = '<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr><w:r><w:br w:type="page"/></w:r></w:p>';
+      let curPage = 1;
+      model.blocks.forEach((b, i) => {
+        if (pageOf && pageOf[i] > curPage) { flush(); parts.push(pageBreak); curPage = pageOf[i]; }
         if (b.type === 'title') {
           flush();
-          parts.push(dxPara({ t: b.text, b: true, sz: 30, color: '000000' }, { before: 20, after: 60, pBdr: true })
-            + dxPara(b.sub, { before: 80, after: 220, sz: RPT.SZ, color: RPT.GREY }));
+          const runs = [];
+          b.lines.forEach((s, k) => { if (k) runs.push({ br: true }); runs.push({ t: s, b: true, sz: 30, color: '000000' }); });
+          parts.push(dxPara(runs, { before: 20, after: 60, pBdr: true, line: 276 }) + dxPara(b.sub, { before: 100, after: 240, sz: RPT.SZ, color: RPT.GREY }));
         } else if (b.type === 'page') {
-          flush();
-          if (b.hard) parts.push('<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr><w:r><w:br w:type="page"/></w:r></w:p>');
+          if (!pageOf) { flush(); parts.push(pageBreak); }
         } else if (b.type === 'sec') {
+          const g = rptGroup(b.group);
           if (outerRows.length) outerRows.push({ cells: [gapRow, gapRow], cellOpts: co });
-          outerRows.push({ cells: [dxPara({ t: b.title, b: true, color: RPT.OR, sz: 21 }, { before: 40, keepNext: true, line: 264 }), b.body.map(dxBlock).join('') + spacer], cellOpts: co });
-        } else { flush(); parts.push(dxBlock(b)); }
+          outerRows.push({ cells: [dxPara({ t: b.title, b: true, color: g.c, sz: 21 }, { before: 40, keepNext: true, line: 264 }), b.body.map(x => dxBlock(x, g)).join('') + spacer], cellOpts: co, cantSplit: true });
+        } else { flush(); parts.push(dxBlock(b, rptGroup('app'))); }
       });
       flush();
       return parts.join('');
@@ -5857,12 +5888,14 @@
     async function buildReportDocx() {
       const fonts = await loadReportFonts();
       const model = buildReportModel();
+      let pageOf = null;
+      try { const pf = reportFontsParsed(fonts); if (pf) pageOf = pdfLayout(model, pf).pageOf; } catch (e) { pageOf = null; }
       const en = state.lang === 'en';
       const L = (ko, e) => (en ? e : ko);
       const ymd = model.ymd;
       const sectPr = '<w:sectPr><w:headerReference w:type="default" r:id="rId3"/><w:footerReference w:type="default" r:id="rId4"/><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="993" w:right="566" w:bottom="680" w:left="1021" w:header="425" w:footer="340" w:gutter="0"/><w:cols w:space="720"/><w:docGrid w:linePitch="360"/></w:sectPr>';
       const XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-      const documentXml = `${XML}<w:document ${DOCX_NS}><w:body>${docxBody(model)}${sectPr}</w:body></w:document>`;
+      const documentXml = `${XML}<w:document ${DOCX_NS}><w:body>${docxBody(model, pageOf)}${sectPr}</w:body></w:document>`;
       const stylesXml = `${XML}<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr>${DOCX_FONTS}<w:color w:val="222222"/><w:sz w:val="18"/><w:szCs w:val="18"/><w:lang w:val="en-US" w:eastAsia="ko-KR" w:bidi="ar-SA"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/><w:rPr>${DOCX_FONTS}</w:rPr></w:style><w:style w:type="table" w:default="1" w:styleId="TableNormal"><w:name w:val="Normal Table"/><w:tblPr><w:tblInd w:w="0" w:type="dxa"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="108" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="108" w:type="dxa"/></w:tblCellMar></w:tblPr></w:style></w:styles>`;
       const headerXml = `${XML}<w:hdr ${DOCX_NS}>${dxPara(model.header, { jc: 'right', sz: 14, color: '7F7F7F' })}</w:hdr>`;
       const logo = '<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="590550" cy="104775"/><wp:docPr id="1" name="logo"/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="0" name="logo.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rId1"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="590550" cy="104775"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>';
@@ -5997,14 +6030,12 @@
         } catch (e) { resolve(null); }
       });
     }
-    async function buildReportPdf() {
-      const raw = await loadReportFonts();
-      if (!raw.regular) throw new Error('font');
-      const model = buildReportModel();
-      const fonts = { FR: parseTtf(raw.regular), FB: parseTtf(raw.bold || raw.regular) };
+    // ---- rev52: PDF 배치 엔진 — 섹션은 쪽 중간에서 자르지 않고 통째로 넘김. 결과 쪽 배치(pageOf)를 Word도 그대로 따름 ----
+    function pdfLayout(model, fonts) {
       const used = { FR: new Map(), FB: new Map() };
       const PT = 1 / 20;
       const PG = { w: 595.28, h: 841.89, top: 46, bottom: 38, left: 51, right: 28 };
+      const SLACK = 26; // Word 쪽이 조금 더 길어져도 같은 쪽에 들어가도록 남겨 두는 여유
       const xL = PG.left, xR = PG.left + RPT.WL * PT, wR = RPT.W * PT, wAll = (RPT.WL + RPT.W) * PT;
       const n2 = v => (Math.round(v * 100) / 100).toString();
       const rgb = hex => { const h = (hex || '000000').replace('#', ''); return [0, 2, 4].map(i => n2(parseInt(h.substr(i, 2), 16) / 255)).join(' '); };
@@ -6017,7 +6048,7 @@
           let cp = ch.codePointAt(0);
           if (cp === 0xA0) cp = 0x20;
           let g = font.cmap.get(cp);
-          if (g == null) { g = font.cmap.get(0x3F) || 0; }
+          if (g == null) g = font.cmap.get(0x3F) || 0;
           used[f].set(g, cp);
           hex += g.toString(16).padStart(4, '0');
         }
@@ -6043,13 +6074,14 @@
         const hw = width(model.header, 'FR', 7);
         text(PG.w - PG.right - hw, PG.h - 30, model.header, 'FR', 7, RPT.GREY);
       }
-      function ensure(h) { if (y - h < PG.bottom) newPage(); }
-      // 리치 텍스트 줄바꿈: run → 토큰(단어) → 줄
+      let atomic = false; // true 면 섹션 안에서 쪽을 나누지 않고 끝까지 그린 뒤 넘침 여부만 판단
+      function ensure(h) { if (!atomic && y - h < PG.bottom) newPage(); }
       function tokenize(runs, base) {
         const out = [];
         (Array.isArray(runs) ? runs : [runs]).forEach(r => {
           if (r == null || r === '') return;
           const o = typeof r === 'string' ? { t: r } : r;
+          if (o.br) { out.push({ br: true }); return; }
           const f = (o.b != null ? o.b : base.b) ? 'FB' : 'FR';
           const size = (o.sz || base.sz || RPT.SZ) / 2;
           const color = o.color || base.color || '000000';
@@ -6083,7 +6115,7 @@
         });
         return lines.map(ln => ({ toks: ln, size: Math.max(6, ...ln.map(tk => tk.size)) }));
       }
-      const LH = 1.3;
+      const LH = 1.32;
       const linesH = lines => lines.reduce((s, ln) => s + ln.size * LH, 0);
       function drawLines(lines, x, yTop, maxW, align) {
         let yy = yTop;
@@ -6097,10 +6129,10 @@
         });
         return yTop - yy;
       }
-      function drawTable(b, x0, maxW, tail = 0) {
+      function drawTable(b, x0, maxW, g) {
         const tw = b.cols.reduce((s, v) => s + v, 0);
         const colW = b.cols.map(c => c / tw * maxW);
-        const padX = 4.5, padY = 2.1;
+        const padX = 4.5, padY = 2.4;
         const rows = b.rows.map(row => {
           const cells = [];
           let ci = 0;
@@ -6109,9 +6141,9 @@
             const span = co.span || 1;
             const w = colW.slice(ci, ci + span).reduce((s, v) => s + v, 0);
             const jc = co.jc || (row.head ? 'center' : (b.align && b.align[i]) || (i === 0 ? 'left' : 'center'));
-            const base = { b: row.head || row.bold || co.b, sz: row.head ? (b.hsz || RPT.SZ) : (co.sz || b.sz || RPT.SZ), color: co.color || RPT.INK };
+            const base = { b: row.head || row.bold || co.b, sz: co.sz || RPT.SZ, color: co.color || (co.label ? RPT.DARK : RPT.INK) };
             const lines = layout(Array.isArray(c) ? c : [c], base, w - padX * 2);
-            cells.push({ lines, jc, w, fill: row.head ? 'F2F2F2' : co.fill, h: linesH(lines) + padY * 2 });
+            cells.push({ lines, jc, w, fill: row.head ? g.head : (co.label ? g.label : co.fill), h: linesH(lines) + padY * 2 });
             ci += span;
           });
           return { cells, h: Math.max(13, ...cells.map(c => c.h)) };
@@ -6132,76 +6164,104 @@
           y -= rl.h;
         };
         rows.forEach((rl, ri) => {
-          const need = rl.h + (ri === rows.length - 1 ? tail : 0);
-          if (y - need < PG.bottom) { newPage(); if (headRow && ri > 0) drawRow(headRow); }
+          if (!atomic && y - rl.h < PG.bottom) { newPage(); if (headRow && ri > 0) drawRow(headRow); }
           drawRow(rl);
         });
       }
-      // 큰 숫자 띠: 라벨(9pt 회색) / 값(굵게·크게) — 테두리 없음
       function drawStrip(b, x, w) {
         const n = b.items.length, gap = 5, tw = (w - gap * (n - 1)) / n;
-        const vmax = n <= 3 ? 22 : n === 4 ? 20 : 17;
+        const vmax = n <= 3 ? 22 : n === 4 ? 20 : 16;
         const th = 12 + vmax * 1.25 + 4;
         ensure(th + 6);
         b.items.forEach((it, i) => {
           const tx = x + i * (tw + gap);
-          text(tx, y - 9, it.label, 'FR', 9, RPT.GREY);
+          let ls = 9;
+          while (ls > 6.5 && width(it.label, 'FR', ls) > tw - 4) ls -= 0.5;
+          text(tx, y - 9, it.label, 'FR', ls, RPT.GREY);
           let vs = vmax;
           while (vs > 9 && width(it.value, 'FB', vs) > tw - 4) vs -= 1;
           text(tx, y - 12 - vs * 1.05, it.value, 'FB', vs, it.color || '000000');
         });
         y -= th;
       }
-      function blockTail(nb, w) {
-        if (!nb || (nb.type !== 'note' && nb.type !== 'p')) return 0;
-        const base = nb.type === 'note' ? { sz: RPT.SZ, color: RPT.GREY } : { sz: nb.sz || RPT.SZ, color: nb.color, b: nb.b };
-        return linesH(layout(nb.runs || [nb.text], base, w)) + 6;
-      }
-      function drawBlock(b, x, w, nb) {
-        if (b.type === 'table') { y -= 3; drawTable(b, x, w, blockTail(nb, w)); y -= 2; return; }
+      function drawBlock(b, x, w, g) {
+        if (b.type === 'table') { y -= 3; drawTable(b, x, w, g); y -= 3; return; }
         if (b.type === 'strip') { drawStrip(b, x, w); return; }
         if (b.type === 'gap') { y -= b.h || 6; return; }
-        const base = b.type === 'note' ? { sz: RPT.SZ, color: RPT.GREY } : b.type === 'sub' ? { sz: RPT.SZ, b: true, color: RPT.DARK } : { sz: b.sz || RPT.SZ, color: b.color || RPT.INK, b: b.b };
-        const top = b.type === 'sub' ? 8 : 4;
+        const base = b.type === 'note' ? { sz: RPT.SZ, color: RPT.GREY } : b.type === 'sub' ? { sz: RPT.SZ, b: true, color: RPT.DARK } : { sz: RPT.SZ, color: RPT.INK, b: b.b };
+        const top = b.type === 'sub' ? 9 : 4;
         const lines = layout(b.runs || [b.text], base, w);
         ensure(linesH(lines) + top + (b.type === 'sub' ? 20 : 0));
         y -= top;
         y -= drawLines(lines, x, y, w, 'left');
+        y -= b.type === 'note' ? 4 : 5;
       }
-      function drawSection(s) {
-        ensure(44);
-        const tl = layout([{ t: s.title, b: true, sz: 21, color: RPT.OR }], {}, xR - xL - 12);
-        drawLines(tl, xL, y - 2, xR - xL - 10, 'left');
+      function drawSectionBody(s) {
+        const g = rptGroup(s.group);
+        const tl = layout([{ t: s.title, b: true, sz: 21, color: g.c }], {}, xR - xL - 12);
+        drawLines(tl, xL, y - 2, xR - xL - 12, 'left');
         const y0 = y;
-        s.body.forEach((b, i) => drawBlock(b, xR, wR, s.body[i + 1]));
+        s.body.forEach(b => drawBlock(b, xR, wR, g));
         if (y === y0) y -= linesH(tl) + 2;
-        y -= 10;
+        y -= 18; // 섹션 사이 여백
       }
+      // 섹션 통째 배치: 현재 쪽에서 그려 보고 넘치면 되돌려 새 쪽에서 다시 그린다
+      function drawSection(s) {
+        const savedLen = ops.length, savedY = y;
+        atomic = true;
+        drawSectionBody(s);
+        if (y < PG.bottom + SLACK && savedY < PG.h - PG.top - 1) {
+          ops.length = savedLen; y = savedY;
+          newPage();
+          const l2 = ops.length, y2 = y;
+          drawSectionBody(s);
+          if (y < PG.bottom) { // 한 쪽보다 긴 섹션 — 쪽 나눔 허용
+            ops.length = l2; y = y2; atomic = false; drawSectionBody(s);
+          }
+        }
+        atomic = false;
+      }
+      const pageOf = [];
       newPage();
-      model.blocks.forEach(b => {
+      model.blocks.forEach((b, i) => {
         if (b.type === 'title') {
-          text(xL, y - 16, b.text, 'FB', 15, '000000');
-          y -= 22;
+          b.lines.forEach(s => { text(xL, y - 16, s, 'FB', 15, '000000'); y -= 21; });
+          y -= 3;
           line(xL, y, xL + wAll, y, 0.75, '222222');
-          text(xL, y - 13, b.sub, 'FR', 9, RPT.GREY);
-          y -= 30;
-        } else if (b.type === 'strip') drawStrip(b, xL, wAll);
-        else if (b.type === 'page') { if (y < PG.h - PG.top - 1 && (b.hard || (y - PG.bottom) < (PG.h - PG.top - PG.bottom) * 0.3)) newPage(); }
+          text(xL, y - 14, b.sub, 'FR', 9, RPT.GREY);
+          y -= 34;
+        } else if (b.type === 'page') { if (y < PG.h - PG.top - 1) newPage(); }
         else if (b.type === 'sec') drawSection(b);
-        else drawBlock(b, xL, wAll);
+        else drawBlock(b, xL, wAll, rptGroup('app'));
+        pageOf[i] = pages.length;
       });
-      // 꼬리말: 로고 + 쪽번호
+      function footers(logo) {
+        const N = pages.length;
+        pages.forEach((p, i) => {
+          ops = p;
+          if (logo) ops.push(`q ${n2(8 * logo.w / logo.h)} 0 0 8 ${n2(xL)} 16 cm /Im1 Do Q`);
+          const s = `${i + 1} / ${N}`;
+          text(PG.w - PG.right - width(s, 'FB', 8), 17, s, 'FB', 8, '000000');
+        });
+      }
+      return { pages, used, pageOf, PG, footers };
+    }
+    function reportFontsParsed(raw) {
+      if (!raw.regular) return null;
+      return { FR: parseTtf(raw.regular), FB: parseTtf(raw.bold || raw.regular) };
+    }
+    async function buildReportPdf() {
+      const raw = await loadReportFonts();
+      const fonts = reportFontsParsed(raw);
+      if (!fonts) throw new Error('font');
+      const model = buildReportModel();
+      const lay = pdfLayout(model, fonts);
+      const { pages, used, PG } = lay;
       const logo = await decodeLogo();
-      const N = pages.length;
-      pages.forEach((p, i) => {
-        ops = p;
-        if (logo) ops.push(`q ${n2(8 * logo.w / logo.h)} 0 0 8 ${n2(xL)} 16 cm /Im1 Do Q`);
-        const s = `${i + 1} / ${N}`;
-        text(PG.w - PG.right - width(s, 'FB', 8), 17, s, 'FB', 8, '000000');
-      });
+      lay.footers(logo);
       // ---- 객체 직렬화 ----
       const te = new TextEncoder();
-      const objs = []; // { num, dict, stream }
+      const objs = [];
       const alloc = () => { objs.push(null); return objs.length; };
       const setObj = (num, dict, stream) => { objs[num - 1] = { num, dict, stream }; };
       const streamObj = async (num, dictExtra, bytes, compress = true) => {
