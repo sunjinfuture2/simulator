@@ -1137,7 +1137,7 @@
       spaceMode: 'expand', // 'base'([기존]) | 'expand'([확장]) | 'b1'([B1 전체]) — rev13.4 기준안: [확장](신축 전력동 700㎡ 확정)
       energyCostRate: 121.7,
       basicChargeKwMonth: 9810,
-      fxKrwUsd: 1450,
+      fxKrwUsd: 1350,
       swSubUsdPerGpuYear: 4500,
       selectedRack: 'gb300',
       racks_gb200: 0,
@@ -7367,7 +7367,7 @@ const FIN = (function () {
     return Object.assign(r, { itKrw, blend0, baseKrwRate });
   }
   const DEFAULTS = {
-    fx: 1450, fxBase: 1450, usdLinked: false,
+    fx: 1350, fxBase: 1350, usdLinked: false,
     mixY3: 0.50, mixY1: 0.30, mixOd: 0.10, churn: 0.9, decayY2: 0, decayY3: 0, bm: 'pro',
     eq: 0.30, ir: 0.085, repay: 'equal', vehicle: 'corp', itcRate: 0.05, depRate: 0.33
   };
@@ -7908,7 +7908,7 @@ const FINFAB = (function () {
 
 // ===== SuperPOD 탭 내장 재무구조 패널 (탭 입력값 실시간 연동) =====
 const PODFIN = (function () {
-  const FX_BASE = 1450;
+  const FX_BASE = 1350;
   // 재무구조 탭 모델 선택: 'pod' | 'rack' | 'both'
   let finModel = 'pod';
   function dataFor(key) {
@@ -8008,8 +8008,8 @@ const PODFIN = (function () {
       <div class="fin-ctl-col">
         <h3>${L('매출 조건', 'Revenue terms')}</h3>
         ${seg('cur', L('매출 계약통화', 'Revenue contract currency'), [['usd', L('달러 연동', 'USD-linked')], ['krw', L('원화 고정', 'KRW-fixed')]], P.cur,
-      L('달러 연동: 매출이 환율을 따라 움직여 IT 투자비·SW 구독료와 자연헤지가 작동합니다. 원화 고정: 임대료가 기준환율 1,450원 시점 단가로 고정되어 투자비만 환율에 노출됩니다.',
-        'USD-linked: revenue moves with FX, hedging IT capex and software fees naturally. KRW-fixed: rates lock at the 1,450 baseline, leaving only capex FX-exposed.'))}
+      L('달러 연동: 매출이 환율을 따라 움직여 IT 투자비·SW 구독료와 자연헤지가 작동합니다. 원화 고정: 임대료가 기준환율 1,350원 시점 단가로 고정되어 투자비만 환율에 노출됩니다.',
+        'USD-linked: revenue moves with FX, hedging IT capex and software fees naturally. KRW-fixed: rates lock at the 1,350 baseline, leaving only capex FX-exposed.'))}
         ${slider('d2', L('재계약 체감 — 2년차', 'Renewal decay — Yr 2'), P.d2, 0, 30, 5, P.d2 + '%')}
         ${slider('d3', L('재계약 체감 — 3년차', 'Renewal decay — Yr 3'), P.d3, 0, 50, 5, P.d3 + '%')}
         <div class="fin-hint">${L('체감은 1년 예약·온디맨드 재계약분에만 적용됩니다(3년 예약은 계약상 고정).', 'Decay applies only to 1Y reserve and on-demand renewals; 3-yr contracts are locked.')}</div>
