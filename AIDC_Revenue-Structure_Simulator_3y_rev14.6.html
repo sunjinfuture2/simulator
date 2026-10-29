@@ -5817,10 +5817,11 @@
           note(L('두 방식 모두 자기자본 비율·PF 금리·상환방식·사업기구는 현재 조달 가정을 공통 적용.', 'Both apply the current financing assumptions (equity ratio, PF rate, repayment, vehicle).'))
         );
       } catch (e) { /* 비교 생략 */ }
-      // [cmp] 랙 시스템 모델 비교 — 현재 구성 vs 유형별 단독(현 부지 최대) vs 단독(전력 상한까지, 연면적 확장)
+      // [cmp] 랙 시스템 모델 비교 — 혼합 구성일 때만: 현재 혼합 구성 vs 각 유형 단독(현 부지 최대)
       try {
         const bepShort = x => { const i = x.cumProfit.findIndex(v => v >= 0); return i >= 0 ? L(`${i + 1}년차`, `Yr ${i + 1}`) : L(`${YEARS}년 내 미달`, `Not in ${YEARS} yrs`); };
-        const candidates = GPU_KEYS.filter(k => gpuSpecOk(gpuTypes[k]) && (k !== 'custom' || state.customOpen) && (!neo || neoPriceOf(k) > 0));
+        // 혼합 구성(켜진 유형 2개 이상)일 때만: 각 유형 단독(현 부지) vs 현재 혼합 구성
+        const candidates = activeTypes.length >= 2 ? activeKeys.filter(k => gpuSpecOk(gpuTypes[k]) && (!neo || neoPriceOf(k) > 0)) : [];
         const siteCols = [];
         candidates.forEach(k => {
           const g = gpuTypes[k];
@@ -5830,8 +5831,8 @@
           stA['n_' + k] = Math.max(1, gpuMaxUnits(k, stA, gpuTypes, true));
           siteCols.push({ name: `${nm} ${L('단독', 'only')}`, data: calcMix(stA, gpuTypes), kind: 'site' });
         });
-        const models = [{ name: L('현재 구성', 'Current configuration'), data: d, kind: 'cur' }, ...siteCols].slice(0, 4);
-        if (models.length >= 2) {
+        const models = [{ name: L('현재 구성(혼합)', 'Current (mixed)'), data: d, kind: 'cur' }, ...siteCols].slice(0, 4);
+        if (candidates.length && models.length >= 2) {
           const colsM = split(W, models.length, 1900);
           const mrow = (lab, fn, opt = {}) => ({ bold: opt.bold, cells: [lab, ...models.map(fn)] });
           const irrOf = m => { const r = (typeof PODFIN !== 'undefined' && PODFIN.metrics) ? PODFIN.metrics(m.data) : null; return r && r.irr != null ? r.irr : -Infinity; };
