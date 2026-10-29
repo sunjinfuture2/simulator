@@ -5357,7 +5357,7 @@
       const list = (Array.isArray(runs) ? runs : [runs]).filter(r => r != null && r !== '');
       const sp = `<w:autoSpaceDE w:val="0"/><w:autoSpaceDN w:val="0"/><w:spacing w:before="${opt.before || 0}" w:after="${opt.after || 0}" w:line="${opt.line || 252}" w:lineRule="auto"/>`;
       const pb = opt.pBdr ? '<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="222222"/></w:pBdr>' : '';
-      return `<w:p><w:pPr>${opt.keepNext ? '<w:keepNext/>' : ''}${pb}${sp}${opt.jc ? `<w:jc w:val="${opt.jc}"/>` : ''}</w:pPr>${list.map(r => dxRun(r, opt)).join('')}</w:p>`;
+      return `<w:p><w:pPr>${opt.keepNext ? '<w:keepNext/>' : ''}${pb}<w:wordWrap w:val="0"/>${sp}${opt.jc ? `<w:jc w:val="${opt.jc}"/>` : ''}</w:pPr>${list.map(r => dxRun(r, opt)).join('')}</w:p>`;
     }
     function dxCell(content, w, opt = {}) {
       const pad = opt.pad == null ? 42 : opt.pad;
@@ -6122,43 +6122,51 @@
       }
       let atomic = false; // true 면 섹션 안에서 쪽을 나누지 않고 끝까지 그린 뒤 넘침 여부만 판단
       function ensure(h) { if (!atomic && y - h < PG.bottom) newPage(); }
-      function tokenize(runs, base) {
-        const out = [];
+      // 줄바꿈 규칙: 어절(공백) 단위로 끊고, 기호 뒤( ) ] 와 한글 사이의 · 뒤, ( [ 앞에서도 끊을 수 있다. 단어 안에서는 끊지 않는다(한 어절이 폭보다 길 때만 글자 단위).
+      function layout(runs, base, maxW) {
+        const chars = [];
         (Array.isArray(runs) ? runs : [runs]).forEach(r => {
           if (r == null || r === '') return;
           const o = typeof r === 'string' ? { t: r } : r;
-          if (o.br) { out.push({ br: true }); return; }
+          if (o.br) { chars.push({ br: true }); return; }
           const f = (o.b != null ? o.b : base.b) ? 'FB' : 'FR';
           const size = (o.sz || base.sz || RPT.SZ) / 2;
           const color = o.color || base.color || '000000';
-          String(o.t ?? '').split('\n').forEach((ln, li) => {
-            if (li > 0) out.push({ br: true });
-            (ln.match(/\S+\s*|\s+/g) || []).forEach(p => out.push({ t: p, f, size, color }));
-          });
+          for (const ch of String(o.t ?? '')) chars.push(ch === '\n' ? { br: true } : { ch, f, size, color, w: width(ch, f, size) });
         });
-        return out;
-      }
-      function layout(runs, base, maxW) {
+        const isWs = c => c && !c.br && /\s/.test(c.ch);
+        const isHan = c => c && !c.br && /[가-힣]/.test(c.ch);
+        const breakAfter = i => {
+          const c = chars[i], n = chars[i + 1], pv = chars[i - 1];
+          if (!n || n.br) return true;
+          if (isWs(c)) return !isWs(n);
+          if (c.ch === ')' || c.ch === ']') return true;
+          if (c.ch === '·' && isHan(pv) && isHan(n)) return true;
+          if (n.ch === '(' || n.ch === '[') return true;
+          return false;
+        };
         const lines = [[]];
         let lw = 0;
         const cur = () => lines[lines.length - 1];
-        const add = (tok, w) => { cur().push({ ...tok, w }); lw += w; };
-        tokenize(runs, base).forEach(tok => {
-          if (tok.br) { lines.push([]); lw = 0; return; }
-          const trimW = width(tok.t.replace(/\s+$/, ''), tok.f, tok.size);
-          const w = width(tok.t, tok.f, tok.size);
-          if (cur().length && lw + trimW > maxW + 0.01) { lines.push([]); lw = 0; if (!tok.t.trim()) return; }
-          if (trimW > maxW) {
-            let chunk = '';
-            for (const ch of tok.t) {
-              if (chunk && width(chunk + ch, tok.f, tok.size) > maxW) { add(tok, width(chunk, tok.f, tok.size)); cur()[cur().length - 1].t = chunk; lines.push([]); lw = 0; chunk = ''; }
-              chunk += ch;
-            }
-            if (chunk) { add(tok, width(chunk, tok.f, tok.size)); cur()[cur().length - 1].t = chunk; }
-            return;
+        const push = c => { const ln = cur(); const last = ln[ln.length - 1]; if (last && last.f === c.f && last.size === c.size && last.color === c.color) { last.t += c.ch; last.w += c.w; } else ln.push({ t: c.ch, f: c.f, size: c.size, color: c.color, w: c.w }); lw += c.w; };
+        let i = 0;
+        while (i < chars.length) {
+          if (chars[i].br) { lines.push([]); lw = 0; i++; continue; }
+          let j = i;
+          while (j < chars.length && !chars[j].br && !breakAfter(j)) j++;
+          const seg = chars.slice(i, Math.min(j + 1, chars.length)).filter(c => !c.br);
+          i = Math.min(j + 1, chars.length);
+          let fitW = 0, fullW = 0;
+          let k = seg.length; while (k > 0 && isWs(seg[k - 1])) k--;
+          seg.forEach((c, idx) => { fullW += c.w; if (idx < k) fitW += c.w; });
+          if (cur().length && lw + fitW > maxW + 0.01) { lines.push([]); lw = 0; if (k === 0) continue; }
+          if (fitW > maxW + 0.01) { // 한 어절이 폭보다 길면 글자 단위
+            seg.forEach(c => { if (cur().length && lw + c.w > maxW + 0.01 && !isWs(c)) { lines.push([]); lw = 0; } push(c); });
+            continue;
           }
-          add(tok, w);
-        });
+          seg.forEach(push);
+          void fullW;
+        }
         return lines.map(ln => ({ toks: ln, size: Math.max(6, ...ln.map(tk => tk.size)) }));
       }
       const LH = 1.32;
