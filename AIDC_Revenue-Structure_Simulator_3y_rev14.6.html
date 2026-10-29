@@ -3426,7 +3426,7 @@
     function gb300StandaloneData() {
       const st = { ...state };
       GPU_KEYS.forEach(j => { st['on_' + j] = j === 'gb300'; });
-      if (st.spaceMode === 'expand') st.floorAreaSqm = minFloorAreaForPowerMax(st, gpuTypes, 'gb300');
+      // rev54: 같은 부지(현 연면적·수전) 기준 — 연면적 확장 없음
       st.n_gb300 = Math.max(1, gpuMaxUnits('gb300', st, gpuTypes, true));
       return calcMix(st, gpuTypes);
     }
@@ -4373,7 +4373,7 @@
       const models = keys.map((k, i) => {
         const st = { ...state };
         GPU_KEYS.forEach(j => { st['on_' + j] = j === k; });
-        if (st.spaceMode === 'expand') st.floorAreaSqm = minFloorAreaForPowerMax(st, gpuTypes);
+        // rev54: 연면적을 늘리지 않고 현재 부지(연면적·수전) 안에서의 단독 최대 수량으로 비교
         st['n_' + k] = Math.max(1, gpuMaxUnits(k, st, gpuTypes, true));
         const d = calcMix(st, gpuTypes);
         return { key: k, name: gpuLabel(gpuTypes[k], k), view: 'superpod', applyKey: k, color: CMP_COLORS[i % CMP_COLORS.length], configText: d.shortConfigText, data: d };
@@ -5821,34 +5821,23 @@
       try {
         const bepShort = x => { const i = x.cumProfit.findIndex(v => v >= 0); return i >= 0 ? L(`${i + 1}년차`, `Yr ${i + 1}`) : L(`${YEARS}년 내 미달`, `Not in ${YEARS} yrs`); };
         const candidates = GPU_KEYS.filter(k => gpuSpecOk(gpuTypes[k]) && (k !== 'custom' || state.customOpen) && (!neo || neoPriceOf(k) > 0));
-        const siteCols = [], capCols = [];
+        const siteCols = [];
         candidates.forEach(k => {
           const g = gpuTypes[k];
           const nm = g.kind === 'server' ? `HGX ${gpuShortLabel(g, k)}` : gpuLabel(g, k);
-          const st0 = { ...state };
-          GPU_KEYS.forEach(j => { st0['on_' + j] = j === k; });
-          const stA = { ...st0 };
+          const stA = { ...state };
+          GPU_KEYS.forEach(j => { stA['on_' + j] = j === k; });
           stA['n_' + k] = Math.max(1, gpuMaxUnits(k, stA, gpuTypes, true));
-          const dA = calcMix(stA, gpuTypes);
-          if (dA.shortConfigText !== d.shortConfigText || Math.abs(dA.floorArea - d.floorArea) > 0.5) siteCols.push({ name: `${nm} ${L('단독·현 부지', 'only, same site')}`, data: dA, kind: 'site' });
-          if (gpuPowerMax(k, st0, gpuTypes, true) > gpuAreaMax(k, st0, gpuTypes, true)) {
-            const stB = { ...st0 };
-            stB.floorAreaSqm = minFloorAreaForPowerMax(stB, gpuTypes, k);
-            stB['n_' + k] = Math.max(1, gpuMaxUnits(k, stB, gpuTypes, true));
-            const dB = calcMix(stB, gpuTypes);
-            if (dB.shortConfigText !== dA.shortConfigText || Math.abs(dB.floorArea - dA.floorArea) > 0.5) capCols.push({ name: `${nm} ${L('단독·전력 상한', 'only, power cap')}`, data: dB, kind: 'cap' });
-          }
+          siteCols.push({ name: `${nm} ${L('단독', 'only')}`, data: calcMix(stA, gpuTypes), kind: 'site' });
         });
-        const models = [{ name: L('현재 구성', 'Current configuration'), data: d, kind: 'cur' }, ...siteCols, ...capCols].slice(0, 4);
+        const models = [{ name: L('현재 구성', 'Current configuration'), data: d, kind: 'cur' }, ...siteCols].slice(0, 4);
         if (models.length >= 2) {
           const colsM = split(W, models.length, 1900);
           const mrow = (lab, fn, opt = {}) => ({ bold: opt.bold, cells: [lab, ...models.map(fn)] });
           const irrOf = m => { const r = (typeof PODFIN !== 'undefined' && PODFIN.metrics) ? PODFIN.metrics(m.data) : null; return r && r.irr != null ? r.irr : -Infinity; };
           const best = models.reduce((a, m) => (irrOf(m) > irrOf(a) ? m : a), models[0]);
-          const hasCap = models.some(m => m.kind === 'cap');
           sec('cmp', L('랙 시스템 모델 비교', 'Rack system comparison'),
-            para(L('「단독·현 부지」는 지금의 연면적·IT 수전용량 안에서 그 유형만으로 채운 최대 수량이고, ', '"Only, same site" fills the current floor area and IT power with that type alone; '),
-              hasCap ? L('「단독·전력 상한」은 면적 제약을 풀어 연면적을 늘리고 IT 수전용량까지 채운 경우입니다(연면적·시설 CAPEX가 달라짐). ', '"only, power cap" lifts the area limit by enlarging the floor and fills the IT power (floor area and facility capex change). ') : '',
+            para(L('「단독」은 지금의 연면적·IT 수전용량 안에서 그 유형만으로 채운 최대 수량입니다(연면적 확장 없음). 현재 구성이 한 유형을 최대로 채운 상태면 단독 열과 같은 값이 나옵니다. ', '"Only" fills the current floor area and IT power with that type alone (no floor expansion); if the current configuration already fills one type to its maximum, the two columns match. '),
               L('Equity IRR 기준으로는 ', 'By equity IRR, '), B(best.name, RPT.OR), L('이 가장 높습니다 (', ' ranks highest ('), B(finMetric(best.data, 'irr')), ').',
               neo ? L(' 타사위탁 단가는 사이드바 GPU 소비자가 기준이며, 소비자가가 비어 있는 유형은 제외했습니다.', ' Outsourced rates use the sidebar list prices; types without a list price are omitted.') : ''),
             table(colsM, [
