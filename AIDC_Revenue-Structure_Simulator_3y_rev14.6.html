@@ -5468,7 +5468,7 @@
       // ═════════ 1p. 요약 ═════════
       const typeName = td => (td.type.kind === 'server' ? `HGX ${gpuShortLabel(td.type, td.key)}` : gpuLabel(td.type, td.key));
       const cfgLine = activeTypes.map(td => `${typeName(td)} ${nf.format(td.n)}${gpuUnitLabel(td.type)}(${nf.format(td.gpus)} GPU)`).join(' + ') || gpuMixText(state, gpuTypes, true);
-      blocks.push({ type: 'title', lines: [L('AI Data Center GPU 임대', 'AI Data Center GPU Leasing'), L('수익구조 분석', 'Revenue Structure Analysis')], sub: `${cfgLine} · ${modeName} · ${t('labelFloorArea')} ${sqm(d.floorArea)}` });
+      blocks.push({ type: 'title', lines: [L('AI Data Center GPU 임대', 'AI Data Center GPU Leasing'), L('수익구조 분석', 'Revenue Structure Analysis')], sub: `${cfgLine} · ${modeName} · ${t('labelFloorArea')} ${sqm(d.floorArea)} (${state.spaceMode === 'b1' ? L('리모델링 단일', 'remodel only') : L('신축+리모델링', 'new build + remodel')})` });
       // ① 재무구조 반영 전 (5개)
       sec('pre', L('재무구조 반영 전', 'Before financing'),
         strip([
@@ -5906,6 +5906,8 @@
       const co = [{ raw: true, vAlign: 'top', pad: 0 }, { raw: true, vAlign: 'top', pad: 0 }];
       const spacer = '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="200" w:lineRule="exact"/><w:rPr><w:sz w:val="8"/></w:rPr></w:pPr></w:p>';
       const gapRow = '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="300" w:lineRule="exact"/><w:rPr><w:sz w:val="14"/></w:rPr></w:pPr></w:p>';
+      const gapRowWide = '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="540" w:lineRule="exact"/><w:rPr><w:sz w:val="14"/></w:rPr></w:pPr></w:p>';
+      let prevStrip = false;
       const flush = () => { if (outerRows.length) { parts.push(dxTable([RPT.WL, RPT.W], outerRows, { noBorder: true, padX: 0, cantSplit: true })); outerRows = []; } };
       const pageBreak = '<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr><w:r><w:br w:type="page"/></w:r></w:p>';
       let curPage = 1;
@@ -5920,7 +5922,8 @@
           if (!pageOf) { flush(); parts.push(pageBreak); }
         } else if (b.type === 'sec') {
           const g = rptGroup(b.group);
-          if (outerRows.length) outerRows.push({ cells: [gapRow, gapRow], cellOpts: co });
+          if (outerRows.length) outerRows.push({ cells: [prevStrip ? gapRowWide : gapRow, prevStrip ? gapRowWide : gapRow], cellOpts: co });
+          prevStrip = b.body.some(x => x.type === 'strip');
           const titleRuns = String(b.title).split('\n').flatMap((tx, k) => (k ? [{ br: true }, { t: tx, b: true, color: g.c, sz: 21 }] : [{ t: tx, b: true, color: g.c, sz: 21 }]));
           outerRows.push({ cells: [dxPara(titleRuns, { before: 40, keepNext: true, line: 264 }), b.body.map(x => dxBlock(x, g)).join('') + spacer], cellOpts: co, cantSplit: true });
         } else { flush(); parts.push(dxBlock(b, rptGroup('app'))); }
@@ -6246,7 +6249,7 @@
         const y0 = y;
         s.body.forEach(b => drawBlock(b, xR, wR, g));
         if (y === y0) y -= linesH(tl) + 2;
-        y -= 15; // 섹션 사이 여백
+        y -= s.body.some(b => b.type === 'strip') ? 27 : 15; // 섹션 사이 여백 (큰 숫자 띠 섹션 뒤는 더 넓게)
       }
       // 섹션 통째 배치: 현재 쪽에서 그려 보고 넘치면 되돌려 새 쪽에서 다시 그린다
       function drawSection(s) {
