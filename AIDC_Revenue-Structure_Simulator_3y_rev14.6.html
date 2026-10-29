@@ -5466,7 +5466,9 @@
       const opexSum = Number(d.opexEok) || 0;
 
       // ═════════ 1p. 요약 ═════════
-      blocks.push({ type: 'title', lines: [L('AI Data Center GPU 임대', 'AI Data Center GPU Leasing'), L('수익구조 분석', 'Revenue Structure Analysis')], sub: `${gpuMixText(state, gpuTypes, true)} · ${modeName} · ${nf.format(d.gpus)} GPU · ${ymd}` });
+      const typeName = td => (td.type.kind === 'server' ? `HGX ${gpuShortLabel(td.type, td.key)}` : gpuLabel(td.type, td.key));
+      const cfgLine = activeTypes.map(td => `${typeName(td)} ${nf.format(td.n)}${gpuUnitLabel(td.type)}(${nf.format(td.gpus)} GPU)`).join(' + ') || gpuMixText(state, gpuTypes, true);
+      blocks.push({ type: 'title', lines: [L('AI Data Center GPU 임대', 'AI Data Center GPU Leasing'), L('수익구조 분석', 'Revenue Structure Analysis')], sub: `${cfgLine} · ${modeName} · ${t('labelFloorArea')} ${sqm(d.floorArea)}` });
       // ① 재무구조 반영 전 (5개)
       sec('pre', L('재무구조 반영 전', 'Before financing'),
         strip([
@@ -5815,34 +5817,49 @@
           note(L('두 방식 모두 자기자본 비율·PF 금리·상환방식·사업기구는 현재 조달 가정을 공통 적용.', 'Both apply the current financing assumptions (equity ratio, PF rate, repayment, vehicle).'))
         );
       } catch (e) { /* 비교 생략 */ }
-      // [cmp] 랙 시스템 모델 비교 (후보 유형별 단독 최대 구성 + 현재 구성)
+      // [cmp] 랙 시스템 모델 비교 — 현재 구성 vs 유형별 단독(현 부지 최대) vs 단독(전력 상한까지, 연면적 확장)
       try {
         const bepShort = x => { const i = x.cumProfit.findIndex(v => v >= 0); return i >= 0 ? L(`${i + 1}년차`, `Yr ${i + 1}`) : L(`${YEARS}년 내 미달`, `Not in ${YEARS} yrs`); };
         const candidates = GPU_KEYS.filter(k => gpuSpecOk(gpuTypes[k]) && (k !== 'custom' || state.customOpen) && (!neo || neoPriceOf(k) > 0));
-        const models = candidates.map(k => {
-          const st = { ...state };
-          GPU_KEYS.forEach(j => { st['on_' + j] = j === k; });
-          if (st.spaceMode === 'expand') st.floorAreaSqm = minFloorAreaForPowerMax(st, gpuTypes);
-          st['n_' + k] = Math.max(1, gpuMaxUnits(k, st, gpuTypes, true));
-          return { name: `${gpuLabel(gpuTypes[k], k)} ${L('단독', 'only')}`, data: calcMix(st, gpuTypes) };
+        const siteCols = [], capCols = [];
+        candidates.forEach(k => {
+          const g = gpuTypes[k];
+          const nm = g.kind === 'server' ? `HGX ${gpuShortLabel(g, k)}` : gpuLabel(g, k);
+          const st0 = { ...state };
+          GPU_KEYS.forEach(j => { st0['on_' + j] = j === k; });
+          const stA = { ...st0 };
+          stA['n_' + k] = Math.max(1, gpuMaxUnits(k, stA, gpuTypes, true));
+          const dA = calcMix(stA, gpuTypes);
+          if (dA.shortConfigText !== d.shortConfigText || Math.abs(dA.floorArea - d.floorArea) > 0.5) siteCols.push({ name: `${nm} ${L('단독·현 부지', 'only, same site')}`, data: dA, kind: 'site' });
+          if (gpuPowerMax(k, st0, gpuTypes, true) > gpuAreaMax(k, st0, gpuTypes, true)) {
+            const stB = { ...st0 };
+            stB.floorAreaSqm = minFloorAreaForPowerMax(stB, gpuTypes, k);
+            stB['n_' + k] = Math.max(1, gpuMaxUnits(k, stB, gpuTypes, true));
+            const dB = calcMix(stB, gpuTypes);
+            if (dB.shortConfigText !== dA.shortConfigText || Math.abs(dB.floorArea - dA.floorArea) > 0.5) capCols.push({ name: `${nm} ${L('단독·전력 상한', 'only, power cap')}`, data: dB, kind: 'cap' });
+          }
         });
-        models.push({ name: L('현재 구성', 'Current configuration'), data: d });
+        const models = [{ name: L('현재 구성', 'Current configuration'), data: d, kind: 'cur' }, ...siteCols, ...capCols].slice(0, 4);
         if (models.length >= 2) {
-          const colsM = split(W, models.length, 2000);
+          const colsM = split(W, models.length, 1900);
           const mrow = (lab, fn, opt = {}) => ({ bold: opt.bold, cells: [lab, ...models.map(fn)] });
           const irrOf = m => { const r = (typeof PODFIN !== 'undefined' && PODFIN.metrics) ? PODFIN.metrics(m.data) : null; return r && r.irr != null ? r.irr : -Infinity; };
           const best = models.reduce((a, m) => (irrOf(m) > irrOf(a) ? m : a), models[0]);
+          const hasCap = models.some(m => m.kind === 'cap');
           sec('cmp', L('랙 시스템 모델 비교', 'Rack system comparison'),
-            para(L('각 유형을 같은 부지의 IT 수전용량·화이트스페이스 안에서 가능한 최대 수량으로 단독 구성했을 때와 현재 구성을 비교합니다. ', 'Each type at its standalone maximum within the same IT power and white space, compared with the current configuration. '),
+            para(L('「단독·현 부지」는 지금의 연면적·IT 수전용량 안에서 그 유형만으로 채운 최대 수량이고, ', '"Only, same site" fills the current floor area and IT power with that type alone; '),
+              hasCap ? L('「단독·전력 상한」은 면적 제약을 풀어 연면적을 늘리고 IT 수전용량까지 채운 경우입니다(연면적·시설 CAPEX가 달라짐). ', '"only, power cap" lifts the area limit by enlarging the floor and fills the IT power (floor area and facility capex change). ') : '',
               L('Equity IRR 기준으로는 ', 'By equity IRR, '), B(best.name, RPT.OR), L('이 가장 높습니다 (', ' ranks highest ('), B(finMetric(best.data, 'irr')), ').',
               neo ? L(' 타사위탁 단가는 사이드바 GPU 소비자가 기준이며, 소비자가가 비어 있는 유형은 제외했습니다.', ' Outsourced rates use the sidebar list prices; types without a list price are omitted.') : ''),
             table(colsM, [
               head([t('compareColMetric'), ...models.map(m => m.name)]),
               mrow(t('compareRowConfig'), m => m.data.shortConfigText),
+              mrow(t('labelFloorArea'), m => `${sqm(m.data.floorArea)} (${L('화이트', 'white')} ${sqm(m.data.usableArea)})`),
               mrow(t('compareRowGpu'), m => `${nf.format(m.data.gpus)} GPU`),
               mrow(t('compareRowPower'), m => `${kw(m.data.usedItPower)} (${pct(m.data.allocationPct, 1)})`),
               mrow(L('랙 점유 면적', 'Rack footprint'), m => `${sqm(m.data.occupiedArea)} (${pct(m.data.areaPct, 1)})`),
               mrow(t('compareRowCapex'), m => eok(m.data.itCapexEok)),
+              mrow(t('compareRowFacility'), m => eok(m.data.facilityEok)),
               mrow(t('cmpFinCapex'), m => B(eok(m.data.totalCapexEok))),
               mrow(t('compareRowCumRevenue', { n: YEARS }), m => eok(m.data.cumRevenue[last])),
               mrow(L(`${YEARS}년 누적 지출`, `${YEARS}-yr cum. expense`), m => eok(m.data.cumExpense[last])),
@@ -5937,7 +5954,7 @@
       const headerXml = `${XML}<w:hdr ${DOCX_NS}>${dxPara(model.header, { jc: 'right', sz: 14, color: '7F7F7F' })}</w:hdr>`;
       const logo = '<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="590550" cy="104775"/><wp:docPr id="1" name="logo"/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="0" name="logo.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rId1"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="590550" cy="104775"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>';
       const pageNo = '<w:r><w:tab/></w:r><w:fldSimple w:instr="PAGE"><w:r><w:rPr><w:b/><w:bCs/><w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr><w:t>1</w:t></w:r></w:fldSimple>';
-      const footerXml = `${XML}<w:ftr ${DOCX_NS}><w:p><w:pPr><w:tabs><w:tab w:val="right" w:pos="10439"/></w:tabs><w:spacing w:before="0" w:after="0"/><w:ind w:left="-120"/></w:pPr>${logo}${pageNo}</w:p></w:ftr>`;
+      const footerXml = `${XML}<w:ftr ${DOCX_NS}><w:p><w:pPr><w:tabs><w:tab w:val="right" w:pos="10439"/></w:tabs><w:spacing w:before="0" w:after="0"/><w:ind w:left="-400"/></w:pPr>${logo}${pageNo}</w:p></w:ftr>`;
       const RELNS = 'xmlns="http://schemas.openxmlformats.org/package/2006/relationships"';
       const RT = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/';
       const rootRels = `${XML}<Relationships ${RELNS}><Relationship Id="rId1" Type="${RT}officeDocument" Target="word/document.xml"/></Relationships>`;
@@ -6276,7 +6293,7 @@
         const N = pages.length;
         pages.forEach((p, i) => {
           ops = p;
-          if (logo) ops.push(`q ${n2(8 * logo.w / logo.h)} 0 0 8 ${n2(xL - 6)} 30 cm /Im1 Do Q`);
+          if (logo) ops.push(`q ${n2(8 * logo.w / logo.h)} 0 0 8 ${n2(xL - 20)} 30 cm /Im1 Do Q`);
           const s = `${i + 1}`;
           void N;
           text(PG.w - PG.right - width(s, 'FB', 8), 31, s, 'FB', 8, '000000');
