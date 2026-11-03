@@ -522,6 +522,8 @@
     .sys-card .su-big.card-count .u::after { bottom: 0.22em; }
     .sys-card .su-big.card-count .unit { font-size: 22px; }
     .sys-card .su-big.card-count .max { margin-left: auto; text-align: right; white-space: nowrap; }
+    .sys-card .su-big.card-count .racks { font-size: 15px; font-weight: 500; color: var(--g77); margin-left: 10px; white-space: nowrap; }
+    .s-group.space .fac-mode-lab { display: block; margin-top: 26px; }
     .sys-card .su-big.card-count .max.text-danger { color: var(--red); }
     .sys-card .track { margin-top: 8px; }
     .sys-card .track:disabled { opacity: 0.4; }
@@ -1056,7 +1058,7 @@
       b300: {
         kind: 'server', label: 'B300 NVL8 HGX', shortLabel: 'B300', rackName: 'HGX B300 NVL8',
         processorKo: '서버 1대 = HGX B300 NVL8 · 8 Blackwell Ultra GPU', processorEn: '1 server = HGX B300 NVL8 · 8 Blackwell Ultra GPUs',
-        gpusPerUnit: 8, serversPerRack: 8, rackAreaSqm: 15, unitItPowerKw: 15, serverKw: 14, netKw: 0.6, auxKw: 0.4,
+        gpusPerUnit: 8, serversPerRack: 8, rackAreaSqm: 3.5, unitItPowerKw: 15, serverKw: 14, netKw: 0.6, auxKw: 0.4,
         baseRateUsd: { A: 7.38, B: 7.38 },
         fp4PflopsPerUnit: 120,
         capexUsd: { server: 451400, network: 66000, storage: 31900, cdu: 27800, si: 48600 },
@@ -1065,8 +1067,8 @@
       gb300: {
         kind: 'su', label: 'GB300 SuperPOD', shortLabel: 'GB300', rackName: 'GB300 NVL72',
         processorKo: '1 SU = NVL72 랙 8대 · 576 Blackwell Ultra GPU + 288 Grace CPU', processorEn: '1 SU = 8 NVL72 racks · 576 Blackwell Ultra GPUs + 288 Grace CPUs',
-        gpusPerUnit: 576, racksPerUnit: 8, rackKw: 150, rackAreaSqm: 15, rackPriceUsd: 4062500,
-        unitItPowerKw: 1200, unitAreaSqm: 120,
+        gpusPerUnit: 576, racksPerUnit: 8, rackKw: 150, rackAreaSqm: 3.5, rackPriceUsd: 4062500,
+        unitItPowerKw: 1200, unitAreaSqm: 28,
         baseRateUsd: { A: 18.12, B: 24.02 },
         fp4PflopsPerUnit: 8640,
         capexUsd: { nvl72: 32500000, network: 4750000, storage: 2000000, mgmt: 300000, cdu: 2000000, swSetup: 3500000 },
@@ -1095,9 +1097,9 @@
     };
     // rev38: HGX B300 냉각·네트워크 프리셋 — 토글 시 아래 값을 입력칸에 채움(이후 개별 수정 가능)
     const B300_COOLING = {
-      air: { ko: '공랭 8U', en: 'Air-cooled 8U', serversPerRack: 4, rackAreaSqm: 15, cduUsd: 0,
+      air: { ko: '공랭 8U', en: 'Air-cooled 8U', serversPerRack: 4, rackAreaSqm: 3.5, cduUsd: 0,
         noteKo: '랙당 4대(56kW) — 공랭 8U × 4, 벤더 표준 배치 (고밀도 전산실 전제)', noteEn: '4 per rack (56kW) — 4× 8U air-cooled, vendor reference layout' },
-      liquid: { ko: '수랭 4U (DLC)', en: 'Liquid-cooled 4U (DLC)', serversPerRack: 8, rackAreaSqm: 15, cduUsd: 27800,
+      liquid: { ko: '수랭 4U (DLC)', en: 'Liquid-cooled 4U (DLC)', serversPerRack: 8, rackAreaSqm: 3.5, cduUsd: 27800,
         noteKo: '랙당 8대(112kW) — CDU 서버당 $27,800 추가', noteEn: '8 per rack (112kW) — adds $27,800/server for CDU' }
     };
     const B300_NET = {
@@ -1129,20 +1131,21 @@
       totalPowerKw: 6000,
       pue: 1.25,
       itPowerKw: 4800,
-      floorAreaSqm: 2400,
-      greySpaceSqm: 300,       // rev47: 그레이스페이스(㎡) — 기계실·전기실·복도·반입구·감시실 등 지원 공간 (전기실·발전기실·UPS는 신축 700㎡ 전력동이 흡수)
-      whiteSpaceSqm: 500,      // rev47: 화이트스페이스(㎡) = 연면적 − 그레이스페이스 (파생값, 표시용)
+      floorAreaSqm: 1850,      // rev56: 판교 AIDC 계획 연면적
+      greySpaceSqm: 1700,       // rev47: 그레이스페이스(㎡) — 기계실·전기실·복도·반입구·감시실 등 지원 공간 (전기실·발전기실·UPS는 신축 700㎡ 전력동이 흡수)
+      whiteSpaceSqm: 150,      // rev47: 화이트스페이스(㎡) = 연면적 − 그레이스페이스 (파생값, 표시용)
       supportAreaBase: 300,    // (구) IT 수전용량 비례 부대공간 — greySpaceSqm으로 대체
       supportAreaFixed: 0,   // 전력과 무관한 고정 부대공간(㎡) — 코어·계단·EV·복도·샤프트·창고·벽체 // 부대공간 기준면적(㎡) @ IT 4,800kW — IT 용량 비례 환산
       spaceMode: 'expand', // 'base'([기존]) | 'expand'([확장]) | 'b1'([B1 전체]) — rev13.4 기준안: [확장](신축 전력동 700㎡ 확정)
+      facMode: 'remodel',      // rev56: 시설 공사 방식 — 'remodel'(신축 제외, 리모델링) | 'both'(신축+리모델링)
       energyCostRate: 121.7,
       basicChargeKwMonth: 9810,
       fxKrwUsd: 1350,
-      swSubUsdPerGpuYear: 4500,
+      swSubUsdPerGpuYear: 0,    // rev56: VESSL 협의 전 $0 가정
       selectedRack: 'gb300',
       racks_gb200: 0,
       racks_gb300: 0,
-      opexEok: 50,
+      opexEok: 0,              // rev56: 기타 운영비 0 (VESSL 협의 전)
       rackAuxUsdPerRack: RACK_AUX_USD_PER_RACK,
       rackSiUsdPerRack: RACK_SI_USD_PER_RACK,
       siMultiplier: 1.0,      // rev37: VSLAI rev1.2 B300 모델은 SI 할증 없음 (1.0 = 턴키 동일)
@@ -1646,10 +1649,51 @@
       spaceModeHint: { ko: '[기존] 연면적 500㎡ 고정 · 시설비 고정값(SuperPOD {pod} / 임대 {rack}) — [확장] 연면적 확장 · 시설비 단가 자동 산출', en: '[Base] floor area fixed at 500㎡ with fixed facility CAPEX (SuperPOD {pod} / Rental {rack}) — [Expansion] adjustable floor area with unit-rate auto costing' },
       labelFloorArea: { ko: '연면적', en: 'Gross floor area' },
       labelWhiteSpace: { ko: '화이트스페이스', en: 'White space' },
-      labelGreySpace: { ko: '그레이스페이스', en: 'Grey space' },
-      floorAreaTip: { ko: '연면적(Gross Floor Area): 데이터센터로 쓰는 B1 바닥 면적 전체 = 화이트스페이스 + 그레이스페이스. 상한 2,400㎡(B1 연면적 2,439.76㎡ 절사). 신축 전력동 700㎡(전기실·발전기실·UPS)는 별동이라 포함하지 않습니다.', en: 'Gross floor area: the whole B1 floor used for the data center = white space + grey space. Cap 2,400㎡ (B1 total 2,439.76㎡). The separate 700㎡ power building (switchgear, generators, UPS) is excluded.' },
+      labelGreySpace: { ko: '그레이스페이스 및 기타', en: 'Grey space & other' },
+      labelFacMode: { ko: '시설 공사 방식', en: 'Facility works' },
+      facModeBoth: { ko: '신축+리모델링', en: 'New build + remodel' },
+      facModeRemodel: { ko: '리모델링', en: 'Remodel only' },
+      facModeTip: { ko: '시설비 CAPEX 산정 방식. [리모델링] 신축동 없이 기존 건물만 리모델링 — 전력·공조 예산은 전액 리모델링으로 계상, 건축/토목·통신/소방의 신축 고정분(40억·16억)은 제외. [신축+리모델링] 신축 전력동(700㎡) 병행안.', en: 'How facility capex is costed. [Remodel only] no new building — electrical and mechanical budgets go fully to remodel, and the fixed new-build portions of architecture and telecom/fire are dropped. [New build + remodel] keeps the 700㎡ new power building.' },
+      facModeHintRemodel: { ko: '신축동 제외 · 계획 면적 기준 리모델링 예산만 계상 (전력·공조 전액 리모델링, 건축/통신 신축분 삭제, 설계·감리·간접비 10% 유지)', en: 'No new building · remodel budget on the planned area only (electrical/mechanical fully remodel, new-build portions dropped, soft costs 10%)' },
+      facModeHintBoth: { ko: '신축 전력동(700㎡) + 기존 건물 리모델링 병행 — 두 열의 합이 시설비', en: 'New 700㎡ power building plus remodel — facility capex is the sum of both columns' },
+      facilityDescRemodel: { ko: '[리모델링] 신축동 없이 기존 건물 리모델링만으로 구성합니다. 전력·공조 예산은 전액 리모델링으로 계상되고, 건축/토목·통신/소방의 신축 고정분(40억·16억)은 제외됩니다. 면적비례 단가는 고하중(화이트스페이스) 구간과 일반(그레이스페이스 및 기타) 구간으로 나눠 계획 면적에 적용하며, 설계/감리/간접비는 직접공사비의 10%입니다(행별 수동 전환 가능, 단가 입력은 억 원).', en: '[Remodel only] the existing building is remodeled with no new construction. Electrical and mechanical budgets are costed fully as remodel; the fixed new-build portions of architecture and telecom/fire (KRW 4.0B and 1.6B) are dropped. Area-based rates apply a heavy-load rate to the white space and a general rate to grey space & other; soft costs are 10% of direct works (rows can be set manually; rates in KRW 0.1B).' },
+      cardRacks: { ko: '= {n}랙', en: '= {n} racks' },
+      tipSystemSelector: { ko: '켜진 카드의 수량 합이 IT 수전용량과 화이트스페이스 안에 들어오도록 상한을 계산합니다. 카드별 CAPEX = 랙당 구성 항목 합계 × 랙 수(서버형은 서버당 단가 × 서버 수), 매출은 GPU 수 × 시간당 단가 × 가동 시간.', en: 'Caps keep the enabled cards within IT power and white space. Card capex = per-rack items × racks (server type: per-server cost × servers); revenue = GPUs × hourly rate × hours.' },
+      tipMixTable: { ko: '연매출 = GPU 수 × 8,760h × Σ(계약 비중 × 연차 가동률 계수 × 계약별 단가). 계약별 단가 = 기초단가($) × (1 + 입지 프리미엄) × (1 − 예약 할인) × 환율.', en: 'Annual revenue = GPUs × 8,760h × Σ(contract share × yearly utilization × contract rate). Contract rate = base rate × (1 + location premium) × (1 − reserve discount) × FX.' },
+      tipNeoTerms: { ko: 'GPU·시간 = GPU 수 × 8,760h × 가동비중 · 과금액 = GPU·시간 × 소비자가 × 환율 · 위탁 사업자 마진 = 과금액 × 마진율 · 당사 인식 매출 = 과금액 − 마진.', en: 'GPU-hours = GPUs × 8,760h × utilized share · billings = GPU-hours × list price × FX · operator margin = billings × margin rate · recognized revenue = billings − margin.' },
+      tipNeoSens: { ko: '마진율만 10~40%로 바꿔 순단가·매출·FCFE·IRR을 다시 계산합니다. 목표 IRR 유지 최대 마진 = IRR ≥ 목표를 만족하는 가장 큰 마진(이분 탐색), 손익분기 마진 = Equity IRR 0%가 되는 마진.', en: 'Recomputes net rate, revenue, FCFE and IRR for margins of 10–40%. Max margin for target IRR = the largest margin with IRR ≥ target (bisection); break-even margin = margin at 0% equity IRR.' },
+      tipCmpMode: { ko: '같은 랙 구성·전력·면적·조달 조건에서 운영 방식만 바꿔 계산합니다. 직접운영 = 계약 포트폴리오 단가 × 연차 가동률, 타사위탁 = (소비자가 − 마진) × 가동비중.', en: 'Same racks, power, space and financing; only the operating model changes. Direct = portfolio rates × yearly utilization; outsourced = (list price − margin) × utilized share.' },
+      tipSrvSec: { ko: '공랭 8U: 랙당 4대(56kW) · 수랭 4U(DLC): 랙당 8대(112kW, CDU 서버당 $27,800 추가). 네트워크 400G/800G 선택은 서버당 네트워크 CAPEX에 반영됩니다. 랙 수 = 서버 수 ÷ 랙당 서버 수.', en: 'Air 8U: 4 servers/rack (56kW) · liquid 4U (DLC): 8 servers/rack (112kW, +$27,800/server CDU). The 400G/800G choice changes per-server network capex. Racks = servers ÷ servers per rack.' },
+      tipCapSec: { ko: '사용 IT 전력 = Σ 수량 × 대당(SU당) 전력 · 면적 사용 = 그레이스페이스 및 기타 + Σ 수량 × 랙당 면적 · 카드별 상한 = min(전력 기준 수량, 면적 기준 수량), 다른 카드가 쓰는 잔여분 기준.', en: 'IT power used = Σ units × power per unit · area used = grey space & other + Σ units × area per rack · per-card cap = min(power-based, area-based) on what other cards leave.' },
+      tipFormula: { ko: '화면 계산에 쓰인 기준값과 산식을 한곳에 모았습니다. 각 표의 숫자는 여기 산식으로 재계산할 수 있습니다.', en: 'All inputs and formulas used on screen in one place; every figure in the tables can be recomputed from them.' },
+      tipChart: { ko: '누적 손익 = 누적 매출 − 누적 지출(감가상각 + 전기료 + SW 구독 + 기타 운영비), 재무구조 반영 전.', en: 'Cumulative profit = cumulative revenue − cumulative expense (depreciation + electricity + SW + other opex), before financing.' },
+      tipFacility: { ko: '면적비례 항목 = ㎡당 단가 × 연면적(리모델링 모드는 고하중/일반 2단 단가) · 용량비례 항목 = kW당 단가 × 총 수전용량 · 설계/감리/간접비 = 직접공사비 × 10%. 행별로 수동 전환해 예산을 직접 입력할 수 있습니다.', en: 'Area items = rate/㎡ × floor area (remodel mode splits heavy/general rates) · capacity items = rate/kW × total power · soft costs = 10% of direct works. Any row can be switched to manual input.' },
+      tipProd: { ko: 'SuperPOD(턴키 패키지)와 랙 낱개 조달의 범위·검증·확장 단위를 정성 비교합니다.', en: 'Qualitative comparison of the SuperPOD turnkey package and standalone rack procurement.' },
+      tipPnl: { ko: '3년 누적 매출 − 3년 누적 지출(감가상각·전기료·SW·운영비)의 구조를 모델별로 비교합니다.', en: 'Compares 3-year cumulative revenue less expense (depreciation, electricity, SW, opex) by model.' },
+      tipCompare: { ko: '켜진 유형마다 같은 연면적·수전 안에서 그 유형만으로 채운 최대 구성과, 2개 이상이면 현재 혼합 구성을 비교합니다.', en: 'Each enabled type at its standalone maximum within the same floor area and power, plus the current mix when two or more are enabled.' },
+      tipCompareChart: { ko: '모델별 연차 누적 손익(재무구조 반영 전) 선 그래프. 0선을 넘는 연차가 손익분기점입니다.', en: 'Cumulative profit by year per model (before financing); the year crossing zero is break-even.' },
+      tipFinance: { ko: '총 CAPEX를 자기자본과 PF로 조달한 뒤 주주 현금흐름(FCFE) = EBITDA − PF 이자 − 법인세 − 원금상환으로 IRR·MIRR·NPV·MoIC·DSCR을 계산합니다.', en: 'Total capex is funded by equity and PF debt; FCFE = EBITDA − interest − tax − principal drives IRR, MIRR, NPV, MoIC and DSCR.' },
+      tipCardCapexServer: { ko: '랙당 CAPEX = (서버 본체 + 네트워크 + 스토리지·관리 + CDU + SW Setup·SI × 할증) × 랙당 서버 수. 원화 환산 = × 환율.', en: 'Per-rack capex = (server + network + storage/mgmt + CDU + SW setup·SI × premium) × servers per rack; KRW = × FX.' },
+      tipCardCapexSu: { ko: 'SU당 CAPEX = NVL72 랙 8대 + 네트워크 + 스토리지 + 관리노드 + CDU + SW 구축. 원화 환산 = × 환율.', en: 'Per-SU capex = 8 NVL72 racks + network + storage + management nodes + CDU + SW setup; KRW = × FX.' },
+      tipNetRate: { ko: '순단가 = 소비자가 × (1 − 마진율). 당사 매출은 순단가 × GPU·시간 × 환율.', en: 'Net rate = list price × (1 − margin). Our revenue = net rate × GPU-hours × FX.' },
+      tipMixRate: { ko: '단가 = 기초단가($) × (1 + 입지 프리미엄) × (1 − 예약 할인) × 환율', en: 'Rate = base rate × (1 + location premium) × (1 − reserve discount) × FX' },
+      tipMixRevenue: { ko: '연간 매출 = Σ 계약유형별 (GPU 수 × 8,760h × 계약 비중 × 가동률 계수 × 단가)', en: 'Annual revenue = Σ by contract (GPUs × 8,760h × share × utilization × rate)' },
+      tipNeoHours: { ko: 'GPU·시간 = GPU 수 × 8,760h × 가동비중', en: 'GPU-hours = GPUs × 8,760h × utilized share' },
+      tipNeoGross: { ko: '과금액 = GPU·시간 × 소비자가 × 환율', en: 'Billings = GPU-hours × list price × FX' },
+      tipNeoTake: { ko: '위탁 사업자 마진 = 과금액 × 마진율', en: 'Operator margin = billings × margin rate' },
+      tipNeoNet: { ko: '당사 인식 매출 = 과금액 − 위탁 사업자 마진', en: 'Recognized revenue = billings − operator margin' },
+      tipAuxSi: { ko: 'SI 총액 = 서버 수 × SW Setup·SI 서버당 단가 × 할증 배수 × 환율', en: 'SI total = servers × SW setup·SI per server × multiplier × FX' },
+      tipAuxAux: { ko: '부대장비 = 서버 수 × (네트워크 + 스토리지·관리 + CDU) 서버당 단가 × 환율', en: 'Aux equipment = servers × (network + storage/mgmt + CDU) per server × FX' },
+      tipAuxIt: { ko: 'B300 IT CAPEX = 서버 수 × 서버당 CAPEX 합계 × 환율', en: 'B300 IT capex = servers × capex per server × FX' },
+      tipAuxSw: { ko: 'SW 구독 3년 = SW 구독단가 × B300 GPU 수 × 환율 × 3년', en: 'SW subscription (3 yr) = rate × B300 GPUs × FX × 3' },
+      tipAuxExp: { ko: 'CAPEX 비용화 = (부대장비 + SI 총액) × 3년 누적 감가상각률', en: 'Capex expensed = (aux + SI) × 3-year cumulative depreciation' },
+      tipAuxAdd: { ko: '3년 추가계 = CAPEX 비용화 + SW 구독 3년', en: '3-yr added = capex expensed + SW subscription' },
+      tipAuxProfit: { ko: '3년 누적 손익 = 3년 누적 매출 − 누적 지출 (재무구조 반영 전, 현재 구성)', en: '3-yr cumulative profit = revenue − expense (before financing, current configuration)' },
+      tipPowerMeter: { ko: '전력 사용률 = Σ(수량 × 대당 전력) ÷ IT 수전용량', en: 'Power use = Σ(units × power per unit) ÷ IT power capacity' },
+      tipAreaMeter: { ko: '면적 사용률 = (그레이스페이스 및 기타 + Σ 수량 × 랙당 면적) ÷ 연면적', en: 'Area use = (grey space & other + Σ units × area per rack) ÷ floor area' },
+      floorAreaTip: { ko: '연면적(Gross Floor Area): 데이터센터로 쓰는 바닥 면적 전체 = 화이트스페이스 + 그레이스페이스 및 기타. 판교 AIDC 계획 1,850㎡(화이트 150㎡ + 그레이·기타 1,700㎡). 값을 바꾸면 화이트스페이스가 함께 조정됩니다.', en: 'Gross floor area used for the data center = white space + grey space & other. Pangyo AIDC plan: 1,850㎡ (white 150㎡ + grey & other 1,700㎡). Changing it adjusts the white space.' },
       whiteSpaceTip: { ko: '화이트스페이스(White Space): 랙을 놓는 전산실 면적 = 연면적 − 그레이스페이스. 랙당 면적(통로·CDU 포함) × 랙 수가 이 값을 넘을 수 없습니다. 값을 바꾸면 그레이스페이스가 그만큼 조정됩니다.', en: 'White space: the data-hall area where racks sit = gross floor area − grey space. Racks × area per rack (incl. aisles and CDU) cannot exceed it. Editing it adjusts the grey space accordingly.' },
-      greySpaceTip: { ko: '그레이스페이스(Grey Space): 기계실·냉동기·CRAC·복도·반입구·감시실 등 IT 장비가 아닌 지원 공간. 전기실·발전기실·UPS는 신축 전력동에 있어 제외. 값을 바꾸면 화이트스페이스가 그만큼 조정됩니다.', en: 'Grey space: support areas that hold no IT equipment, such as mechanical rooms, chillers, CRACs, corridors, loading dock and monitoring room. Electrical, generator and UPS rooms sit in the separate power building. Editing it adjusts the white space accordingly.' },
+      greySpaceTip: { ko: '그레이스페이스 및 기타: 전기실·UPS·발전기실·기계실·냉동기·복도·반입구·감시실 등 IT 장비가 아닌 지원 공간과 그 밖의 면적. 값을 바꾸면 화이트스페이스 = 연면적 − 이 값으로 역산됩니다.', en: 'Grey space & other: electrical, UPS, generator and mechanical rooms, chillers, corridors, loading and monitoring areas plus any other floor area. Changing it recomputes white space = floor area − this value.' },
       floorAreaHint: { ko: '상한 2,400㎡ = B1 전체 연면적 2,439.76㎡ 절사 · 작업장/하역장/주차 구간 전부 비우는 전제 · 신축 전력동 700㎡는 별동(미포함)', en: 'Cap 2,400㎡ (B1 total 2,439.76㎡, floored) · assumes workshops/loading/parking fully vacated · the new 700㎡ power building is separate (excluded)' },
       floorAreaLockedHint: { ko: '[기존] 모드에서는 500㎡ 고정 — [확장]/[B1 전체] 전환 시 조정 가능', en: 'Fixed at 500㎡ in [Base] mode — switch to [Expansion]/[Full B1] to adjust' },
       floorAreaHintB1: { ko: '[B1 전체] 상한 2,400㎡ = B1 연면적 2,439.76㎡ 절사 · 신축 전력동 폐지분(전기실·발전기실·UPS)까지 B1에 수용하는 전제', en: '[Full B1] cap 2,400㎡ (B1 total 2,439.76㎡, floored) — assumes the dropped power building (electrical/generator/UPS rooms) is accommodated inside B1' },
@@ -1710,11 +1754,11 @@
       facilityTotalNoteV7: { ko: '신축 소계 {a} + 리모델링 소계 {b} = 시설비 CAPEX 합계 {c}', en: 'New-build subtotal {a} + remodel subtotal {b} = facility CAPEX total {c}' },
       facilityTotalNoteB1: { ko: '리모델링 단일 항목 {b} = 시설비 CAPEX 합계 {c} (신축 전력동 폐지로 신축분 0)', en: 'Remodel-only {b} = facility CAPEX total {c} (new-build portion is zero — the power building is dropped)' },
       facilityDescB1: { ko: '[B1 전체] 신축 전력동을 폐지하고 수배전·UPS·비상발전기·급수탱크를 B1 내부로 흡수한 구조입니다. 전력·공조는 총액이 그대로 리모델링으로 이관되고, 건축/토목·통신/소방의 신축 고정분(40억·16억)만 소멸합니다. 면적비례 단가는 고하중(데이터홀) 구간과 일반 구간을 분리 적용합니다.', en: '[Full B1] the new power building is dropped and switchgear, UPS, emergency generators and the water tank are absorbed into B1. Power and mechanical costs transfer wholly to the remodel column at unchanged totals; only the fixed new-build portions of architecture (4.0B) and telecom/fire (1.6B) disappear. Area-proportional rates are split between the heavy-load (data hall) zone and the general zone.' },
-      b1FacilityNotice: { ko: '면적비례 단가 분리 적용 중 — 고하중(데이터홀) 구간 {h}㎡ · 일반 구간 {g}㎡. 고하중 면적은 SU 수(또는 랙 수)에 자동 연동되며, 기존시설 철거비는 전 구간 동일 단가입니다.', en: 'Split area rates in effect — heavy-load (data hall) zone {h}㎡, general zone {g}㎡. The heavy-load area is linked to SU (or rack) count; demolition uses a single rate across the whole floor.' },
+      b1FacilityNotice: { ko: '면적비례 단가 분리 적용 중 — 고하중(화이트스페이스) 구간 {h}㎡ · 일반(그레이스페이스 및 기타) 구간 {g}㎡. 기존시설 철거비는 전 구간 동일 단가입니다.', en: 'Split area rates in effect — heavy-load (white space) {h}㎡ · general (grey space & other) {g}㎡. Demolition uses one rate across all area.' },
       facilityCduNotePod: { ko: '※ CDU 본체는 IT 장비 CAPEX(SuperPOD CAPEX 내역)에 포함되어 본 시설비에서 제외 — 이중계상 방지 (기준 합계 약 580억)', en: '※ CDU units are included in IT equipment CAPEX (SuperPOD CAPEX breakdown) and excluded here to avoid double counting (baseline total ≈ 58.0B KRW)' },
       facilityCduNoteRack: { ko: '※ CDU 본체는 랙 구매가에 포함되지 않아 본 시설비 공조/냉각에 계상 (기준 합계 약 613억)', en: '※ CDU units are not included in rack purchase prices and are carried under mechanical/cooling here (baseline total ≈ 61.3B KRW)' },
       chipFloorArea: { ko: '연면적', en: 'Floor area' },
-      chipSupportArea: { ko: '그레이스페이스', en: 'Grey space' },
+      chipSupportArea: { ko: '그레이스페이스 및 기타', en: 'Grey space & other' },
       compareRowFloorArea: { ko: '연면적', en: 'Gross Floor Area' },
       compareRowUsableArea: { ko: '화이트스페이스', en: 'White space' },
       compareRowAreaUsage: { ko: '면적 사용률', en: 'Area Utilization' },
@@ -1868,8 +1912,8 @@
       if (modelKey === 'rack') {
         return RACK_KEYS.reduce((sum, key) => sum + getCountFromState(inputState, key) * (rackTypes[key].rackAreaSqm || 0), 0);
       }
-      const sys = systems[inputState.selectedSystem] || systems[SYSTEM_KEYS[0]];
-      return clampSu(inputState.suCount, inputState) * (sys.suAreaSqm || 0);
+      // rev56: 고하중(데이터홀) 구간 = 화이트스페이스, 일반 구간 = 그레이스페이스 및 기타
+      return usableAreaSqm(inputState);
     }
 
     // ---- 시설비 산출 ----
@@ -1877,7 +1921,7 @@
       // 자동 모드: 면적/용량/고정 단가 기반. soft는 별도 처리.
       const area = Number(inputState.floorAreaSqm) || 0;
       const totalKw = Number(inputState.totalPowerKw) || 0;
-      const b1 = inputState.spaceMode === 'b1';
+      const b1 = isRemodelOnly(inputState);
 
       // [B1 전체] 면적비례분은 고하중(데이터홀) 구간과 일반 구간 단가를 분리 적용
       const areaCost = () => {
@@ -2141,9 +2185,9 @@
           { id: 'utilYears', type: 'utilYears' },
           { id: 'portfolio', type: 'portfolio' },
           { id: 'bmMode', labelKey: 'labelBmMode', type: 'bmToggle' },
-          { id: 'floorAreaSqm', labelKey: 'labelFloorArea', min: 500, max: 2400, step: 100 },
-          { id: 'whiteSpaceSqm', labelKey: 'labelWhiteSpace', min: 0, max: 2400, step: 10, numberOnly: true },
-          { id: 'greySpaceSqm', labelKey: 'labelGreySpace', min: 0, max: 2000, step: 10, numberOnly: true },
+          { id: 'floorAreaSqm', labelKey: 'labelFloorArea', min: 100, max: 5000, step: 50 },
+          { id: 'whiteSpaceSqm', labelKey: 'labelWhiteSpace', min: 0, max: 5000, step: 10, numberOnly: true },
+          { id: 'greySpaceSqm', labelKey: 'labelGreySpace', min: 0, max: 5000, step: 10, numberOnly: true },
           { id: 'totalPowerKw', labelKey: 'labelTotalPowerKw', min: 1, max: 30000, step: 10, numberOnly: true },
           { id: 'itPowerKw', labelKey: 'labelItPowerKw', min: 100, max: 12000, step: 100 },
           { id: 'pue', labelKey: 'labelPue', min: 1, max: 3, step: 0.01 },
@@ -2629,6 +2673,8 @@
     }
     // [확장] 모드: 카드를 켤 때 잔여 전력 기준 수량이 면적에 막히면 연면적을 그만큼 늘린다 (100㎡ 단위 올림, 2,400㎡ 상한, 줄이지는 않음)
     function growFloorForGpu(key, s = state, types = gpuTypes) {
+      return; // rev56: 계획 연면적 고정 — 카드를 켜도 연면적을 늘리지 않음
+      // eslint-disable-next-line no-unreachable
       if (s.spaceMode !== 'expand') return;
       const g = types[key];
       if (!gpuSpecOk(g)) return;
@@ -2701,10 +2747,19 @@
 
     // ---- rev37: 운영 방식 ----
     function isNeo(s = state) { return s.opMode === 'neo'; }
+    // rev56: 시설비 — 'remodel'(신축동 제외, 전력·공조 전액 리모델링, 건축/통신 신축 고정분 삭제) | 'both'(신축+리모델링 병행)
+    function isRemodelOnly(s = state) { return s.facMode !== 'both' || s.spaceMode === 'b1'; }
     function neoPriceOf(key, s = state) { return Math.max(0, Number(s['neoPrice_' + key]) || 0); }
     function neoMargin(s = state) { return Math.max(0, Math.min(100, Number(s.neoMarginPct) || 0)) / 100; }
     function neoNetUsd(key, s = state) { return neoPriceOf(key, s) * (1 - neoMargin(s)); }
     function neoUtil(s = state) { return Math.max(0, Math.min(100, Number(s.neoUtilPct) || 0)) / 100; }
+    function applyFacMode(mode) {
+      const next = mode === 'both' ? 'both' : 'remodel';
+      if ((state.facMode || 'remodel') === next) return;
+      state.facMode = next;
+      buildControls();
+      render();
+    }
     function applyOpMode(mode) {
       const next = mode === 'neo' ? 'neo' : 'csp';
       if (state.opMode === next) return;
@@ -2818,7 +2873,6 @@
     }
     function getBaselineData() {
       const baselineState = makeBaselineState();
-      if (baselineState.spaceMode === 'expand') baselineState.floorAreaSqm = minFloorAreaForPowerMax(baselineState, GPU_DEFAULTS, 'gb300');
       fillGpuDefaults(baselineState, GPU_DEFAULTS);
       return calcMix(baselineState, GPU_DEFAULTS, baselineFacilityTotal('pod'));
     }
@@ -2999,7 +3053,7 @@
       });
       return `
         <section class="sec mt-116 mix-sec">
-          ${secHead(t('mixTableTitle').replace(/\s*\(.*\)\s*$/, ''), { badge: state.bmMode === 'B' ? t('bmB').replace(/^B\)\s*/, '') : t('bmA').replace(/^A\)\s*/, '') })}
+          ${secHead(t('mixTableTitle').replace(/\s*\(.*\)\s*$/, '') + infoIcon(t('tipMixTable'), t('mixTableTitle'), true), { badge: state.bmMode === 'B' ? t('bmB').replace(/^B\)\s*/, '') : t('bmA').replace(/^A\)\s*/, '') })}
           <div class="sec-desc">${t('mixTableDesc')}<br>${basisNote}</div>
           <div class="dt-wrap" style="margin-top:29.6px">
             <table class="dt mix">
@@ -3007,7 +3061,7 @@
               <thead>
                 <tr>
                   <th>${t('mixColItem')}</th>
-                  <th class="r">${t('mixColRate')}</th>
+                  <th class="r">${t('mixColRate')}${infoIcon(t('tipMixRate'), t('mixColRate'), true)}</th>
                   ${years.map((p, i) => `<th class="r">${t('mixYearCol', { n: i + 1 })} ×${nf1.format(p.k * 100)}%</th>`).join('')}
                 </tr>
               </thead>
@@ -3020,7 +3074,7 @@
                   ${years.map(p => `<td class="r"><span class="mx-pct">${nf1.format(p.total)}%</span></td>`).join('')}
                 </tr>
                 <tr class="mx-rev">
-                  <td>${t('mixRowRevenue')}</td><td class="r">–</td>
+                  <td>${t('mixRowRevenue')}${infoIcon(t('tipMixRevenue'), t('mixRowRevenue'), true)}</td><td class="r">–</td>
                   ${totalRev.map(v => `<td class="r">${eok(v)}</td>`).join('')}
                 </tr>
               </tbody>
@@ -3058,7 +3112,7 @@
     function renderSystemSelector(data) {
       return `
         <section class="sec sys-sec">
-          ${secHead(t('systemSelectorTitle').replace(/\uAC12$/, ''), { tri: false })}
+          ${secHead(t('systemSelectorTitle').replace(/\uAC12$/, '') + infoIcon(t('tipSystemSelector'), t('systemSelectorTitle'), true), { tri: false })}
           <div class="sec-desc">${emphasizeSource(t('systemSelectorDesc'))}</div>
           <div class="sys-grid">
             ${SYSTEM_KEYS.map(key => {
@@ -3143,16 +3197,17 @@
             <div class="su-big card-count">
               <span class="u"><input type="number" min="0" max="${gpuAbsMax(g)}" step="1" value="${n}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} count" /></span>
               <span class="unit">${unit}</span>
+              ${isServer ? `<span class="racks" data-gpu-racks="${key}">${t('cardRacks', { n: nf.format(Math.ceil(n / spr)) })}</span>` : ''}
               <span class="max ${overNow ? 'text-danger' : ''}" data-gpu-chip="${key}">${maxNote}</span>
             </div>
             <input type="range" class="track" min="0" max="${sliderMax}" step="1" value="${Math.min(n, sliderMax)}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} slider" ${ok ? '' : 'disabled'} />
-            ${isNeo() ? `<div class="sys-neo ${neoPriceOf(key) > 0 ? '' : 'warn'}">${neoPriceOf(key) > 0 ? t('neoNetChip', { net: `$${nfEn(2).format(neoNetUsd(key))}`, gross: `$${nfEn(2).format(neoPriceOf(key))}`, m: nf1.format(Number(state.neoMarginPct) || 0) }) : t('neoPriceBlank')}</div>` : ''}
+            ${isNeo() ? `<div class="sys-neo ${neoPriceOf(key) > 0 ? '' : 'warn'}">${neoPriceOf(key) > 0 ? t('neoNetChip', { net: `$${nfEn(2).format(neoNetUsd(key))}`, gross: `$${nfEn(2).format(neoPriceOf(key))}`, m: nf1.format(Number(state.neoMarginPct) || 0) }) : t('neoPriceBlank')}${neoPriceOf(key) > 0 ? infoIcon(t('tipNetRate'), t('labelNeoPrice'), true) : ''}</div>` : ''}
             <div class="${isNeo() ? 'dim-rates' : ''}">${rateBlockHtml(g, `data-gpu-key="${key}" data-gpu-prop="baseRateUsd"`, `gpu:${key}`)}</div>
             <div class="sys-specs2">
               ${specs.map(([lab, input, u]) => `<div class="sys-spec"><span class="lab">${lab}</span><span class="v">${input}<span class="unit">${u}</span></span></div>`).join('')}
             </div>
             <div class="sys-capex-h">
-              <span>${isServer ? t('capexHeadingServer', { n: nf.format(spr) }) : t('capexTotalLabel')}</span>
+              <span>${isServer ? t('capexHeadingServer', { n: nf.format(spr) }) : t('capexTotalLabel')}${infoIcon(t(isServer ? 'tipCardCapexServer' : 'tipCardCapexSu'), isServer ? t('capexHeadingServer', { n: nf.format(spr) }) : t('capexTotalLabel'), true)}</span>
               <b data-gpu-capex-total="${key}">${usdWithKrw(perUnit * spr)}</b>
             </div>
             <ul class="sys-capex">
@@ -3170,7 +3225,7 @@
       });
       return `
         <section class="sec sys-sec">
-          ${secHead(t('systemSelectorTitle').replace(/값$/, ''), { tri: false })}
+          ${secHead(t('systemSelectorTitle').replace(/값$/, '') + infoIcon(t('tipSystemSelector'), t('systemSelectorTitle'), true), { tri: false })}
           <div class="sec-desc">${emphasizeSource(t('gpuSelectorDesc'))}</div>
           <div class="sys-grid">${cards.join('')}</div>
         </section>
@@ -3199,7 +3254,7 @@
               <thead>
                 <tr>
                   <th>${t('mixColItem')}</th>
-                  <th class="r">${t('mixColRate')}</th>
+                  <th class="r">${t('mixColRate')}${infoIcon(t('tipMixRate'), t('mixColRate'), true)}</th>
                   ${years.map((p, i) => `<th class="r">${t('mixYearCol', { n: i + 1 })} ×${nf1.format(p.k * 100)}%</th>`).join('')}
                 </tr>
               </thead>
@@ -3212,7 +3267,7 @@
                   ${years.map(p => `<td class="r"><span class="mx-pct">${nf1.format(p.total)}%</span></td>`).join('')}
                 </tr>
                 <tr class="mx-rev">
-                  <td>${t('mixRowRevenue')}</td><td class="r">–</td>
+                  <td>${t('mixRowRevenue')}${infoIcon(t('tipMixRevenue'), t('mixRowRevenue'), true)}</td><td class="r">–</td>
                   ${totalRev.map(v => `<td class="r">${eok(v)}</td>`).join('')}
                 </tr>
               </tbody>
@@ -3249,7 +3304,7 @@
           </div>` : '';
       return `
         <section class="sec mt-116 mix-sec">
-          ${secHead(t('mixTableTitle').replace(/\s*\(.*\)\s*$/, ''))}
+          ${secHead(t('mixTableTitle').replace(/\s*\(.*\)\s*$/, '') + infoIcon(t('tipMixTable'), t('mixTableTitle'), true))}
           <div class="sec-desc">${t('mixSummary', { g: nf.format(data.gpus), fp: nf.format(Math.round(data.totalFp4)), capex: eok(data.itCapexEok) })}${basisNote ? '<br>' + basisNote : ''}</div>
           <div class="mx-types">${counts}</div>
           ${isNeo() ? `<div class="notice info">${t('mixNeoNote')}</div>` : (okTypes.length ? tables + totalRow : `<div class="notice warn">${t('mixNoType')}</div>`)}
@@ -3277,10 +3332,10 @@
       const blocks = okTypes.map(td => {
         const rows = [
           [t('neoRowUtil'), data.utils.map(u => pct(u * 100, 1)).concat(['—'])],
-          [t('neoRowHours'), td.gpuHours.map(h => nf.format(Math.round(h))).concat([nf.format(Math.round(sum(td.gpuHours)))])],
-          [t('neoRowGross'), td.grossByYear.map(eok).concat([eok(sum(td.grossByYear))])],
-          [t('neoRowTake', { m: mTxt }), td.takeByYear.map(v => `−${eok(v)}`).concat([`−${eok(sum(td.takeByYear))}`])],
-          [t('neoRowNet'), td.annualRevenue.map(v => `<b>${eok(v)}</b>`).concat([`<b>${eok(sum(td.annualRevenue))}</b>`]), 'mx-rev']
+          [t('neoRowHours') + infoIcon(t('tipNeoHours'), t('neoRowHours'), true), td.gpuHours.map(h => nf.format(Math.round(h))).concat([nf.format(Math.round(sum(td.gpuHours)))])],
+          [t('neoRowGross') + infoIcon(t('tipNeoGross'), t('neoRowGross'), true), td.grossByYear.map(eok).concat([eok(sum(td.grossByYear))])],
+          [t('neoRowTake', { m: mTxt }) + infoIcon(t('tipNeoTake'), t('neoRowTake', { m: mTxt }), true), td.takeByYear.map(v => `−${eok(v)}`).concat([`−${eok(sum(td.takeByYear))}`])],
+          [t('neoRowNet') + infoIcon(t('tipNeoNet'), t('neoRowNet'), true), td.annualRevenue.map(v => `<b>${eok(v)}</b>`).concat([`<b>${eok(sum(td.annualRevenue))}</b>`]), 'mx-rev']
         ];
         const sub = td.priceUsd > 0
           ? t('neoTypeSub', { name: gpuLabel(td.type, td.key), g: nf.format(td.gpus), gross: usd(td.priceUsd), net: usd(td.netUsd) })
@@ -3300,7 +3355,7 @@
           </div>` : '';
       return `
         <section class="sec mt-116 indent neo-terms-sec">
-          ${secHead(t('neoTermsTitle'))}
+          ${secHead(t('neoTermsTitle') + infoIcon(t('tipNeoTerms'), t('neoTermsTitle'), true))}
           <div class="sec-desc">${t('neoTermsDesc')}</div>
           ${okTypes.length ? blocks + total : `<div class="notice warn">${t('mixNoType')}</div>`}
           <div class="foot-note">${t('neoTermsNote')}</div>
@@ -3383,7 +3438,7 @@
       const targetInput = `<span class="sens-target"><span class="lab">${t('neoTargetIrr')}</span><span class="u"><input type="number" min="0" max="200" step="0.5" value="${nfPlain(state.neoTargetIrrPct, 2)}" data-input="neoTargetIrrPct" aria-label="${escAttr(t('neoTargetIrr'))}" /></span><span class="unit">%</span></span>`;
       return `
         <section class="sec mt-100 indent neo-sens-sec">
-          ${secHead(t('neoSensTitle'), { tools: targetInput })}
+          ${secHead(t('neoSensTitle') + infoIcon(t('tipNeoSens'), t('neoSensTitle'), true), { tools: targetInput })}
           <div class="sec-desc">${t('neoSensDesc')}</div>
           <div id="neoSensBody">${neoSensBodyHtml()}</div>
         </section>
@@ -3409,7 +3464,7 @@
       ];
       return `
         <section class="sec">
-          ${secHead(t('cmpModeTitle'))}
+          ${secHead(t('cmpModeTitle') + infoIcon(t('tipCmpMode'), t('cmpModeTitle'), true))}
           <div class="sec-desc">${t('cmpModeDesc')}</div>
           <div class="dt-wrap" style="margin-top:29.6px">
             <table class="dt cmp">
@@ -3471,13 +3526,13 @@
               <thead>
                 <tr>
                   <th>${t('auxColMultiplier')}<span class="aux-sub">${t('auxColMultiplierSub')}</span></th>
-                  <th>${t('auxColSi')}</th>
-                  <th>${t('auxColAux')}</th>
-                  <th>${t('auxColItCapex')}</th>
-                  <th>${t('auxColSw')}</th>
-                  <th>${t('auxColCapexExp')}</th>
-                  <th>${t('auxColAdd3')}</th>
-                  <th>${t('auxColProfit3')}</th>
+                  <th>${t('auxColSi')}${infoIcon(t('tipAuxSi'), t('auxColSi'), true)}</th>
+                  <th>${t('auxColAux')}${infoIcon(t('tipAuxAux'), t('auxColAux'), true)}</th>
+                  <th>${t('auxColItCapex')}${infoIcon(t('tipAuxIt'), t('auxColItCapex'), true)}</th>
+                  <th>${t('auxColSw')}${infoIcon(t('tipAuxSw'), t('auxColSw'), true)}</th>
+                  <th>${t('auxColCapexExp')}${infoIcon(t('tipAuxExp'), t('auxColCapexExp'), true)}</th>
+                  <th>${t('auxColAdd3')}${infoIcon(t('tipAuxAdd'), t('auxColAdd3'), true)}</th>
+                  <th>${t('auxColProfit3')}${infoIcon(t('tipAuxProfit'), t('auxColProfit3'), true)}</th>
                 </tr>
               </thead>
               <tbody>
@@ -3563,7 +3618,7 @@
               ${opexRow}`;
       return `
         <section class="sec mt-116 indent2 srv-sec">
-          ${secHead(t('srvSecTitle'))}
+          ${secHead(t('srvSecTitle') + infoIcon(t('tipSrvSec'), t('srvSecTitle'), true))}
           <div class="sec-desc">${t('srvSecDesc')}</div>
           <div class="srv-toggles">
             <div class="srv-tg">
@@ -3673,7 +3728,7 @@
       const over4Notice = okTypes.some(td => td.kind === 'su' && td.n > 4) ? `<div class="notice info">${t('over4SuNotice')}</div>` : '';
       return `
         <section class="sec mt-100 su-sec">
-          ${secHead(t('capSecTitle'), { badge: constraintBadgeHtml(data.constraint, false), badgeCls: (over || areaOver) ? 'warn' : (data.constraint === 'balanced' ? 'ok' : '') })}
+          ${secHead(t('capSecTitle') + infoIcon(t('tipCapSec'), t('capSecTitle'), true), { badge: constraintBadgeHtml(data.constraint, false), badgeCls: (over || areaOver) ? 'warn' : (data.constraint === 'balanced' ? 'ok' : '') })}
           <div class="sec-desc">${t('capSecDesc')}</div>
           ${baseNotice}${over4Notice}
           <div class="meters">
@@ -3778,7 +3833,7 @@
       return `
         <div class="meter-box" data-meter-box="area">
           <div class="meter-head">
-            <span class="lab">${t('areaUsageLabel')}</span>
+            <span class="lab">${t('areaUsageLabel')}${infoIcon(t('tipAreaMeter'), t('areaUsageLabel'), true)}</span>
             <span class="val ${m.over ? 'text-danger' : ''}" data-area-pct><span class="num">${v.num}</span><span class="unit">${v.unit}</span></span>
           </div>
           <div class="meter area-meter"><span class="seg-support" style="width:${m.supportPct}%"></span><span class="seg-rack" style="width:${m.rackPct}%"></span><span class="seg-over" style="width:${m.overPct}%"></span></div>
@@ -3791,7 +3846,7 @@
       return `
         <div class="meter-box" data-meter-box="power">
           <div class="meter-head">
-            <span class="lab">${label}</span>
+            <span class="lab">${label}${infoIcon(t('tipPowerMeter'), label, true)}</span>
             <span class="val ${over ? 'text-danger' : ''}" data-power-pct><span class="num">${v.num}</span><span class="unit">${v.unit}</span></span>
           </div>
           <div class="meter"><span class="fill" style="width:${m.okPct}%"></span><span class="fill-over" style="width:${m.overPct}%"></span></div>
@@ -4081,7 +4136,7 @@
         .replace(/\[([^\[\]]+)\]\(USD\)/g, (m, inner) => `<span class="fx-abbr info-dot" tabindex="0" role="note" data-tip="${escAttr('[' + inner + ']')}" data-tip-title="[ ]">[USD]</span>`);
       return `
         <section class="sec mt-149 formula-sec">
-          ${secHead(t('formulaTitle'))}
+          ${secHead(t('formulaTitle') + infoIcon(t('tipFormula'), t('formulaTitle'), true))}
           <div class="sec-desc">${t('formulaDesc')}</div>
           <div class="formula-wrap">
             <div class="bl">${groups.map((g, gi) => g.items.filter(Boolean).map((it, i) => row(it, gi > 0 && i === 0 ? 'grp' : '')).join('')).join('')}</div>
@@ -4177,7 +4232,7 @@
     function renderChartPanel() {
       return `
         <section class="sec mt-66 chart-sec">
-          ${secHead(`<span title="${escAttr(t('chartDesc'))}">${t('chartTitle', { n: YEARS })}</span>`, { tools: `<div class="legend" id="legend"></div><button type="button" class="lnk muted" data-export-docx>${t('exportDocxBtn')} ↓</button><button type="button" class="lnk muted" data-export-pdf>${t('exportPdfBtn')} ↓</button>` })}
+          ${secHead(t('chartTitle', { n: YEARS }) + infoIcon(`${t('chartDesc')} ${t('tipChart')}`, t('chartTitle', { n: YEARS }), true), { tools: `<div class="legend" id="legend"></div><button type="button" class="lnk muted" data-export-docx>${t('exportDocxBtn')} ↓</button><button type="button" class="lnk muted" data-export-pdf>${t('exportPdfBtn')} ↓</button>` })}
           <div class="chart-wrap" id="chartWrap"></div>
         </section>
       `;
@@ -4202,7 +4257,7 @@
       if (row.kind === 'area') return one(t('rateAreaLabel'), +Number(row.ratePerSqm).toFixed(4), 'ratePerSqm', 0.001);
       if (row.kind === 'capacity') return one(t('rateCapacityLabel'), +(Number(row.ratePerKw) * 1000).toFixed(3), 'ratePerMw', 0.1);
       if (row.kind === 'areaFixed') {
-        const b1 = state.spaceMode === 'b1';
+        const b1 = isRemodelOnly();
         return one(b1 ? t('rateAreaHeavyLabel') : t('rateAreaLabel'), +Number(row.ratePerSqm).toFixed(4), 'ratePerSqm', 0.001)
           + ((b1 && row.ratePerSqmGeneral > 0) ? one(t('rateAreaGeneralLabel'), +Number(row.ratePerSqmGeneral).toFixed(4), 'ratePerSqmGeneral', 0.001) : '')
           + (b1 ? '' : one(t('rateFixedLabel'), +Number(row.fixedEok).toFixed(1), 'fixedEok', 1));
@@ -4225,9 +4280,9 @@
       const model = facility[modelKey];
       const grand = result.total;
       const modelName = modelKey === 'pod' ? t('podModelName') : t('rackModelName');
-      const showNew = state.spaceMode !== 'b1';
+      const showNew = !isRemodelOnly();
       const modeLabel = state.spaceMode === 'base' ? t('facManualBadge') : t('facAutoBadge');
-      const b1Mode = state.spaceMode === 'b1';
+      const b1Mode = isRemodelOnly();
       const pickDetails = c => (state.lang === 'en'
         ? (b1Mode && c.detailsEnB1 ? c.detailsEnB1 : c.detailsEn)
         : (b1Mode && c.detailsKoB1 ? c.detailsKoB1 : c.detailsKo));
@@ -4275,9 +4330,9 @@
       const extraBadge = state.activeView === 'compare' ? `<span class="tag-box" style="margin-left:5.4px">${modelName}</span>` : '';
       return `
         <section class="sec mt-163 fac-sec" data-fac-panel="${modelKey}">
-          ${secHead(t('facilityTitle'), { badge: `<span id="facBadge-${modelKey}">${modeLabel}</span>` })}
+          ${secHead(t('facilityTitle') + infoIcon(t('tipFacility'), t('facilityTitle'), true), { badge: `<span id="facBadge-${modelKey}">${modeLabel}</span>` })}
           ${extraBadge ? `<div style="margin-top:6px">${extraBadge}</div>` : ''}
-          <div class="sec-desc">${state.spaceMode === 'b1' ? t('facilityDescB1') : t('facilityDescV7')}</div>
+          <div class="sec-desc">${isRemodelOnly() ? t('facilityDescRemodel') : t('facilityDescV7')}</div>
           <div class="fac-big"><span class="big-num" id="facGrandBig-${modelKey}">${bigNumInner(eok(grand))}</span></div>
           <div class="dt-wrap fac-table">
             <table class="dt fac" style="--gap:7.5px">
@@ -4303,7 +4358,7 @@
               </tbody>
             </table>
           </div>
-          ${state.spaceMode === 'b1' ? `<div class="foot-note info">${t('b1FacilityNotice', { h: nf1.format(heavyAreaSqm(modelKey)), g: nf1.format(Math.max(0, (Number(state.floorAreaSqm) || 0) - heavyAreaSqm(modelKey))) })}</div>` : ''}
+          ${isRemodelOnly() ? `<div class="foot-note info">${t('b1FacilityNotice', { h: nf1.format(heavyAreaSqm(modelKey)), g: nf1.format(Math.max(0, (Number(state.floorAreaSqm) || 0) - heavyAreaSqm(modelKey))) })}</div>` : ''}
           <div class="foot-note fac-cdu">${modelKey === 'pod' ? t('facilityCduNotePod') : t('facilityCduNoteRack')}</div>
         </section>
       `;
@@ -4415,7 +4470,7 @@
       const L = o => state.lang === 'en' ? o.en : o.ko;
       return `
         <section class="sec">
-          ${secHead(t('prodTitle'))}
+          ${secHead(t('prodTitle') + infoIcon(t('tipProd'), t('prodTitle'), true))}
           <div class="sec-desc">${t('prodDesc')}</div>
           <div class="dt-wrap" style="margin-top:29.6px">
             <table class="dt wide">
@@ -4455,7 +4510,7 @@
       const neg = v => `<span class="neg-val">(${eok(v)})</span>`;
       return `
         <section class="sec">
-          ${secHead(t('pnlTitle'))}
+          ${secHead(t('pnlTitle') + infoIcon(t('tipPnl'), t('pnlTitle'), true))}
           <div class="sec-desc">${t('pnlDesc')}<br>${t('pnlOtherOpexNote')}</div>
           <div class="dt-wrap" style="margin-top:29.6px">
             <table class="dt pnl">
@@ -4528,7 +4583,7 @@
           </div>` : '';
       return `
         <section class="sec cmp-sec">
-          ${secHead(t('compareTitle'), { tri: false })}
+          ${secHead(t('compareTitle') + infoIcon(t('tipCompare'), t('compareTitle'), true), { tri: false })}
           <div class="sec-desc">${t('compareDescMix', { n: YEARS })}</div>
           ${mixBlock}
           <div class="cmp-cards" style="grid-template-columns:repeat(${Math.max(1, cardModels.length)}, 1fr)">
@@ -4567,7 +4622,7 @@
     function renderCompareChartPanel() {
       return `
         <section class="sec chart-sec">
-          ${secHead(t('compareChartTitle', { n: YEARS }), { tools: `<div class="legend" id="legend"></div>` })}
+          ${secHead(t('compareChartTitle', { n: YEARS }) + infoIcon(t('tipCompareChart'), t('compareChartTitle', { n: YEARS }), true), { tools: `<div class="legend" id="legend"></div>` })}
           <div class="chart-wrap" id="chartWrap"></div>
         </section>
       `;
@@ -4920,6 +4975,9 @@
           ${ctlRow('floorAreaSqm', `${t('labelFloorArea')}${infoIcon(t('floorAreaTip'), t('labelFloorArea'), true)}`)}
           ${ctlRow('whiteSpaceSqm', `${t('labelWhiteSpace')}${infoIcon(t('whiteSpaceTip'), t('labelWhiteSpace'), true)}`)}
           ${ctlRow('greySpaceSqm', `${t('labelGreySpace')}${infoIcon(t('greySpaceTip'), t('labelGreySpace'), true)}`)}
+          <span class="s-lab sm fac-mode-lab">${t('labelFacMode')}${infoIcon(t('facModeTip'), t('labelFacMode'), true)}</span>
+          ${segBtns('data-fac-mode', [['both', t('facModeBoth')], ['remodel', t('facModeRemodel')]], isRemodelOnly() ? 'remodel' : 'both', true)}
+          <div class="s-hint" data-facmode-hint>${isRemodelOnly() ? t('facModeHintRemodel') : t('facModeHintBoth')}</div>
         </section>
         <section class="s-group power" data-views="superpod,compare">
           ${ctlSlider('totalPowerKw', t('labelTotalPowerKw'), { lg: true, unitCls: 'ins' })}
@@ -4983,6 +5041,8 @@
         btn.classList.toggle('active', btn.dataset.opMode === (isNeo() ? 'neo' : 'csp'));
       });
       document.querySelectorAll('[data-opmode-hint]').forEach(h => { h.innerHTML = isNeo() ? t('opModeNeoHint') : t('opModeCspHint'); });
+      document.querySelectorAll('[data-fac-mode]').forEach(btn => { btn.classList.toggle('active', btn.dataset.facMode === (isRemodelOnly() ? 'remodel' : 'both')); });
+      document.querySelectorAll('[data-facmode-hint]').forEach(h => { h.innerHTML = isRemodelOnly() ? t('facModeHintRemodel') : t('facModeHintBoth'); });
       document.querySelectorAll('[data-bm-mode]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.bmMode === (state.bmMode === 'B' ? 'B' : 'A'));
       });
@@ -5238,7 +5298,7 @@
       state = { ...DEFAULTS, activeView: currentView, lang: currentLang };
       fillSelectedRack(state, rackTypes, state.selectedRack);
       // 기본값은 보고 있는 탭과 무관하게 동일해야 한다
-      if (state.spaceMode === 'expand') state.floorAreaSqm = minFloorAreaForPowerMax(state, gpuTypes, 'gb300');
+      // rev56: 연면적은 계획값(기본 1,850㎡) 그대로 — 전력 기준 자동 확장 없음
       fillGpuDefaults(state, gpuTypes);
       state.suCount = podMaxSu();
       // rev15: 헤더 '기본값'은 재무구조 조달 가정(자기자본·금리·상환·사업기구)도 함께 초기화 (사이드바 '초기화' 링크 대체)
@@ -5468,7 +5528,7 @@
       // ═════════ 1p. 요약 ═════════
       const typeName = td => (td.type.kind === 'server' ? `HGX ${gpuShortLabel(td.type, td.key)}` : gpuLabel(td.type, td.key));
       const cfgLine = activeTypes.map(td => `${typeName(td)} ${nf.format(td.n)}${gpuUnitLabel(td.type)}(${nf.format(td.gpus)} GPU)`).join(' + ') || gpuMixText(state, gpuTypes, true);
-      blocks.push({ type: 'title', lines: [L('AI Data Center GPU 임대', 'AI Data Center GPU Leasing'), L('수익구조 분석', 'Revenue Structure Analysis')], sub: `${cfgLine} · ${modeName} · ${t('labelFloorArea')} ${sqm(d.floorArea)} (${state.spaceMode === 'b1' ? L('리모델링 단일', 'remodel only') : L('신축+리모델링', 'new build + remodel')})` });
+      blocks.push({ type: 'title', lines: [L('AI Data Center GPU 임대', 'AI Data Center GPU Leasing'), L('수익구조 분석', 'Revenue Structure Analysis')], sub: `${cfgLine} · ${modeName} · ${t('labelFloorArea')} ${sqm(d.floorArea)} (${isRemodelOnly() ? L('리모델링', 'remodel') : L('신축+리모델링', 'new build + remodel')})` });
       // ① 재무구조 반영 전 (5개)
       sec('pre', L('재무구조 반영 전', 'Before financing'),
         strip([
@@ -5642,12 +5702,20 @@
       let fac = null;
       try { fac = computeFacility('pod'); } catch (e) { fac = null; }
       if (fac && fac.rows.length) {
+        const remodelOnly = isRemodelOnly();
         sec('pre', L('시설 CAPEX 내역', 'Facility capex breakdown'),
-          table([2600, 1500, 1500, W - 5600], [
-            head([L('항목', 'Item'), L('신축', 'New build'), L('리모델링', 'Remodel'), L('합계', 'Total')]),
-            ...fac.rows.map(r => ({ cells: [en ? r.def.labelEn : r.def.labelKo, eok(r.newbuild), eok(r.remodel), eok(r.total)] })),
-            { bold: true, cells: [L('시설 CAPEX 합계', 'Facility capex total'), eok(fac.newbuildSum), eok(fac.remodelSum), { t: eok(fac.total), color: RPT.OR }] }
-          ], { align: ctr(4) })
+          remodelOnly
+            ? table([3200, W - 3200], [
+              head([L('항목', 'Item'), L('리모델링 예산', 'Remodel budget')]),
+              ...fac.rows.map(r => ({ cells: [en ? r.def.labelEn : r.def.labelKo, eok(r.total)] })),
+              { bold: true, cells: [L('시설 CAPEX 합계', 'Facility capex total'), { t: eok(fac.total), color: RPT.OR }] }
+            ], { align: ctr(2) })
+            : table([2600, 1500, 1500, W - 5600], [
+              head([L('항목', 'Item'), L('신축', 'New build'), L('리모델링', 'Remodel'), L('합계', 'Total')]),
+              ...fac.rows.map(r => ({ cells: [en ? r.def.labelEn : r.def.labelKo, eok(r.newbuild), eok(r.remodel), eok(r.total)] })),
+              { bold: true, cells: [L('시설 CAPEX 합계', 'Facility capex total'), eok(fac.newbuildSum), eok(fac.remodelSum), { t: eok(fac.total), color: RPT.OR }] }
+            ], { align: ctr(4) }),
+          note(remodelOnly ? L('신축동 제외 — 전력·공조 전액 리모델링, 건축/토목·통신/소방의 신축 고정분 제외, 면적비례 단가는 화이트스페이스(고하중)·그레이스페이스 및 기타(일반) 구간별 적용, 설계/감리/간접비 = 직접공사비 10%.', 'No new building — electrical/mechanical fully remodel, fixed new-build portions dropped, area rates split by white space (heavy) and grey & other (general), soft costs 10% of direct works.') : L('신축 전력동(700㎡) + 기존 건물 리모델링 병행.', 'New 700㎡ power building plus remodel of the existing building.'))
         );
       }
       // [pre] 랙 시스템 구성·단가 (IT CAPEX 내역)
@@ -5702,7 +5770,7 @@
       sec('pre', t('capSecTitle'),
         grid([1555, W - 1555], [
           { cells: [L('IT 전력', 'IT power'), [B(`${kw(d.usedItPower)} / ${kw(state.itPowerKw)}`), ` (${pct(d.allocationPct, 1)}) · ${L('총 수전', 'total power')} ${kw(state.totalPowerKw)} · PUE ${nf2.format(d.pue)}`]] },
-          { cells: [t('labelFloorArea'), [B(`${sqm(d.supportArea + d.occupiedArea)} / ${sqm(d.floorArea)}`), ` (${pct(d.areaPct, 1)}) = ${L('그레이스페이스', 'grey space')} ${sqm(d.supportArea)} + ${L('랙 점유', 'rack footprint')} ${sqm(d.occupiedArea)}`]] },
+          { cells: [t('labelFloorArea'), [B(`${sqm(d.supportArea + d.occupiedArea)} / ${sqm(d.floorArea)}`), ` (${pct(d.areaPct, 1)}) = ${L('그레이스페이스 및 기타', 'grey space & other')} ${sqm(d.supportArea)} + ${L('랙 점유', 'rack footprint')} ${sqm(d.occupiedArea)}`]] },
           { cells: [L('화이트스페이스', 'White space'), [B(`${sqm(d.occupiedArea)} / ${sqm(d.usableArea)}`), ` (${pct(whitePct, 1)}) · ${L('랙', 'racks')} ${nf.format(d.racks)} · ${L('제약 유형', 'binding constraint')}: ${conName(d.constraint)}`]] },
           ...activeTypes.map(td => ({ cells: [`${gpuLabel(td.type, td.key)} ${L('최대', 'max')}`, [`${L('현재', 'current')} ${nf.format(td.n)}${gpuUnitLabel(td.type)} · ${L('전력 기준', 'by power')} ${nf.format(td.powerMax)} · ${L('면적 기준', 'by area')} ${nf.format(td.areaMax)} → ${L('적용 최대', 'applied max')} `, B(`${nf.format(td.maxUnits)}${gpuUnitLabel(td.type)}`), ` (${conName(td.constraint)})`]] }))
         ], { align: ['left', 'left'] }),
@@ -6543,6 +6611,8 @@
           chip.textContent = !ok ? t('gpuMaxNoteBlank') : (over ? `${t('gpuMaxNote', { n: nf.format(maxNow), u: gpuUnitLabel(g) })} · ${t('gpuOverNote')}` : t('gpuMaxNote', { n: nf.format(maxNow), u: gpuUnitLabel(g) }));
           chip.classList.toggle('text-danger', over);
         }
+        const rk = document.querySelector(`[data-gpu-racks="${key}"]`);
+        if (rk && g.kind === 'server') rk.textContent = t('cardRacks', { n: nf.format(Math.ceil(n / Math.max(1, Number(g.serversPerRack) || 1))) });
         document.querySelectorAll(`[data-gpu-count="${key}"]`).forEach(control => {
           if (control === activeInput) return;
           control.value = n;
@@ -6746,7 +6816,7 @@
       const grandBig = document.getElementById(`facGrandBig-${modelKey}`);
       const note = document.getElementById(`facTotalNote-${modelKey}`);
       const badge = document.getElementById(`facBadge-${modelKey}`);
-      const showNew = state.spaceMode !== 'b1';
+      const showNew = !isRemodelOnly();
       if (totalNew) totalNew.textContent = eok(result.newbuildSum);
       if (totalRemodel) totalRemodel.textContent = eok(result.remodelSum);
       if (grandEl) grandEl.textContent = eok(grand);
@@ -7028,6 +7098,8 @@
 
       const opButton = event.target.closest('[data-op-mode]');
       if (opButton) { applyOpMode(opButton.dataset.opMode); return; }
+      const facBtn = event.target.closest('[data-fac-mode]');
+      if (facBtn) { applyFacMode(facBtn.dataset.facMode); return; }
       const coolBtn = event.target.closest('[data-b300-cooling]');
       if (coolBtn) { applyB300Cooling(coolBtn.dataset.b300Cooling); return; }
       const netBtn = event.target.closest('[data-b300-net]');
@@ -7252,7 +7324,7 @@
 
     // ---------- init ----------
     fillSelectedRack(state, rackTypes, state.selectedRack);
-    if (state.spaceMode === 'expand') state.floorAreaSqm = minFloorAreaForPowerMax(state, gpuTypes, 'gb300');
+    // rev56: 연면적은 계획값 그대로
     fillGpuDefaults(state, gpuTypes);
     state.suCount = podMaxSu();
     applyStaticI18n();
@@ -8086,7 +8158,7 @@ const PODFIN = (function () {
     return `
       <div class="fin-kpis remote"><div class="sg-inner" id="pfinKpis${id}"></div><button type="button" class="sg-toggle" aria-label="${L('접기/펴기', 'Collapse/expand')}" title="${L('접기/펴기', 'Collapse/expand')}"></button></div>
       <section class="sec fin-title">
-        ${secHead(L('재무구조 · 주주수익률 (레버리지 반영)', 'Financing & equity returns (levered)'), { tri: false })}
+        ${secHead(L('재무구조 · 주주수익률 (레버리지 반영)', 'Financing & equity returns (levered)') + (typeof infoIcon === 'function' ? infoIcon(t('tipFinance'), L('재무구조 · 주주수익률', 'Financing & equity returns'), true) : ''), { tri: false })}
         <div class="sec-desc">${L('좌측 입력값으로 산출된 CAPEX·매출·운영비·감가상각에 조달구조와 법인세를 얹어 계산된 주주 관점 수익률. SU 수·환율·단가·가동률을 바꾸면 즉시 반영됩니다.', 'Shareholder returns computed by applying the funding structure and corporate tax to the capex, revenue, operating cost and depreciation produced by the inputs at left. Updates instantly with SU count, FX, rates and utilization.')}</div>
         <div class="chips"><span id="pfinChips${id}" style="display:contents"></span><span id="pfinFlags${id}" style="display:contents"></span></div>
         <div class="fin-assume" id="pfinAssume${id}"></div>
