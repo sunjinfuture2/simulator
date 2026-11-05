@@ -44,11 +44,11 @@ svg{display:block}
 #login .field:focus{box-shadow:0 0 0 1px #d9d9d9 inset}
 #login .f1{top:567.1px}#login .f2{top:621.9px}
 #login .keep{position:absolute;left:905px;top:682.7px;display:flex;align-items:center;gap:6.5px;cursor:pointer;font-size:14px;color:var(--t2)}
-#login .keep .box{width:20.2px;height:20.2px;background:#eaeaea;border-radius:2px;display:flex;align-items:center;justify-content:center}
+#login .keep .box{width:20.2px;height:20.2px;background:#eaeaea;border-radius:0;display:flex;align-items:center;justify-content:center}
 #login .keep .box svg{display:none}
 #login .keep input{display:none}
 #login .keep input:checked + .box svg{display:block}
-#login .submit{position:absolute;left:799.9px;top:755.4px;width:323.1px;height:43.6px;background:#000;color:#fff;border-radius:5px;font-size:16px;font-weight:600;padding-right:14px}
+#login .submit{position:absolute;left:799.9px;top:755.4px;width:323.1px;height:43.6px;background:#000;color:#fff;border-radius:8px;font-size:16px;font-weight:600;padding-right:14px}
 #login .err{position:absolute;left:799.9px;top:715px;font-size:12px;color:#d30000;display:none}
 
 /* ===== APP SHELL ===== */
@@ -66,22 +66,22 @@ svg{display:block}
 .sb .sec{position:absolute;left:15.9px;font-size:10px;font-weight:600;color:var(--t5);white-space:nowrap}
 .sb .item{position:absolute;left:9.6px;width:266.4px;height:24px;border-radius:4px;font-size:15px;font-weight:500;color:var(--t3);white-space:nowrap;cursor:pointer;display:flex;align-items:center}
 .sb .item:hover{background:#eeedec}
-.sb .item.on{background:#eaeaea;color:var(--ink);font-weight:400}
-.sb .item .tx{position:relative}
+.sb .item.on{background:#eaeaea;color:var(--ink);font-weight:400;border-radius:8px}
+.sb .item .tx{position:relative;white-space:pre}
 .sb .fav .item{padding-left:12.4px}
-.sb .fav .item.on,.sb .fav .item.cur{color:var(--ink)}
+.sb .fav .item.on{color:var(--ink)}
 .sb .recent .r0{padding-left:6.6px}
 .sb .recent .r1{padding-left:18.4px}
 .sb .recent .r2{padding-left:31.1px}
 .sb .recent .r1 .chev,.sb .recent .r3 .chev{position:absolute;left:9.2px;top:50%;transform:translateY(-50%)}
 .sb .recent .r3 .chev{left:10.5px}
 .sb .recent .r2 .dot{position:absolute;left:23.6px;top:50%;width:1.9px;height:1.9px;background:#adadad;transform:translateY(-50%)}
-.sb .recent .r3{padding-left:18.4px}
+.sb .recent .r3{padding-left:18.4px;color:var(--ink);font-weight:400}
 .sb .hr{position:absolute;left:17px;width:256.8px;height:0;border-top:1px solid #f0f0f0}
 .sb .agent .item{padding-left:5.6px;gap:5.7px}
 .sb .agent .item .ext{flex:none}
 .sb .agent .cnt{position:absolute;right:14.4px;top:50%;transform:translateY(-50%);width:15.7px;height:15.7px;background:#eaeaea;border-radius:2px}
-.sb .agent .cnt .dt{position:absolute;left:-3px;top:-2.5px;width:6px;height:6px;border-radius:50%;background:#ff0000;border:0.5px solid #fff}
+.sb .agent .cnt .dt{position:absolute;left:-3.5px;top:-3px;width:7px;height:7px;border-radius:50%;background:#ff0000;border:0.5px solid #fff}
 .sb .agent .num{position:absolute;left:255.9px;font-size:11px;font-weight:400;color:var(--t3)}
 .sb .scrollbar{position:absolute;left:279.2px;top:133.5px;width:10.2px;height:691.7px;background:#c1c1c1;border-radius:5px}
 .sb .arr{position:absolute;left:278.3px;width:12px;height:9.1px}
@@ -96,7 +96,7 @@ svg{display:block}
 /* main area */
 .main{position:absolute;left:292px;top:0;right:0;bottom:0;background:#fff}
 .topbar{position:absolute;left:0;top:0;right:0;height:45px;background:#fff;z-index:15}
-.crumbs{position:absolute;left:18.8px;top:13.6px;display:flex;align-items:flex-start;font-size:15px;font-weight:500;color:var(--ink);white-space:nowrap}
+.crumbs{position:absolute;left:18.8px;top:13.6px;display:flex;align-items:flex-start;font-size:15px;font-weight:500;color:var(--ink);white-space:pre}
 .crumbs .sep{font-size:13px;font-weight:400;color:#c6c6c6;margin:1.1px 8.4px 0 9.1px}
 .crumbs .c{cursor:pointer}
 .crumbs .c.proj{color:var(--pc,var(--g))}
@@ -105,8 +105,8 @@ svg{display:block}
 .tb-right{position:absolute;left:0;right:0;top:0;height:45px;pointer-events:none}
 .tb-right > *{pointer-events:auto}
 .tb-user{position:absolute;left:1416.5px;top:17.7px;display:flex;align-items:center;cursor:pointer}
-.tb-user .av{position:relative}
-.tb-user .av .dt{position:absolute;left:0.7px;top:-0.4px;width:5.9px;height:6px;border-radius:50%;background:#ff0000;border:0.5px solid #fff}
+.tb-user .av{position:relative;display:block;width:22.9px;height:22.9px}
+.tb-user .av .dt{position:absolute;left:0.2px;top:-0.9px;width:7px;height:7px;border-radius:50%;background:#ff0000;border:0.5px solid #fff;z-index:1}
 .tb-user .nm{margin-left:5.9px;font-size:15px;font-weight:500;color:var(--ink);margin-top:0.3px}
 .tb-ic{position:absolute;top:19px;width:20.2px;height:20.2px;background:#eaeaea;border-radius:2px;display:flex;align-items:center;justify-content:center}
 .tb-ic:hover{background:#dedede}
@@ -171,7 +171,7 @@ svg{display:block}
 .pager button{padding:0 7px;height:22px;font-weight:400;border-radius:3px}
 .pager button.cur{font-weight:600}
 .pager button:hover{background:#f3f3f3}
-.pager .arr{padding:0 2px;display:flex;align-items:center;height:22px}
+.pager .arr{padding:0 8.5px;display:flex;align-items:center;height:22px;color:rgba(79,79,79,.6)}
 .pager .arr[disabled]{opacity:.4;cursor:default}
 .status-ic{display:inline-flex;align-items:center;gap:5px}
 .toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);background:#1c1c1c;color:#fff;font-size:13px;padding:9px 16px;border-radius:6px;z-index:200;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
@@ -204,7 +204,7 @@ svg{display:block}
 .cal .filters .pill.off{opacity:.38}
 .cal .legend{position:absolute;right:-2.1px;top:138.3px;display:flex;gap:17px;font-size:12px;font-weight:500;color:var(--t2)}
 .cal .legend span{display:flex;align-items:flex-start;gap:2.8px;white-space:nowrap}
-.cal .legend i{display:block;width:11px;height:11px;background:#4f4f4f;border-radius:1.5px;margin-top:2.7px}
+.cal .legend i{display:block;width:11px;height:11px;background:#cecece;border-radius:1.5px;margin-top:2.7px}
 .cal .grid{position:relative;width:725.3px}
 .cal .wd{display:grid;grid-template-columns:79.4px repeat(5,113.3px) 79.4px;height:15.7px;font-size:10px;font-weight:700;color:var(--t2)}
 .cal .wd span{padding-left:8.5px;display:block;line-height:13.6px}
@@ -224,7 +224,7 @@ svg{display:block}
 .cal .evs{position:absolute;left:0;top:29px;right:0;display:grid;grid-auto-rows:21.1px;pointer-events:none}
 .cal .ev{position:absolute;height:17.4px;display:flex;align-items:center;font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;pointer-events:auto;cursor:pointer;border-radius:3px;padding-left:9.4px;color:var(--cc);background:var(--cbg)}
 .cal .ev .sq{width:12.5px;height:12.5px;border-radius:1.5px;background:var(--csq);margin-right:2.5px;flex:none;position:relative}
-.cal .ev .sq .dt{position:absolute;left:-3px;top:-3px;width:6px;height:6px;border-radius:50%;background:#ff0000;border:0.5px solid #fff}
+.cal .ev .sq .dt{position:absolute;left:-3.5px;top:-3.5px;width:7px;height:7px;border-radius:50%;background:#ff0000;border:0.5px solid #fff}
 .cal .ev.cont-r{border-top-right-radius:0;border-bottom-right-radius:0}
 .cal .ev.cont-l{border-top-left-radius:0;border-bottom-left-radius:0}
 .cal .ev.rs{background:#fff;border:0.5px solid #e6e6e6;color:#444;padding-left:8.9px}
@@ -237,29 +237,29 @@ svg{display:block}
 .rlist.pv .ev{padding-bottom:0}
 .rlist .ev .pill{margin-left:-3.8px}
 .rlist .ev .tt{display:flex;align-items:flex-start;margin-top:3.6px;margin-left:-1.2px}
-.rlist .ev .tt b{font-size:18px;font-weight:600;color:#000;letter-spacing:-0.015em;cursor:pointer;white-space:nowrap}
+.rlist .ev .tt b{font-size:18px;font-weight:600;color:#000;letter-spacing:-0.015em;cursor:pointer;white-space:pre}
 .rlist .ev .tt b:hover{text-decoration:underline}
 .rlist .ev .tt .avstack{margin-left:4.6px;margin-top:1.4px}
-.rlist .chk{list-style:none;margin-top:17px}
+.rlist .chk{list-style:none;margin-top:14.5px}
 .rlist .chk li{display:flex;align-items:flex-start;height:27.7px;font-size:14px;color:var(--t2);cursor:pointer}
-.rlist .chk li .bx{width:20.2px;height:20.2px;border-radius:2px;background:#eaeaea;margin-right:6.4px;flex:none;display:flex;align-items:center;justify-content:center}
+.rlist .chk li .bx{width:20.2px;height:20.2px;border-radius:0;background:#eaeaea;margin-right:6.4px;flex:none;display:flex;align-items:center;justify-content:center}
 .rlist .chk li .bx svg{display:none}
 .rlist .chk li.done .bx svg{display:block}
 .rlist .chk li.done .tx{text-decoration:line-through;color:#a0a0a0}
 .rlist .chk li .tx{margin-top:0.7px}
 .rlist .chk li .pre{margin-left:6.5px;margin-top:2.1px;font-size:12px;color:#d30000}
-.rlist .hr{border-top:1px solid #e7e7e7;margin:-9px 0 0}
+.rlist .hr{border-top:1px solid #e7e7e7;margin:-4px 0 0}
 .rlist .it{position:relative;padding-top:43.4px}
 .rlist .it .cat{position:absolute;left:0;display:flex;align-items:flex-start;font-size:12px;font-weight:600}
 .rlist .it .cat i{width:11px;height:11px;border-radius:1.5px;margin:3px 2.8px 0 0;position:relative}
-.rlist .it .cat i .dt{position:absolute;left:-3px;top:-3px;width:6px;height:6px;border-radius:50%;background:#2bdb00;border:0.5px solid #fff}
+.rlist .it .cat .dt{position:absolute;left:-3px;top:0;width:7px;height:7px;border-radius:50%;background:#2bdb00;border:0.5px solid #fff;z-index:1}
 .rlist .it.ai .cat{color:#1f8e00}.rlist .it.ai .cat i{background:#c1e0b8}
 .rlist .it.rs .cat{color:#4f4f4f}.rlist .it.rs .cat i{background:#cecece}
 .rlist .it .tt{display:flex;align-items:flex-start;margin-left:-1.2px}
-.rlist .it .tt b{font-size:18px;font-weight:600;color:#000;letter-spacing:-0.015em;cursor:pointer;white-space:nowrap}
+.rlist .it .tt b{font-size:18px;font-weight:600;color:#000;letter-spacing:-0.015em;cursor:pointer;white-space:pre}
 .rlist .it .tt b:hover{text-decoration:underline}
 .rlist .it .tt .avstack{margin-left:7.9px;margin-top:-0.2px}
-.rlist .hr2{border-top:1px solid #e7e7e7;margin-top:50px}
+.rlist .hr2{border-top:1px solid #e7e7e7;margin-top:57px}
 
 /* ===== PROJECT CARDS ===== */
 .sec{position:relative}
@@ -270,20 +270,18 @@ svg{display:block}
 .pcard{position:relative;width:379.5px;flex:none;cursor:pointer}
 .pcard .img{position:relative;background:#f7f7f7;overflow:hidden}
 .pcard .img .grad{position:absolute;left:0;right:0;bottom:0;height:90px}
-.pcard .st{position:absolute;left:6.6px;top:9.2px;height:16.6px;padding:0 7.8px 0 6.1px;border-radius:8.3px;background:#fff;display:flex;align-items:center;gap:4.2px;font-size:9px;font-weight:600;white-space:nowrap}
+.pcard .st{position:absolute;left:6.6px;top:9.2px;height:16.6px;padding:0 7.8px 0 6.1px;border-radius:8.3px;background:#fff;display:flex;align-items:center;gap:4.2px;font-size:9px;font-weight:600;white-space:nowrap;box-shadow:0 0.4px 2.6px rgba(0,0,0,.14)}
 .pcard .st i{width:3.5px;height:3.5px;border-radius:50%;background:currentColor;display:block}
 .pcard h3{font-size:18px;font-weight:600;margin:17.1px 0 0 -2px;letter-spacing:-0.015em;white-space:nowrap}
 .pcard .info{margin:8.2px 0 0 -1.4px;font-size:12px;color:var(--t2);line-height:20px}
 .pcard .info div{display:flex;align-items:center;white-space:nowrap}
 .pcard .info b{font-weight:600;margin-right:6px}
-.pcard .info .avatar{width:15.2px;height:15.2px;margin-right:3.2px}
+.pcard .info .avatar{width:15.2px;height:15.2px;margin-right:1px;margin-left:-1px}
 .pcard:hover h3{text-decoration:underline}
-.projects .fade{position:absolute;left:1253px;top:0;width:230px;height:401px;background:linear-gradient(to right,rgba(255,255,255,0) 0%,rgba(255,255,255,.75) 45%,#fff 100%);pointer-events:none}
-.projects .arr{position:absolute;top:90.8px;width:24px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px}
-.projects .arr.l{left:-37.2px}.projects .arr.r{left:1399.8px}
+.projects .fade{position:absolute;left:1203px;top:0;width:280px;height:401px;background:linear-gradient(to right,rgba(255,255,255,0) 0%,#fff 72%,#fff 100%);pointer-events:none}
+.projects .arr{position:absolute;top:161.3px;width:24px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px}
+.projects .arr.l{left:-38.6px}.projects .arr.r{left:1397.9px}
 .projects .arr:hover{background:#f3f3f3}
-.projects .arr.l svg{margin-left:4px}
-.projects .arr.r svg{margin-left:4px}
 .new-proj-form{position:absolute;left:0;top:76.5px;width:379.5px;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.08);border-radius:6px;padding:18px 20px;z-index:5;font-size:13px;color:var(--t2)}
 .new-proj-form label{display:block;margin-top:10px;font-weight:600;color:var(--ink);font-size:12px}
 .new-proj-form input,.new-proj-form select{width:100%;margin-top:4px;border:1px solid #e3e3e3;border-radius:4px;padding:6px 8px;font-size:13px;outline:none}
@@ -304,7 +302,7 @@ svg{display:block}
 .tbl .rw .who span{display:flex;align-items:center;gap:3px;font-size:14px;font-weight:500;color:var(--ink)}
 .tbl .rw .who .avatar{width:15.5px;height:15.5px}
 .tbl .rw .ttl{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-0.012em}
-.tbl .rw .ttl .tx{overflow:hidden;text-overflow:ellipsis}
+.tbl .rw .ttl .tx{overflow:hidden;text-overflow:ellipsis;white-space:pre}
 .tbl .rw .acts{position:absolute;right:12.3px;top:50%;transform:translateY(-50%);display:none;gap:6.9px;background:#fff;padding-left:8px}
 .tbl .rw:hover .acts{display:flex}
 .tbl .rw:hover .acts{background:#fafafa}
@@ -462,21 +460,22 @@ svg{display:block}
 .arch .asec .h{display:flex;align-items:flex-start;height:54.8px;font-size:18px;font-weight:600;color:#000;letter-spacing:-0.015em}
 .arch .asec .h .nm{cursor:text;min-width:20px}
 .arch .asec .h .nm[contenteditable]{outline:none}
-.arch .asec .h .menu{margin:6.2px 0 0 16.4px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:3px}
+.arch .asec .h .menu{margin:6.2px 0 0 7.75px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:3px}
 .arch .asec .h .menu:hover{background:#f0f0f0}
-.arch .agrid{display:grid;grid-template-columns:repeat(4,338.3px);row-gap:14.1px;position:relative}
+.arch .agrid{display:grid;grid-template-columns:338.3px 338.3px 338.3px 323.2px;row-gap:14.1px;position:relative}
 .arch .agrid .cell{position:relative;height:171.3px;border-left:1px solid #ededed;padding:6.4px 0 0 6.5px}
 .arch .agrid .cell.last-line{border-right:1px solid #ededed}
-.arch .acard{position:relative;height:158.4px;width:326.1px;border-radius:3px;padding:21.2px 0 0 16.2px;cursor:pointer}
+.arch .acard{position:relative;height:158.4px;margin-right:5.7px;border-radius:3px;padding:21.2px 0 0 16.2px;cursor:pointer}
 .arch .acard:hover{background:#f7f7f7}
 .arch .acard .ic{width:18.6px;height:18.6px;background:#eaeaea;border-radius:3px}
 .arch .acard h4{font-size:20px;font-weight:700;color:#000;margin:0 0 0 -0.8px;letter-spacing:-0.015em;white-space:nowrap}
 .arch .acard p{font-size:12px;color:#000;line-height:19px;margin:18.3px 0 0 0.3px;width:270px;white-space:pre-line}
-.arch .acard .more{position:absolute;right:11.1px;top:37.8px;width:24.6px;height:24.5px;border-radius:5px;display:flex;align-items:center;justify-content:center}
+.arch .acard .more{position:absolute;right:14.1px;top:37.8px;width:24.6px;height:24.5px;border-radius:5px;display:flex;align-items:center;justify-content:center}
 .arch .acard:hover .more,.arch .acard .more.on{background:#d3d3d3}
 .arch .acard:hover .more svg circle,.arch .acard .more.on svg circle{fill:#707070}
-.arch .agrid .cell .add{position:absolute;left:12.8px;top:1.9px}
-.arch .newsec{margin:1.3px 0 0 -8.5px;height:30.4px;padding:0 11.4px 0 12.3px;font-size:18px;color:#c9c9c9;border-radius:4px;letter-spacing:-0.015em}
+.arch .agrid .cell .add{position:absolute;left:19.3px;top:8.3px}
+.arch .agrid .cell.first .add{left:15.1px;top:11.1px}
+.arch .newsec{margin:54.1px 0 0 -8.5px;height:30.4px;width:145.5px;justify-content:flex-start;padding:0 0 0 12.3px;font-size:18px;color:#c9c9c9;border-radius:4px;letter-spacing:0}
 .arch .newsec:hover{color:#8e8e8e}
 .arch .tabs{position:relative;margin-top:186.2px}
 .arch .tabs .addtab{position:absolute;left:151.2px;top:-27.6px}
@@ -489,8 +488,12 @@ svg{display:block}
 .tbl.archive{margin-left:-0.4px;width:1338.8px}
 .tbl.archive .hd,.tbl.archive .rw{grid-template-columns:669px 166.7px 155.6px 154.4px 161.1px;column-gap:8px}
 .tbl.archive .hd{font-size:13px;height:21.2px}
+.tbl.archive .hd span{border-bottom-color:#cecece}
+.tbl.archive .rw > div{border-bottom-color:#e7e7e7}
+.tbl.archive .rw:last-of-type > div{border-bottom-color:transparent}
 .tbl.archive .hd span em{left:-0.7px}
 .tbl.archive .rw{height:63.5px}
+.tbl.archive .rw > div{align-items:flex-start;padding-top:16.3px}
 .tbl.archive .rw .ttl{font-size:18px;letter-spacing:-0.015em}
 .tbl.archive .rw .ttl .gd{position:absolute;left:-6.1px;top:17.9px;width:6.1px;height:6.1px;border-radius:50%;background:#2bdb00;border:0.5px solid #fff}
 .tbl.archive .rw .ttl .tx{padding-left:0.5px}
@@ -519,7 +522,7 @@ svg{display:block}
 .ihead .trash{position:absolute;right:-0.2px;top:-2px;width:27.9px;height:27.9px;background:#eaeaea;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--ink);white-space:nowrap;cursor:pointer}
 .ihead .trash:hover{background:#dedede}
 .ihead .cancel{margin:0 0 0 8px;height:24.8px;padding:0 10px;font-size:14px;color:#8e8e8e;border-radius:4px}
-.ititle{position:absolute;left:-0.4px;top:135.9px;font-size:39px;font-weight:700;letter-spacing:-0.03em;line-height:53px;white-space:nowrap;outline:none;min-width:200px}
+.ititle{position:absolute;left:-0.4px;top:135.9px;font-size:39px;font-weight:700;letter-spacing:-0.03em;line-height:53px;white-space:pre;outline:none;min-width:200px}
 .ititle.empty{color:#d6d6d6}
 .ititle[contenteditable]:focus{box-shadow:0 0 0 1px #e3e3e3 inset;border-radius:4px}
 .props{position:absolute;top:224.9px;left:1.3px;display:grid;grid-template-columns:449px 449px;column-gap:0}
@@ -602,8 +605,6 @@ svg{display:block}
 .inb{position:relative;padding:19.4px 0 0 35.2px;border-radius:5px}
 .inb:hover{background:#f2f2f2}
 .inb .cb{position:absolute;left:8.7px;top:7.8px;width:17.7px;height:17.6px;background:#fff;border-radius:3px;box-shadow:0 0.4px 2.6px rgba(0,0,0,.18),0 0 .6px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;cursor:pointer}
-.inb .cb svg{display:none}
-.inb.read .cb svg{display:block}
 .inb .dt{display:flex;align-items:center;gap:3.6px;font-size:10px;font-weight:500;color:var(--t5);margin-left:2.7px}
 .inb .dt i{width:6px;height:6px;border-radius:50%;background:#0068ff;border:0.5px solid #fff;display:block}
 .inb.read .dt i{display:none}
@@ -735,9 +736,15 @@ svg{display:block}
     <symbol id="i-dl" viewBox="0 0 10 11"><path d="M5 0.5V9M0.9 5.3L5 9.4 9.1 5.3M0.9 10.5H9.1" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="square"/></symbol>
     <symbol id="i-plus" viewBox="0 0 12 12"><path d="M6 0.2V11.8M0.2 6H11.8" fill="none" stroke="#8e8e8e" stroke-width="1"/></symbol>
     <symbol id="i-check" viewBox="0 0 10 8"><path d="M0.8 4.1L3.6 6.9 9.2 1.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></symbol>
-    <symbol id="i-prog" viewBox="0 0 10 10"><path d="M8.6 3.4A4 4 0 1 0 8.9 6.1M8.9 1.4V3.7H6.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></symbol>
+    <symbol id="i-prog" viewBox="0 0 10 10"><path d="M7.9 2.6A3.7 3.7 0 1 0 8.7 5.4" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M8.9 0.6V3.3H6.2" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
     <symbol id="i-chev-d" viewBox="0 0 8 4"><path d="M0.5 0.5L4 3.5 7.5 0.5" fill="none" stroke="currentColor" stroke-width="0.75"/></symbol>
     <symbol id="i-chev-r" viewBox="0 0 4 7"><path d="M0.5 0.5L3.3 3.5 0.5 6.5" fill="none" stroke="currentColor" stroke-width="0.75"/></symbol>
+    <symbol id="i-nav-l" viewBox="0 0 5.6 10.9"><path d="M5 0.6L0.8 5.45 5 10.3" fill="none" stroke="#adadad" stroke-width="1.5"/></symbol>
+    <symbol id="i-nav-r" viewBox="0 0 5.7 10.9"><path d="M0.7 0.6L4.9 5.45 0.7 10.3" fill="none" stroke="#adadad" stroke-width="1.5"/></symbol>
+    <symbol id="i-car-l" viewBox="0 0 9.4 18.1"><path d="M8.6 0.8L1 9.05 8.6 17.3" fill="none" stroke="#adadad" stroke-width="1.5"/></symbol>
+    <symbol id="i-car-r" viewBox="0 0 9.4 18.1"><path d="M0.8 0.8L8.4 9.05 0.8 17.3" fill="none" stroke="#adadad" stroke-width="1.5"/></symbol>
+    <symbol id="i-pg-arr" viewBox="0 0 3.7 6.5"><path d="M0.5 0.5L3.2 3.25 0.5 6" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-more2" viewBox="0 0 2.5 13.7"><circle cx="1.25" cy="1.25" r="1.25" fill="#c9c9c9"/><circle cx="1.25" cy="6.85" r="1.25" fill="#c9c9c9"/><circle cx="1.25" cy="12.45" r="1.25" fill="#c9c9c9"/></symbol>
     <symbol id="i-arr-l" viewBox="0 0 7 12"><path d="M6 0.8L1 6l5 5.2" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
     <symbol id="i-arr-r" viewBox="0 0 7 12"><path d="M1 0.8L6 6l-5 5.2" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
     <symbol id="i-tri-d" viewBox="0 0 6 5"><path d="M0 0h6L3 4.4z" fill="currentColor"/></symbol>
@@ -814,7 +821,7 @@ svg{display:block}
         <button id="panel-expand" title="전체 페이지로 열기"><svg width="15" height="15.5"><use href="#i-expand"/></svg></button>
       </div>
       <div class="tb-right">
-        <div class="tb-user" id="tb-user"><span class="avatar av22"><i class="dt"></i></span><span class="nm">최원 기사</span></div>
+        <div class="tb-user" id="tb-user"><span class="av"><span class="avatar av22"></span><i class="dt"></i></span><span class="nm">최원 기사</span></div>
         <button class="tb-ic tb-share" id="tb-share" title="공유"></button>
         <button class="tb-ic tb-star" id="tb-star" title="즐겨찾기"><svg width="20.8" height="19.7"><use href="#i-star"/></svg></button>
         <button class="tb-ic tb-more" id="tb-more" title="더보기"></button>
@@ -864,13 +871,13 @@ svg{display:block}
 <script>
 /* ===================== DATA ===================== */
 const PROJECTS = {
-  pangyo:  {id:'pangyo', tag:'판교 AIDC', full:'판교 AI 데이터센터', cls:'pj-g', color:'#1f8e00', status:'완료', stColor:'#0091e2', grad:'#cde2c7', imgH:207.8,
+  pangyo:  {id:'pangyo', tag:'판교 AIDC', full:'판교 AI 데이터센터', cls:'pj-g', color:'#1f8e00', status:'완료', stColor:'#0091e2', grad:'#b3d5aa', imgH:207.8,
             owner:'박준수 대리', site:'경기 성남시 분당구 백현동 404-1', cost:'₩100,000,000,000', area:'1,000㎡ 내외', power:'5MW (전력 추가 확보 시)', it:'2.4MW+', server:'B300'},
-  busan:   {id:'busan', tag:'부산 AIDC', full:'부산 AI 데이터센터', cls:'pj-p', color:'#8c0043', status:'진행 중', stColor:'#61bc00', grad:'#dfbfce', imgH:296.2,
+  busan:   {id:'busan', tag:'부산 AIDC', full:'부산 AI 데이터센터', cls:'pj-p', color:'#8c0043', status:'진행 중', stColor:'#61bc00', grad:'#d6adc0', imgH:296.2,
             owner:'박준수 대리', site:'경기 성남시 분당구 백현동 404-1', cost:'₩100,000,000,000', area:'1,000㎡ 내외', power:'5MW (전력 추가 확보 시)', it:'2.4MW+', server:'B300'},
-  incheon: {id:'incheon', tag:'인천 청라 AIDC', full:'인천 청라 AI 데이터센터', cls:'pj-b', color:'#4b42fc', status:'진행 중', stColor:'#61bc00', grad:'#dcdaf5', imgH:250.5,
+  incheon: {id:'incheon', tag:'인천 청라 AIDC', full:'인천 청라 AI 데이터센터', cls:'pj-b', color:'#4b42fc', status:'진행 중', stColor:'#61bc00', grad:'#c5c3f7', imgH:250.5,
             owner:'박준수 대리', site:'경기 성남시 분당구 백현동 404-1', cost:'₩100,000,000,000', area:'1,000㎡ 내외', power:'5MW (전력 추가 확보 시)', it:'2.4MW+', server:'B300'},
-  sunlight:{id:'sunlight', tag:'초기기획 사업', full:'햇빛 소득마을사업', cls:'pj-k', color:'#3a3a3a', status:'계획 중', stColor:'#ffa912', grad:'#cfcfcf', imgH:207.8,
+  sunlight:{id:'sunlight', tag:'초기기획 사업', full:'햇빛 소득마을사업', cls:'pj-k', color:'#3a3a3a', status:'계획 중', stColor:'#ffa912', grad:'#d1d0d0', imgH:207.8,
             owner:'박준수 대리', site:'경기 성남시 분당구 백현동 404-1', cost:'₩100,000,000,000', area:'1,000㎡ 내외', power:'5MW (전력 추가 확보 시)', it:'2.4MW+', server:'B300'}
 };
 const PROJ_ORDER = ['pangyo','busan','incheon','sunlight'];
@@ -950,9 +957,9 @@ ARCH_TABS.forEach((t,ti)=>{ARCH_ROWS[t]=[]; for(let p=0;p<10;p++) for(let i=0;i<
 let INBOX=[
   {id:'n1',date:'2026-10-26',who:'choi',extra:'',tag:'리서치',title:'(Energy) SOFC 고체산화물 연료전지 개요 및 현황',item:'rc0',comment:'<b>@고시환 실장</b> 실장님 SOFC 고체산화물 연료전지 개요 및 현황 분석 리서치 공유드립니다. ',file:true,reply:true,read:false},
   {id:'n2',date:'2026-10-26',who:'choi',extra:' 외 2명',tag:'에이전트',title:'AIDC Rack 시스템 별테이터센터 수익구조 시뮬레이션',ext:'sim',comment:'감사합니다. 신속합니다.',file:false,reply:false,read:false,stack:true},
-  {id:'n3',date:'2026-10-26',who:'choi',extra:'',tag:'리서치',title:'(Energy) SOFC 고체산화물 연료전지 개요 및 현황',item:'rc0',comment:'<b>@고시환 실장</b> 실장님 SOFC 고체산화물 연료전지 개요 및 현황 분석 리서치 공유드립니다. ',file:true,reply:true,read:false},
-  {id:'n4',date:'2026-10-26',who:'choi',extra:' 외 2명',tag:'에이전트',title:'AIDC Rack 시스템 별테이터센터 수익구조 시뮬레이션',ext:'sim',comment:'감사합니다. 신속합니다.',file:false,reply:false,read:true,stack:true},
-  {id:'n5',date:'2026-10-26',who:'choi',extra:'',tag:'리서치',title:'(Energy) SOFC 고체산화물 연료전지 개요 및 현황',item:'rc0',comment:'<b>@고시환 실장</b> 실장님 SOFC 고체산화물 연료전지 개요 및 현황 분석 리서치 공유드립니다. ',file:true,reply:true,read:false}];
+  {id:'n3',date:'2026-10-26',who:'choi',extra:'',tag:'리서치',title:'(Energy) SOFC 고체산화물 연료전지 개요 및 현황',item:'rc0',comment:'<b>@고시환 실장</b> 실장님 SOFC 고체산화물 연료전지 개요 및 현황 분석 리서치 공유드립니다. ',file:true,reply:true,read:true,nodot:true},
+  {id:'n4',date:'2026-10-26',who:'choi',extra:' 외 2명',tag:'에이전트',title:'AIDC Rack 시스템 별테이터센터 수익구조 시뮬레이션',ext:'sim',comment:'감사합니다. 신속합니다.',file:false,reply:false,read:true,checked:true,stack:true},
+  {id:'n5',date:'2026-10-26',who:'choi',extra:'',tag:'리서치',title:'(Energy) SOFC 고체산화물 연료전지 개요 및 현황',item:'rc0',comment:'<b>@고시환 실장</b> 실장님 SOFC 고체산화물 연료전지 개요 및 현황 분석 리서치 공유드립니다. ',file:true,reply:true,read:true,nodot:true}];
 let MEMBERS=[]; for(let i=0;i<100;i++) MEMBERS.push({id:'u'+i,name:'박재남 전무',email:'banna11061@sunjin.co.kr',role:i===0?'소유자':(i<3?'관리자':'멤버'),ws:i===0?['전략사업부 AI Data Center','상하수도부 00000프로젝트','신재생에너지부 00000']:['전략사업부 AI Data Center'],more:i===0});
 const UPDATES=[
   {date:'2026-10-26',meta:'4시간 전 · 사업부 팀베이스  /  사업부 프로젝트',title:'워크스페이스 일일 업데이트 브리핑',body:'- Foxconn: AI 인프라 제조사(서버, 랙 등)\n- KT: AI 데이터센터 운영사업자(통신망 제공, GPUaaS 및\n   클라우드 서비스 운영)\n- 선진: 데이터센터 건설 및 프로젝트 PM 및 EPC'},
@@ -992,9 +999,9 @@ const chipOf=(it,extra='')=>{ if(!it) return ''; const p=proj(it.proj); const rs
 const fmtDateK=d=>{const [y,m,dd]=d.split('-').map(Number);return `${y}년 ${m}월 ${dd}일`;};
 const fmtDateDot=d=>{const [y,m,dd]=d.split('-').map(Number);return `${y}. ${m}. ${dd}`;};
 const priTxt={high:'높음',mid:'중간',low:'낮음'}, stTxt={prog:'진행중',done:'완료'};
-const stIcon=st=>st==='done'?`<span class="status-ic st-done">${svg('i-check',9.3,7.1)}완료</span>`:`<span class="status-ic st-prog">${svg('i-prog',8.5,8.5)}진행중</span>`;
+const stIcon=st=>st==='done'?`<span class="status-ic st-done">${svg('i-check',9.3,7.1)}완료</span>`:`<span class="status-ic st-prog">${svg('i-prog',10.5,10.5,'margin:-1px -1px 0 -1px')}진행중</span>`;
 let toastT; const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2200);};
-const pager=(cur,total,cls='')=>{let h=`<div class="pager ${cls}"><button class="arr" data-pg="prev" ${cur<=1?'disabled':''}>${svg('i-chev-r',2.7,5.5,'transform:rotate(180deg);color:#4f4f4f')}</button>`;for(let i=1;i<=total;i++)h+=`<button data-pg="${i}" class="${i===cur?'cur':''}">${i}</button>`;h+=`<button class="arr" data-pg="next" ${cur>=total?'disabled':''}>${svg('i-chev-r',2.7,5.5,'color:#4f4f4f')}</button></div>`;return h;};
+const pager=(cur,total,cls='')=>{let h=`<div class="pager ${cls}"><button class="arr" data-pg="prev" ${cur<=1?'disabled':''}>${svg('i-pg-arr',3.7,6.5,'transform:rotate(180deg)')}</button>`;for(let i=1;i<=total;i++)h+=`<button data-pg="${i}" class="${i===cur?'cur':''}">${i}</button>`;h+=`<button class="arr" data-pg="next" ${cur>=total?'disabled':''}>${svg('i-pg-arr',3.7,6.5)}</button></div>`;return h;};
 function downloadText(name,text){const b=new Blob([text],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 /* popovers */
 let popEl=null;
@@ -1016,9 +1023,9 @@ function renderCalendar(opts){ // opts: {proj, year, month, legend4}
   const COLW=[79.4,113.3,113.3,113.3,113.3,113.3,79.4], COLX=[0]; for(let i=1;i<7;i++)COLX[i]=COLX[i-1]+COLW[i-1];
   const today=(Y===CAL_YEAR&&M===CAL_MON)?9:0;
   let h=`<div class="cal-wrap"><div class="cal ${opts.narrow?'narrow':''}">
-    <button class="nav prev" data-cal="prev">${svg('i-arr-l',5.6,10.9,'color:#adadad')}</button>
+    <button class="nav prev" data-cal="prev">${svg('i-nav-l',5.6,10.9)}</button>
     <div class="mon"><h2>${Y}. ${M}</h2></div>
-    <button class="nav next" data-cal="next">${svg('i-arr-r',5.7,10.9,'color:#adadad')}</button>`;
+    <button class="nav next" data-cal="next">${svg('i-nav-r',5.7,10.9)}</button>`;
   if(!opts.proj) h+=`<div class="filters">${PROJ_ORDER.map(k=>pill(PROJECTS[k],(S.filters[k]?'':'off')+' flt nosq').replace('class="pill','data-flt="'+k+'" class="pill')).join('')}</div>`;
   h+=`<div class="legend"><span><i></i>미팅</span><span><i></i>액션아이템</span><span><i></i>리서치</span></div>`;
   h+=`<div class="grid"><div class="wd"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="rows">`;
@@ -1054,8 +1061,8 @@ function rightList(opts){ // opts.proj → project page variant
     e.checks.forEach((c,i)=>{const k=e.id+'_'+i;h+=`<li class="${S.checks[k]?'done':''}" data-chk="${k}"><span class="bx">${svg('i-check',10,8,'color:#4f4f4f')}</span><span class="tx">${esc(c.t)}</span>${c.pre?`<span class="pre">${esc(c.pre)}</span>`:''}</li>`;});
     h+=`</ul></div>`;});
   if(main) h+=`<div class="hr"></div>`;
-  h+=`<div class="it ai" style="${main?'':'padding-top:68.7px'}"><div class="cat" style="${main?'':'top:68.7px'}"><i>${main?'<i class="dt"></i>':''}</i>액션아이템</div><div class="tt" style="margin-top:18.7px"><b data-open="${ai.id}">${esc(ai.title)}</b>${avstack(['park'])}</div></div>`;
-  h+=`<div class="it rs" style="${main?'padding-top:44.5px':'padding-top:36.2px'}"><div class="cat" style="${main?'top:44.5px':'top:36.2px'}"><i>${main?'<i class="dt"></i>':''}</i>리서치</div><div class="tt" style="margin-top:18.7px"><b data-open="${rs.id}">${esc(rs.title)}</b>${avstack(['park','choi'])}</div></div>`;
+  h+=`<div class="it ai" style="${main?'':'padding-top:68.7px'}"><div class="cat" style="${main?'':'top:68.7px'}"><i></i>${main?'<em class="dt"></em>':''}액션아이템</div><div class="tt" style="margin-top:18.7px"><b data-open="${ai.id}">${esc(ai.title)}</b>${avstack(['park'])}</div></div>`;
+  h+=`<div class="it rs" style="${main?'padding-top:44.5px':'padding-top:36.2px'}"><div class="cat" style="${main?'top:44.5px':'top:36.2px'}"><i></i>${main?'<em class="dt"></em>':''}리서치</div><div class="tt" style="margin-top:18.7px"><b data-open="${rs.id}">${esc(rs.title)}</b>${avstack(['park','choi'])}</div></div>`;
   if(main) h+=`<div class="hr2"></div>`;
   h+=`</div>`; return h;
 }
@@ -1078,7 +1085,7 @@ function partnerTable(rows){let h=`<div class="tbl partners"><div class="hd"><sp
   rows.forEach(r=>{const m=r.meet?item(r.meet):null;
     h+=`<div class="rw" data-partner="${r.id}"><div class="nm"><span class="lg"></span>${esc(r.name)}<span class="acts"><button class="sh-btn" data-act="partner" data-id="${r.id}">열기</button></span></div><div class="hp"><a href="https://${r.site}" target="_blank" rel="noopener" data-stop>${esc(r.site)}</a></div><div class="cat"><a data-cat="${esc(r.cat)}">${esc(r.cat)}</a></div><div class="ds">${esc(r.desc)}</div><div class="mt">${m?chipOf(m):''}</div></div>`;});
   h+=`<div class="ft"></div></div>`; return h;}
-function projectCards(){return PROJ_ORDER.map(k=>{const p=PROJECTS[k];return `<div class="pcard" data-go="project:${k}"><div class="img" style="height:${p.imgH}px"><div class="grad" style="background:linear-gradient(to bottom,rgba(255,255,255,0),${p.grad})"></div><span class="st" style="color:${p.stColor}"><i></i>${esc(p.status)}</span></div>
+function projectCards(){return PROJ_ORDER.map(k=>{const p=PROJECTS[k];return `<div class="pcard" data-go="project:${k}"><div class="img" style="height:${p.imgH}px"><div class="grad" style="height:${p.id==='busan'?78:90}px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 28%,${p.grad} 100%)"></div><span class="st" style="color:${p.stColor}"><i></i>${esc(p.status)}</span></div>
   <h3 style="color:${p.color}">${esc(p.full)}</h3><div class="info"><div><b>담당자</b>${av()}${esc(p.owner)}</div><div><b>부지</b>${esc(p.site)}</div><div><b>총사업비</b>${esc(p.cost)}</div><div><b>공사 면적</b>${esc(p.area)}</div><div><b>총 수전용량</b>${esc(p.power)}</div><div><b>IT 용량</b>${esc(p.it)}</div><div><b>서버</b>${esc(p.server)}</div></div></div>`;}).join('');}
 function meetingCards(pid){const ms=ITEMS.filter(i=>i.type==='meeting'&&['m1','m2','m3','m4'].includes(i.id)&&(i.proj===pid||pid==='pangyo'));
   return ms.map(m=>`<div class="mcard" data-open="${m.id}" style="${m.id==='m1'?'width:322.2px':''}">${m.grad?'<div class="grad"></div>':''}${m.dots.length?`<span class="dots">${m.dots.map(d=>`<i class="${d}"></i>`).join('')}</span>`:''}<div class="dt">${esc(m.dateTxt)}</div>
@@ -1094,7 +1101,7 @@ function renderMain(){
    <div style="position:relative;padding-top:0">${renderCalendar({year:S.calY,month:S.calM})}${rightList({})}</div>
    <div class="projects" style="margin-top:111.5px;height:675.8px"><div class="sec-title" style="top:0">프로젝트${plusBtn('new-proj','새 프로젝트')}</div>
      <div class="track"><div class="inner" id="proj-inner">${projectCards()}</div></div><div class="fade"></div>
-     <button class="arr l" data-car="proj:-1" title="이전">${svg('i-arr-l',9.4,18.1,'color:#adadad')}</button><button class="arr r" data-car="proj:1" title="다음">${svg('i-arr-r',9.4,18.1,'color:#adadad')}</button></div>
+     <button class="arr l" data-car="proj:-1" title="이전">${svg('i-car-l',9.4,18.1)}</button><button class="arr r" data-car="proj:1" title="다음">${svg('i-car-r',9.4,18.1)}</button></div>
    <div class="sec" id="sec-actions"><div class="sec-title" style="margin-left:-2.8px">액션아이템${plusBtn('new-action','새 액션아이템')}<button class="sh-btn lib" data-lib="action">라이브러리</button></div>
      <div class="view-wrap" style="margin-top:28.5px"><div class="tbl-tools" style="top:-55.6px" data-per>${S.actPer}개씩 보기 ${svg('i-chev-d',7.8,4,'color:#4f4f4f')}</div>${actionTable(rows,{})}</div>
      ${pager(S.actPage,total,'pg-act').replace('class="pager','style="margin-top:59px" class="pager')}</div>
@@ -1146,18 +1153,18 @@ function renderArchive(){
   const rows=ARCH_ROWS[S.archTab]||[]; const total=Math.max(1,Math.ceil(rows.length/10)); const page=rows.slice((S.archPage-1)*10,S.archPage*10);
   let h=`<div class="arch-title">자료실</div><div style="padding-top:194.2px">`;
   ARCH_SECTIONS.forEach((sec,si)=>{
-    h+=`<div class="asec" style="${si===0?'padding-top:0':'padding-top:58px'}"><div class="h"><span class="nm" data-secname="${si}">${esc(sec.name)}</span><button class="menu" data-secmenu="${si}">${svg('i-more',3,15)}</button></div>`;
+    h+=`<div class="asec" style="${si===0?'padding-top:0':'padding-top:58px'}"><div class="h"><span class="nm" data-secname="${si}">${esc(sec.name)}</span><button class="menu" data-secmenu="${si}">${svg('i-more2',2.5,13.7)}</button></div>`;
     const cells=[...sec.cards.map(c=>({c})),{add:true}]; const nrows=Math.ceil(cells.length/4);
     h+=`<div class="agrid">`;
     for(let r=0;r<nrows;r++){ for(let k=0;k<4;k++){const idx=r*4+k; const cell=cells[idx]; const full=(r*4+3<cells.length)&&!cells[r*4+3].add;
       if(!cell){h+=`<div class="cell" style="border-left:0"></div>`;continue;}
-      h+=`<div class="cell ${k===3&&full?'last-line':''}">`;
+      h+=`<div class="cell ${k===3&&full?'last-line':''} ${k===0?'first':''}">`;
       if(cell.add) h+=plusBtn('add','자료 추가').replace('class="sh-btn','data-addcard="'+si+'" class="sh-btn');
-      else h+=`<div class="acard" data-acard="${si}:${cell.c.id}"><div class="ic"></div><h4>${esc(cell.c.name)}</h4><p>${esc(cell.c.desc)}</p><button class="more" data-cardmenu="${si}:${cell.c.id}">${svg('i-more',3,15)}</button></div>`;
+      else h+=`<div class="acard" data-acard="${si}:${cell.c.id}"><div class="ic"></div><h4>${esc(cell.c.name)}</h4><p>${esc(cell.c.desc)}</p><button class="more" data-cardmenu="${si}:${cell.c.id}">${svg('i-more2',2.5,13.7)}</button></div>`;
       h+=`</div>`;}}
     h+=`</div></div>`;});
-  h+=`<button class="sh-btn newsec" style="margin-top:50.8px" data-newsec>구분 새로 만들기</button>
-   <div class="tabs" style="margin-top:200.5px">${plusBtn('addtab','탭 추가').replace('class="sh-btn','data-addtab class="sh-btn')}<ul style="height:53.5px">${ARCH_TABS.map(t=>`<li class="${t===S.archTab?'on':''}" data-tab="${esc(t)}">${esc(t)}</li>`).join('')}</ul><div class="bar"><i style="left:${ARCH_TABS.indexOf(S.archTab)*338.2}px"></i></div></div>
+  h+=`<button class="sh-btn newsec" data-newsec>구분 새로 만들기</button>
+   <div class="tabs" style="margin-top:197.3px">${plusBtn('addtab','탭 추가').replace('class="sh-btn','data-addtab class="sh-btn')}<ul style="height:53.5px">${ARCH_TABS.map(t=>`<li class="${t===S.archTab?'on':''}" data-tab="${esc(t)}">${esc(t)}</li>`).join('')}</ul><div class="bar"><i style="left:${ARCH_TABS.indexOf(S.archTab)*338.2}px"></i></div></div>
    <div class="tbl archive" style="margin-top:109.5px"><div class="hd"><span><em>제목</em></span><span><em>담당자</em></span><span><em>기한</em></span><span><em>최종수정일자</em></span><span><em>출처</em></span></div>
    ${page.map(r=>`<div class="rw" data-open="${r.id}"><div class="ttl">${r.dot?'<i class="gd"></i>':''}<span class="tx">${esc(r.title)}</span><span class="acts"><button class="sh-btn" data-act="open" data-id="${r.id}">열기</button><button class="sh-btn" data-act="dl" data-id="${r.id}">다운로드 ${svg('i-dl',9.1,11,'color:#4f4f4f;margin-top:1px')}</button></span></div><div class="who" style="margin-left:-2.5px">${r.people.map(k=>`<span>${av()}${esc(PEOPLE[k])}</span>`).join('')}</div><div class="d" style="margin-left:-1.3px">${esc(r.dateTxt)}</div><div class="mod" style="margin-left:-0.5px">${esc(r.mod)}</div><div class="src" style="margin-left:-0.4px"><a data-stop href="#">${esc(r.src)}</a></div></div>`).join('')}
    <div class="ft"></div></div>${pager(S.archPage,total,'pg-arch').replace('class="pager','style="margin-top:69.7px" class="pager')}<div style="height:509.7px"></div></div>`;
@@ -1230,7 +1237,7 @@ function sbState(){$$('#sb .item').forEach(e=>{e.classList.remove('on','cur');})
   if(S.page==='main')$('#sb .fav .item[data-go="main"]').classList.add('cur');
   if(S.page==='project'){const el=$(`#sb .recent .item[data-go="project:${S.proj}"]`); if(el)el.classList.add('on'); $('#sb .fav .item[data-go="project:pangyo"]').classList.add('cur');}
   if(S.page==='archive')$('#sb .item[data-go="archive"]').classList.add('on');
-  if(S.panel||S.full){$('#sb .recent .r3').classList.add('on');}
+  if(S.panel||S.full||S.page!=='project'){$('#sb .recent .r3').classList.add('on');}
   $('#tb-star').innerHTML=svg(S.fav?'i-star':'i-star-o',20.8,19.7);}
 function go(where,keepScroll){ closePop(); const [k,v]=where.split(':');
   if(k==='main'){S.page='main';S.proj=null;} else if(k==='project'){S.page='project';S.proj=v;S.editProj=false;} else if(k==='archive'){S.page='archive';}
@@ -1338,7 +1345,7 @@ document.addEventListener('click',e=>{
   // modal
   if(el=q('#mnav .item')){renderPane(el.dataset.pane);return;}
   if(T.id==='ovl'){closeModal();return;}
-  if(el=q('[data-inbox-cb]')){const n=INBOX.find(x=>x.id===el.dataset.inboxCb);n.read=!n.read;renderPane('inbox');return;}
+  if(el=q('[data-inbox-cb]')){const n=INBOX.find(x=>x.id===el.dataset.inboxCb);n.checked=!n.checked;if(n.checked)n.read=true;renderPane('inbox');return;}
   if(el=q('[data-readall]')){INBOX.forEach(n=>n.read=true);renderPane('inbox');toast('모두 읽음으로 표시했습니다.');return;}
   if(el=q('[data-inbox-open]')){const n=INBOX.find(x=>x.id===el.dataset.inboxOpen);n.read=true;closeModal();if(n.item)openPanel(n.item);else notConnected(el,'수익구조 시뮬레이터 (에이전트)');return;}
   if(el=q('[data-inbox-dl]')){downloadText('첨부파일.txt','(Energy) SOFC 고체산화물 연료전지 개요 및 현황\n\n'+RDESC);toast('다운로드를 시작했습니다.');return;}
@@ -1368,7 +1375,7 @@ function openModal(pane){closePop();$('#ovl').classList.add('on');renderPane(pan
 function closeModal(){$('#ovl').classList.remove('on');}
 function renderPane(pane){$$('#mnav .item').forEach(i=>i.classList.toggle('on',i.dataset.pane===pane));const unread=INBOX.filter(n=>!n.read).length;$('#inbox-badge').textContent=unread;$('#inbox-badge').style.display=unread?'':'none';$('#m-inbox-badge').textContent=unread;$('#m-inbox-badge').style.display=unread?'':'none';
   const B=$('#mbody'); let h='';
-  if(pane==='inbox'){h=`<div class="pane on"><div class="readall" data-readall>${svg('i-check-thin',10.8,9.3)}모두 읽음으로 표시</div><div class="inbox-list">${INBOX.map((n,i)=>`<div class="inb ${n.read?'read':'unread'} ${n.reply?'reply':''} ${n.stack?'stack':''}" style="${n.reply?'':'padding-bottom:32px'}"><span class="cb" data-inbox-cb="${n.id}">${svg('i-check-thin',8.6,7.3,'color:#b2b2b2')}</span><div class="dt">${esc(n.date)}<i></i></div>
+  if(pane==='inbox'){h=`<div class="pane on"><div class="readall" data-readall>${svg('i-check-thin',10.8,9.3)}모두 읽음으로 표시</div><div class="inbox-list">${INBOX.map((n,i)=>`<div class="inb ${n.read?'read':'unread'} ${n.reply?'reply':''} ${n.stack?'stack':''}" style="${n.reply?'':'padding-bottom:32px'}"><span class="cb" data-inbox-cb="${n.id}">${n.checked?svg('i-check-thin',8.6,7.3,'color:#b2b2b2'):''}</span><div class="dt">${esc(n.date)}${n.read?'':'<i></i>'}</div>
     <div class="ln"><span class="avs">${av()}${n.stack?av('s'):''}</span><b>${esc(PEOPLE[n.who])}</b>님${esc(n.extra)}이 <span class="chip">${esc(n.tag)}</span><span class="ti" data-inbox-open="${n.id}">${esc(n.title)}</span>에 댓글을 달았습니다.${n.file?`<button class="ln-btn dlbtn" data-inbox-dl>첨부파일 다운로드 ${svg('i-dl',9.2,11,'color:#3d3d3d')}</button>`:''}</div>
     <div class="cm">${withS(n.comment)}</div>${(n.replies||[]).length?`<div class="replies">${n.replies.map(r=>`<div><b>${esc(r.who)}</b>${esc(r.text)}</div>`).join('')}</div>`:''}${n.reply?`<div class="rp" data-inbox-reply="${n.id}">${svg('i-reply',11.6,19.2,'margin-top:-7px')}${av()}<span class="tx">댓글 추가 </span></div>`:''}</div>${i<INBOX.length-1?'<div class="inb-hr"></div>':''}`).join('')}<div style="height:60px"></div></div></div>`;}
   else if(pane==='members'){const total=Math.ceil(MEMBERS.length/10);const rows=MEMBERS.slice((S.memPage-1)*10,S.memPage*10);
