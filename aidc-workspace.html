@@ -320,7 +320,7 @@ svg{display:block}
 .tbl .rw .pri{font-size:14px;font-weight:500}
 .tbl .rw .stt{font-size:14px;font-weight:500;gap:3.8px}
 .tbl .rw .url{font-size:12px;color:#3d3d3d}
-.tbl .rw .url a{border-bottom:1px solid #cfcfcf;line-height:12px}
+.tbl .rw .url a{border-bottom:1px solid #cfcfcf;line-height:12px;position:relative;top:-3px}
 .tbl .rw .url a:hover{border-color:#3d3d3d}
 .tbl .rw .mod{font-size:12px;font-weight:500;color:#3d3d3d}
 .tbl .ft{border-top:1px solid #cecece;margin-top:1px}
@@ -354,7 +354,7 @@ svg{display:block}
 .rcard{position:relative;background:#f7f7f7;cursor:pointer;padding:21.1px 0 28.1px 23.5px;transition:background .12s}
 .rcard.nobtn{padding-bottom:25px}
 .rcard:hover{background:#c1c1c1}
-.rcard .dots{position:absolute;left:8.4px;top:19px;display:flex;gap:2.7px}
+.rcard .dots{position:absolute;left:8.4px;top:19px;width:16.7px;display:flex;justify-content:flex-end;gap:2.7px}
 .rcard .dots i{width:7px;height:7px;border-radius:50%;border:0.5px solid #fff;display:block}
 .rcard.t4 .ds{margin-top:7.5px}
 .rcard .dots i.g{background:#2bdb00}.rcard .dots i.r{background:#ff0000}
@@ -443,7 +443,7 @@ svg{display:block}
 .road .box::-webkit-scrollbar-track{background:transparent}
 .road .inner{position:relative;display:flow-root;padding:0 0 20px 0;min-height:1340px}
 .road .vline{position:absolute;left:83.8px;top:0;width:2px;background:#474747}
-.road .vline.fut{background:transparent;border-left:1.3px dashed #e0e0e0;width:0}
+.road .vline.fut{width:1px;background:repeating-linear-gradient(to bottom,#e0e0e0 0 1.2px,transparent 1.2px 5px)}
 .road .it{position:relative;padding-left:267.8px;min-height:48px}
 .road .it .date{position:absolute;left:18.4px;font-size:15px;font-weight:600;color:#000;white-space:nowrap}
 .road .it .dot{position:absolute;left:80.3px;top:6px;width:8.7px;height:8.7px;border-radius:50%;background:#474747}
@@ -453,12 +453,12 @@ svg{display:block}
 .road .it .tt{font-size:14px;color:var(--t2);margin-left:1px}
 .road .it .body{font-size:14px;color:var(--t2);line-height:23px;white-space:pre-wrap}
 .road .it .imgs{display:flex;gap:18.5px;margin:3px 0 10px 3.4px}
-.road .it .imgs .ph{position:relative;height:221.4px;background:#f7f7f7;border:1px solid #e3e9e2}
+.road .it .imgs .ph{position:relative;height:221.4px;background:#f7f7f7}
 .road .it .imgs .ph::before,.road .it .imgs .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom right,transparent calc(50% - 0.5px),#e3e9e2 calc(50% - 0.5px),#e3e9e2 calc(50% + 0.5px),transparent calc(50% + 0.5px))}
 .road .it .imgs .ph::after{background:linear-gradient(to bottom left,transparent calc(50% - 0.5px),#e3e9e2 calc(50% - 0.5px),#e3e9e2 calc(50% + 0.5px),transparent calc(50% + 0.5px))}
 .road .it .imgs .ph .dl{position:absolute;right:15.7px;bottom:17.3px;height:24.8px;width:80.4px;padding:0 0 0 4px;font-size:11px;gap:5px;border-radius:2px}
 .road .add{position:absolute;left:73px}
-.road .ruler{position:absolute;left:1246.7px;top:113.4px;width:30px;height:420px;z-index:2}
+.road .ruler{position:absolute;left:1243.3px;top:113.4px;width:30px;height:420px;z-index:2}
 .road .ruler i{position:absolute;right:0;height:3px;background:#e5e5e5;width:19.9px;display:block;cursor:pointer}
 .road .ruler i.lg{width:26.6px}
 .road .ruler i.cur{background:#474747}
@@ -620,7 +620,10 @@ svg{display:block}
 .inbox-list{position:absolute;left:77.6px;top:90.7px;width:1175.6px}
 .inb{position:relative;padding:19.4px 0 0 35.2px;border-radius:5px}
 .inb:hover{background:#f2f2f2}
-.inb .cb svg{margin-top:-1.5px}
+.inb .cb svg{margin-top:-0.5px}
+.inb .cb:empty{opacity:0}
+.inb:hover .cb{opacity:1}
+.inb .ln .dlbtn svg{position:relative;top:-1.5px;left:-1px}
 .inb .cb{position:absolute;left:8.7px;top:7.8px;width:17.7px;height:17.6px;background:#fff;border-radius:3px;box-shadow:0 0.4px 2.6px rgba(0,0,0,.18),0 0 .6px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .inb .dt{display:flex;align-items:center;gap:3.6px;font-size:10px;font-weight:500;color:var(--t5);margin-left:2.7px}
 .inb .dt i{width:6px;height:6px;border-radius:50%;background:#0068ff;border:0.5px solid #fff;display:block}
@@ -630,7 +633,7 @@ svg{display:block}
 .inb .ln .avs{position:relative;width:28px;height:25px;flex:none;margin-right:1.8px}
 .inb.stack .ln .avs{height:30px;margin-top:-2.7px;margin-left:-8.5px;margin-right:10.3px}
 .inb .ln .avs .avatar{position:absolute;left:0;top:0;width:24.9px;height:24.9px}
-.inb .ln .avs .avatar.s{width:16.7px;height:16.7px;left:14.4px;top:13.3px;border:0.5px solid #fff}
+.inb .ln .avs .avatar.s{width:16.7px;height:16.7px;left:14.4px;top:13.3px;border:0;box-shadow:0 0 0 0.5px #fff}
 .inb .ln b{font-weight:600;margin-right:3.3px}
 .inb .ln .chip{margin:0 0 0 4.2px;height:17.3px;font-size:11px;color:#444;background:#fff;border:0.5px solid #e6e6e6;padding:0 5px 0 5.7px}
 .inb .ln .ti{letter-spacing:-0.018em}
@@ -754,7 +757,7 @@ svg{display:block}
 <svg width="0" height="0" style="position:absolute">
   <defs>
     <symbol id="i-ext" viewBox="0 0 8 8"><path d="M1 7.2L7.2 1M2.6 1H7.2V5.6" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="square"/></symbol>
-    <symbol id="i-dl" viewBox="0 0 10 11"><path d="M5 0.5V9M0.9 5.3L5 9.4 9.1 5.3M0.9 10.5H9.1" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="square"/></symbol>
+    <symbol id="i-dl" viewBox="0 0 10 11"><path d="M5 0.5V9M0.9 5.3L5 9.4 9.1 5.3M0.9 10.5H9.1" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="square"/></symbol>
     <symbol id="i-plus" viewBox="0 0 12 12"><path d="M6 0.2V11.8M0.2 6H11.8" fill="none" stroke="#8e8e8e" stroke-width="1"/></symbol>
     <symbol id="i-check" viewBox="0 0 10 8"><path d="M0.8 4.1L3.6 6.9 9.2 1.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></symbol>
     <symbol id="i-prog" viewBox="0 0 10 10"><path d="M5.7 1.06A4 4 0 1 0 8.94 4.31" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
@@ -775,8 +778,8 @@ svg{display:block}
     <symbol id="i-dbl" viewBox="0 0 16 17"><path d="M1 0.7L8 8.4 1 16.2M7.5 0.7l7 7.7-7 7.8" fill="none" stroke="#5e5e5e" stroke-width="1.3"/></symbol>
     <symbol id="i-expand" viewBox="0 0 14.5 14.5"><path d="M0.65 6.35V0.65h5.7M0.65 0.65L13.85 13.85M13.85 8.15v5.7h-5.7" fill="none" stroke="#5e5e5e" stroke-width="1.3"/></symbol>
     <symbol id="i-more" viewBox="0 0 3 15"><circle cx="1.5" cy="1.5" r="1.3" fill="#c9c9c9"/><circle cx="1.5" cy="7.5" r="1.3" fill="#c9c9c9"/><circle cx="1.5" cy="13.5" r="1.3" fill="#c9c9c9"/></symbol>
-    <symbol id="i-reply" viewBox="0 0 12 20"><path d="M1 0.5V19H11.4M8.5 16.3l2.9 2.7-2.9 2.7" fill="none" stroke="#a5a5a5" stroke-width="0.6"/></symbol>
-    <symbol id="i-check-thin" viewBox="0 0 10.8 9.3"><path d="M0.6 4.7L4.1 8.3 10.2 0.9" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol><symbol id="i-check-lt" viewBox="0 0 8.6 7.3"><path d="M0.5 3.8l2.7 2.7L8.1 0.6" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-reply" viewBox="0 0 12 21.5"><path d="M1 0.5V19.2H11.4M9.2 17.05l2.2 2.15-2.2 2.15" fill="none" stroke="#a5a5a5" stroke-width="0.6"/></symbol>
+    <symbol id="i-check-thin" viewBox="0 0 10.8 9.3"><path d="M0.6 4.7L4.1 8.3 10.2 0.9" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol><symbol id="i-check-lt" viewBox="0 0 9.6 8.3"><path d="M0.5 4.1L3.5 7.6 9.1 0.6" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
     <symbol id="i-menu" viewBox="0 0 16 12"><path d="M0 1h16M0 6h16M0 11h16" stroke="#4f4f4f" stroke-width="1.4"/></symbol>
     <symbol id="i-x" viewBox="0 0 10 10"><path d="M1 1l8 8M9 1L1 9" stroke="#8e8e8e" stroke-width="1.2"/></symbol>
   </defs>
@@ -990,7 +993,7 @@ const ROADMAP=[
   {date:'26.07.13',cat:'사업규모 확정',chips:[{k:'rs',t:'GPU임대가...'},{k:'g',t:'GPU임대가...'}],title:'KB PF 미팅',imgs:[358.9,159.6,159.6],dl:true,body:'- 결정사항1: ~~~한 ~~가 ~~~~이렇게 됨, ~~가 준비되어야 함.\n- 결정사항2: ~~~한 ~~가 ~~~~이렇게 됨, ~~가 준비되어야 함.\n- 결정사항3: ~~~한 ~~가 ~~~~이렇게 됨, ~~가 준비되어야 함.',gap:58.5},
   {date:'26.09.21',cat:'운영방법 검토',chips:[{k:'g',t:'GPU임대가...'}],title:'VESSL AI 2차 미팅',imgs:[],body:'결정사항: ~~~한 ~~가 ~~~~이렇게 됨, ~~가 준비되어야 함.',gap:77.9},
   {date:'26.09.21',cat:'서버 구입가능성 검토',chips:[{k:'g',t:'GPU임대가...'}],title:'FOXCONN 미팅',imgs:[],body:'[구조]\n- Foxconn: AI 인프라 제조사(서버, 랙 등)\n- KT: AI 데이터센터 운영사업자(통신망 제공, GPUaaS 및\n   클라우드 서비스 운영)\n- 선진: 데이터센터 건설 및 프로젝트 PM 및 EPC\n\n[조직구상안]\n- 선진 HQ: 인허가 및 데이터센터 설계 및 시공감리(PM/EPC)\n- 선진 A: 핵심 부품 수입 및 유통전담\n- 선진 B: 펀드조성, 투자 및 자산운용 담당',gap:73.2},
-  {date:'26.10.22',cat:'운영방법 검토',chips:[{k:'rs',t:'GPU임대가...'},{k:'g',t:'GPU임대가...'}],title:'VESSL AI 3차 미팅',imgs:[159.6],body:'※ SPC 설립 및 DBO 모델 적용: 고가의 AI 서버 구매 비용을 감당하기 위해\n기존의 상면 임대(Colocation) 방식 외에, SPC를 설립하여 직접 서버를\n구매하고 운영·임대하는 DBO(Design-Build-Operate) 수익 모델 전환 검토 중',gap:34.5}];
+  {date:'26.10.22',cat:'운영방법 검토',chips:[{k:'rs',t:'GPU임대가...'},{k:'g',t:'GPU임대가...'}],title:'VESSL AI 3차 미팅',imgs:[159.6],imgTop:15,body:'※ SPC 설립 및 DBO 모델 적용: 고가의 AI 서버 구매 비용을 감당하기 위해\n기존의 상면 임대(Colocation) 방식 외에, SPC를 설립하여 직접 서버를\n구매하고 운영·임대하는 DBO(Design-Build-Operate) 수익 모델 전환 검토 중',gap:34.5}];
 const PHEAD = {
   pangyo:{cls:'진행 중',prog:'운영방법 검토',owner:'박준수 대리',loc:'신성엔지니어링 분당서비스센터\n(경기 성남시 분당구 백현동 404-1) ',alt:'※ 대체부지 (후보지)\n1.  한국전기공업협동조합',
     zone:'도시지역, 자연녹지지역',kind:'데이터센터',dev:'선진엔지니어링',land:'신성이엔지',fund:'PF조달',cost:'₩100,000,000,000',fundType:'PF, 투자자유치',
@@ -1094,7 +1097,7 @@ function actionTable(rows,opts){ // opts: {noproj, page, per, total}
   let h=`<div class="tbl actions ${np?'noproj':''}"><div class="hd">${np?'':'<span><em>프로젝트</em></span>'}<span><em>담당자</em></span><span><em>제목</em></span><span><em>기한</em></span><span><em>중요도</em></span><span><em>상태 </em></span><span><em>URL</em></span><span><em>최종수정일자</em></span></div>`;
   rows.forEach(r=>{const p=proj(r.proj);
     h+=`<div class="rw" data-open="${r.id}">${np?'':`<div>${pill(p,'nosq')}</div>`}<div class="who" style="margin-left:-1.3px">${r.people.map(k=>`<span>${av()}${esc(PEOPLE[k])}</span>`).join('')}</div>
-      <div class="ttl" style="margin-left:-0.4px"><span class="tx">${esc(r.title)}</span><span class="acts"><button class="sh-btn" data-act="open" data-id="${r.id}">열기</button><button class="sh-btn" data-act="dl" data-id="${r.id}">다운로드 ${svg('i-dl',9.1,11,'color:#4f4f4f;margin-top:1px')}</button></span></div>
+      <div class="ttl" style="margin-left:-0.4px"><span class="tx">${esc(r.title)}</span><span class="acts"><button class="sh-btn" data-act="open" data-id="${r.id}">열기</button><button class="sh-btn" data-act="dl" data-id="${r.id}">다운로드 ${svg('i-dl',10,11,'color:#4f4f4f;margin-top:1px')}</button></span></div>
       <div class="d" style="margin-left:-1.3px">${esc(r.dateTxt||fmtDateDot(r.date))}</div><div class="pri pri-${r.pri}" style="margin-left:-1px">${priTxt[r.pri]}</div><div class="stt" style="margin-left:-0.6px">${stIcon(r.st)}</div>
       <div class="url" style="margin-left:-0.4px"><a href="https://www.dropbox.com/" target="_blank" rel="noopener" data-stop>${esc(r.url)}</a></div><div class="mod" style="margin-left:-0.4px">${esc(r.mod)}</div></div>`;});
   if(!rows.length)h+=`<div class="none">등록된 액션아이템이 없습니다.</div>`;
@@ -1102,7 +1105,7 @@ function actionTable(rows,opts){ // opts: {noproj, page, per, total}
 }
 function researchGrid(rows){if(!rows.length)return `<div class="rgrid"><div class="none">등록된 리서치가 없습니다.</div></div>`;return `<div class="rgrid">${rows.map(r=>`<div class="rcard ${r.desc?'':'nodesc'} ${r.file?'':'nobtn'} ${r.title.split('\n').length>=4?'t4':''}" data-open="${r.id}">
   ${r.dots.length?`<span class="dots">${r.dots.map(d=>`<i class="${d}"></i>`).join('')}</span>`:''}<div class="dt">${esc(r.dateTxt)}</div><div class="tt">${esc(r.title)}</div>${r.desc?`<div class="ds">${esc(r.desc)}</div>`:''}
-  ${r.file?`<button class="ln-btn" data-act="dl" data-id="${r.id}">다운로드 ${svg('i-dl',9.1,11,'color:#3d3d3d')}</button>`:''}</div>`).join('')}</div>`;}
+  ${r.file?`<button class="ln-btn" data-act="dl" data-id="${r.id}">다운로드 ${svg('i-dl',10,11,'color:#3d3d3d')}</button>`:''}</div>`).join('')}</div>`;}
 function partnerTable(rows){let h=`<div class="tbl partners"><div class="hd"><span><em>이름</em></span><span><em>홈페이지</em></span><span><em>구분</em></span><span><em>구분</em></span><span><em>미팅</em></span></div>`;
   rows.forEach(r=>{const m=r.meet?item(r.meet):null;
     h+=`<div class="rw" data-partner="${r.id}"><div class="nm"><span class="lg"></span>${esc(r.name)}<span class="acts"><button class="sh-btn" data-act="partner" data-id="${r.id}">열기</button></span></div><div class="hp"><a href="https://${r.site}" target="_blank" rel="noopener" data-stop>${esc(r.site)}</a></div><div class="cat"><a data-cat="${esc(r.cat)}">${esc(r.cat)}</a></div><div class="ds">${esc(r.desc)}</div><div class="mt">${m?chipOf(m):''}</div></div>`;});
@@ -1113,7 +1116,7 @@ function projectCards(){return PROJ_ORDER.map(k=>{const p=PROJECTS[k];return `<d
 function meetingCards(pid){const ms=ITEMS.filter(i=>i.type==='meeting'&&['m1','m2','m3','m4'].includes(i.id)&&(i.proj===pid||pid==='pangyo'));
   return ms.map((m,mi)=>`<div class="mcard ${m.grad?'g':''} ${mi>=2?'sm':''}" data-open="${m.id}" style="${m.id==='m1'?'width:322.2px':''}">${m.grad?'<div class="grad"></div>':''}${m.dots.length?`<span class="dots">${m.dots.map(d=>`<i class="${d}"></i>`).join('')}</span>`:''}<div class="dt">${esc(m.dateTxt)}</div>
    <div class="tt"><b>${esc(m.title)}</b>${avstack(m.people)}</div><ul class="chk">${m.checks.map(c=>`<li><span class="bx"></span><span class="tx">${esc(c.t)}</span>${c.pre?`<span class="pre">${esc(c.pre)}</span>`:''}</li>`).join('')}</ul>
-   <button class="ln-btn" data-act="dl" data-id="${m.id}">회의록 다운로드 ${svg('i-dl',9.1,11,'color:#3d3d3d')}</button></div>`).join('');}
+   <button class="ln-btn" data-act="dl" data-id="${m.id}">회의록 다운로드 ${svg('i-dl',10,11,'color:#3d3d3d')}</button></div>`).join('');}
 
 /* ===================== PAGES ===================== */
 function renderMain(){
@@ -1165,7 +1168,7 @@ function renderProject(pid){
 }
 function roadmapHtml(){let y=48.6; let h=`<div class="vline" style="top:-2.7px;height:${roadHeight()}px"></div>`;
   ROADMAP.forEach((r,i)=>{h+=`<div class="it" style="padding-top:${i===0?0:0}px;margin-top:${i===0?y:r.prevGap||0}px"><span class="date">${esc(r.date)}</span><i class="dot"></i><span class="cat">${esc(r.cat)}</span><div class="chips" style="top:30.5px">${r.chips.map(c=>`<span class="chip ${c.k==='rs'?'rs':'pj-g'}" style="${c.k==='rs'?'':'background:#e8f3e5'}"><i class="sq"></i>${esc(c.t)}</span>`).join('')}</div>
-    <div class="tt">${esc(r.title)}</div>${r.imgs.length?`<div class="imgs" style="margin-top:9.5px">${r.imgs.map((w,j)=>`<div class="ph" style="width:${w}px">${(j===0&&r.dl)?`<button class="ln-btn dl" data-act="dlroad" data-id="${i}">다운로드 ${svg('i-dl',7.1,8,'color:#3d3d3d')}</button>`:''}</div>`).join('')}</div>`:''}
+    <div class="tt">${esc(r.title)}</div>${r.imgs.length?`<div class="imgs" style="margin-top:${r.imgTop||9.5}px">${r.imgs.map((w,j)=>`<div class="ph" style="width:${w}px">${(j===0&&r.dl)?`<button class="ln-btn dl" data-act="dlroad" data-id="${i}">다운로드 ${svg('i-dl',7.1,8,'color:#3d3d3d')}</button>`:''}</div>`).join('')}</div>`:''}
     <div class="body" style="margin-top:${r.imgs.length?(i===0?12.6:20):3.5}px">${esc(r.body)}</div></div>`;});
   h+=`<div class="vline fut" style="top:${roadHeight()+26}px;height:347px"></div><div style="height:30px"></div><div style="position:relative;height:40px">${plusBtn('add road-add','로드맵 추가').replace('class="sh-btn','style="position:absolute;left:73px;top:8px" class="sh-btn')}</div><div id="road-form-slot"></div>`; return h;}
 function roadHeight(){return 903.1;}
@@ -1190,7 +1193,7 @@ function renderArchive(){
   h+=`<button class="sh-btn newsec" data-newsec>구분 새로 만들기</button>
    <div class="tabs" style="margin-top:197.3px">${plusBtn('addtab','탭 추가').replace('class="sh-btn','data-addtab class="sh-btn')}<ul style="height:53.5px">${ARCH_TABS.map(t=>`<li class="${t===S.archTab?'on':''}" data-tab="${esc(t)}">${esc(t)}</li>`).join('')}</ul><div class="bar"><i style="left:${ARCH_TABS.indexOf(S.archTab)*338.2}px"></i></div></div>
    <div class="tbl archive" style="margin-top:109.5px"><div class="hd"><span><em>제목</em></span><span><em>담당자</em></span><span><em>기한</em></span><span><em>최종수정일자</em></span><span><em>출처</em></span></div>
-   ${page.map(r=>`<div class="rw" data-open="${r.id}"><div class="ttl">${r.dot?'<i class="gd"></i>':''}<span class="tx">${esc(r.title)}</span><span class="acts"><button class="sh-btn" data-act="open" data-id="${r.id}">열기</button><button class="sh-btn" data-act="dl" data-id="${r.id}">다운로드 ${svg('i-dl',9.1,11,'color:#4f4f4f;margin-top:1px')}</button></span></div><div class="who" style="margin-left:-2.5px">${r.people.map(k=>`<span>${av()}${esc(PEOPLE[k])}</span>`).join('')}</div><div class="d" style="margin-left:-1.3px">${esc(r.dateTxt)}</div><div class="mod" style="margin-left:-0.5px">${esc(r.mod)}</div><div class="src" style="margin-left:-0.4px"><a data-stop href="#">${esc(r.src)}</a></div></div>`).join('')}
+   ${page.map(r=>`<div class="rw" data-open="${r.id}"><div class="ttl">${r.dot?'<i class="gd"></i>':''}<span class="tx">${esc(r.title)}</span><span class="acts"><button class="sh-btn" data-act="open" data-id="${r.id}">열기</button><button class="sh-btn" data-act="dl" data-id="${r.id}">다운로드 ${svg('i-dl',10,11,'color:#4f4f4f;margin-top:1px')}</button></span></div><div class="who" style="margin-left:-2.5px">${r.people.map(k=>`<span>${av()}${esc(PEOPLE[k])}</span>`).join('')}</div><div class="d" style="margin-left:-1.3px">${esc(r.dateTxt)}</div><div class="mod" style="margin-left:-0.5px">${esc(r.mod)}</div><div class="src" style="margin-left:-0.4px"><a data-stop href="#">${esc(r.src)}</a></div></div>`).join('')}
    ${page.length?'':'<div class="none">등록된 자료가 없습니다.</div>'}<div class="ft"></div></div>${pager(S.archPage,total,'pg-arch').replace('class="pager','style="margin-top:69.7px" class="pager')}<div style="height:509.7px"></div></div>`;
   $('#arch-pw').innerHTML=h;
 }
@@ -1399,9 +1402,9 @@ function openModal(pane){closePop();$('#ovl').classList.add('on');renderPane(pan
 function closeModal(){$('#ovl').classList.remove('on');}
 function renderPane(pane){$$('#mnav .item').forEach(i=>i.classList.toggle('on',i.dataset.pane===pane));const unread=INBOX.filter(n=>!n.read).length;$('#inbox-badge').textContent=unread;$('#inbox-badge').style.display=unread?'':'none';$('#m-inbox-badge').textContent=unread;$('#m-inbox-badge').style.display=unread?'':'none';
   const B=$('#mbody'); let h='';
-  if(pane==='inbox'){h=`<div class="pane on"><div class="readall" data-readall>${svg('i-check-thin',10.8,9.3)}모두 읽음으로 표시</div><div class="inbox-list">${INBOX.map((n,i)=>`<div class="inb ${n.read?'read':'unread'} ${n.reply?'reply':''} ${n.stack?'stack':''}" style="${n.reply?'':'padding-bottom:33px'}"><span class="cb" data-inbox-cb="${n.id}">${n.checked?svg('i-check-lt',8.6,7.3,'color:#b2b2b2'):''}</span><div class="dt">${esc(n.date)}${n.read?'':'<i></i>'}</div>
-    <div class="ln"><span class="avs">${av()}${n.stack?av('s'):''}</span><b>${esc(PEOPLE[n.who])}</b>님${esc(n.extra)}이 <span class="chip">${esc(n.tag)}</span><span class="ti" data-inbox-open="${n.id}">${esc(n.title)}</span>에 댓글을 달았습니다.${n.file?`<button class="ln-btn dlbtn" data-inbox-dl>첨부파일 다운로드 ${svg('i-dl',9.2,11,'color:#3d3d3d')}</button>`:''}</div>
-    <div class="cm">${withS(n.comment)}</div>${(n.replies||[]).length?`<div class="replies">${n.replies.map(r=>`<div><b>${esc(r.who)}</b>${esc(r.text)}</div>`).join('')}</div>`:''}${n.reply?`<div class="rp" data-inbox-reply="${n.id}">${svg('i-reply',11.6,19.2,'margin-top:-16.7px')}${av()}<span class="tx">댓글 추가 </span></div>`:''}</div>${i<INBOX.length-1?'<div class="inb-hr"></div>':''}`).join('')}<div style="height:60px"></div></div></div>`;}
+  if(pane==='inbox'){h=`<div class="pane on"><div class="readall" data-readall>${svg('i-check-thin',10.8,9.3)}모두 읽음으로 표시</div><div class="inbox-list">${INBOX.map((n,i)=>`<div class="inb ${n.read?'read':'unread'} ${n.reply?'reply':''} ${n.stack?'stack':''}" style="${n.reply?'':'padding-bottom:33px'}"><span class="cb" data-inbox-cb="${n.id}">${n.checked?svg('i-check-lt',9.6,8.3,'color:#b2b2b2'):''}</span><div class="dt">${esc(n.date)}${n.read?'':'<i></i>'}</div>
+    <div class="ln"><span class="avs">${av()}${n.stack?av('s'):''}</span><b>${esc(PEOPLE[n.who])}</b>님${esc(n.extra)}이 <span class="chip">${esc(n.tag)}</span><span class="ti" data-inbox-open="${n.id}">${esc(n.title)}</span>에 댓글을 달았습니다.${n.file?`<button class="ln-btn dlbtn" data-inbox-dl>첨부파일 다운로드 ${svg('i-dl',10,11,'color:#3d3d3d')}</button>`:''}</div>
+    <div class="cm">${withS(n.comment)}</div>${(n.replies||[]).length?`<div class="replies">${n.replies.map(r=>`<div><b>${esc(r.who)}</b>${esc(r.text)}</div>`).join('')}</div>`:''}${n.reply?`<div class="rp" data-inbox-reply="${n.id}">${svg('i-reply',11.6,21.3,'margin-top:-14.6px')}${av()}<span class="tx">댓글 추가 </span></div>`:''}</div>${i<INBOX.length-1?'<div class="inb-hr"></div>':''}`).join('')}<div style="height:60px"></div></div></div>`;}
   else if(pane==='members'){const total=Math.ceil(MEMBERS.length/10);const rows=MEMBERS.slice((S.memPage-1)*10,S.memPage*10);
     h=`<div class="pane on"><div class="mem"><div class="h"><h2 style="margin-top:13.1px">멤버</h2><button class="addbtn" style="margin-top:16.2px" data-addmember>+추가</button></div><div class="desc" style="margin-top:6.9px">워크 스페이스에 있는 인원과 역할을 관리하세요.</div><div class="tools" style="margin-top:99.2px"><i title="목록"></i><i title="필터"></i></div>
     <div class="tbl"><div class="hd"><span><em>사용자</em><em class="em2">이메일</em></span><span><em>역할</em></span><span><em>워크 스페이스 ${svg('i-chev-d',7.2,3.6,'display:inline-block;color:#4f4f4f;margin-left:5px')}</em></span></div>
