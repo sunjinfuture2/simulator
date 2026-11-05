@@ -173,7 +173,7 @@ svg{display:block}
 .pager button{padding:0 7px;height:22px;font-weight:350;border-radius:3px}
 .pager button.cur{font-weight:600}
 .pager button:hover{background:#f3f3f3}
-.pager .arr{padding:0 8.5px;display:flex;align-items:center;height:22px;color:rgba(79,79,79,.6)}
+.pager .arr{padding:0 8.5px;display:flex;align-items:center;height:22px;color:#4f4f4f}
 .pager .arr[disabled]{opacity:1;cursor:default}
 .status-ic{display:inline-flex;align-items:center;gap:5px}
 .toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);background:#1c1c1c;color:#fff;font-size:13px;padding:9px 16px;border-radius:6px;z-index:200;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
@@ -665,11 +665,11 @@ svg{display:block}
 .mem .h .addbtn{margin:12.4px 0 0 7.1px;height:27.5px;padding:0 9.5px 0 5.5px;background:#0068ff;color:#fff;border-radius:8px;font-size:14px;display:flex;align-items:center;white-space:nowrap}
 .mem .h .addbtn:hover{background:#0059db}
 .mem .desc{margin:2.9px 0 0 -0.1px;font-size:15px;font-weight:500;color:var(--ink)}
-.mem .tools{margin:103px 0 0 0.6px;display:flex;gap:7.8px}
-.mem .tools i{width:15.6px;height:15.7px;background:#eaeaea;border-radius:2px;display:block;cursor:pointer}
+.mem .tools{margin:102.4px 0 0 0.6px;display:flex;gap:7.8px}
+.mem .tools i{width:15.6px;height:15.7px;background:#eaeaea;border-radius:0;display:block;cursor:pointer}
 .mem .tools i:hover{background:#dedede}
 .mem .tbl{margin-top:20.4px;width:1112px}
-.mem .tbl .hd,.mem .tbl .rw{grid-template-columns:490.8px 102.7px 501.7px;column-gap:6.5px}
+.mem .tbl .hd,.mem .tbl .rw{grid-template-columns:490.8px 102.7px 1fr;column-gap:6.3px}
 .mem .tbl .hd span:first-child{padding-left:0}
 .mem .tbl .hd{height:18px}
 .mem .tbl .rw{height:41.5px;cursor:default}
@@ -678,8 +678,9 @@ svg{display:block}
 .mem .tbl .rw .us .nm{display:flex;align-items:center;gap:3.1px;font-size:14px;font-weight:500;color:var(--ink);margin-left:-0.9px}
 .mem .tbl .rw .us .em{font-size:12px;color:var(--t2)}
 .mem .tbl .rw .ro{font-size:14px;font-weight:500;color:var(--ink);gap:5.9px;cursor:pointer;margin-left:-1.3px}
-.mem .tbl .rw .ws{font-size:14px;font-weight:500;color:var(--ink);gap:12.7px;margin-left:3.7px}
-.mem .tbl .hd span:nth-child(3){margin-left:3.7px}
+.mem .tbl .rw .ws{font-size:14px;font-weight:500;color:var(--ink);gap:12.7px;margin-left:5px}
+.mem .tbl .hd span:nth-child(3){margin-left:5px}
+.mem .tbl .hd span:nth-child(3) svg{position:relative;top:-2.7px;margin-left:2.2px!important}
 .mem .pager{width:1326px;margin-left:-113.2px}
 .mem .pager .arr:first-child{position:relative;left:4px}
 .mem .pager .arr:last-child{position:relative;left:2.8px}
