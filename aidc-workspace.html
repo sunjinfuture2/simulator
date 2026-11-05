@@ -107,6 +107,7 @@ svg{display:block}
 .tb-right > *{pointer-events:auto}
 .tb-user{position:absolute;left:1416.5px;top:17.7px;display:flex;align-items:center;cursor:pointer}
 .tb-user .av{position:relative;display:block;width:22.9px;height:22.9px}
+.tb-user .av .avatar{display:block}
 .tb-user .av .dt{position:absolute;left:0.2px;top:-0.9px;width:7px;height:7px;border-radius:50%;background:#ff0000;border:0.5px solid #fff;z-index:1}
 .tb-user .nm{margin-left:5.9px;font-size:15px;font-weight:500;color:var(--ink);margin-top:0.3px}
 .tb-ic{position:absolute;top:19px;width:20.2px;height:20.2px;background:#eaeaea;border-radius:2px;display:flex;align-items:center;justify-content:center}
@@ -159,7 +160,7 @@ svg{display:block}
 .pj-b{--cc:#4b42fc;--cbg:#edecff;--csq:#bcb9fe}
 .pj-k{--cc:#444444;--cbg:#e8e8e8;--csq:#ababab}
 .pj-s{--cc:#3a3a3a;--cbg:#ebebeb;--csq:#b5b5b5}
-.sh-btn{background:#fff;border-radius:4px;box-shadow:0 0.4px 2.6px rgba(0,0,0,.19),0 0 0.6px rgba(0,0,0,.1);display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
+.sh-btn{background:#fff;border-radius:4px;box-shadow:0 0 0 0.5px rgba(0,0,0,.16),0 1px 2.5px rgba(0,0,0,.16);display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
 .sh-btn:hover{background:#fafafa}
 .sh-btn:active{background:#f1f1f1}
 .plus-btn{width:21.4px;height:21.4px;border-radius:4px}
@@ -167,7 +168,7 @@ svg{display:block}
 .ln-btn:hover{background:#fafafa}
 .sec-title{font-size:29px;font-weight:600;color:#000;letter-spacing:-0.02em;display:flex;align-items:flex-start;white-space:nowrap}
 .sec-title .plus-btn{margin-left:10.7px;margin-top:9.9px}
-.sec-title .lib{margin-left:22.7px;margin-top:9.6px;height:22.4px;padding:0 9.1px;font-size:13px;font-weight:500;color:#8e8e8e}
+.sec-title .lib{margin-left:22.7px;margin-top:9.6px;height:22.4px;padding:0 9.1px;border-radius:8px;font-size:13px;font-weight:500;color:#8e8e8e}
 .pager{display:flex;justify-content:center;align-items:center;font-size:15px;color:#000;gap:0}
 .pager button{padding:0 7px;height:22px;font-weight:350;border-radius:3px}
 .pager button.cur{font-weight:600}
@@ -519,13 +520,13 @@ svg{display:block}
 .tbl.archive .rw .src a{border-bottom:1px solid #9f9f9f;line-height:17px}
 
 /* ===== SIDE PANEL & FULL PAGE ITEM ===== */
-.panel{position:absolute;left:596.1px;top:45px;bottom:0;width:973.5px;background:#fff;z-index:12;display:none;overflow-y:auto}
+.panel{position:absolute;left:596.1px;top:45px;bottom:0;width:973.5px;background:#fff;z-index:16;display:none;overflow-y:auto;box-shadow:-4px 0 12px rgba(0,0,0,.045),inset 1px 0 0 rgba(196,196,196,.6)}
 .panel.on{display:block}
 .panel .pin{position:relative;width:887px;min-height:100%}
 .ipage{position:relative;min-height:1035px}
 .ipage .pin{position:relative;margin-left:146px;width:1200px}
 .ihead{position:absolute;top:87.1px;left:0;right:0;display:flex;align-items:flex-start}
-.ihead .pub{height:24.8px;width:54.7px;font-size:16px;font-weight:500;color:#8e8e8e;border-radius:4px}
+.ihead .pub{height:24.8px;width:54.7px;font-size:16px;font-weight:500;color:#8e8e8e;border-radius:8px}
 .ihead .pub.ready{color:#3f3f3f}
 .ihead .pub.edit{color:#3f3f3f}
 .ihead .last{margin:1.9px 0 0 8.4px;font-size:15px;color:#c4c4c4;white-space:nowrap}
@@ -548,15 +549,16 @@ svg{display:block}
 .props .pr .v{display:flex;align-items:flex-start;gap:3.3px;min-height:20px;cursor:pointer;position:relative}
 .props .pr .v.txt:hover{background:#f7f7f7;border-radius:3px;margin:-2px -6px;padding:2px 6px}
 .props .pr .v .pill{margin:-0.8px 0 0 -1.4px;height:19.6px}
-.props .pr .v .chip{margin:1.8px 2.4px 0 0;height:17.4px}
-.props .pr .v .lk{display:flex;align-items:flex-start;gap:3.1px;margin-left:1.2px}
-.props .pr .v .lk i{width:16.7px;height:16.7px;background:#eaeaea;border-radius:2px;flex:none;margin-top:2.3px}
+.props .pr .v .chip{margin:1.8px 3.4px 0 0;height:17.4px;width:98px;box-sizing:border-box;padding-right:0;overflow:hidden}
+#panel-expand{position:relative;left:-2px}
+.props .pr .v .lk{display:flex;align-items:flex-start;gap:3.1px;margin-left:2.5px}
+.props .pr .v .lk i{width:16.7px;height:16.7px;background:#eaeaea;border-radius:0;flex:none;margin-top:2.3px}
 .props .pr .v .lk a{border-bottom:1px solid rgba(61,61,61,.45);line-height:16px}
 .props .pr .v .who{display:flex;align-items:center;gap:3.2px;font-size:14px;font-weight:500;color:var(--ink);margin-top:-1px}
 .props .pr .v .who .avatar{width:15.4px;height:15.4px;margin-left:1.9px}
 .props .pr .v .who + .who{margin-left:4.8px}
-.props .pr .v .ghost{width:6.5px;height:6.5px;border-radius:50%;background:#eaeaea;margin:9px 0 0 8px}
-.props .pr .v .url{color:var(--t2);border-bottom:1px solid #e5e5e5;line-height:17.5px;margin-left:5px}
+.props .pr .v .ghost{width:6.5px;height:6.5px;border-radius:50%;background:#eaeaea;margin:6.2px 0 0 11.6px}
+.props .pr .v .url{color:var(--t2);border-bottom:1px solid #cfcfcf;line-height:13.1px;position:relative;top:2.2px;margin-left:5px}
 .props .pr .v .st{display:flex;align-items:center;gap:3.8px;color:#939393;margin-left:2.6px}
 .props .pr .v .st.done{color:#1acc00}
 .props .pr .v .pri{color:#1acc00}
@@ -577,14 +579,14 @@ svg{display:block}
 .ibody s{text-decoration:line-through;text-decoration-thickness:1px}
 .ibody[contenteditable="true"]:focus{box-shadow:0 0 0 1px #e3e3e3;border-radius:4px}
 .panel .ihead{top:87.1px;left:113.9px;width:772.2px}
-.panel .ititle{left:113.5px;top:132.9px}
+.panel .ititle{left:113.5px;top:137.9px}
 .props .rcol{margin-top:-1px}
 .panel .props{left:114.8px;top:224.9px}
 .panel .cmt-row{left:114.3px}
 .panel .ihr{left:116px;width:770.9px;right:auto}
 .panel .ibody{left:115.3px;width:775px;right:auto}
 .ipage .ihead{top:87.1px;left:-8px;width:1344.2px}
-.ipage .ititle{left:-2.9px;top:120.7px}
+.ipage .ititle{left:-2.9px;top:125.7px}
 .ipage .props{left:-1.6px;top:212.7px;grid-template-columns:562.5px 449px}
 .ipage .cmt-row{left:-2.1px}
 .ipage .ihr{left:-0.3px;width:1337.3px}
@@ -755,7 +757,7 @@ svg{display:block}
     <symbol id="i-dl" viewBox="0 0 10 11"><path d="M5 0.5V9M0.9 5.3L5 9.4 9.1 5.3M0.9 10.5H9.1" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="square"/></symbol>
     <symbol id="i-plus" viewBox="0 0 12 12"><path d="M6 0.2V11.8M0.2 6H11.8" fill="none" stroke="#8e8e8e" stroke-width="1"/></symbol>
     <symbol id="i-check" viewBox="0 0 10 8"><path d="M0.8 4.1L3.6 6.9 9.2 1.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></symbol>
-    <symbol id="i-prog" viewBox="0 0 10 10"><path d="M7.9 2.6A3.7 3.7 0 1 0 8.7 5.4" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M8.9 0.6V3.3H6.2" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-prog" viewBox="0 0 10 10"><path d="M5.7 1.06A4 4 0 1 0 8.94 4.31" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
     <symbol id="i-chev-d" viewBox="0 0 8 4"><path d="M0.5 0.5L4 3.5 7.5 0.5" fill="none" stroke="currentColor" stroke-width="0.75"/></symbol>
     <symbol id="i-chev-r" viewBox="0 0 4 7"><path d="M0.5 0.5L3.3 3.5 0.5 6.5" fill="none" stroke="currentColor" stroke-width="0.75"/></symbol>
     <symbol id="i-nav-l" viewBox="0 0 5.6 10.9"><path d="M5 0.6L0.8 5.45 5 10.3" fill="none" stroke="#adadad" stroke-width="1.5"/></symbol>
@@ -771,7 +773,7 @@ svg{display:block}
     <symbol id="i-star" viewBox="0 0 21 20"><path d="M10.4 0.3l3.1 6.4 7 1-5 5 1.2 7-6.3-3.3L4.1 19.7l1.2-7-5-5 7-1z" fill="#ffce00"/></symbol>
     <symbol id="i-star-o" viewBox="0 0 21 20"><path d="M10.4 1.4l2.7 5.4 6 .9-4.3 4.2 1 6-5.4-2.8-5.4 2.8 1-6L1.7 7.7l6-.9z" fill="none" stroke="#c9c9c9" stroke-width="1.2"/></symbol>
     <symbol id="i-dbl" viewBox="0 0 16 17"><path d="M1 0.7L8 8.4 1 16.2M7.5 0.7l7 7.7-7 7.8" fill="none" stroke="#5e5e5e" stroke-width="1.3"/></symbol>
-    <symbol id="i-expand" viewBox="0 0 16 16"><path d="M1 6.5V1h5.5M1 1l5.4 5.4M15 9.5V15H9.5M15 15L9.6 9.6" fill="none" stroke="#5e5e5e" stroke-width="1.3"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 14.5 14.5"><path d="M0.65 6.35V0.65h5.7M0.65 0.65L13.85 13.85M13.85 8.15v5.7h-5.7" fill="none" stroke="#5e5e5e" stroke-width="1.3"/></symbol>
     <symbol id="i-more" viewBox="0 0 3 15"><circle cx="1.5" cy="1.5" r="1.3" fill="#c9c9c9"/><circle cx="1.5" cy="7.5" r="1.3" fill="#c9c9c9"/><circle cx="1.5" cy="13.5" r="1.3" fill="#c9c9c9"/></symbol>
     <symbol id="i-reply" viewBox="0 0 12 20"><path d="M1 0.5V19H11.4M8.5 16.3l2.9 2.7-2.9 2.7" fill="none" stroke="#a5a5a5" stroke-width="0.6"/></symbol>
     <symbol id="i-check-thin" viewBox="0 0 10.8 9.3"><path d="M0.6 4.7L4.1 8.3 10.2 0.9" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol><symbol id="i-check-lt" viewBox="0 0 8.6 7.3"><path d="M0.5 3.8l2.7 2.7L8.1 0.6" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
@@ -837,7 +839,7 @@ svg{display:block}
       <nav class="crumbs" id="crumbs"></nav>
       <div class="tb-panel-ic">
         <button id="panel-close" title="패널 닫기"><svg width="16" height="16.1"><use href="#i-dbl"/></svg></button>
-        <button id="panel-expand" title="전체 페이지로 열기"><svg width="15" height="15.5"><use href="#i-expand"/></svg></button>
+        <button id="panel-expand" title="전체 페이지로 열기"><svg width="14.5" height="14.5"><use href="#i-expand"/></svg></button>
       </div>
       <div class="tb-right">
         <div class="tb-user" id="tb-user"><span class="av"><span class="avatar av22"></span><i class="dt"></i></span><span class="nm">최원 기사</span></div>
@@ -1210,10 +1212,10 @@ function itemHtml(it,mode){ // mode 'panel'|'full'
   const titleEmpty=!it.title; const title=`<div class="ititle ${titleEmpty?'empty':''}" ${locked?'':'contenteditable="true"'} data-f="title" data-ph="${it.type==='meeting'?'새 미팅':(it.type==='action'?'새 액션아이템':'새 리서치')}">${titleEmpty?(it.type==='meeting'?'새 미팅':(it.type==='action'?'새 액션아이템':'새 리서치')):esc(it.title.split('\n').join(' '))}</div>`;
   const V=(k,inner,cls='')=>`<div class="pr"><span class="k">${k}</span><span class="v ${cls}" data-pf="${k}">${inner}</span></div>`;
   let props='';
-  const who=(ppl)=>ppl.map(k=>`<span class="who">${av()}${esc(PEOPLE[k])}</span>`).join('')+(locked?'<span class="ghost"></span>':'');
+  const who=(ppl)=>ppl.map(k=>`<span class="who">${av()}${esc(PEOPLE[k])}</span>`).join('')+(it.type==='action'?'<span class="ghost"></span>':'');
   if(it.type==='meeting'){
     const L=`${V('사업명',pill(p).replace('class="pill','data-pick="proj" class="pill'))}${V('날짜',`<span class="plain" data-pick="date">${fmtDateK(it.date)}</span>`,'txt')}${V('협력업체',`<span class="lk" data-pick="partner"><i></i><a>${esc(it.partner)}</a></span>`)}${V('참석자 (선진)',`<span style="display:flex;gap:0" data-pick="people">${who(it.people.slice(0,2))}</span>`)}${V('참석자 (협력업체)',`<span class="plain" data-pick="extAtt">${esc(it.extAtt)}</span>`,'txt')}`;
-    const R=`<div class="pr"></div>${V('액션아이템',`<span data-pick="actions">${it.actions.map(a=>chipOf(item(a))).join('')}</span>`)}${V('리서치',`<span data-pick="research">${it.research.map(a=>chipOf(item(a))).join('')}</span>`)}${V('드롭박스 URL',`<a class="url" href="https://www.dropbox.com/" target="_blank" rel="noopener" data-stop style="margin-left:0">${esc(it.url||'dropbox.com......')}</a>`)}${V('최종수정일자',`<span class="plain">${esc(it.mod||'7월 22 오전 9:50')}</span>`)}`;
+    const R=`<div class="pr"></div>${V('액션아이템',`<span data-pick="actions">${it.actions.map(a=>chipOf(item(a)).replace(' ...','...')).join('')}</span>`)}${V('리서치',`<span data-pick="research">${it.research.map(a=>chipOf(item(a)).replace(' ...','...')).join('')}</span>`)}${V('드롭박스 URL',`<a class="url" href="https://www.dropbox.com/" target="_blank" rel="noopener" data-stop style="margin-left:0">${esc(it.url||'dropbox.com......')}</a>`)}${V('최종수정일자',`<span class="plain">${esc(it.mod||'7월 22 오전 9:50')}</span>`)}`;
     props=`<div class="props"><div>${L}</div><div class="rcol">${R}</div></div>`;
   } else {
     const rows=(it.type==='action'?[V('사업명',pill(p).replace('class="pill','data-pick="proj" class="pill'))]:[]).concat([
