@@ -319,12 +319,13 @@
     .dashboard-grid:not(.is-finance) .remote.stuck::after { content: ""; position: absolute; left: -150px; right: -135px; bottom: 0; height: 2px; background: var(--k100); }
     .remote .sg-inner { overflow: clip; overflow-clip-margin: 4px; max-height: var(--sg-h, 999px); transition: max-height .28s ease, opacity .22s ease; }
     .remote.collapsed .sg-inner { max-height: 0 !important; opacity: 0; }
-    .remote.collapsed { padding-bottom: 8px; }
     /* 접기/펴기 탭: 2px 선이 탭 양옆으로 꺾여 내려가는 홈(notch) 형태 — 탭 안쪽 윗선은 비움 */
     .sg-toggle { position: absolute; left: 50%; top: calc(100% - 2px); transform: translateX(-50%); width: 44px; height: 21px; border: 2px solid var(--k100); border-top: 0; background: #fff; display: none; align-items: center; justify-content: center; cursor: pointer; padding: 0; z-index: 6; }
     .remote.stuck .sg-toggle { display: flex; }
     .sg-toggle::before { content: ""; width: 9px; height: 9px; border-left: 2px solid var(--k100); border-top: 2px solid var(--k100); transform: translateY(3px) rotate(45deg); transition: transform .28s ease; }
-    .remote.collapsed .sg-toggle::before { transform: translateY(-2px) rotate(225deg); }
+    .remote.collapsed .sg-toggle { height: 11px; }
+    .remote.collapsed .sg-toggle::before { width: 7px; height: 7px; transform: translateY(-2px) rotate(225deg); }
+    .remote.collapsed { padding-bottom: 4px; }
     .kpi { position: relative; min-width: 0; }
     .kpi .k-pre { font-size: 13px; font-weight: 500; color: var(--g77); line-height: 17.6px; margin-bottom: 0.4px; white-space: nowrap; }
     .kpi .k-label { display: flex; align-items: center; font-size: 19px; font-weight: 600; color: var(--g77); line-height: 25.7px; white-space: nowrap; }
@@ -523,7 +524,7 @@
     .sys-card .su-big.card-count .unit { font-size: 22px; }
     .sys-card .su-big.card-count .max { margin-left: auto; text-align: right; white-space: nowrap; }
     .sys-card .su-big.card-count .racks { font-size: 15px; font-weight: 500; color: var(--g77); margin-left: 10px; white-space: nowrap; }
-    .s-group.space .fac-mode-lab { display: block; margin-top: 26px; }
+    .s-group.space .fac-mode-row + .s-btns { margin-top: 17.3px; }
     .sys-card .su-big.card-count .max.text-danger { color: var(--red); }
     .sys-card .track { margin-top: 8px; }
     .sys-card .track:disabled { opacity: 0.4; }
@@ -1048,7 +1049,7 @@
     //  · SU형: rackKw·rackAreaSqm·rackPriceUsd(랙당) × racksPerUnit → SU당 전력·면적·NVL72 항목 (GB300 = SuperPOD 추산 자료 1.2MW/120㎡/$32.5M ÷ 8)
     //  · 서버형(B300): VSLAI rev1.2 HGX B300 NVL8 가정값 — 서버 본체 $451,400(NVL72 GPU당 단가 × 8), 네트워크 $66,000, 스토리지·관리 $31,900, CDU $27,800, SW Setup·SI $48,600
     //    서버 1대 IT 부하 15kW(본체 14 + 네트워크 0.6 + 스토리지·관리 0.4), 수랭 4U 기준 랙당 8대 · 랙당 15㎡ (SuperPOD과 같은 기준: SU 120㎡ ÷ 8랙 — 랙 발자국은 NVL72와 동일한 600 × 1,068~1,200mm)
-    //  · 기초단가: B300은 NeoCloud 공개 소비자가 $7.38/GPU·h를 온디맨드 기초단가 가정값으로 사용 (카드에서 수정 가능)
+    //  · 기초단가: B300은 NeoCloud 공개 판매단가 $7.38/GPU·h를 온디맨드 기초단가 가정값으로 사용 (카드에서 수정 가능)
     //  · VR SuperPOD · 직접 입력: 확인된 사양이 없어 빈칸(0) — 값을 넣기 전까지는 계산에 0으로 반영
     const GPU_KEYS = ['b300', 'gb300', 'vr', 'custom'];
     const SERVER_ITEM_KEYS = ['server', 'network', 'storage', 'cdu', 'si'];
@@ -1104,7 +1105,7 @@
     };
     const B300_NET = {
       '400': { ko: '400G NDR InfiniBand', en: '400G NDR InfiniBand', netUsd: 66000, netKw: 0.6,
-        noteKo: '공개 소비자가 사양과 동일 · SuperPOD 네트워크 항목 GPU당 환산', noteEn: 'Matches the public listing · SuperPOD network item per GPU' },
+        noteKo: '공개 판매단가 사양과 동일 · SuperPOD 네트워크 항목 GPU당 환산', noteEn: 'Matches the public listing · SuperPOD network item per GPU' },
       '800': { ko: '800G XDR (Quantum-X800)', en: '800G XDR (Quantum-X800)', netUsd: 105600, netKw: 1.0,
         noteKo: 'ConnectX-8 네이티브 대역폭 · 400G 대비 단가 1.6배 가정', noteEn: 'Native ConnectX-8 bandwidth · 1.6x the 400G cost (assumed)' }
     };
@@ -1129,8 +1130,8 @@
       disc1YPct: 25,          // 1년 예약 할인(%) — 보고서 5-3
       disc3YPct: 46,          // 3년 예약 할인(%) — 보고서 5-3
       totalPowerKw: 6000,
-      pue: 1.25,
-      itPowerKw: 4800,
+      pue: 1.2,
+      itPowerKw: 5000,         // rev57: 기본 IT 수전 5MW (총 수전 6MW 고정 → PUE 1.2)
       floorAreaSqm: 1850,      // rev56: 판교 AIDC 계획 연면적
       greySpaceSqm: 1700,       // rev47: 그레이스페이스(㎡) — 기계실·전기실·복도·반입구·감시실 등 지원 공간 (전기실·발전기실·UPS는 신축 700㎡ 전력동이 흡수)
       whiteSpaceSqm: 150,      // rev47: 화이트스페이스(㎡) = 연면적 − 그레이스페이스 (파생값, 표시용)
@@ -1159,7 +1160,7 @@
       // rev37: 운영 방식 — 'csp'(직접 영업·운영) | 'neo'(NeoCloud 경유). 기본값과 NeoCloud 조건은 VSLAI rev1.2 값
       opMode: 'neo',
       neoPriceKey: 'b300',
-      neoPrice_b300: 7.38,     // NeoCloud 공개 소비자가 ($/GPU·h) — B300
+      neoPrice_b300: 7.38,     // NeoCloud 공개 판매단가 ($/GPU·h) — B300
       neoPrice_gb300: 0,       // 자료 없음 — 빈칸(0)이면 매출 0
       neoPrice_vr: 0,
       neoPrice_custom: 0,
@@ -1210,31 +1211,31 @@
       srvOpexRowNeo: { ko: '타사위탁 기타 운영비', en: 'Outsourced other opex' },
       srvOpexNeoNote: { ko: '타사위탁 모드: 사이드바 「기타 운영비(연간)」 값 적용', en: 'Outsourced mode: uses the sidebar "Other opex (per yr)" value' },
       srvOpexCspHint: { ko: '직접운영 모드에서만 계상 (억/년)', en: 'Charged in direct-operation mode only' },
-      auxBreakevenNoPrice: { ko: 'GB300 소비자가 미입력 — [SuperPOD] 기준 손익 산출 불가 (사이드바 GPU 소비자가에 GB300 입력)', en: 'GB300 list price blank — [SuperPOD] profit not available (enter GB300 under GPU list price)' },
+      auxBreakevenNoPrice: { ko: 'GB300 판매단가 미입력 — [SuperPOD] 기준 손익 산출 불가 (사이드바 GPU 판매단가에 GB300 입력)', en: 'GB300 list price blank — [SuperPOD] profit not available (enter GB300 under GPU list price)' },
       srvAuxDesc: { ko: 'SI 할증 배수를 바꾸면 SW Setup·SI 항목이 그 배수로 계상됩니다. 손익 역전 배수는 같은 부지를 GB300 SuperPOD만으로 채웠을 때의 3년 누적 손익과 비교합니다.', en: 'Changing the SI premium multiplier scales the SW setup · SI item. The break-even multiplier compares against the 3-yr cumulative profit of the same site filled with GB300 SuperPOD only.' },
       // ---- rev37: 운영 방식 CSP / NeoCloud ----
       labelOpMode: { ko: '운영 방식', en: 'Operating model' },
       opModeCsp: { ko: 'CSP 직접운영', en: 'CSP (direct)' },
       opModeNeo: { ko: 'CSP 타사위탁', en: 'CSP (outsourced)' },
       opModeCspHint: { ko: '당사가 GPU 클라우드를 직접 영업·운영합니다.<br>계약 포트폴리오(예약·온디맨드)와 할인율로 매출을 산출합니다.', en: 'We sell and operate the GPU cloud ourselves. Revenue follows the contract portfolio (reserve / on-demand) and discounts.' },
-      opModeNeoHint: { ko: '타사 CSP 사업자에게 영업·운영을 위탁하고 당사는 인프라를 공급합니다.<br>공개 소비자가에서 위탁 사업자 마진을 뺀 금액을 매출로 인식합니다.', en: 'Sales and operations are outsourced to a third-party CSP on our infrastructure. Revenue is the public list price less the operator margin.' },
-      labelNeoPrice: { ko: 'GPU 소비자가', en: 'GPU list price' },
+      opModeNeoHint: { ko: '타사 CSP 사업자에게 영업·운영을 위탁하고 당사는 인프라를 공급합니다.<br>공개 판매단가에서 위탁 사업자 마진을 뺀 금액을 매출로 인식합니다.', en: 'Sales and operations are outsourced to a third-party CSP on our infrastructure. Revenue is the public list price less the operator margin.' },
+      labelNeoPrice: { ko: 'GPU 고객 판매단가', en: 'GPU customer price' },
       labelNeoMargin: { ko: '마진율', en: 'Operator margin' },
       labelNeoUtil: { ko: '가동비중', en: 'Utilized share' },
       labelNeoSw: { ko: 'SW구독단가 (서버형)', en: 'SW subscription (server type)' },
       labelNeoOpex: { ko: '기타 운영비(연간)', en: 'Other opex (per yr)' },
-      neoPriceBlank: { ko: '소비자가 미입력 — 매출 0으로 계산', en: 'No list price — revenue counted as 0' },
-      neoNetChip: { ko: '순단가 {net}/GPU·h<span class="sub">소비자가 {gross} − 마진 {m}%</span>', en: 'Net {net}/GPU·h<span class="sub">list {gross} − margin {m}%</span>' },
+      neoPriceBlank: { ko: '판매단가 미입력 · 매출 0으로 계산', en: 'No customer price · revenue counted as 0' },
+      neoNetChip: { ko: '순단가 {net}/GPU·h<span class="sub">판매단가 {gross} − 마진 {m}%</span>', en: 'Net {net}/GPU·h<span class="sub">list {gross} − margin {m}%</span>' },
       neoTermsTitle: { ko: '타사위탁 공급 조건 · 매출 구조', en: 'Outsourced supply terms · revenue structure' },
-      neoTermsDesc: { ko: '공개 소비자가에서 위탁 사업자 마진을 뺀 금액을 당사 매출로 인식합니다. 가동비중은 연차 구분 없이 고정이며, 계약 포트폴리오·입지 프리미엄·예약 할인은 적용하지 않습니다(공개가가 이미 시장가이므로).', en: 'We recognize the public list price less the outsourced operator margin as revenue. The utilized share is flat across years; no contract portfolio, location premium or reserve discounts apply, since the list price is already a market price.' },
+      neoTermsDesc: { ko: '공개 판매단가에서 위탁 사업자 마진을 뺀 금액을 당사 매출로 인식합니다. 가동비중은 연차 구분 없이 고정이며, 계약 포트폴리오·입지 프리미엄·예약 할인은 적용하지 않습니다(공개가가 이미 시장가이므로).', en: 'We recognize the public list price less the outsourced operator margin as revenue. The utilized share is flat across years; no contract portfolio, location premium or reserve discounts apply, since the list price is already a market price.' },
       neoCol3y: { ko: '3년 합계', en: '3-yr total' },
       neoRowUtil: { ko: '가동비중 (유휴 제외)', en: 'Utilized share' },
       neoRowHours: { ko: 'GPU·시간', en: 'GPU-hours' },
-      neoRowGross: { ko: '과금액 (소비자가 기준)', en: 'Billings (list price)' },
+      neoRowGross: { ko: '과금액 (판매단가 기준)', en: 'Billings (list price)' },
       neoRowTake: { ko: '위탁 사업자 마진 ({m})', en: 'Operator margin ({m})' },
       neoRowNet: { ko: '당사 인식 매출', en: 'Recognized revenue' },
       neoRowNetTotal: { ko: '당사 인식 매출 합계', en: 'Total recognized revenue' },
-      neoTypeSub: { ko: '{name} · GPU {g}개 · 소비자가 {gross} → 순단가 {net}/GPU·h', en: '{name} · {g} GPUs · list {gross} → net {net}/GPU·h' },
+      neoTypeSub: { ko: '{name} · GPU {g}개 · 판매단가 {gross} → 순단가 {net}/GPU·h', en: '{name} · {g} GPUs · list {gross} → net {net}/GPU·h' },
       neoTermsNote: { ko: '실효 가동률 = 가동비중(좌측 입력). 나머지는 정비·유휴로 매출이 발생하지 않습니다.', en: 'Effective utilization = utilized share (left). The remainder is maintenance/idle with no revenue.' },
       neoSensTitle: { ko: '타사위탁 마진율 민감도 · 협상 범위', en: 'Outsourced margin sensitivity · negotiating range' },
       neoSensDesc: { ko: '마진율만 바꾸고 나머지 입력(규모·환율·가동비중·조달구조)은 현재 값으로 고정해 주주수익률을 다시 계산합니다. 조달 가정은 재무구조 탭과 공유합니다.', en: 'Only the margin varies; scale, FX, utilization and funding stay at current values. Funding assumptions are shared with the financing tab.' },
@@ -1259,20 +1260,20 @@
       neoSensNote: { ko: '「목표 IRR 유지 최대 마진」은 당사가 수용할 수 있는 위탁 사업자 마진의 상한(협상 하한선)이며, 「손익분기 마진」은 주주 IRR이 0%가 되는 지점입니다.', en: '"Max margin for target IRR" is the ceiling on the operator margin we can accept (our negotiating floor); the break-even margin is where equity IRR reaches 0%.' },
       neoNA: { ko: '산출불가', en: 'n/a' },
       neoNoDebt: { ko: '무차입', en: 'No debt' },
-      mixNeoNote: { ko: '타사위탁 모드에서는 계약유형별 단가 대신 소비자가 − 마진율에 가동비중을 곱해 매출을 산출합니다. 연차별 내역은 위 「타사위탁 공급 조건 · 매출 구조」 표에 있습니다.', en: 'In outsourced mode revenue is list price − margin × utilized share instead of contract rates. The yearly breakdown is in the "Outsourced supply terms · revenue structure" table above.' },
-      blNeoPrice: { ko: '{name} 소비자가 → 순단가', en: '{name} list → net rate' },
+      mixNeoNote: { ko: '타사위탁 모드에서는 계약유형별 단가 대신 판매단가 − 마진율에 가동비중을 곱해 매출을 산출합니다. 연차별 내역은 위 「타사위탁 공급 조건 · 매출 구조」 표에 있습니다.', en: 'In outsourced mode revenue is list price − margin × utilized share instead of contract rates. The yearly breakdown is in the "Outsourced supply terms · revenue structure" table above.' },
+      blNeoPrice: { ko: '{name} 판매단가 → 순단가', en: '{name} list → net rate' },
       blNeoUtil: { ko: '가동비중', en: 'Utilized share' },
       blNeoMargin: { ko: '위탁 사업자 마진율', en: 'Operator margin' },
       blSwOpexNeo: { ko: 'SW 구독료(연, 서버형 GPU)', en: 'SW subscription (per yr, server-type GPUs)' },
       blOtherOpexNeo: { ko: '기타 운영비(연)', en: 'Other opex (per yr)' },
       chipSwSubNeo: { ko: 'SW 구독 (타사위탁)', en: 'SW subscription (outsourced)' },
-      formulaCardGpuBodyNeo: { ko: 'Σ(GPU 종류별 수량 × 단위당 GPU 수 × 8,760시간 × 가동비중 × 소비자가($) × (1 − 마진율) × 환율) ※ 계약 포트폴리오·입지 프리미엄·예약 할인 미적용', en: 'Σ(per GPU type: units × GPUs/unit × 8,760 hrs × utilized share × list price ($) × (1 − margin) × FX) — no contract mix, location premium or reserve discounts' },
+      formulaCardGpuBodyNeo: { ko: 'Σ(GPU 종류별 수량 × 단위당 GPU 수 × 8,760시간 × 가동비중 × 판매단가($) × (1 − 마진율) × 환율) ※ 계약 포트폴리오·입지 프리미엄·예약 할인 미적용', en: 'Σ(per GPU type: units × GPUs/unit × 8,760 hrs × utilized share × list price ($) × (1 − margin) × FX) — no contract mix, location premium or reserve discounts' },
       formulaCardOpexBodyNeo: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동비중 × 전력량 단가] + SW 구독료[서버형 GPU 수 × SW 구독단가 × 환율] + 기타 운영비', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 hrs × Utilized share × Energy rate] + SW subscription [server-type GPUs × SW rate × FX] + other opex' },
       cmpModeTitle: { ko: '운영 방식 비교 (현재 구성)', en: 'Operating model comparison (current configuration)' },
       cmpModeDesc: { ko: '현재 켜진 카드 구성을 CSP 직접운영과 CSP 타사위탁으로 각각 계산해 비교합니다. 다른 입력값은 동일합니다.', en: 'The current card configuration calculated under direct and outsourced operation with all other inputs equal.' },
       cmpModeRowBasis: { ko: '단가 기준', en: 'Rate basis' },
       cmpModeBasisCsp: { ko: '기초단가 × 입지 × 예약할인 · 포트폴리오 · 연차 가동률', en: 'Base rate × location × reserve discounts · portfolio · yearly utilization' },
-      cmpModeBasisNeo: { ko: '소비자가 − 마진 {m}% · 가동비중 {u}%', en: 'List price − margin {m}% · utilized share {u}%' },
+      cmpModeBasisNeo: { ko: '판매단가 − 마진 {m}% · 가동비중 {u}%', en: 'List price − margin {m}% · utilized share {u}%' },
       labelDisc3YShort: { ko: '3년 할인율', en: '3Y Reserve discount' },
       labelDisc1YShort: { ko: '1년 할인율', en: '1Y Reserve discount' },
       unitServer: { ko: '대', en: ' srv' },
@@ -1517,7 +1518,7 @@
       colCumProfit: { ko: '누적손익', en: 'Cum. Profit' },
       colMargin: { ko: '연간 손익률', en: 'Annual Margin' },
       labelPue: { ko: 'PUE (\uC804\uB825\uD6A8\uC728)', en: 'PUE (Power Usage Effectiveness)' },
-      pueHint: { ko: '\uCD1D \uC218\uC804 = IT \uC218\uC804 \u00D7 PUE \u2014 PUE \uB610\uB294 IT \uC218\uC804 \uBCC0\uACBD \uC2DC \uCD1D \uC218\uC804\uC774, \uCD1D \uC218\uC804 \uBCC0\uACBD \uC2DC PUE\uAC00 \uC7AC\uC0B0\uCD9C\uB429\uB2C8\uB2E4.', en: 'Total = IT \u00D7 PUE \u2014 editing PUE or IT power recalculates total power; editing total power recalculates PUE.' },
+      pueHint: { ko: '총 수전 = IT 수전 × PUE — PUE 변경 시 총 수전이, IT 수전·총 수전 변경 시 PUE가 재산출됩니다.', en: 'Total power = IT power × PUE — changing PUE recomputes total power; changing IT or total power recomputes PUE.' },
       labelSiMultiplier: { ko: 'SI \uD560\uC99D \uBC30\uC218', en: 'SI Premium Multiplier' },
       siMultiplierHint: { ko: '\uB0B1\uAC1C \uC870\uB2EC \uD1B5\uD569 \uB09C\uC774\uB3C4 \uD504\uB9AC\uBBF8\uC5C4 (1.0 = \uD134\uD0A4 \uB3D9\uC77C)', en: 'Integration complexity premium over turnkey (1.0 = same as turnkey)' },
       backToTop: { ko: '\uB9E8\uC704\uB85C', en: 'Back to top' },
@@ -1651,18 +1652,18 @@
       labelWhiteSpace: { ko: '화이트스페이스', en: 'White space' },
       labelGreySpace: { ko: '그레이스페이스 및 기타', en: 'Grey space & other' },
       labelFacMode: { ko: '시설 공사 방식', en: 'Facility works' },
-      facModeBoth: { ko: '신축+리모델링', en: 'New build + remodel' },
+      facModeBoth: { ko: '신축', en: 'New build' },
       facModeRemodel: { ko: '리모델링', en: 'Remodel only' },
       facModeTip: { ko: '시설비 CAPEX 산정 방식. [리모델링] 신축동 없이 기존 건물만 리모델링 — 전력·공조 예산은 전액 리모델링으로 계상, 건축/토목·통신/소방의 신축 고정분(40억·16억)은 제외. [신축+리모델링] 신축 전력동(700㎡) 병행안.', en: 'How facility capex is costed. [Remodel only] no new building — electrical and mechanical budgets go fully to remodel, and the fixed new-build portions of architecture and telecom/fire are dropped. [New build + remodel] keeps the 700㎡ new power building.' },
       facModeHintRemodel: { ko: '신축동 제외 · 계획 면적 기준 리모델링 예산만 계상 (전력·공조 전액 리모델링, 건축/통신 신축분 삭제, 설계·감리·간접비 10% 유지)', en: 'No new building · remodel budget on the planned area only (electrical/mechanical fully remodel, new-build portions dropped, soft costs 10%)' },
-      facModeHintBoth: { ko: '신축 전력동(700㎡) + 기존 건물 리모델링 병행 — 두 열의 합이 시설비', en: 'New 700㎡ power building plus remodel — facility capex is the sum of both columns' },
+      facModeHintBoth: { ko: '신축 전력동(700㎡) 병행 · 신축 + 리모델링 두 열의 합이 시설비', en: 'With the new 700㎡ power building · facility capex = new build + remodel columns' },
       facilityDescRemodel: { ko: '[리모델링] 신축동 없이 기존 건물 리모델링만으로 구성합니다. 전력·공조 예산은 전액 리모델링으로 계상되고, 건축/토목·통신/소방의 신축 고정분(40억·16억)은 제외됩니다. 면적비례 단가는 고하중(화이트스페이스) 구간과 일반(그레이스페이스 및 기타) 구간으로 나눠 계획 면적에 적용하며, 설계/감리/간접비는 직접공사비의 10%입니다(행별 수동 전환 가능, 단가 입력은 억 원).', en: '[Remodel only] the existing building is remodeled with no new construction. Electrical and mechanical budgets are costed fully as remodel; the fixed new-build portions of architecture and telecom/fire (KRW 4.0B and 1.6B) are dropped. Area-based rates apply a heavy-load rate to the white space and a general rate to grey space & other; soft costs are 10% of direct works (rows can be set manually; rates in KRW 0.1B).' },
       cardRacks: { ko: '= {n}랙', en: '= {n} racks' },
       tipSystemSelector: { ko: '켜진 카드의 수량 합이 IT 수전용량과 화이트스페이스 안에 들어오도록 상한을 계산합니다. 카드별 CAPEX = 랙당 구성 항목 합계 × 랙 수(서버형은 서버당 단가 × 서버 수), 매출은 GPU 수 × 시간당 단가 × 가동 시간.', en: 'Caps keep the enabled cards within IT power and white space. Card capex = per-rack items × racks (server type: per-server cost × servers); revenue = GPUs × hourly rate × hours.' },
       tipMixTable: { ko: '연매출 = GPU 수 × 8,760h × Σ(계약 비중 × 연차 가동률 계수 × 계약별 단가). 계약별 단가 = 기초단가($) × (1 + 입지 프리미엄) × (1 − 예약 할인) × 환율.', en: 'Annual revenue = GPUs × 8,760h × Σ(contract share × yearly utilization × contract rate). Contract rate = base rate × (1 + location premium) × (1 − reserve discount) × FX.' },
-      tipNeoTerms: { ko: 'GPU·시간 = GPU 수 × 8,760h × 가동비중 · 과금액 = GPU·시간 × 소비자가 × 환율 · 위탁 사업자 마진 = 과금액 × 마진율 · 당사 인식 매출 = 과금액 − 마진.', en: 'GPU-hours = GPUs × 8,760h × utilized share · billings = GPU-hours × list price × FX · operator margin = billings × margin rate · recognized revenue = billings − margin.' },
+      tipNeoTerms: { ko: 'GPU·시간 = GPU 수 × 8,760h × 가동비중 · 과금액 = GPU·시간 × 판매단가 × 환율 · 위탁 사업자 마진 = 과금액 × 마진율 · 당사 인식 매출 = 과금액 − 마진.', en: 'GPU-hours = GPUs × 8,760h × utilized share · billings = GPU-hours × list price × FX · operator margin = billings × margin rate · recognized revenue = billings − margin.' },
       tipNeoSens: { ko: '마진율만 10~40%로 바꿔 순단가·매출·FCFE·IRR을 다시 계산합니다. 목표 IRR 유지 최대 마진 = IRR ≥ 목표를 만족하는 가장 큰 마진(이분 탐색), 손익분기 마진 = Equity IRR 0%가 되는 마진.', en: 'Recomputes net rate, revenue, FCFE and IRR for margins of 10–40%. Max margin for target IRR = the largest margin with IRR ≥ target (bisection); break-even margin = margin at 0% equity IRR.' },
-      tipCmpMode: { ko: '같은 랙 구성·전력·면적·조달 조건에서 운영 방식만 바꿔 계산합니다. 직접운영 = 계약 포트폴리오 단가 × 연차 가동률, 타사위탁 = (소비자가 − 마진) × 가동비중.', en: 'Same racks, power, space and financing; only the operating model changes. Direct = portfolio rates × yearly utilization; outsourced = (list price − margin) × utilized share.' },
+      tipCmpMode: { ko: '같은 랙 구성·전력·면적·조달 조건에서 운영 방식만 바꿔 계산합니다. 직접운영 = 계약 포트폴리오 단가 × 연차 가동률, 타사위탁 = (판매단가 − 마진) × 가동비중.', en: 'Same racks, power, space and financing; only the operating model changes. Direct = portfolio rates × yearly utilization; outsourced = (list price − margin) × utilized share.' },
       tipSrvSec: { ko: '공랭 8U: 랙당 4대(56kW) · 수랭 4U(DLC): 랙당 8대(112kW, CDU 서버당 $27,800 추가). 네트워크 400G/800G 선택은 서버당 네트워크 CAPEX에 반영됩니다. 랙 수 = 서버 수 ÷ 랙당 서버 수.', en: 'Air 8U: 4 servers/rack (56kW) · liquid 4U (DLC): 8 servers/rack (112kW, +$27,800/server CDU). The 400G/800G choice changes per-server network capex. Racks = servers ÷ servers per rack.' },
       tipCapSec: { ko: '사용 IT 전력 = Σ 수량 × 대당(SU당) 전력 · 면적 사용 = 그레이스페이스 및 기타 + Σ 수량 × 랙당 면적 · 카드별 상한 = min(전력 기준 수량, 면적 기준 수량), 다른 카드가 쓰는 잔여분 기준.', en: 'IT power used = Σ units × power per unit · area used = grey space & other + Σ units × area per rack · per-card cap = min(power-based, area-based) on what other cards leave.' },
       tipFormula: { ko: '화면 계산에 쓰인 기준값과 산식을 한곳에 모았습니다. 각 표의 숫자는 여기 산식으로 재계산할 수 있습니다.', en: 'All inputs and formulas used on screen in one place; every figure in the tables can be recomputed from them.' },
@@ -1675,11 +1676,11 @@
       tipFinance: { ko: '총 CAPEX를 자기자본과 PF로 조달한 뒤 주주 현금흐름(FCFE) = EBITDA − PF 이자 − 법인세 − 원금상환으로 IRR·MIRR·NPV·MoIC·DSCR을 계산합니다.', en: 'Total capex is funded by equity and PF debt; FCFE = EBITDA − interest − tax − principal drives IRR, MIRR, NPV, MoIC and DSCR.' },
       tipCardCapexServer: { ko: '랙당 CAPEX = (서버 본체 + 네트워크 + 스토리지·관리 + CDU + SW Setup·SI × 할증) × 랙당 서버 수. 원화 환산 = × 환율.', en: 'Per-rack capex = (server + network + storage/mgmt + CDU + SW setup·SI × premium) × servers per rack; KRW = × FX.' },
       tipCardCapexSu: { ko: 'SU당 CAPEX = NVL72 랙 8대 + 네트워크 + 스토리지 + 관리노드 + CDU + SW 구축. 원화 환산 = × 환율.', en: 'Per-SU capex = 8 NVL72 racks + network + storage + management nodes + CDU + SW setup; KRW = × FX.' },
-      tipNetRate: { ko: '순단가 = 소비자가 × (1 − 마진율). 당사 매출은 순단가 × GPU·시간 × 환율.', en: 'Net rate = list price × (1 − margin). Our revenue = net rate × GPU-hours × FX.' },
+      tipNetRate: { ko: '순단가 = 판매단가 × (1 − 마진율). 당사 매출은 순단가 × GPU·시간 × 환율.', en: 'Net rate = list price × (1 − margin). Our revenue = net rate × GPU-hours × FX.' },
       tipMixRate: { ko: '단가 = 기초단가($) × (1 + 입지 프리미엄) × (1 − 예약 할인) × 환율', en: 'Rate = base rate × (1 + location premium) × (1 − reserve discount) × FX' },
       tipMixRevenue: { ko: '연간 매출 = Σ 계약유형별 (GPU 수 × 8,760h × 계약 비중 × 가동률 계수 × 단가)', en: 'Annual revenue = Σ by contract (GPUs × 8,760h × share × utilization × rate)' },
       tipNeoHours: { ko: 'GPU·시간 = GPU 수 × 8,760h × 가동비중', en: 'GPU-hours = GPUs × 8,760h × utilized share' },
-      tipNeoGross: { ko: '과금액 = GPU·시간 × 소비자가 × 환율', en: 'Billings = GPU-hours × list price × FX' },
+      tipNeoGross: { ko: '과금액 = GPU·시간 × 판매단가 × 환율', en: 'Billings = GPU-hours × list price × FX' },
       tipNeoTake: { ko: '위탁 사업자 마진 = 과금액 × 마진율', en: 'Operator margin = billings × margin rate' },
       tipNeoNet: { ko: '당사 인식 매출 = 과금액 − 위탁 사업자 마진', en: 'Recognized revenue = billings − operator margin' },
       tipAuxSi: { ko: 'SI 총액 = 서버 수 × SW Setup·SI 서버당 단가 × 할증 배수 × 환율', en: 'SI total = servers × SW setup·SI per server × multiplier × FX' },
@@ -2368,7 +2369,8 @@
     }
     function syncPueFromPower(inputState = state) {
       const it = Math.max(1, Number(inputState.itPowerKw) || 1);
-      const total = Math.max(1, Number(inputState.totalPowerKw) || 1);
+      let total = Math.max(1, Number(inputState.totalPowerKw) || 1);
+      if (total < it) { total = it; inputState.totalPowerKw = total; } // IT 수전이 총 수전을 넘으면 총 수전을 따라 올림(PUE 1.0)
       inputState.pue = total / it;
     }
     function formatPue(inputState = state) {
@@ -4944,7 +4946,7 @@
         <section class="s-group neo-top" data-views="superpod,compare">
           <div class="s-row">
             <span class="s-lab md">${t('labelNeoPrice')}</span>
-            <span class="s-val"><span class="s-selwrap"><select class="s-sel" data-neo-key aria-label="${escAttr(t('labelNeoPrice'))}">${priceOpts}</select></span><span class="u"><input type="number" min="0" max="100" step="0.01" value="${priceVal}" placeholder="—" data-input="neoPrice_${priceKey}" aria-label="${escAttr(t('labelNeoPrice'))}" /></span><span class="unit ins">$/GPU·h</span></span>
+            <span class="s-val"><span class="s-selwrap"><select class="s-sel" data-neo-key aria-label="${escAttr(t('labelNeoPrice'))}">${priceOpts}</select></span><span class="u"><input type="number" min="0" max="100" step="0.01" value="${priceVal}" data-input="neoPrice_${priceKey}" aria-label="${escAttr(t('labelNeoPrice'))}" /></span><span class="unit ins">$/GPU·h</span></span>
           </div>
           ${ctlSlider('neoMarginPct', t('labelNeoMargin'))}
           ${ctlSlider('neoUtilPct', t('labelNeoUtil'))}
@@ -4975,7 +4977,7 @@
           ${ctlRow('floorAreaSqm', `${t('labelFloorArea')}${infoIcon(t('floorAreaTip'), t('labelFloorArea'), true)}`)}
           ${ctlRow('whiteSpaceSqm', `${t('labelWhiteSpace')}${infoIcon(t('whiteSpaceTip'), t('labelWhiteSpace'), true)}`)}
           ${ctlRow('greySpaceSqm', `${t('labelGreySpace')}${infoIcon(t('greySpaceTip'), t('labelGreySpace'), true)}`)}
-          <span class="s-lab sm fac-mode-lab">${t('labelFacMode')}${infoIcon(t('facModeTip'), t('labelFacMode'), true)}</span>
+          <div class="s-row fac-mode-row"><span class="s-lab">${t('labelFacMode')}${infoIcon(t('facModeTip'), t('labelFacMode'), true)}</span></div>
           ${segBtns('data-fac-mode', [['both', t('facModeBoth')], ['remodel', t('facModeRemodel')]], isRemodelOnly() ? 'remodel' : 'both', true)}
           <div class="s-hint" data-facmode-hint>${isRemodelOnly() ? t('facModeHintRemodel') : t('facModeHintBoth')}</div>
         </section>
@@ -5866,7 +5868,7 @@
           para(L('같은 랙 구성·전력·면적·조달 조건에서 운영 방식만 바꿔 계산했습니다. ', 'Same racks, power, space and financing; only the operating model differs. '),
             B(winner), L('이 ', ' earns '), B(loser), L('보다 3년 누적 손익이 ', ' by '), B(eok(Math.abs(diff)), RPT.OR), L(' 더 큽니다', ' more cumulative profit over 3 years'),
             ` (${t('opModeNeo')} ${eok(dn.cumProfit[last])} vs ${t('opModeCsp')} ${eok(dc.cumProfit[last])}). `,
-            L('Equity IRR은 ', 'Equity IRR is '), `${t('opModeNeo')} `, B(finMetric(dn, 'irr')), ` vs ${t('opModeCsp')} `, B(finMetric(dc, 'irr')), L('입니다. 직접운영은 계약 포트폴리오·예약 할인·연차 가동률을, 타사위탁은 소비자가에서 위탁 사업자 마진을 뺀 순단가와 가동비중을 적용합니다.', '. Direct operation applies the contract portfolio, reserve discounts and yearly utilization; outsourcing applies the net rate after the operator margin and the utilized share.')),
+            L('Equity IRR은 ', 'Equity IRR is '), `${t('opModeNeo')} `, B(finMetric(dn, 'irr')), ` vs ${t('opModeCsp')} `, B(finMetric(dc, 'irr')), L('입니다. 직접운영은 계약 포트폴리오·예약 할인·연차 가동률을, 타사위탁은 판매단가에서 위탁 사업자 마진을 뺀 순단가와 가동비중을 적용합니다.', '. Direct operation applies the contract portfolio, reserve discounts and yearly utilization; outsourcing applies the net rate after the operator margin and the utilized share.')),
           table([2300, half, W - 2300 - half], [
             head([t('compareColMetric'), `${t('opModeCsp')}${cur(dc)}`, `${t('opModeNeo')}${cur(dn)}`]),
             crow(t('cmpModeRowBasis'), x => (x.mode === 'neo' ? t('cmpModeBasisNeo', { m: nf1.format(x.neoMarginPct), u: nf1.format(x.neoUtilPct) }) : t('cmpModeBasisCsp'))),
@@ -5908,7 +5910,7 @@
           sec('cmp', L('랙 시스템 모델 비교', 'Rack system comparison'),
             para(L('「단독」은 지금의 연면적·IT 수전용량 안에서 그 유형만으로 채운 최대 수량입니다(연면적 확장 없음). 현재 구성이 한 유형을 최대로 채운 상태면 단독 열과 같은 값이 나옵니다. ', '"Only" fills the current floor area and IT power with that type alone (no floor expansion); if the current configuration already fills one type to its maximum, the two columns match. '),
               L('Equity IRR 기준으로는 ', 'By equity IRR, '), B(best.name, RPT.OR), L('이 가장 높습니다 (', ' ranks highest ('), B(finMetric(best.data, 'irr')), ').',
-              neo ? L(' 타사위탁 단가는 사이드바 GPU 소비자가 기준이며, 소비자가가 비어 있는 유형은 제외했습니다.', ' Outsourced rates use the sidebar list prices; types without a list price are omitted.') : ''),
+              neo ? L(' 타사위탁 단가는 사이드바 GPU 판매단가 기준이며, 판매단가가 비어 있는 유형은 제외했습니다.', ' Outsourced rates use the sidebar list prices; types without a list price are omitted.') : ''),
             table(colsM, [
               head([t('compareColMetric'), ...models.map(m => m.name)]),
               mrow(t('compareRowConfig'), m => m.data.shortConfigText),
@@ -6981,8 +6983,8 @@
         state[inputId] = baseValue;
         if (/^utilY[123]$/.test(inputId) && activeUtilYear) refreshUtilTip(activeUtilYear);
         // 총 수전 / IT 수전 / PUE 3자 연동
-        if (inputId === 'pue' || inputId === 'itPowerKw') syncPowerFromPue(state);
-        else if (inputId === 'totalPowerKw') syncPueFromPower(state);
+        if (inputId === 'pue') syncPowerFromPue(state);
+        else if (inputId === 'totalPowerKw' || inputId === 'itPowerKw') syncPueFromPower(state); // rev57: IT 수전을 바꾸면 총 수전은 두고 PUE 재산출
         if (inputId === 'itPowerKw' || inputId === 'floorAreaSqm' || inputId === 'greySpaceSqm' || inputId === 'whiteSpaceSqm'
             || inputId === 'pue' || inputId === 'totalPowerKw') handlePhysicalChange();
         refreshControls();
