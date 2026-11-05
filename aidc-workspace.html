@@ -160,7 +160,7 @@ svg{display:block}
 .pj-b{--cc:#4b42fc;--cbg:#edecff;--csq:#bcb9fe}
 .pj-k{--cc:#444444;--cbg:#e8e8e8;--csq:#ababab}
 .pj-s{--cc:#3a3a3a;--cbg:#ebebeb;--csq:#b5b5b5}
-.sh-btn{background:#fff;border-radius:4px;box-shadow:0 0 0 0.5px rgba(0,0,0,.16),0 1px 2.5px rgba(0,0,0,.16);display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
+.sh-btn{background:#fff;border-radius:4px;box-shadow:0 0 0 0.8px rgba(0,0,0,.2),0 1px 3px rgba(0,0,0,.2);display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
 .sh-btn:hover{background:#fafafa}
 .sh-btn:active{background:#f1f1f1}
 .plus-btn{width:21.4px;height:21.4px;border-radius:4px}
@@ -175,6 +175,10 @@ svg{display:block}
 .pager button:hover{background:#f3f3f3}
 .pager .arr{padding:0 8.5px;display:flex;align-items:center;height:22px;color:#4f4f4f}
 .pager .arr[disabled]{opacity:1;cursor:default}
+.page .pager{position:relative;left:-2.1px}
+.page .pager button:not(.arr){padding:0 7.11px}
+.page .pager .arr:first-child{position:relative;left:4.9px}
+.page .pager .arr:last-child{position:relative;left:1.5px}
 .status-ic{display:inline-flex;align-items:center;gap:5px}
 .toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);background:#1c1c1c;color:#fff;font-size:13px;padding:9px 16px;border-radius:6px;z-index:200;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
 .toast.on{opacity:1}
@@ -324,6 +328,7 @@ svg{display:block}
 .tbl .rw .url a:hover{border-color:#3d3d3d}
 .tbl .rw .mod{font-size:12px;font-weight:500;color:#3d3d3d}
 .tbl .ft{border-top:1px solid #cecece;margin-top:1px}
+.tbl.partners .mt .chip{position:relative;top:-2.3px}
 .tbl.archive .ft,.tbl.partners .ft{margin-top:-1px}
 .pri-high{color:#1acc00}.pri-mid{color:#31a7ff}.pri-low{color:#d89c60}
 .st-prog{color:#939393}.st-done{color:#1acc00}
@@ -557,6 +562,7 @@ svg{display:block}
 .props .pr .v .who{display:flex;align-items:center;gap:3.2px;font-size:14px;font-weight:500;color:var(--ink);margin-top:-1px}
 .props .pr .v .who .avatar{width:15.4px;height:15.4px;margin-left:1.9px}
 .props .pr .v .who + .who{margin-left:4.8px}
+.props .pr .v [data-pick="people"] .who{margin-top:0.8px}
 .props .pr .v .ghost{width:6.5px;height:6.5px;border-radius:50%;background:#eaeaea;margin:6.2px 0 0 11.6px}
 .props .pr .v .url{color:var(--t2);border-bottom:1px solid #cfcfcf;line-height:13.1px;position:relative;top:2.2px;margin-left:5px}
 .props .pr .v .st{display:flex;align-items:center;gap:3.8px;color:#939393;margin-left:2.6px}
