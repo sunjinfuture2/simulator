@@ -325,6 +325,7 @@ svg{display:block}
 .tbl .rw .stt{font-size:14px;font-weight:500;gap:3.8px}
 .tbl .rw .url{font-size:12px;color:#3d3d3d}
 .tbl .rw .url a{border-bottom:1px solid #cfcfcf;line-height:12px;position:relative;top:-3px}
+.tbl .rw .mod{position:relative;top:-2.5px}
 .tbl .rw .url a:hover{border-color:#3d3d3d}
 .tbl .rw .mod{font-size:12px;font-weight:500;color:#3d3d3d}
 .tbl .ft{border-top:1px solid #cecece;margin-top:1px}
@@ -525,7 +526,8 @@ svg{display:block}
 .tbl.archive .rw .src a{border-bottom:1px solid #9f9f9f;line-height:17px}
 
 /* ===== SIDE PANEL & FULL PAGE ITEM ===== */
-.panel{position:absolute;left:596.1px;top:45px;bottom:0;width:973.5px;background:#fff;z-index:16;display:none;overflow-y:auto;box-shadow:-4px 0 12px rgba(0,0,0,.045),inset 1px 0 0 rgba(196,196,196,.6)}
+.panel{position:absolute;left:596.1px;top:45px;bottom:0;width:973.5px;background:#fff;z-index:16;display:none;overflow-y:auto}
+#app.panel-open::after{content:"";position:absolute;left:888.1px;top:0;bottom:0;width:0;border-left:1px solid rgba(196,196,196,.6);box-shadow:-4px 0 12px rgba(0,0,0,.045);z-index:17;pointer-events:none}
 .panel.on{display:block}
 .panel .pin{position:relative;width:887px;min-height:100%}
 .ipage{position:relative;min-height:1035px}
@@ -555,6 +557,7 @@ svg{display:block}
 .props .pr .v.txt:hover{background:#f7f7f7;border-radius:3px;margin:-2px -6px;padding:2px 6px}
 .props .pr .v .pill{margin:-0.8px 0 0 -1.4px;height:19.6px}
 .props .pr .v .chip{margin:1.8px 3.4px 0 0;height:17.4px;width:98px;box-sizing:border-box;padding-right:0;overflow:hidden}
+.props .pr .v .chip .sq{margin-right:2.6px}
 #panel-expand{position:relative;left:-2px}
 .props .pr .v .lk{display:flex;align-items:flex-start;gap:3.1px;margin-left:2.5px}
 .props .pr .v .lk i{width:16.7px;height:16.7px;background:#eaeaea;border-radius:0;flex:none;margin-top:2.3px}
@@ -1000,7 +1003,7 @@ const ROADMAP=[
   {date:'26.07.13',cat:'사업규모 확정',chips:[{k:'rs',t:'GPU임대가...'},{k:'g',t:'GPU임대가...'}],title:'KB PF 미팅',imgs:[358.9,159.6,159.6],dl:true,body:'- 결정사항1: ~~~한 ~~가 ~~~~이렇게 됨, ~~가 준비되어야 함.\n- 결정사항2: ~~~한 ~~가 ~~~~이렇게 됨, ~~가 준비되어야 함.\n- 결정사항3: ~~~한 ~~가 ~~~~이렇게 됨, ~~가 준비되어야 함.',gap:58.5},
   {date:'26.09.21',cat:'운영방법 검토',chips:[{k:'g',t:'GPU임대가...'}],title:'VESSL AI 2차 미팅',imgs:[],body:'결정사항: ~~~한 ~~가 ~~~~이렇게 됨, ~~가 준비되어야 함.',gap:77.9},
   {date:'26.09.21',cat:'서버 구입가능성 검토',chips:[{k:'g',t:'GPU임대가...'}],title:'FOXCONN 미팅',imgs:[],body:'[구조]\n- Foxconn: AI 인프라 제조사(서버, 랙 등)\n- KT: AI 데이터센터 운영사업자(통신망 제공, GPUaaS 및\n   클라우드 서비스 운영)\n- 선진: 데이터센터 건설 및 프로젝트 PM 및 EPC\n\n[조직구상안]\n- 선진 HQ: 인허가 및 데이터센터 설계 및 시공감리(PM/EPC)\n- 선진 A: 핵심 부품 수입 및 유통전담\n- 선진 B: 펀드조성, 투자 및 자산운용 담당',gap:73.2},
-  {date:'26.10.22',cat:'운영방법 검토',chips:[{k:'rs',t:'GPU임대가...'},{k:'g',t:'GPU임대가...'}],title:'VESSL AI 3차 미팅',imgs:[159.6],imgTop:15,body:'※ SPC 설립 및 DBO 모델 적용: 고가의 AI 서버 구매 비용을 감당하기 위해\n기존의 상면 임대(Colocation) 방식 외에, SPC를 설립하여 직접 서버를\n구매하고 운영·임대하는 DBO(Design-Build-Operate) 수익 모델 전환 검토 중',gap:34.5}];
+  {date:'26.10.22',cat:'운영방법 검토',chips:[{k:'rs',t:'GPU임대가...'},{k:'g',t:'GPU임대가...'}],title:'VESSL AI 3차 미팅',imgs:[159.6],imgTop:15,bodyTop:14.5,body:'※ SPC 설립 및 DBO 모델 적용: 고가의 AI 서버 구매 비용을 감당하기 위해\n기존의 상면 임대(Colocation) 방식 외에, SPC를 설립하여 직접 서버를\n구매하고 운영·임대하는 DBO(Design-Build-Operate) 수익 모델 전환 검토 중',gap:34.5}];
 const PHEAD = {
   pangyo:{cls:'진행 중',prog:'운영방법 검토',owner:'박준수 대리',loc:'신성엔지니어링 분당서비스센터\n(경기 성남시 분당구 백현동 404-1) ',alt:'※ 대체부지 (후보지)\n1.  한국전기공업협동조합',
     zone:'도시지역, 자연녹지지역',kind:'데이터센터',dev:'선진엔지니어링',land:'신성이엔지',fund:'PF조달',cost:'₩100,000,000,000',fundType:'PF, 투자자유치',
@@ -1176,7 +1179,7 @@ function renderProject(pid){
 function roadmapHtml(){let y=48.6; let h=`<div class="vline" style="top:-2.7px;height:${roadHeight()}px"></div>`;
   ROADMAP.forEach((r,i)=>{h+=`<div class="it" style="padding-top:${i===0?0:0}px;margin-top:${i===0?y:r.prevGap||0}px"><span class="date">${esc(r.date)}</span><i class="dot"></i><span class="cat">${esc(r.cat)}</span><div class="chips" style="top:30.5px">${r.chips.map(c=>`<span class="chip ${c.k==='rs'?'rs':'pj-g'}" style="${c.k==='rs'?'':'background:#e8f3e5'}"><i class="sq"></i>${esc(c.t)}</span>`).join('')}</div>
     <div class="tt">${esc(r.title)}</div>${r.imgs.length?`<div class="imgs" style="margin-top:${r.imgTop||9.5}px">${r.imgs.map((w,j)=>`<div class="ph" style="width:${w}px">${(j===0&&r.dl)?`<button class="ln-btn dl" data-act="dlroad" data-id="${i}">다운로드 ${svg('i-dl',7.1,8,'color:#3d3d3d')}</button>`:''}</div>`).join('')}</div>`:''}
-    <div class="body" style="margin-top:${r.imgs.length?(i===0?12.6:20):3.5}px">${esc(r.body)}</div></div>`;});
+    <div class="body" style="margin-top:${r.bodyTop||(r.imgs.length?(i===0?12.6:20):3.5)}px">${esc(r.body)}</div></div>`;});
   h+=`<div class="vline fut" style="top:${roadHeight()+26}px;height:347px"></div><div style="height:30px"></div><div style="position:relative;height:40px">${plusBtn('add road-add','로드맵 추가').replace('class="sh-btn','style="position:absolute;left:73px;top:8px" class="sh-btn')}</div><div id="road-form-slot"></div>`; return h;}
 function roadHeight(){return 903.1;}
 function fixRoadLine(){const inner=$('.road .inner');if(!inner)return;const its=$$('.it',inner);if(!its.length)return;const last=its[its.length-1];const dot=$('.dot',last);if(!dot)return;const c=last.offsetTop+dot.offsetTop+dot.offsetHeight/2;const v=$('.vline:not(.fut)',inner);if(v){v.style.top='-2.7px';v.style.height=(c+2.7)+'px';}const f=$('.vline.fut',inner);if(f)f.style.top=(c+13.8)+'px';}
