@@ -608,7 +608,25 @@
     .s-group.neo-top .s-slider + .s-slider { margin-top: 30px; }
     .s-group.mix .s-slider + .s-slider { margin-top: 30px; }
     .dt.neo tbody tr.mx-rev td { font-weight: 600; }
-    /* rev38: HGX(B300) 서버 구성 */
+    /* rev58: IT 장비 CAPEX 구성 · 카드 SU 환산 · 임차 조건 */
+    .dt.itc td { vertical-align: top; }
+    .dt.itc tbody tr.total td { border-top: var(--hair) solid var(--k100); font-weight: 600; color: var(--g60); }
+    .itc-head { font-size: 14px; font-weight: 600; color: var(--g60); line-height: 20px; }
+    .itc-basis { display: block; font-size: 13px; color: var(--g77); line-height: 18px; margin-top: 4px; word-break: keep-all; }
+    .itc-note { font-size: 12px; color: var(--ga0); line-height: 16px; margin-top: 4px; word-break: keep-all; }
+    .itc-ctl { display: flex; align-items: center; gap: 28px; margin-top: 12px; flex-wrap: wrap; }
+    .itc-ctl .s-btns { width: 380px; height: 36px; flex: none; }
+    .itc-ctl .s-btn { height: 36px; font-size: 13px; }
+    .itc-inp { display: inline-flex; align-items: baseline; white-space: nowrap; gap: 6px; }
+    .itc-inp .lab { font-size: 13px; color: var(--g60); }
+    .itc-inp .u { font-size: 18px; font-weight: 500; color: var(--k100); }
+    .itc-inp .u input { text-align: right; }
+    .itc-inp .unit, .itc-inp .pre { font-size: 12px; font-weight: 600; color: var(--g77); }
+    .sys-card .su-units { margin-top: 6px; }
+    .sys-card .su-units .racks { font-size: 13px; font-weight: 500; color: var(--g77); line-height: 18px; word-break: keep-all; }
+    .sys-card .sys-sub2 { margin-top: 4px; color: var(--ga0); white-space: normal; line-height: 17px; word-break: keep-all; }
+    .sys-capex li .cx-note { font-size: 12px; color: var(--ga0); white-space: normal; line-height: 15px; }
+    .s-group.lease .s-row + .s-row { margin-top: 14px; }
     .sec.indent2 { padding-left: 48px; }
     .srv-toggles { display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 48px; margin-top: 40px; }
     .srv-tg-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
@@ -1045,69 +1063,63 @@
     const RACK_AUX_USD_PER_RACK = 7050000 / 8;   // $881,250
     const RACK_SI_USD_PER_RACK = 3500000 / 8;    // $437,500
 
-    // ---- rev36: GPU 종류 통합 모델 — SuperPOD형(SU 단위)과 HGX 서버형(대 단위)을 같은 카드 구조로 다룬다 ----
-    //  · SU형: rackKw·rackAreaSqm·rackPriceUsd(랙당) × racksPerUnit → SU당 전력·면적·NVL72 항목 (GB300 = SuperPOD 추산 자료 1.2MW/120㎡/$32.5M ÷ 8)
-    //  · 서버형(B300): VSLAI rev1.2 HGX B300 NVL8 가정값 — 서버 본체 $451,400(NVL72 GPU당 단가 × 8), 네트워크 $66,000, 스토리지·관리 $31,900, CDU $27,800, SW Setup·SI $48,600
-    //    서버 1대 IT 부하 15kW(본체 14 + 네트워크 0.6 + 스토리지·관리 0.4), 수랭 4U 기준 랙당 8대 · 랙당 15㎡ (SuperPOD과 같은 기준: SU 120㎡ ÷ 8랙 — 랙 발자국은 NVL72와 동일한 600 × 1,068~1,200mm)
+    // ---- rev58: GPU 종류 통합 모델 — 모든 카드를 SU(Scalable Unit) 단위로 다룬다 ('판교 AIDC_CAPEX 검토사항' 2026.11.16 기준) ----
+    //  · HGX B300 NVL8: 1 SU = 컴퓨팅 9랙 · 4U 수랭 서버 72대 · 576 GPU (72서버 XDR 네트워크 단위 ÷ 랙당 8대 = 9랙) · 800G XDR 고정
+    //    공간 16개 위치/SU(컴퓨팅 9 + 네트워크 2 + 스토리지 1 + 관리 1 + 예비 1 + CDU 2) · 전력 72대 × 15kW + 지원 10% = 1,188kW/SU
+    //    장비비 GPU당 $62,000(조사 4개 사례 평균, 설치·세팅비 포함 거래가 ÷ GPU 수) × 576 = $35,712,000/SU
+    //  · DGX GB300 NVL72: 1 SU = 컴퓨팅 8랙 · 트레이 144개 · 576 GPU · 20개 위치/SU(NVIDIA RA) · 8랙 × 140kW + 10% = 1,232kW/SU · GPU당 $80,167 × 576 = $46,176,192/SU
+    //  · CDU·초기 설치·통합비는 SU 단가에 넣지 않고 부지 단위로 별도 계상 (calcMix: cduUnits × cduUsd, initIntegrationEok)
     //  · 기초단가: B300은 NeoCloud 공개 판매단가 $7.38/GPU·h를 온디맨드 기초단가 가정값으로 사용 (카드에서 수정 가능)
     //  · VR SuperPOD · 직접 입력: 확인된 사양이 없어 빈칸(0) — 값을 넣기 전까지는 계산에 0으로 반영
     const GPU_KEYS = ['b300', 'gb300', 'vr', 'custom'];
-    const SERVER_ITEM_KEYS = ['server', 'network', 'storage', 'cdu', 'si'];
-    const SERVER_ITEM_LABEL_KEYS = { server: 'capexItemServer', network: 'capexItemNet', storage: 'capexItemAux', cdu: 'capexItemCdu', si: 'capexItemSi' };
-    const SERVER_ABS_MAX = 2000;
+    const CDU_PER_SU_DEFAULT = 2;   // SU당 CDU 대수 (외장 In-row 1,350kW급 · 운전 1 + 예비 1 잠정)
     const GPU_DEFAULTS = {
       b300: {
-        kind: 'server', label: 'B300 NVL8 HGX', shortLabel: 'B300', rackName: 'HGX B300 NVL8',
-        processorKo: '서버 1대 = HGX B300 NVL8 · 8 Blackwell Ultra GPU', processorEn: '1 server = HGX B300 NVL8 · 8 Blackwell Ultra GPUs',
-        gpusPerUnit: 8, serversPerRack: 8, rackAreaSqm: 3.5, unitItPowerKw: 15, serverKw: 14, netKw: 0.6, auxKw: 0.4,
+        kind: 'su', label: 'HGX B300 NVL8', shortLabel: 'B300', rackName: 'HGX B300 NVL8',
+        processorKo: '1 SU = 컴퓨팅 9랙 · 서버 72대 · 576 GPU', processorEn: '1 SU = 9 compute racks · 72 servers · 576 GPUs',
+        subUnitKo: '서버', subUnitEn: 'servers', subUnitCountKo: '대',
+        gpusPerUnit: 576, racksPerUnit: 9, serversPerUnit: 72, serversPerRack: 8, positionsPerUnit: 16, rackAreaSqm: 3.5,
+        serverKw: 15, rackKw: 120, supportPct: 10, computeKwPerUnit: 1080, unitItPowerKw: 1188, unitAreaSqm: 56,
+        pricePerGpuUsd: 62000, cduPerUnit: CDU_PER_SU_DEFAULT,
         baseRateUsd: { A: 7.38, B: 7.38 },
-        fp4PflopsPerUnit: 120,
-        capexUsd: { server: 451400, network: 66000, storage: 31900, cdu: 27800, si: 48600 },
+        fp4PflopsPerUnit: 8640,
+        capexUsd: { equip: 35712000 },
         color: 'var(--b300-color)'
       },
       gb300: {
-        kind: 'su', label: 'GB300 SuperPOD', shortLabel: 'GB300', rackName: 'GB300 NVL72',
-        processorKo: '1 SU = NVL72 랙 8대 · 576 Blackwell Ultra GPU + 288 Grace CPU', processorEn: '1 SU = 8 NVL72 racks · 576 Blackwell Ultra GPUs + 288 Grace CPUs',
-        gpusPerUnit: 576, racksPerUnit: 8, rackKw: 150, rackAreaSqm: 3.5, rackPriceUsd: 4062500,
-        unitItPowerKw: 1200, unitAreaSqm: 28,
+        kind: 'su', label: 'DGX GB300 NVL72', shortLabel: 'GB300', rackName: 'GB300 NVL72',
+        processorKo: '1 SU = 컴퓨팅 8랙 · 트레이 144개 · 576 GPU', processorEn: '1 SU = 8 compute racks · 144 trays · 576 GPUs',
+        subUnitKo: '트레이', subUnitEn: 'trays', subUnitCountKo: '개',
+        gpusPerUnit: 576, racksPerUnit: 8, serversPerUnit: 144, serversPerRack: 18, positionsPerUnit: 20, rackAreaSqm: 3.5,
+        serverKw: 0, rackKw: 140, supportPct: 10, computeKwPerUnit: 1120, unitItPowerKw: 1232, unitAreaSqm: 70,
+        pricePerGpuUsd: 80167, cduPerUnit: CDU_PER_SU_DEFAULT,
         baseRateUsd: { A: 18.12, B: 24.02 },
         fp4PflopsPerUnit: 8640,
-        capexUsd: { nvl72: 32500000, network: 4750000, storage: 2000000, mgmt: 300000, cdu: 2000000, swSetup: 3500000 },
+        capexUsd: { equip: 46176192 },
         color: 'var(--gb300-color)'
       },
       vr: {
         kind: 'su', label: 'VR SuperPOD', shortLabel: 'VR', rackName: 'VR NVL144',
-        processorKo: '', processorEn: '',
-        gpusPerUnit: 0, racksPerUnit: 0, rackKw: 0, rackAreaSqm: 0, rackPriceUsd: 0,
-        unitItPowerKw: 0, unitAreaSqm: 0,
+        processorKo: '', processorEn: '', subUnitKo: '서버', subUnitEn: 'servers', subUnitCountKo: '대',
+        gpusPerUnit: 0, racksPerUnit: 0, serversPerUnit: 0, serversPerRack: 0, positionsPerUnit: 0, rackAreaSqm: 0,
+        serverKw: 0, rackKw: 0, supportPct: 0, computeKwPerUnit: 0, unitItPowerKw: 0, unitAreaSqm: 0,
+        pricePerGpuUsd: 0, cduPerUnit: CDU_PER_SU_DEFAULT,
         baseRateUsd: { A: 0, B: 0 },
         fp4PflopsPerUnit: 0,
-        capexUsd: { nvl72: 0, network: 0, storage: 0, mgmt: 0, cdu: 0, swSetup: 0 },
+        capexUsd: { equip: 0 },
         color: 'var(--vr-color)'
       },
       custom: {
         kind: 'su', label: '', shortLabel: '', rackName: 'NVL72',
-        processorKo: '', processorEn: '',
-        gpusPerUnit: 0, racksPerUnit: 0, rackKw: 0, rackAreaSqm: 0, rackPriceUsd: 0,
-        unitItPowerKw: 0, unitAreaSqm: 0,
+        processorKo: '', processorEn: '', subUnitKo: '서버', subUnitEn: 'servers', subUnitCountKo: '대',
+        gpusPerUnit: 0, racksPerUnit: 0, serversPerUnit: 0, serversPerRack: 0, positionsPerUnit: 0, rackAreaSqm: 0,
+        serverKw: 0, rackKw: 0, supportPct: 0, computeKwPerUnit: 0, unitItPowerKw: 0, unitAreaSqm: 0,
+        pricePerGpuUsd: 0, cduPerUnit: CDU_PER_SU_DEFAULT,
         baseRateUsd: { A: 0, B: 0 },
         fp4PflopsPerUnit: 0,
-        capexUsd: { nvl72: 0, network: 0, storage: 0, mgmt: 0, cdu: 0, swSetup: 0 },
+        capexUsd: { equip: 0 },
         color: 'var(--custom-color)'
       }
-    };
-    // rev38: HGX B300 냉각·네트워크 프리셋 — 토글 시 아래 값을 입력칸에 채움(이후 개별 수정 가능)
-    const B300_COOLING = {
-      air: { ko: '공랭 8U', en: 'Air-cooled 8U', serversPerRack: 4, rackAreaSqm: 3.5, cduUsd: 0,
-        noteKo: '랙당 4대(56kW) — 공랭 8U × 4, 벤더 표준 배치 (고밀도 전산실 전제)', noteEn: '4 per rack (56kW) — 4× 8U air-cooled, vendor reference layout' },
-      liquid: { ko: '수랭 4U (DLC)', en: 'Liquid-cooled 4U (DLC)', serversPerRack: 8, rackAreaSqm: 3.5, cduUsd: 27800,
-        noteKo: '랙당 8대(112kW) — CDU 서버당 $27,800 추가', noteEn: '8 per rack (112kW) — adds $27,800/server for CDU' }
-    };
-    const B300_NET = {
-      '400': { ko: '400G NDR InfiniBand', en: '400G NDR InfiniBand', netUsd: 66000, netKw: 0.6,
-        noteKo: '공개 판매단가 사양과 동일 · SuperPOD 네트워크 항목 GPU당 환산', noteEn: 'Matches the public listing · SuperPOD network item per GPU' },
-      '800': { ko: '800G XDR (Quantum-X800)', en: '800G XDR (Quantum-X800)', netUsd: 105600, netKw: 1.0,
-        noteKo: 'ConnectX-8 네이티브 대역폭 · 400G 대비 단가 1.6배 가정', noteEn: 'Native ConnectX-8 bandwidth · 1.6x the 400G cost (assumed)' }
     };
     function cloneGpuTypes(source) {
       return Object.fromEntries(Object.entries(source).map(([k, v]) => [k, { ...v, capexUsd: { ...v.capexUsd }, baseRateUsd: { ...v.baseRateUsd } }]));
@@ -1129,9 +1141,9 @@
       locPremiumPct: 0,       // 설치 국가·입지 여건 프리미엄(%) — 보고서 5-1 (rev36: 기본값 0)
       disc1YPct: 25,          // 1년 예약 할인(%) — 보고서 5-3
       disc3YPct: 46,          // 3년 예약 할인(%) — 보고서 5-3
-      totalPowerKw: 6000,
+      totalPowerKw: 3600,      // rev58: 판교 AIDC 총 수전 3.6MW
       pue: 1.2,
-      itPowerKw: 5000,         // rev57: 기본 IT 수전 5MW (총 수전 6MW 고정 → PUE 1.2)
+      itPowerKw: 3000,         // rev58: IT Load 3MW (HGX B300 2SU · 2,376kW 수용) — 총 수전 3.6MW → PUE 1.2
       floorAreaSqm: 1850,      // rev56: 판교 AIDC 계획 연면적
       greySpaceSqm: 1700,       // rev47: 그레이스페이스(㎡) — 기계실·전기실·복도·반입구·감시실 등 지원 공간 (전기실·발전기실·UPS는 신축 700㎡ 전력동이 흡수)
       whiteSpaceSqm: 150,      // rev47: 화이트스페이스(㎡) = 연면적 − 그레이스페이스 (파생값, 표시용)
@@ -1141,15 +1153,24 @@
       facMode: 'remodel',      // rev56: 시설 공사 방식 — 'remodel'(신축 제외, 리모델링) | 'both'(신축+리모델링)
       energyCostRate: 121.7,
       basicChargeKwMonth: 9810,
-      fxKrwUsd: 1350,
-      swSubUsdPerGpuYear: 0,    // rev56: VESSL 협의 전 $0 가정
+      fxKrwUsd: 1400,           // rev58: 사업계획 계획환율 1달러 = 1,400원
+      swSubUsdPerGpuYear: 4500, // rev58: NVIDIA AI Enterprise GPU당 연 $4,500 (전체 GPU 적용)
       selectedRack: 'gb300',
       racks_gb200: 0,
       racks_gb300: 0,
-      opexEok: 0,              // rev56: 기타 운영비 0 (VESSL 협의 전)
       rackAuxUsdPerRack: RACK_AUX_USD_PER_RACK,
       rackSiUsdPerRack: RACK_SI_USD_PER_RACK,
-      siMultiplier: 1.0,      // rev37: VSLAI rev1.2 B300 모델은 SI 할증 없음 (1.0 = 턴키 동일)
+      // rev58: IT 장비 CAPEX 부속 — CDU(SU 수에 따라 증설) · 초기 SW 설치·통합비(프로젝트 전체 고정)
+      cduUsd: 1000000,          // CDU 대당 단가(USD) — 가격 미확정 가정값 (SuperPOD CDU 추산 $2.0M/SU ÷ 2대)
+      cduMode: 'perSu',         // 'perSu'(SU당 운전 1 + 예비 1) | 'n1'(부지 전체 운전 N + 예비 1)
+      initIntegrationEok: 10,   // 초기 SW 설치·통합비(억) — 40M/M × 월 2,000만원 = 8억 + 예비비 2억
+      // rev58: 임차 조건 — 임대료·관리비는 연 환산해 운영비, 보증금은 환산 이자율만 운영비(원금은 0년차 납입 · 3년차 회수)
+      leaseAreaSqm: 1937.2,     // 계약면적(㎡)
+      leaseRentPerSqm: 15126,   // 임대료(원/㎡·월) → 월 약 2,930만원
+      leaseMgmtPerSqm: 7563,    // 관리비(원/㎡·월) → 월 약 1,465만원
+      leaseDepositMonths: 10,   // 보증금 = 월 임대료 × 10개월 ≈ 2.93억
+      leaseDepositRatePct: 8.5, // 보증금 환산 이자율(%) — PF 금리와 동일 가정
+      leaseAgentFeeEok: 0,      // 임대대행 수수료(억, 1회) — 별도 협의
       depY1: 33,
       depY2: 66,
       depY3: 99,
@@ -1166,53 +1187,57 @@
       neoPrice_custom: 0,
       neoMarginPct: 20,        // NeoCloud 사업자 마진율(%) — 공개가에서 차감
       neoUtilPct: 90,          // 가동비중(%) — 연차 구분 없이 고정, 나머지는 정비·유휴
-      neoSwUsdPerGpuYear: 0,   // NeoCloud 플랫폼 운영 전제 SW 구독 0
-      neoOpexEok: 0,           // 기타 운영비(억/년)
-      neoTargetIrrPct: 15,     // 협상 판단용 목표 Equity IRR(%)
-      // rev38: HGX B300 서버 구성 프리셋 (VSLAI rev1.1)
-      b300Cooling: 'liquid',   // 'air' | 'liquid' — 랙당 서버 수·랙 면적·CDU
-      b300Net: '400'           // '400' | '800' — 네트워크 단가·전력
+      neoSwUsdPerGpuYear: 4500, // rev58: 타사위탁도 AI Enterprise GPU당 연 $4,500 적용
+      neoTargetIrrPct: 15      // 협상 판단용 목표 Equity IRR(%)
     };
     // ---------- i18n dictionary ----------
     const T = {
       // ---- rev36: GPU 임대 통합 탭 · 다중 카드 ----
       tabLease: { ko: 'GPU 임대', en: 'GPU Leasing' },
-      // ---- rev38: HGX(B300) 서버 구성 ----
-      srvSecTitle: { ko: 'HGX(B300) 서버 구성', en: 'HGX (B300) server configuration' },
-      srvSecDesc: { ko: '8-GPU NVLink 도메인(NVL8) 서버 단위로 구성합니다. 서버 1대의 IT 부하는 서버 본체 + 네트워크 + 스토리지·관리 전력의 합이며, 서버 수는 IT 수전용량과 사용가능 면적 중 작은 쪽으로 제한됩니다.<br>서버 단가·전력과 냉각·네트워크 프리셋은 Foxconn 공식 견적 전 가정값입니다.', en: 'Built in 8-GPU NVLink-domain (NVL8) servers. IT load per server = server + network + storage/management power; the count is limited by the smaller of IT power and usable floor area. Server price/power and the cooling/network presets are placeholders pending Foxconn quotes.' },
-      srvCooling: { ko: '냉각 방식', en: 'Cooling' },
-      srvNetwork: { ko: '스케일아웃 네트워크', en: 'Scale-out network' },
-      srvCostHead: { ko: '서버 1대당 원가 (USD)', en: 'Cost per server (USD)' },
-      srvSpecHead: { ko: '물리 사양', en: 'Physical spec' },
-      srvCostServer: { ko: '서버 본체 (HGX B300 NVL8)', en: 'Server (HGX B300 NVL8)' },
-      srvCostNet: { ko: '네트워크 ({g}G 스위치·NIC·광모듈)', en: 'Network ({g}G switches · NICs · optics)' },
-      srvCostAux: { ko: '스토리지·관리노드', en: 'Storage · management nodes' },
-      srvCostCdu: { ko: 'CDU (수랭)', en: 'CDU (liquid cooling)' },
-      srvCostSi: { ko: 'SW Setup·SI', en: 'SW setup · SI' },
-      srvHintPerGpu: { ko: 'GPU당 {v}', en: '{v} per GPU' },
-      srvHintNetPreset: { ko: '네트워크 토글 시 프리셋값으로 재설정', en: 'Reset to preset when the network toggle changes' },
-      srvHintCduPreset: { ko: '냉각 토글 시 프리셋값으로 재설정', en: 'Reset to preset when the cooling toggle changes' },
-      srvSpecServerKw: { ko: '서버 본체 전력', en: 'Server power' },
-      srvSpecServerKwHint: { ko: 'GPU 8 × 1.1kW + CPU·NIC·팬 · 랙당 {v}kW', en: '8 GPUs × 1.1kW + CPU/NIC/fans · {v}kW per rack' },
-      srvSpecNetKw: { ko: '네트워크 전력 (서버당)', en: 'Network power (per server)' },
-      srvSpecAuxKw: { ko: '스토리지·관리 전력 (서버당)', en: 'Storage/mgmt power (per server)' },
-      srvSpecPerRack: { ko: '랙당 서버 수', en: 'Servers per rack' },
-      srvSpecRackArea: { ko: '랙당 점유면적 (통로 포함)', en: 'Area per rack (incl. aisle)' },
-      srvSpecGpus: { ko: '서버당 GPU (NVL8)', en: 'GPUs per server (NVL8)' },
-      srvTotalKw: { ko: '서버 1대 IT 부하 {v}kW', en: 'IT load per server {v}kW' },
-      srvCapexHead: { ko: 'CAPEX 항목', en: 'Capex item' },
-      srvCapexAmount: { ko: '금액', en: 'Amount' },
-      srvCapexShare: { ko: '비중', en: 'Share' },
-      srvCapexSub: { ko: 'B300 IT 장비 소계', en: 'B300 IT equipment subtotal' },
-      srvCapexFac: { ko: '시설비 (구성 전체 공유)', en: 'Facility (shared by the whole configuration)' },
-      srvCapexTotal: { ko: '총 CAPEX (B300 + 시설)', en: 'Total capex (B300 + facility)' },
-      srvOpexHead: { ko: '기타 운영비 (연간)', en: 'Other opex (per yr)' },
-      srvOpexRowCsp: { ko: '서버형(B300) 별도 운영비', en: 'Separate opex for the server type (B300)' },
-      srvOpexRowNeo: { ko: '타사위탁 기타 운영비', en: 'Outsourced other opex' },
-      srvOpexNeoNote: { ko: '타사위탁 모드: 사이드바 「기타 운영비(연간)」 값 적용', en: 'Outsourced mode: uses the sidebar "Other opex (per yr)" value' },
-      srvOpexCspHint: { ko: '직접운영 모드에서만 계상 (억/년)', en: 'Charged in direct-operation mode only' },
-      auxBreakevenNoPrice: { ko: 'GB300 판매단가 미입력 — [SuperPOD] 기준 손익 산출 불가 (사이드바 GPU 판매단가에 GB300 입력)', en: 'GB300 list price blank — [SuperPOD] profit not available (enter GB300 under GPU list price)' },
-      srvAuxDesc: { ko: 'SI 할증 배수를 바꾸면 SW Setup·SI 항목이 그 배수로 계상됩니다. 손익 역전 배수는 같은 부지를 GB300 SuperPOD만으로 채웠을 때의 3년 누적 손익과 비교합니다.', en: 'Changing the SI premium multiplier scales the SW setup · SI item. The break-even multiplier compares against the 3-yr cumulative profit of the same site filled with GB300 SuperPOD only.' },
+      // ---- rev58: IT 장비 CAPEX 구성 (장비 구매비 · CDU · 초기 설치·통합비) ----
+      itcSecTitle: { ko: 'IT 장비 CAPEX 구성', en: 'IT equipment CAPEX breakdown' },
+      itcSecDesc: { ko: '장비 구매비는 GPU당 적용 단가 × GPU 수(설치비·시스템 세팅비 등이 포함된 거래가 기준), CDU는 SU 수에 따라 증설, 초기 SW 설치·통합비는 프로젝트 전체 고정입니다. 시설 본공사비(건축·수전·UPS·열원)는 시설 CAPEX에서 별도 계상합니다.', en: 'Equipment = applied price per GPU × GPUs (deal prices that already include installation and system setup); CDUs scale with the number of SUs; the initial SW installation/integration budget is a fixed project amount. Facility base construction is costed separately under facility capex.' },
+      itcColItem: { ko: '항목 · 산출 근거', en: 'Item · basis' },
+      itcRowEquip: { ko: '장비 구매비', en: 'Equipment purchase' },
+      itcEquipBasis: { ko: '{n} SU × SU당 {per} (GPU당 {p} × {g} GPU)', en: '{n} SU × {per} per SU ({p} per GPU × {g} GPUs)' },
+      itcRowCdu: { ko: 'CDU (외장 In-row)', en: 'CDU (external in-row)' },
+      itcCduModePerSu: { ko: 'SU당 운전 1 + 예비 1', en: 'Per SU: 1 duty + 1 standby' },
+      itcCduModeN1: { ko: '전체 운전 N + 예비 1', en: 'Site: N duty + 1 standby' },
+      itcCduFormulaPerSu: { ko: 'CDU 대수 = {su} SU × {k}대 = {n}대', en: 'CDUs = {su} SU × {k} = {n}' },
+      itcCduFormulaN1: { ko: 'CDU 대수 = {su} SU + 예비 1 = {n}대', en: 'CDUs = {su} SU + 1 standby = {n}' },
+      itcCduNote: { ko: '1,350kW급 외장형 CDU 2개 위치/SU 잠정 (GIGABYTE 공개 사양 참고) · 대당 단가는 미확정 가정값(추후 수정) · CDU 펌프 소비전력은 냉각설비 전력으로 별도 산정', en: 'Two 1,350kW-class external CDU positions per SU (GIGABYTE public spec); unit price is a placeholder pending quotes; CDU pump power is counted under cooling plant power.' },
+      itcRowIntegration: { ko: '초기 설치·통합비', en: 'Initial installation & integration' },
+      itcIntegrationNote: { ko: '40M/M × 월 2,000만원 = 8억 + 예비비 2억 = 10억 · 프로젝트 전체 고정(SU 수와 무관) · CDU 배관·외부 네트워크·물리 설치 등 미포함분은 견적 확인 후 추가', en: '40 man-months × KRW 20M = 0.8B + 0.2B contingency = 1.0B; fixed per project (independent of SU count); CDU piping, external network and physical installation are added once quoted.' },
+      itcRowTotal: { ko: 'IT 장비 CAPEX 합계', en: 'IT equipment CAPEX total' },
+      labelCduUsd: { ko: 'CDU 단가', en: 'CDU unit price' },
+      labelInitIntegration: { ko: '초기 설치·통합비', en: 'Initial integration budget' },
+      unitCdu: { ko: '대', en: ' units' },
+      tipItCapexSec: { ko: 'IT 장비 CAPEX = Σ(SU 수 × GPU당 단가 × SU당 GPU 수) × 환율 + CDU 대수 × CDU 단가 × 환율 + 초기 설치·통합비(억). 총 CAPEX = IT 장비 CAPEX + 시설 CAPEX.', en: 'IT equipment capex = Σ(SUs × price per GPU × GPUs per SU) × FX + CDUs × CDU price × FX + initial integration (KRW). Total capex = IT equipment + facility.' },
+      tipCduUnits: { ko: 'SU당 방식: CDU 대수 = SU 수 × 2(운전 1 + 예비 1). 전체 N+1 방식: CDU 대수 = SU 수 + 1(부지 전체에 예비 1대만). 금액 = 대수 × 단가 × 환율.', en: 'Per-SU: CDUs = SUs × 2 (1 duty + 1 standby). Site N+1: CDUs = SUs + 1 (one standby for the whole site). Amount = units × price × FX.' },
+      tipIntegration: { ko: '초기 SW 설치·통합 인건비 예산. 장비 구매비(GPU당 단가)에 포함된 설치·세팅비와는 별개로, 클러스터 SW 스택 통합(40M/M)과 예비비를 잡은 금액입니다.', en: 'Initial SW installation/integration labor budget (40 man-months plus contingency), separate from the installation/setup already inside the per-GPU equipment price.' },
+      tipPricePerGpu: { ko: 'GPU 1개당 적용 단가 = 서버·네트워크·스토리지·설치비·시스템 세팅비 등 거래에 포함된 금액 전체를 GPU 수로 나눈 값입니다. HGX B300 $62,000은 조사한 4개 사례의 평균이며 특정 제조사·구성의 확정 견적이 아닙니다. DGX GB300 $80,167은 기존 조사값입니다.', en: 'Applied price per GPU = the whole deal amount (servers, network, storage, installation, system setup) divided by GPU count. HGX B300 $62,000 is the average of four surveyed cases, not a firm quote; DGX GB300 $80,167 is the prior survey value.' },
+      specPricePerGpu: { ko: 'GPU당 적용 단가', en: 'Price per GPU' },
+      specPowerPerSub: { ko: '{noun}당 전력', en: 'Power / {noun}' },
+      capexItemEquip: { ko: '장비 구매비 (GPU당 {p} × {g} GPU)', en: 'Equipment ({p} per GPU × {g} GPUs)' },
+      capexNoteSite: { ko: 'CDU · 초기 설치·통합비는 부지 단위로 별도 계상 (아래 IT 장비 CAPEX 구성 참조)', en: 'CDUs and initial integration are costed at site level (see IT equipment CAPEX breakdown below)' },
+      cardNoteB300: { ko: '수랭 4U · 800G XDR 고정 · 공간 {p}개 위치/SU(컴퓨팅 9 + 네트워크 2 + 스토리지 1 + 관리 1 + 예비 1 + CDU 2) = {a}㎡', en: 'Liquid 4U · 800G XDR fixed · {p} positions/SU (9 compute + 2 network + 1 storage + 1 mgmt + 1 spare + 2 CDU) = {a}㎡' },
+      cardNoteGb300: { ko: 'NVIDIA RA 기준 · 공간 {p}개 위치/SU(컴퓨팅 8 + 네트워크 6 + 스토리지 2 + 관리 2 + CDU 2) = {a}㎡', en: 'NVIDIA RA · {p} positions/SU (8 compute + 6 network + 2 storage + 2 mgmt + 2 CDU) = {a}㎡' },
+      // ---- rev58: 임차 조건 ----
+      groupLeaseTitle: { ko: '임차 조건', en: 'Lease terms' },
+      labelLeaseArea: { ko: '계약면적', en: 'Contract area' },
+      labelLeaseRent: { ko: '임대료 단가', en: 'Rent rate' },
+      labelLeaseMgmt: { ko: '관리비 단가', en: 'Management fee rate' },
+      labelLeaseDeposit: { ko: '보증금 (월 임대료 배수)', en: 'Deposit (months of rent)' },
+      labelLeaseDepositRate: { ko: '보증금 환산 이자율', en: 'Deposit carrying rate' },
+      labelLeaseAgentFee: { ko: '임대대행 수수료 (1회)', en: 'Leasing agent fee (one-off)' },
+      leaseHint: { ko: '연 임대료 {r} + 관리비 {m} + 보증금 {d} × 이자율 = {dc} → 임차 비용 {t}/년', en: 'Rent {r}/yr + management {m}/yr + deposit {d} × rate = {dc} → lease cost {t}/yr' },
+      tipLease: { ko: '임대료 = 계약면적 × 임대료 단가 × 12, 관리비 = 계약면적 × 관리비 단가 × 12, 보증금 = 월 임대료 × 개월수. 운영비에는 임대료 + 관리비 + 보증금 × 환산 이자율만 넣고, 보증금 원금은 재무구조에서 0년차 납입·3년차 회수로 반영합니다. 임대대행 수수료는 별도 협의(1년차 1회 지출).', en: 'Rent = area × rent rate × 12; management = area × fee rate × 12; deposit = monthly rent × months. Opex includes rent + management + deposit × carrying rate; the deposit principal is paid in Year 0 and returned in Year 3 in the financing view. Agent fee is to be negotiated (one-off in Year 1).' },
+      blLease: { ko: '임차 비용(연)', en: 'Lease cost (per yr)' },
+      blLeaseDetail: { ko: '임대료 {r} + 관리비 {m} + 보증금 이자 {dc}', en: 'rent {r} + mgmt {m} + deposit interest {dc}' },
+      chipLease: { ko: '임차 조건', en: 'Lease' },
+      blCdu: { ko: 'CDU', en: 'CDU' },
+      blIntegration: { ko: '초기 설치·통합비', en: 'Initial integration' },
+      pnlLeaseNote: { ko: '임차 비용(임대료 + 관리비 + 보증금 환산 이자)은 모든 열에 같은 기준으로 계상됩니다.', en: 'Lease cost (rent + management fee + deposit carrying cost) is applied identically to every column.' },
       // ---- rev37: 운영 방식 CSP / NeoCloud ----
       labelOpMode: { ko: '운영 방식', en: 'Operating model' },
       opModeCsp: { ko: 'CSP 직접운영', en: 'CSP (direct)' },
@@ -1222,7 +1247,7 @@
       labelNeoPrice: { ko: 'GPU 고객 판매단가', en: 'GPU customer price' },
       labelNeoMargin: { ko: '마진율', en: 'Operator margin' },
       labelNeoUtil: { ko: '가동비중', en: 'Utilized share' },
-      labelNeoSw: { ko: 'SW구독단가 (서버형)', en: 'SW subscription (server type)' },
+      labelNeoSw: { ko: 'AI Enterprise 구독단가 (GPU당·년)', en: 'AI Enterprise subscription (per GPU·yr)' },
       labelNeoOpex: { ko: '기타 운영비(연간)', en: 'Other opex (per yr)' },
       neoPriceBlank: { ko: '판매단가 미입력 · 매출 0으로 계산', en: 'No customer price · revenue counted as 0' },
       neoNetChip: { ko: '순단가 {net}/GPU·h<span class="sub">판매단가 {gross} − 마진 {m}%</span>', en: 'Net {net}/GPU·h<span class="sub">list {gross} − margin {m}%</span>' },
@@ -1264,11 +1289,11 @@
       blNeoPrice: { ko: '{name} 판매단가 → 순단가', en: '{name} list → net rate' },
       blNeoUtil: { ko: '가동비중', en: 'Utilized share' },
       blNeoMargin: { ko: '위탁 사업자 마진율', en: 'Operator margin' },
-      blSwOpexNeo: { ko: 'SW 구독료(연, 서버형 GPU)', en: 'SW subscription (per yr, server-type GPUs)' },
+      blSwOpexNeo: { ko: 'AI Enterprise 구독료(연)', en: 'AI Enterprise subscription (per yr)' },
       blOtherOpexNeo: { ko: '기타 운영비(연)', en: 'Other opex (per yr)' },
-      chipSwSubNeo: { ko: 'SW 구독 (타사위탁)', en: 'SW subscription (outsourced)' },
+      chipSwSubNeo: { ko: 'AI Enterprise 구독', en: 'AI Enterprise' },
       formulaCardGpuBodyNeo: { ko: 'Σ(GPU 종류별 수량 × 단위당 GPU 수 × 8,760시간 × 가동비중 × 판매단가($) × (1 − 마진율) × 환율) ※ 계약 포트폴리오·입지 프리미엄·예약 할인 미적용', en: 'Σ(per GPU type: units × GPUs/unit × 8,760 hrs × utilized share × list price ($) × (1 − margin) × FX) — no contract mix, location premium or reserve discounts' },
-      formulaCardOpexBodyNeo: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동비중 × 전력량 단가] + SW 구독료[서버형 GPU 수 × SW 구독단가 × 환율] + 기타 운영비', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 hrs × Utilized share × Energy rate] + SW subscription [server-type GPUs × SW rate × FX] + other opex' },
+      formulaCardOpexBodyNeo: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동비중 × 전력량 단가] + AI Enterprise 구독료[GPU 수 × GPU당 연 단가 × 환율] + 임차 비용[계약면적 × (임대료 + 관리비 단가) × 12 + 보증금 × 환산 이자율]', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 h × Utilized share × Energy rate] + AI Enterprise [GPUs × annual rate per GPU × FX] + Lease [area × (rent + management rate) × 12 + deposit × carrying rate]' },
       cmpModeTitle: { ko: '운영 방식 비교 (현재 구성)', en: 'Operating model comparison (current configuration)' },
       cmpModeDesc: { ko: '현재 켜진 카드 구성을 CSP 직접운영과 CSP 타사위탁으로 각각 계산해 비교합니다. 다른 입력값은 동일합니다.', en: 'The current card configuration calculated under direct and outsourced operation with all other inputs equal.' },
       cmpModeRowBasis: { ko: '단가 기준', en: 'Rate basis' },
@@ -1277,7 +1302,7 @@
       labelDisc3YShort: { ko: '3년 할인율', en: '3Y Reserve discount' },
       labelDisc1YShort: { ko: '1년 할인율', en: '1Y Reserve discount' },
       unitServer: { ko: '대', en: ' srv' },
-      gpuSelectorDesc: { ko: "'GB200 NVL72 SuperPOD CAPEX & OPEX 추산' 자료의 초기 투자비(CAPEX) 항목별 추산치와 연차별 GPU 임대단가·GPU FP4 성능 기준.<br>GB300 SuperPOD은 NVL72 항목에 GPU 단가 표준 비율 1.3배를 적용(그 외 항목·OPEX·내장 SW 사양 동일). 카드를 누르면 구성에 넣고 빼며, 여러 장을 켜면 혼합 구성으로 계산됩니다.", en: "Based on the per-item initial CAPEX estimates from the 'GB200 NVL72 SuperPOD CAPEX & OPEX' report, plus per-year GPU rental rates and GPU FP4 performance.<br>GB300 SuperPOD applies a 1.3x GPU price ratio to the NVL72 line item (all other items, OPEX, and bundled SW identical). Click a card to add or remove it; several cards on at once form a mixed configuration." },
+      gpuSelectorDesc: { ko: '판교 AIDC CAPEX 검토사항(2026.11.16)의 SU 구성과 GPU당 적용 단가를 기준으로 합니다.<br>HGX B300은 제조사 공개 사례(Supermicro·GIGABYTE)의 컴퓨팅 9랙/SU, DGX GB300은 NVIDIA 레퍼런스 아키텍처 기준이며, 수량은 완결된 SU 단위로만 늘어납니다. 카드를 누르면 계산에 포함/제외됩니다.', en: 'Based on the SU configurations and applied price per GPU in the Pangyo AIDC CAPEX review (2026-11-16).<br>HGX B300 follows vendor reference layouts (Supermicro, GIGABYTE) with 9 compute racks per SU; DGX GB300 follows the NVIDIA reference architecture. Quantities move in whole SUs. Click a card to include or exclude it.' },
       gpuCardAddLabel: { ko: '직접 입력 시스템 추가', en: 'Add a custom system' },
       gpuCustomDefaultName: { ko: '직접 입력', en: 'Custom' },
       gpuCustomNamePh: { ko: '시스템 이름', en: 'System name' },
@@ -1301,12 +1326,12 @@
       capexItemSi: { ko: 'SW Setup·SI (할증 {m}배 적용)', en: 'SW setup · SI (×{m} premium)' },
       mixTypeSub: { ko: '{name} · GPU {g}개 · {n}{u}', en: '{name} · {g} GPUs · {n}{u}' },
       mixRowRevenueTotal: { ko: '연간 매출 합계', en: 'Total annual revenue' },
-      mixSummary: { ko: 'GPU {g}개 · FP4 {fp} PFLOPS · IT 장비 CAPEX {capex}', en: '{g} GPUs · FP4 {fp} PFLOPS · IT equipment CAPEX {capex}' },
+      mixSummary: { ko: 'GPU {g}개 · FP4 {fp} PFLOPS · IT 장비 CAPEX {capex} (장비 + CDU + 초기 통합비)', en: '{g} GPUs · FP4 {fp} PFLOPS · IT equipment CAPEX {capex} (equipment + CDU + integration)' },
       mixNoType: { ko: '계산에 반영된 카드가 없습니다 — 사양이 입력된 카드를 켜 주세요.', en: 'No card is included in the calculation — turn on a card with specs.' },
       capSecTitle: { ko: '수전·면적 사용 현황', en: 'Power & Area Usage' },
       capSecDesc: { ko: '켜진 카드 수량의 합계가 IT 수전용량과 사용가능 면적 안에 들어오는지 확인합니다. 카드별 상한은 다른 카드가 쓰는 전력·면적을 뺀 잔여분으로 산출되며, 초과분은 빨간색으로 표시됩니다.', en: 'Checks whether the total of the active cards fits within IT power and usable floor area. Each card’s ceiling is the remainder after the other cards; any excess is shown in red.' },
       usageLabelMix: { ko: '전력 사용률', en: 'Power Utilization' },
-      powerCapMix: { ko: '({mix} ≈ {kw} / IT 수전용량 {it})', en: '({mix} ≈ {kw} / IT power {it})' },
+      powerCapMix: { ko: '({mix} ≈ {kw} / IT 수전용량 {it} · 잔여 {left})', en: '({mix} ≈ {kw} / IT power {it} · {left} left)' },
       thColServerRack: { ko: '랙 수 (서버 수)', en: 'Racks (servers)' },
       thServerDesc: { ko: '{name} 기준 · 랙당 {spr}대 · 랙당 {area}㎡ · 그레이스페이스 {sup}㎡ — 다른 활성 카드가 쓰는 전력·면적을 뺀 잔여분 기준', en: '{name} · {spr} per rack · {area}㎡/rack · grey space {sup}㎡ — based on the remainder after other active cards' },
       thTypeDescMix: { ko: '{sys} 기준 · SU당 {area}㎡ · 그레이스페이스 {sup}㎡ — 다른 활성 카드가 쓰는 전력·면적을 뺀 잔여분 기준 (필요 연면적 = 그레이스페이스 + 타 카드 점유 + SU수 × SU당 면적)', en: '{sys} · {area}㎡/SU · grey space {sup}㎡ — based on the remainder after other active cards (required area = support + other cards + SU × area/SU)' },
@@ -1320,17 +1345,17 @@
       blOtherOpex: { ko: '기타 운영비(연, 서버형)', en: 'Other opex (per yr, servers)' },
       formulaCardGpuBodyMix: { ko: 'Σ(GPU 종류별 수량 × 단위당 GPU 수 × 8,760시간 × Σ(계약비중 × 가동률 계수 × 계약유형별 단가)) ※ 단가 = 기초단가($) × 입지(+{loc}%) × 예약할인(0/-{d1}%/-{d3}%) × 환율', en: 'Σ(per GPU type: units × GPUs/unit × 8,760 hrs × Σ(mix × utilization coefficient × contract rate)) — rate = base ($) × location (+{loc}%) × reserve discount (0/-{d1}%/-{d3}%) × FX' },
       formulaCardCapexTitleMix: { ko: 'IT 장비 CAPEX', en: 'IT Equipment CAPEX' },
-      formulaCardCapexBodyMix: { ko: 'SuperPOD형: SU 수 × Σ(NVL72 + Network Switches + Storage + Management Nodes + CDU + SW Setup & License)(USD) + 서버형: 서버 수 × [서버 본체 + 네트워크 + 스토리지·관리노드 + CDU + SW Setup·SI × 할증 배수](USD) — 합계 × 환율', en: 'SuperPOD type: SU × Σ(NVL72 + Network Switches + Storage + Management Nodes + CDU + SW Setup & License)(USD) + server type: servers × [server + network + storage/mgmt + CDU + SW setup·SI × premium](USD) — total × FX' },
-      formulaCardOpexBodyMix: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동률 × 전력량 단가] + SW 구독료[GPU 수 × 단가 × 환율] + 기타 운영비(서버형) ※ 전력량 요금은 켜진 카드의 사용 IT 전력 합계 기준', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 hrs × Utilization × Energy rate] + SW subscription [GPUs × rate × FX] + other opex (server type) — energy charge follows the used IT power of the active cards' },
-      formulaCardDepBodyMix: { ko: '(IT 장비 CAPEX + 시설 CAPEX) × 연차별 감가상각 증가율[기본 33→66→99% 누적] + 연간 OPEX', en: '(IT equipment CAPEX + Facility CAPEX) × Yearly depreciation increment [default 33→66→99% cumulative] + Annual OPEX' },
+      formulaCardCapexBodyMix: { ko: 'Σ(SU 수 × GPU당 적용 단가 × SU당 GPU 수)(USD) + CDU 대수 × CDU 단가(USD) — 합계 × 환율 + 초기 설치·통합비(억, 프로젝트 고정)', en: 'Σ(SUs × price per GPU × GPUs per SU)(USD) + CDUs × CDU price (USD) — total × FX + initial integration (KRW, fixed per project)' },
+      formulaCardOpexBodyMix: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동률 × 전력량 단가] + AI Enterprise 구독료[GPU 수 × GPU당 연 단가 × 환율] + 임차 비용[계약면적 × (임대료 + 관리비 단가) × 12 + 보증금 × 환산 이자율] ※ 전력량 요금은 켜진 카드의 사용 IT 전력 합계 기준', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 h × Utilization × Energy rate] + AI Enterprise [GPUs × annual rate per GPU × FX] + Lease [area × (rent + management rate) × 12 + deposit × carrying rate] ※ energy charge uses the IT power of all active cards' },
+      formulaCardDepBodyMix: { ko: '(IT 장비 CAPEX + 시설 CAPEX) × 연차별 감가상각 증가율[기본 33→66→99% 누적] + 연간 OPEX(전기료 + AI Enterprise + 임차 비용)', en: '(IT equipment CAPEX + Facility CAPEX) × Yearly depreciation increment [default 33→66→99% cumulative] + Annual OPEX (electricity + AI Enterprise + lease)' },
       compareDescMix: { ko: '켜진 카드의 GPU 종류별로 각각 단독 구성(전력·면적 제약 내 최대 수량)했을 때의 {n}년 수익구조를 비교합니다. 카드가 2장 이상 켜져 있으면 현재 혼합 구성도 함께 보입니다. 전기료는 모두 사용 IT 전력 × PUE 기준입니다.', en: 'Compares the {n}-yr revenue structure of each active GPU type configured on its own (max units within power and area limits). With two or more cards on, the current mix is shown as well. Electricity is based on used IT power × PUE for all columns.' },
       compareMixName: { ko: '현재 구성(혼합)', en: 'Current mix' },
-      compareNoteMix: { ko: '※ 단독 구성 열마다 전력 기준 수량에 맞춰 연면적을 자동 산출하므로 시설 CAPEX가 열에 따라 다를 수 있습니다. 기타 운영비는 서버형(B300)이 포함된 열에만 계상됩니다.', en: '※ Each standalone column sizes its floor area to the power-limited unit count, so facility CAPEX can differ by column. Other opex applies only to columns that include the server type (B300).' },
+      compareNoteMix: { ko: '※ 단독 구성 열은 같은 부지(연면적·수전) 안에서 완결된 SU 단위 최대 수량으로 계산합니다. CDU·초기 설치·통합비·임차 비용은 모든 열에 같은 기준으로 계상됩니다.', en: '※ Each standalone column uses the maximum number of complete SUs that fit the same site (floor area and power). CDUs, initial integration and lease cost are applied on the same basis in every column.' },
       compareApplyBtnMix: { ko: '이 구성만 적용', en: 'Use this configuration' },
       compareGotoBtn: { ko: 'GPU 임대 탭으로 이동', en: 'Open GPU Leasing tab' },
       prodColPod: { ko: 'SuperPOD형 (GB300 · VR)', en: 'SuperPOD type (GB300 · VR)' },
       prodColServer: { ko: 'HGX 서버형 (B300)', en: 'HGX server type (B300)' },
-      pnlOtherOpexNote: { ko: '기타 운영비는 서버형(B300)이 켜진 구성에만 계상됩니다.', en: 'Other opex applies only to configurations with the server type (B300) on.' },
+      pnlOtherOpexNote: { ko: '임차 비용(임대료 + 관리비 + 보증금 환산 이자)은 모든 열에 같은 기준으로 계상됩니다.', en: 'Lease cost (rent + management fee + deposit carrying cost) is applied identically to every column.' },
       heroTitle: { ko: 'SuperPOD 기반<br>AI 데이터센터 수익구조 시뮬레이션', en: 'AI Data Center Revenue Simulation<br>Based on SuperPOD' },
       heroDesc: { ko: 'GB300/GB200 SuperPOD과 서버·GPU 임대, 두 사업모델의 3개년 수익구조를 비교합니다.<br>규모·공간·단가·조달구조를 바꾸면 매출과 손익은 물론 IRR·DSCR·주주 현금흐름까지 즉시 다시 계산됩니다.', en: 'Compare the three-year return structure of two business models: GB300/GB200 SuperPOD and standalone server/GPU rental.<br>Adjusting scale, space, rates or funding structure instantly recalculates revenue and profit \u2014 along with IRR, DSCR and cash flow to equity.' },
       btnDefault: { ko: '기본값', en: 'Defaults' },
@@ -1341,7 +1366,7 @@
       tabCompare: { ko: '모델 비교', en: 'Model Comparison' },
       suSecTitle: { ko: 'SU구성', en: 'SU Configuration' },
       labelDepGroup: { ko: 'GPU 누적 감가상각률', en: 'Cumulative GPU Depreciation' },
-      labelSwSubShort: { ko: 'SW 구독 단가', en: 'SW Subscription Rate' },
+      labelSwSubShort: { ko: 'AI Enterprise 구독단가', en: 'AI Enterprise rate' },
       rackSpecHeading: { ko: '랙 사양 · 1랙 기준', en: 'Rack spec · per rack' },
       btnToggleCards: { ko: '요약 카드 접기/펴기', en: 'Collapse/expand summary cards' },
       tabFinance: { ko: '재무구조', en: 'Financing & Returns' },
@@ -1395,7 +1420,7 @@
       labelEnergyCostRate: { ko: '전력량 요금', en: 'Energy Rate' },
       labelBasicCharge: { ko: '전기 기본요금', en: 'Basic Electricity Charge' },
       labelFx: { ko: '환율', en: 'Exchange Rate' },
-      labelSwSub: { ko: 'SW 구독 단가 (NVIDIA AI Enterprise·Mission Control)', en: 'SW Subscription Rate (NVIDIA AI Enterprise / Mission Control)' },
+      labelSwSub: { ko: 'AI Enterprise 구독단가 (GPU당·년)', en: 'AI Enterprise subscription (per GPU·yr)' },
       labelDepY: { ko: '{n}년차 감가상각률(누적)', en: 'Yr{n} Depreciation Rate (Cumulative)' },
       baseHintPrefix: { ko: '기본값:', en: 'Default:' },
       cardAnnualRevenue: { ko: '1년차 연간 매출', en: 'Year-1 Revenue' },
@@ -1429,7 +1454,7 @@
       rateBasisNote: { ko: '기초단가 {b} × 입지(+{loc}%) → 온디맨드 · 1년 예약 -{d1}% · 3년 예약 -{d3}%', en: 'Base {b} × location (+{loc}%) → On-Demand; 1Y Reserve -{d1}%; 3Y Reserve -{d3}%' },
       suKicker: { ko: '1 SU = NVL72 랙 {r}대 · {g} GPU · ≈ 1.2MW', en: '1 SU = {r} NVL72 racks · {g} GPUs · ≈ 1.2MW' },
       capexHeading: { ko: '초기 투자비 (CAPEX) · 1SU 기준', en: 'Initial CAPEX · per 1 SU' },
-      capexTotalLabel: { ko: 'CAPEX 합계 (1SU)', en: 'CAPEX Total (1 SU)' },
+      capexTotalLabel: { ko: 'SU당 장비 구매비', en: 'Equipment per SU' },
       specRateODLabel: { ko: '온디맨드', en: 'On-Demand' },
       specRate1YLabel: { ko: '1년 예약', en: '1Y Reserve' },
       specRate3YLabel: { ko: '3년 예약', en: '3Y Reserve' },
@@ -1466,13 +1491,13 @@
       chipEnergyRate: { ko: '전력량 단가', en: 'Energy Rate' },
       chipBasicCharge: { ko: '전기기본요금', en: 'Basic Charge' },
       chipFx: { ko: '환율', en: 'Exchange Rate' },
-      chipSwSub: { ko: 'SW 구독', en: 'SW Subscription' },
+      chipSwSub: { ko: 'AI Enterprise 구독', en: 'AI Enterprise' },
       chipDep: { ko: '감가상각(누적)', en: 'Depreciation (Cum.)' },
       formulaCardGpuTitle: { ko: 'GPUaaS 연매출', en: 'GPUaaS Annual Revenue' },
       formulaCardGpuBody: { ko: 'SU 수 × 576 GPU × 8,760시간 × Σ(계약비중 × 가동률 계수 × 계약유형별 단가) ※ 단가 = 기초단가($) × 입지(+15%) × 예약할인(0/-25%/-46%) × 환율', en: 'SU count × 576 GPUs × 8,760 hrs × Σ(mix × utilization coefficient × contract rate) — rate = base USD × location premium × contract discount × FX' },
       formulaCardCapexTitle: { ko: 'SuperPOD CAPEX (IT 장비)', en: 'SuperPOD CAPEX (IT Equipment)' },
       formulaCardCapexBody: { ko: 'SU 수 × Σ(NVL72 + Network Switches + Storage + Management Nodes + CDU + SW Setup & License)(USD) × 환율 — GB300은 NVL72 항목 1.3배', en: 'SU count × Σ(NVL72 + Network Switches + Storage + Management Nodes + CDU + SW Setup & License)(USD) × FX — GB300 applies 1.3x to the NVL72 item' },
-      formulaCardOpexTitle: { ko: '연간 OPEX (전기료 + SW 구독)', en: 'Annual OPEX (Electricity + SW Subscription)' },
+      formulaCardOpexTitle: { ko: '연간 OPEX (전기료 + AI Enterprise + 임차 비용)', en: 'Annual OPEX (Electricity + AI Enterprise + Lease)' },
       formulaCardOpexBody: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 총 수전용량(kW) × 8,760시간 × 가동률 × 전력량 단가] + SW 구독료[GPU 수 × $4,500 × 환율] ※ 전기료는 추산자료 기준, 수전용량(계약전력) 단위로 산정되어 SU 수와 무관', en: 'Electricity [Total power (kW) × Basic charge × 12 + Total power (kW) × 8,760 hrs × Utilization × Energy rate] + SW subscription [GPU count × $4,500 × FX] — per the source estimate, electricity is billed at the contracted total power capacity, independent of SU count' },
       formulaCardDepTitle: { ko: '연지출 (감가상각 반영)', en: 'Annual Expense (with Depreciation)' },
       formulaCardDepBody: { ko: '(SuperPOD CAPEX + 시설 CAPEX) × 연차별 감가상각 증가율[기본 33→66→99% 누적] + 연간 OPEX', en: '(SuperPOD CAPEX + Facility CAPEX) × Yearly depreciation increment [default 33→66→99% cumulative] + Annual OPEX' },
@@ -1489,7 +1514,7 @@
       blFacility: { ko: '시설 CAPEX', en: 'Facility CAPEX' },
       blServerCapex: { ko: '서버 CAPEX', en: 'Server CAPEX' },
       blElecCost: { ko: '전기료(연평균)', en: 'Electricity (yearly avg.)' },
-      blSwOpex: { ko: 'SW 구독료(연, 서버형 GPU)', en: 'SW subscription (per yr, server-type GPUs)' },
+      blSwOpex: { ko: 'AI Enterprise 구독료(연)', en: 'AI Enterprise subscription (per yr)' },
       blDep: { ko: '감가상각(누적)', en: 'Depreciation (cum.)' },
       facilityTitle: { ko: '시설비 CAPEX 세부 내역', en: 'Facility CAPEX Breakdown' },
       facilityDesc: { ko: "신축·리모델링 기준 시설비 계산표입니다. 각 항목 수치 아래 입력칸에서 예산을 직접 조정(Scalable)할 수 있으며, 적용 중인 시설 유형의 합계가 시설 CAPEX에 자동 반영됩니다. 상단 '시설 유형' 토글로 신축/리모델링을 전환할 수 있습니다.", en: "Facility cost breakdown for new build vs. remodel. Each item's budget can be adjusted directly (scalable) in the input below its value; the total of the applied facility type feeds Facility CAPEX automatically. Use the 'Facility Type' toggle above to switch between new build and remodel." },
@@ -1566,9 +1591,9 @@
       pnlElec: { ko: '\uC804\uAE30\uB8CC', en: 'Electricity' },
       pnlElecTip: { ko: '\uAE30\uBCF8\uC694\uAE08(\uCD1D \uC218\uC804\uC6A9\uB7C9 \uAE30\uC900, \uAC00\uB3D9 \uC5EC\uBD80\uC640 \uBB34\uAD00\uD558\uAC8C \uBC1C\uC0DD) + \uC804\uB825\uB7C9\uC694\uAE08(\uAC00\uB3D9 \uAD6C\uAC04\uC5D0\uB9CC \uBC1C\uC0DD). SuperPOD\uC740 \uCD94\uC0B0\uC790\uB8CC\uC5D0 \uB530\uB77C \uACC4\uC57D\uC804\uB825 \uAE30\uC900, \uC784\uB300\uB294 \uC0AC\uC6A9 IT \uC804\uB825 \u00D7 PUE \uAE30\uC900\uC785\uB2C8\uB2E4.', en: 'Base charge (on contracted total power; accrues regardless of go-live) + energy charge (only while operating). SuperPOD is billed on contracted power per the source estimate; Rental on used IT power \u00D7 PUE.' },
       pnlSw: { ko: 'SW \uAD6C\uB3C5\uB8CC', en: 'SW Subscription' },
-      pnlSwTip: { ko: 'GPU \uC218 \u00D7 \uC5F0\uAC04 \uB2E8\uAC00 \u00D7 \uD658\uC728 \u00D7 \uAC00\uC6A9\uACC4\uC218. \uB77C\uC774\uC120\uC2A4\uB294 \uAC00\uB3D9 \uC2DC\uC810\uBD80\uD130 \uAC1C\uC2DC\uD558\uB294 \uAC83\uC73C\uB85C \uAC00\uC815\uD569\uB2C8\uB2E4.', en: 'GPUs \u00D7 annual rate \u00D7 FX \u00D7 availability factor. Licenses are assumed to start at go-live.' },
-      pnlOpex: { ko: '\uC6B4\uC601\uBE44(OPEX)', en: 'Operating Cost (OPEX)' },
-      pnlOpexTip: { ko: '\uC778\uAC74\uBE44\u00B7\uC720\uC9C0\uBCF4\uC218 \uB4F1 \uACE0\uC815 \uC6B4\uC601\uBE44. \uD1B5\uD569 \uAE30\uAC04\uC5D0\uB3C4 \uC778\uB825\uC774 \uC120\uD22C\uC785\uB418\uBBC0\uB85C \uAC00\uC6A9\uACC4\uC218\uB97C \uC801\uC6A9\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4(\uBCF4\uC218\uC801). SuperPOD \uBAA8\uB378\uC5D0\uB294 \uBCC4\uB3C4 OPEX \uD56D\uBAA9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.', en: 'Fixed operating cost (staff, maintenance). No availability factor is applied since staff are onboarded during integration (conservative). The SuperPOD model has no separate OPEX line.' },
+      pnlSwTip: { ko: 'GPU 수 × AI Enterprise 연 단가 × 환율 × 3년. 전체 GPU에 적용합니다.', en: 'GPUs × AI Enterprise annual rate × FX × 3 years, applied to all GPUs.' },
+      pnlOpex: { ko: '임차 비용', en: 'Lease cost' },
+      pnlOpexTip: { ko: '임대료 + 관리비(계약면적 × 단가 × 12) + 보증금 × 환산 이자율, 3년 합계. 운영 방식·구성과 무관하게 동일.', en: 'Rent + management fee (area × rate × 12) + deposit × carrying rate, 3-year total; identical across models.' },
       pnlExpTotal: { ko: '\uBE44\uC6A9 \uD569\uACC4', en: 'Total Expense' },
       pnlProfit: { ko: '3\uB144 \uB204\uC801 \uC190\uC775', en: '3-Yr Cumulative Profit' },
       pnlMargin: { ko: '\uC190\uC775\uB960', en: 'Profit Margin' },
@@ -1659,13 +1684,13 @@
       facModeHintBoth: { ko: '신축 전력동(700㎡) 병행 · 신축 + 리모델링 두 열의 합이 시설비', en: 'With the new 700㎡ power building · facility capex = new build + remodel columns' },
       facilityDescRemodel: { ko: '[리모델링] 신축동 없이 기존 건물 리모델링만으로 구성합니다. 전력·공조 예산은 전액 리모델링으로 계상되고, 건축/토목·통신/소방의 신축 고정분(40억·16억)은 제외됩니다. 면적비례 단가는 고하중(화이트스페이스) 구간과 일반(그레이스페이스 및 기타) 구간으로 나눠 계획 면적에 적용하며, 설계/감리/간접비는 직접공사비의 10%입니다(행별 수동 전환 가능, 단가 입력은 억 원).', en: '[Remodel only] the existing building is remodeled with no new construction. Electrical and mechanical budgets are costed fully as remodel; the fixed new-build portions of architecture and telecom/fire (KRW 4.0B and 1.6B) are dropped. Area-based rates apply a heavy-load rate to the white space and a general rate to grey space & other; soft costs are 10% of direct works (rows can be set manually; rates in KRW 0.1B).' },
       cardRacks: { ko: '= {n}랙', en: '= {n} racks' },
-      tipSystemSelector: { ko: '켜진 카드의 수량 합이 IT 수전용량과 화이트스페이스 안에 들어오도록 상한을 계산합니다. 카드별 CAPEX = 랙당 구성 항목 합계 × 랙 수(서버형은 서버당 단가 × 서버 수), 매출은 GPU 수 × 시간당 단가 × 가동 시간.', en: 'Caps keep the enabled cards within IT power and white space. Card capex = per-rack items × racks (server type: per-server cost × servers); revenue = GPUs × hourly rate × hours.' },
+      tipSystemSelector: { ko: '켜진 카드의 SU 수 합이 IT 수전용량과 화이트스페이스 안에 들어오도록 상한을 계산합니다(완결된 SU 단위). 카드별 장비 구매비 = GPU당 적용 단가 × SU당 GPU 수 × SU 수, 매출은 GPU 수 × 시간당 단가 × 가동 시간.', en: 'Caps the total SUs of active cards to the IT power and white space (whole SUs only). Equipment per card = price per GPU × GPUs per SU × SUs; revenue = GPUs × hourly rate × hours.' },
       tipMixTable: { ko: '연매출 = GPU 수 × 8,760h × Σ(계약 비중 × 연차 가동률 계수 × 계약별 단가). 계약별 단가 = 기초단가($) × (1 + 입지 프리미엄) × (1 − 예약 할인) × 환율.', en: 'Annual revenue = GPUs × 8,760h × Σ(contract share × yearly utilization × contract rate). Contract rate = base rate × (1 + location premium) × (1 − reserve discount) × FX.' },
       tipNeoTerms: { ko: 'GPU·시간 = GPU 수 × 8,760h × 가동비중 · 과금액 = GPU·시간 × 판매단가 × 환율 · 위탁 사업자 마진 = 과금액 × 마진율 · 당사 인식 매출 = 과금액 − 마진.', en: 'GPU-hours = GPUs × 8,760h × utilized share · billings = GPU-hours × list price × FX · operator margin = billings × margin rate · recognized revenue = billings − margin.' },
       tipNeoSens: { ko: '마진율만 10~40%로 바꿔 순단가·매출·FCFE·IRR을 다시 계산합니다. 목표 IRR 유지 최대 마진 = IRR ≥ 목표를 만족하는 가장 큰 마진(이분 탐색), 손익분기 마진 = Equity IRR 0%가 되는 마진.', en: 'Recomputes net rate, revenue, FCFE and IRR for margins of 10–40%. Max margin for target IRR = the largest margin with IRR ≥ target (bisection); break-even margin = margin at 0% equity IRR.' },
       tipCmpMode: { ko: '같은 랙 구성·전력·면적·조달 조건에서 운영 방식만 바꿔 계산합니다. 직접운영 = 계약 포트폴리오 단가 × 연차 가동률, 타사위탁 = (판매단가 − 마진) × 가동비중.', en: 'Same racks, power, space and financing; only the operating model changes. Direct = portfolio rates × yearly utilization; outsourced = (list price − margin) × utilized share.' },
-      tipSrvSec: { ko: '공랭 8U: 랙당 4대(56kW) · 수랭 4U(DLC): 랙당 8대(112kW, CDU 서버당 $27,800 추가). 네트워크 400G/800G 선택은 서버당 네트워크 CAPEX에 반영됩니다. 랙 수 = 서버 수 ÷ 랙당 서버 수.', en: 'Air 8U: 4 servers/rack (56kW) · liquid 4U (DLC): 8 servers/rack (112kW, +$27,800/server CDU). The 400G/800G choice changes per-server network capex. Racks = servers ÷ servers per rack.' },
-      tipCapSec: { ko: '사용 IT 전력 = Σ 수량 × 대당(SU당) 전력 · 면적 사용 = 그레이스페이스 및 기타 + Σ 수량 × 랙당 면적 · 카드별 상한 = min(전력 기준 수량, 면적 기준 수량), 다른 카드가 쓰는 잔여분 기준.', en: 'IT power used = Σ units × power per unit · area used = grey space & other + Σ units × area per rack · per-card cap = min(power-based, area-based) on what other cards leave.' },
+      tipSrvSec: { ko: '', en: '' },
+      tipCapSec: { ko: '사용 IT 전력 = Σ SU 수 × SU당 전력(컴퓨팅 전력 × 1.1, 지원 장비 10%) · 면적 사용 = 그레이스페이스 및 기타 + Σ SU 수 × SU당 면적(위치 수 × 랙당 면적) · 카드별 상한 = min(전력 기준, 면적 기준) SU 수, 다른 카드가 쓰는 잔여분 기준.', en: 'IT power used = Σ SUs × power per SU (compute × 1.1 for support gear) · area used = grey space & other + Σ SUs × area per SU (positions × area per rack) · cap per card = min(power-based, area-based) SUs on the remaining budget.' },
       tipFormula: { ko: '화면 계산에 쓰인 기준값과 산식을 한곳에 모았습니다. 각 표의 숫자는 여기 산식으로 재계산할 수 있습니다.', en: 'All inputs and formulas used on screen in one place; every figure in the tables can be recomputed from them.' },
       tipChart: { ko: '누적 손익 = 누적 매출 − 누적 지출(감가상각 + 전기료 + SW 구독 + 기타 운영비), 재무구조 반영 전.', en: 'Cumulative profit = cumulative revenue − cumulative expense (depreciation + electricity + SW + other opex), before financing.' },
       tipFacility: { ko: '면적비례 항목 = ㎡당 단가 × 연면적(리모델링 모드는 고하중/일반 2단 단가) · 용량비례 항목 = kW당 단가 × 총 수전용량 · 설계/감리/간접비 = 직접공사비 × 10%. 행별로 수동 전환해 예산을 직접 입력할 수 있습니다.', en: 'Area items = rate/㎡ × floor area (remodel mode splits heavy/general rates) · capacity items = rate/kW × total power · soft costs = 10% of direct works. Any row can be switched to manual input.' },
@@ -1675,7 +1700,7 @@
       tipCompareChart: { ko: '모델별 연차 누적 손익(재무구조 반영 전) 선 그래프. 0선을 넘는 연차가 손익분기점입니다.', en: 'Cumulative profit by year per model (before financing); the year crossing zero is break-even.' },
       tipFinance: { ko: '총 CAPEX를 자기자본과 PF로 조달한 뒤 주주 현금흐름(FCFE) = EBITDA − PF 이자 − 법인세 − 원금상환으로 IRR·MIRR·NPV·MoIC·DSCR을 계산합니다.', en: 'Total capex is funded by equity and PF debt; FCFE = EBITDA − interest − tax − principal drives IRR, MIRR, NPV, MoIC and DSCR.' },
       tipCardCapexServer: { ko: '랙당 CAPEX = (서버 본체 + 네트워크 + 스토리지·관리 + CDU + SW Setup·SI × 할증) × 랙당 서버 수. 원화 환산 = × 환율.', en: 'Per-rack capex = (server + network + storage/mgmt + CDU + SW setup·SI × premium) × servers per rack; KRW = × FX.' },
-      tipCardCapexSu: { ko: 'SU당 CAPEX = NVL72 랙 8대 + 네트워크 + 스토리지 + 관리노드 + CDU + SW 구축. 원화 환산 = × 환율.', en: 'Per-SU capex = 8 NVL72 racks + network + storage + management nodes + CDU + SW setup; KRW = × FX.' },
+      tipCardCapexSu: { ko: 'SU당 장비 구매비 = GPU당 적용 단가 × SU당 GPU 수(576). 원화 환산 = × 환율. CDU·초기 설치·통합비는 부지 단위로 따로 더합니다.', en: 'Equipment per SU = price per GPU × GPUs per SU (576); KRW = × FX. CDUs and initial integration are added at site level.' },
       tipNetRate: { ko: '순단가 = 판매단가 × (1 − 마진율). 당사 매출은 순단가 × GPU·시간 × 환율.', en: 'Net rate = list price × (1 − margin). Our revenue = net rate × GPU-hours × FX.' },
       tipMixRate: { ko: '단가 = 기초단가($) × (1 + 입지 프리미엄) × (1 − 예약 할인) × 환율', en: 'Rate = base rate × (1 + location premium) × (1 − reserve discount) × FX' },
       tipMixRevenue: { ko: '연간 매출 = Σ 계약유형별 (GPU 수 × 8,760h × 계약 비중 × 가동률 계수 × 단가)', en: 'Annual revenue = Σ by contract (GPUs × 8,760h × share × utilization × rate)' },
@@ -1690,7 +1715,7 @@
       tipAuxExp: { ko: 'CAPEX 비용화 = (부대장비 + SI 총액) × 3년 누적 감가상각률', en: 'Capex expensed = (aux + SI) × 3-year cumulative depreciation' },
       tipAuxAdd: { ko: '3년 추가계 = CAPEX 비용화 + SW 구독 3년', en: '3-yr added = capex expensed + SW subscription' },
       tipAuxProfit: { ko: '3년 누적 손익 = 3년 누적 매출 − 누적 지출 (재무구조 반영 전, 현재 구성)', en: '3-yr cumulative profit = revenue − expense (before financing, current configuration)' },
-      tipPowerMeter: { ko: '전력 사용률 = Σ(수량 × 대당 전력) ÷ IT 수전용량', en: 'Power use = Σ(units × power per unit) ÷ IT power capacity' },
+      tipPowerMeter: { ko: '전력 사용률 = Σ(SU 수 × SU당 IT 전력) ÷ IT 수전용량', en: 'Power use = Σ(SUs × IT power per SU) ÷ IT power capacity' },
       tipAreaMeter: { ko: '면적 사용률 = (그레이스페이스 및 기타 + Σ 수량 × 랙당 면적) ÷ 연면적', en: 'Area use = (grey space & other + Σ units × area per rack) ÷ floor area' },
       floorAreaTip: { ko: '연면적(Gross Floor Area): 데이터센터로 쓰는 바닥 면적 전체 = 화이트스페이스 + 그레이스페이스 및 기타. 판교 AIDC 계획 1,850㎡(화이트 150㎡ + 그레이·기타 1,700㎡). 값을 바꾸면 화이트스페이스가 함께 조정됩니다.', en: 'Gross floor area used for the data center = white space + grey space & other. Pangyo AIDC plan: 1,850㎡ (white 150㎡ + grey & other 1,700㎡). Changing it adjusts the white space.' },
       whiteSpaceTip: { ko: '화이트스페이스(White Space): 랙을 놓는 전산실 면적 = 연면적 − 그레이스페이스. 랙당 면적(통로·CDU 포함) × 랙 수가 이 값을 넘을 수 없습니다. 값을 바꾸면 그레이스페이스가 그만큼 조정됩니다.', en: 'White space: the data-hall area where racks sit = gross floor area − grey space. Racks × area per rack (incl. aisles and CDU) cannot exceed it. Editing it adjusts the grey space accordingly.' },
@@ -1880,9 +1905,9 @@
       basicChargeKwMonth: 'kwmonth'
     };
     // eok-denominated controls: state stays in 억 (100M KRW); shown as $M only in EN.
-    const EOK_KIND = { opexEok: true, neoOpexEok: true };
+    const EOK_KIND = { leaseAgentFeeEok: true, initIntegrationEok: true };
     // usd-denominated controls: same numeric value in KO/EN (no FX conversion of the input itself).
-    const USD_KIND = { swSubUsdPerGpuYear: true, neoSwUsdPerGpuYear: true };
+    const USD_KIND = { swSubUsdPerGpuYear: true, neoSwUsdPerGpuYear: true, cduUsd: true };
 
     function cloneSystems(source) {
       return Object.fromEntries(Object.entries(source).map(([key, value]) => [key, { ...value, capexUsd: { ...value.capexUsd }, baseRateUsd: { ...value.baseRateUsd } }]));
@@ -2207,7 +2232,6 @@
           { id: 'neoMarginPct', labelKey: 'labelNeoMargin', min: 0, max: 100, step: 1 },
           { id: 'neoUtilPct', labelKey: 'labelNeoUtil', min: 0, max: 100, step: 1 },
           { id: 'neoSwUsdPerGpuYear', labelKey: 'labelNeoSw', min: 0, max: 20000, step: 100 },
-          { id: 'neoOpexEok', labelKey: 'labelNeoOpex', min: 0, max: 500, step: 5 },
           { id: 'neoTargetIrrPct', labelKey: 'neoTargetIrr', min: 0, max: 200, step: 0.5 }
         ]
       },
@@ -2238,11 +2262,18 @@
         ]
       },
       {
-        titleKey: 'groupRackTitle', scopeKey: 'groupRackScope',
-        views: ['gpu', 'compare'],
+        // rev58: 임차 조건 · IT CAPEX 부속 (입력 범위 정의 — 화면 배치는 buildControls / renderItCapexSection)
+        titleKey: 'groupLeaseTitle', scopeKey: 'groupCommonScope',
+        views: ['superpod', 'compare'],
         controls: [
-          { id: 'opexEok', labelKey: 'labelOpex', min: 0, max: 1000, step: 10 },
-          { id: 'siMultiplier', labelKey: 'labelSiMultiplier', min: 1, max: 5, step: 0.1, numberOnly: true }
+          { id: 'leaseAreaSqm', labelKey: 'labelLeaseArea', min: 0, max: 100000, step: 0.1, numberOnly: true },
+          { id: 'leaseRentPerSqm', labelKey: 'labelLeaseRent', min: 0, max: 1000000, step: 1, numberOnly: true },
+          { id: 'leaseMgmtPerSqm', labelKey: 'labelLeaseMgmt', min: 0, max: 1000000, step: 1, numberOnly: true },
+          { id: 'leaseDepositMonths', labelKey: 'labelLeaseDeposit', min: 0, max: 120, step: 1, numberOnly: true },
+          { id: 'leaseDepositRatePct', labelKey: 'labelLeaseDepositRate', min: 0, max: 50, step: 0.1, numberOnly: true },
+          { id: 'leaseAgentFeeEok', labelKey: 'labelLeaseAgentFee', min: 0, max: 100, step: 0.1, numberOnly: true },
+          { id: 'cduUsd', labelKey: 'labelCduUsd', min: 0, max: 100000000, step: 10000, numberOnly: true },
+          { id: 'initIntegrationEok', labelKey: 'labelInitIntegration', min: 0, max: 1000, step: 0.1, numberOnly: true }
         ]
       }
     ];
@@ -2398,7 +2429,11 @@
       if (id === 'floorAreaSqm') return `${nf.format(value)}\u33A1`;
       if (id === 'supportAreaBase') return `${nf.format(value)}\u33A1 @4.8MW`;
       if (id === 'pue') return nf2.format(value);
-      if (id === 'siMultiplier') return `${nf1.format(value)}\uBC30`;
+      if (id === 'leaseAreaSqm') return `${nf1.format(value)}\u33A1`;
+      if (id === 'leaseRentPerSqm' || id === 'leaseMgmtPerSqm') return `${nf.format(value)}\uC6D0/\u33A1\u00B7\uC6D4`;
+      if (id === 'leaseDepositMonths') return `${nf.format(value)}\uAC1C\uC6D4`;
+      if (id === 'leaseDepositRatePct') return `${nf1.format(value)}%`;
+      if (id === 'cduUsd') return `$${nf.format(value)}`;
       if (id === 'locPremiumPct' || id === 'disc1YPct' || id === 'disc3YPct') return `${nf1.format(value)}%`;
       if (id.startsWith('depY')) return `${nf.format(value)}%`;
       return `${nf.format(value)}`;
@@ -2571,42 +2606,46 @@
     function gpuOn(key, s = state) { return !!s['on_' + key] && (key !== 'custom' || !!s.customOpen); }
     function gpuCount(key, s = state) { return Math.max(0, Math.round(Number(s['n_' + key]) || 0)); }
     function gpuUnitPowerKw(g) { return Math.max(0, Number(g.unitItPowerKw) || 0); }
-    function gpuUnitAreaSqm(g) {
-      return g.kind === 'server' ? (Number(g.rackAreaSqm) || 0) / Math.max(1, Number(g.serversPerRack) || 1) : (Number(g.unitAreaSqm) || 0);
-    }
+    function gpuUnitAreaSqm(g) { return Number(g.unitAreaSqm) || 0; }
     function gpuSpecOk(g) { return gpuUnitPowerKw(g) > 0 && gpuUnitAreaSqm(g) > 0 && (Number(g.gpusPerUnit) || 0) > 0; }
-    function gpuAbsMax(g) { return g.kind === 'server' ? SERVER_ABS_MAX : SU_ABS_MAX; }
-    function gpuUnitLabel(g) { return g.kind === 'server' ? t('unitServer') : 'SU'; }
+    function gpuAbsMax(g) { return SU_ABS_MAX; }
+    function gpuUnitLabel(g) { return 'SU'; }
+    // rev58: SU 보조 단위 — 서버(HGX) / 트레이(DGX) 명칭·대수, 공간 위치 수
+    function gpuSubUnitNoun(g) { return state.lang === 'en' ? (g.subUnitEn || 'servers') : (g.subUnitKo || '서버'); }
+    function gpuServers(g, n) { return n * Math.max(0, Number(g.serversPerUnit) || 0); }
+    function gpuPositionsPerUnit(g) { return Math.max(0, Number(g.positionsPerUnit) || 0) || Math.max(0, Number(g.racksPerUnit) || 0); }
+    function gpuPositions(g, n) { return n * gpuPositionsPerUnit(g); }
+    // "컴퓨팅 18랙 · 서버 144대 · 1,152 GPU" — SU 수량 아래에 붙는 환산 표기 (SU → 랙 → 서버 → GPU 순)
+    function gpuUnitsText(g, n, opts = {}) {
+      const en = state.lang === 'en';
+      const racks = gpuRacks(g, n), servers = gpuServers(g, n), gpus = n * (Number(g.gpusPerUnit) || 0);
+      const parts = [];
+      if (racks > 0) parts.push(en ? `${nf.format(racks)} compute racks` : `컴퓨팅 ${nf.format(racks)}랙`);
+      if (servers > 0) parts.push(en ? `${nf.format(servers)} ${gpuSubUnitNoun(g)}` : `${gpuSubUnitNoun(g)} ${nf.format(servers)}${g.subUnitCountKo || '대'}`);
+      parts.push(en ? `${nf.format(gpus)} GPUs` : `${nf.format(gpus)} GPU`);
+      if (opts.positions) { const p = gpuPositions(g, n); if (p > 0) parts.push(en ? `${nf.format(p)} positions` : `공간 ${nf.format(p)}개 위치`); }
+      return parts.join(' · ');
+    }
     function gpuLabel(g, key) { return (g.label || '').trim() || (key === 'custom' ? t('gpuCustomDefaultName') : key); }
     function gpuShortLabel(g, key) { return (g.shortLabel || '').trim() || gpuLabel(g, key); }
     function gpuActiveKeys(s = state) { return GPU_KEYS.filter(k => gpuOn(k, s)); }
-    // SU형: 랙당 값 × SU당 랙 수 → SU당 전력·면적·NVL72 항목 (파생값 동기화)
+    // rev58: SU 파생값 동기화 — 전력 = 컴퓨팅 전력(서버 수 × 서버당 kW, 없으면 랙 수 × 랙당 kW) × (1 + 지원 전력률),
+    //        면적 = 위치 수(없으면 컴퓨팅 랙 수) × 랙당 면적, 장비비 = GPU당 단가 × SU당 GPU 수
     function syncGpuDerived(g) {
-      if (g.kind === 'server') {
-        g.unitItPowerKw = Math.max(0.1, (Number(g.serverKw) || 0) + (Number(g.netKw) || 0) + (Number(g.auxKw) || 0));
-        return;
-      }
       if (g.kind !== 'su') return;
-      const r = Math.max(0, Number(g.racksPerUnit) || 0);
-      g.unitItPowerKw = r * (Number(g.rackKw) || 0);
-      g.unitAreaSqm = r * (Number(g.rackAreaSqm) || 0);
-      g.capexUsd.nvl72 = r * (Number(g.rackPriceUsd) || 0);
+      const gpus = Math.max(0, Number(g.gpusPerUnit) || 0);
+      const racks = Math.max(0, Number(g.racksPerUnit) || 0);
+      const servers = Math.max(0, Number(g.serversPerUnit) || 0);
+      const support = 1 + Math.max(0, Number(g.supportPct) || 0) / 100;
+      const computeKw = (servers > 0 && (Number(g.serverKw) || 0) > 0) ? servers * Number(g.serverKw) : racks * (Number(g.rackKw) || 0);
+      g.computeKwPerUnit = computeKw;
+      g.unitItPowerKw = computeKw * support;
+      g.unitAreaSqm = gpuPositionsPerUnit(g) * (Number(g.rackAreaSqm) || 0);
+      g.capexUsd.equip = gpus * (Number(g.pricePerGpuUsd) || 0);
     }
-    function gpuCapexPerUnitUsd(g, s = state) {
-      if (g.kind === 'server') {
-        const m = Math.max(1, Number(s.siMultiplier) || 1);
-        return SERVER_ITEM_KEYS.reduce((sum, k) => sum + (Number(g.capexUsd[k]) || 0) * (k === 'si' ? m : 1), 0);
-      }
-      return CAPEX_ITEM_KEYS.reduce((sum, k) => sum + (Number(g.capexUsd[k]) || 0), 0);
-    }
-    function gpuOccupiedArea(g, n) {
-      if (g.kind === 'server') return Math.ceil(n / Math.max(1, Number(g.serversPerRack) || 1)) * (Number(g.rackAreaSqm) || 0);
-      return n * (Number(g.unitAreaSqm) || 0);
-    }
-    function gpuRacks(g, n) {
-      if (g.kind === 'server') return Math.ceil(n / Math.max(1, Number(g.serversPerRack) || 1));
-      return n * (Number(g.racksPerUnit) || 0);
-    }
+    function gpuCapexPerUnitUsd(g, s = state) { return Number(g.capexUsd.equip) || 0; }
+    function gpuOccupiedArea(g, n) { return n * (Number(g.unitAreaSqm) || 0); }
+    function gpuRacks(g, n) { return n * (Number(g.racksPerUnit) || 0); }
     // 다른 켜진 카드가 점유한 전력·면적
     function gpuOthersUsage(exceptKey, s = state, types = gpuTypes) {
       let kw = 0, area = 0;
@@ -2627,7 +2666,6 @@
       const g = types[key]; if (gpuUnitAreaSqm(g) <= 0) return 0;
       const others = standalone ? 0 : gpuOthersUsage(key, s, types).area;
       const avail = usableAreaSqm(s) - others;
-      if (g.kind === 'server') return Math.max(0, Math.floor(avail / Math.max(0.1, Number(g.rackAreaSqm) || 0.1)) * Math.max(1, Number(g.serversPerRack) || 1));
       return Math.max(0, Math.floor(avail / gpuUnitAreaSqm(g)));
     }
     function gpuMaxUnits(key, s = state, types = gpuTypes, standalone = false) {
@@ -2715,31 +2753,6 @@
       growFloorForGpu(key);
       fillGpuMax(key);
     }
-    function b300CoolingKey(s = state) { return s.b300Cooling === 'air' ? 'air' : 'liquid'; }
-    function b300NetKey(s = state) { return s.b300Net === '800' ? '800' : '400'; }
-    function refillSingleB300() {
-      // 프리셋 전환: B300만 켜져 있으면 현재 연면적·수전 안에서 수량을 다시 채운다 (연면적은 늘리지 않음 — VSLAI와 동일)
-      const keys = gpuActiveKeys().filter(k => gpuSpecOk(gpuTypes[k]));
-      if (keys.length === 1 && keys[0] === 'b300') fillGpuMax('b300');
-    }
-    function applyB300Cooling(key) {
-      const p = B300_COOLING[key]; if (!p) return;
-      const g = gpuTypes.b300;
-      state.b300Cooling = key;
-      g.serversPerRack = p.serversPerRack; g.rackAreaSqm = p.rackAreaSqm; g.capexUsd.cdu = p.cduUsd;
-      syncGpuDerived(g);
-      refillSingleB300();
-      render();
-    }
-    function applyB300Net(key) {
-      const p = B300_NET[key]; if (!p) return;
-      const g = gpuTypes.b300;
-      state.b300Net = key;
-      g.capexUsd.network = p.netUsd; g.netKw = p.netKw;
-      syncGpuDerived(g);
-      refillSingleB300();
-      render();
-    }
     function gpuMixText(s = state, types = gpuTypes, short = false) {
       const keys = gpuActiveKeys(s);
       const used = keys.filter(k => gpuCount(k, s) > 0);
@@ -2755,6 +2768,13 @@
     function neoMargin(s = state) { return Math.max(0, Math.min(100, Number(s.neoMarginPct) || 0)) / 100; }
     function neoNetUsd(key, s = state) { return neoPriceOf(key, s) * (1 - neoMargin(s)); }
     function neoUtil(s = state) { return Math.max(0, Math.min(100, Number(s.neoUtilPct) || 0)) / 100; }
+    // rev58: CDU 증설 방식 — 'perSu'(SU당 운전 1 + 예비 1) | 'n1'(부지 전체 운전 N + 예비 1)
+    function applyCduMode(mode) {
+      const next = mode === 'n1' ? 'n1' : 'perSu';
+      if ((state.cduMode || 'perSu') === next) return;
+      state.cduMode = next;
+      render();
+    }
     function applyFacMode(mode) {
       const next = mode === 'both' ? 'both' : 'remodel';
       if ((state.facMode || 'remodel') === next) return;
@@ -2772,7 +2792,8 @@
 
     // ---- rev36: 혼합 구성 계산 — 켜진 카드별 매출·CAPEX·전력·면적을 합산 ----
     //  전기료: 기본요금 = 총 수전용량 × 기본요금 × 12 / 전력량요금 = 켜진 카드의 사용 IT 전력 합계 × PUE × 8,760h × 가동률 × 단가
-    //  기타 운영비(opexEok)는 서버형(B300) 수량이 1대 이상인 구성에만 계상 (랙 낱개 조달 모델의 별도 운영비를 승계)
+    //  rev58: IT 장비 CAPEX = Σ(SU 수 × SU당 장비비) + CDU 대수 × CDU 단가 + 초기 설치·통합비(억, 고정)
+    //  rev58: 임차 비용 = 임대료 + 관리비(계약면적 × 단가 × 12) + 보증금 × 환산 이자율 — 운영 방식과 무관하게 연간 운영비에 포함
     function calcMix(inputState = state, inputTypes = gpuTypes, inputFacilityEok = null) {
       const neo = isNeo(inputState);
       const nu = neoUtil(inputState);
@@ -2780,7 +2801,7 @@
       const fxv = Number(inputState.fxKrwUsd) || 0;
       const revenueByYear = Array.from({ length: YEARS }, () => 0);
       const grossByYear = Array.from({ length: YEARS }, () => 0);
-      let gpus = 0, racks = 0, totalFp4 = 0, itCapexUsd = 0, usedItPower = 0, occupiedArea = 0, hasServer = false, swGpus = 0;
+      let gpus = 0, racks = 0, totalFp4 = 0, equipCapexUsd = 0, usedItPower = 0, occupiedArea = 0, totalSu = 0, servers = 0, positions = 0, cduUnitsPerSu = 0;
       const types = GPU_KEYS.filter(k => gpuOn(k, inputState)).map(key => {
         const g = inputTypes[key];
         const ok = gpuSpecOk(g);
@@ -2801,11 +2822,11 @@
         const rk = ok ? gpuRacks(g, n) : 0;
         const fp4 = ok ? n * (Number(g.fp4PflopsPerUnit) || 0) : 0;
         for (let y = 0; y < YEARS; y++) revenueByYear[y] += rev[y];
-        gpus += gpuN; racks += rk; totalFp4 += fp4; itCapexUsd += capUsd; usedItPower += kw; occupiedArea += area;
-        if (ok && g.kind === 'server' && n > 0) hasServer = true; // rev43: 서버 수량이 0이면 별도 운영비 미계상
-        if (ok && g.kind === 'server') swGpus += gpuN; // rev44: SW 구독은 서버형(B300) GPU에만 — SuperPOD은 CAPEX에 SW 라이선스 포함
+        gpus += gpuN; racks += rk; totalFp4 += fp4; equipCapexUsd += capUsd; usedItPower += kw; occupiedArea += area;
+        if (ok) { totalSu += n; servers += gpuServers(g, n); positions += gpuPositions(g, n); cduUnitsPerSu += n * Math.max(0, Number(g.cduPerUnit) || 0); }
         return {
           key, type: g, kind: g.kind, ok, n, gpus: gpuN, racks: rk, fp4, perUnitUsd,
+          servers: ok ? gpuServers(g, n) : 0, positions: ok ? gpuPositions(g, n) : 0,
           itCapexUsd: capUsd, itCapexEok: capUsd * fxv / EOK,
           rates: contractRates(g, inputState), blended, annualRevenue: rev,
           priceUsd, netUsd, gpuHours, grossByYear: gross, takeByYear: take,
@@ -2814,7 +2835,17 @@
           constraint: gpuConstraintType(key, inputState, inputTypes)
         };
       });
-      const itCapexEok = itCapexUsd * fxv / EOK;
+      // rev58: CDU(부지 단위 증설) + 초기 설치·통합비(프로젝트 고정, 억) — GPU가 1개 이상일 때만 계상
+      const cduMode = inputState.cduMode === 'n1' ? 'n1' : 'perSu';
+      const cduUnits = totalSu > 0 ? (cduMode === 'n1' ? totalSu + 1 : cduUnitsPerSu) : 0;
+      const cduUsd = Math.max(0, Number(inputState.cduUsd) || 0);
+      const cduCapexUsd = cduUnits * cduUsd;
+      const cduCapexEok = cduCapexUsd * fxv / EOK;
+      const integrationEok = gpus > 0 ? Math.max(0, Number(inputState.initIntegrationEok) || 0) : 0;
+      const equipCapexEok = equipCapexUsd * fxv / EOK;
+      const itCapexUsd = equipCapexUsd + cduCapexUsd;           // USD 부분(장비 + CDU)
+      const itCapexEok = equipCapexEok + cduCapexEok + integrationEok;
+      const swGpus = gpus;                                     // rev58: AI Enterprise는 전체 GPU에 적용
       const facilityEok = inputFacilityEok !== null ? inputFacilityEok : facilityTotalEok('pod', inputState);
       const totalCapexEok = itCapexEok + facilityEok;
       const totalPowerKw = Number(inputState.totalPowerKw) || 0;
@@ -2826,11 +2857,22 @@
       const swRateUsd = neo ? (Number(inputState.neoSwUsdPerGpuYear) || 0) : (Number(inputState.swSubUsdPerGpuYear) || 0);
       const swOpexEok = swGpus * swRateUsd * fxv / EOK;
       const swOpexByYear = utils.map(() => swOpexEok);
-      const opexEok = neo ? Math.max(0, Number(inputState.neoOpexEok) || 0) : (hasServer ? Math.max(0, Number(inputState.opexEok) || 0) : 0);
+      // rev58: 임차 비용 — 연 임대료·관리비 + 보증금 환산 이자 (보증금 원금은 재무구조에서 0년차 납입·3년차 회수)
+      const leaseArea = Math.max(0, Number(inputState.leaseAreaSqm) || 0);
+      const leaseRentMonthKrw = leaseArea * Math.max(0, Number(inputState.leaseRentPerSqm) || 0);
+      const leaseMgmtMonthKrw = leaseArea * Math.max(0, Number(inputState.leaseMgmtPerSqm) || 0);
+      const leaseRentEok = leaseRentMonthKrw * 12 / EOK;
+      const leaseMgmtEok = leaseMgmtMonthKrw * 12 / EOK;
+      const leaseDepositEok = leaseRentMonthKrw * Math.max(0, Number(inputState.leaseDepositMonths) || 0) / EOK;
+      const leaseDepositRatePct = Math.max(0, Number(inputState.leaseDepositRatePct) || 0);
+      const leaseDepositCostEok = leaseDepositEok * leaseDepositRatePct / 100;
+      const leaseOpexEok = leaseRentEok + leaseMgmtEok + leaseDepositCostEok;
+      const leaseAgentFeeEok = Math.max(0, Number(inputState.leaseAgentFeeEok) || 0);
+      const leaseByYear = utils.map((_, i) => leaseOpexEok + (i === 0 ? leaseAgentFeeEok : 0));
       const depIncrements = getDepreciationIncrements(inputState);
       const capexByYear = depIncrements.map(d => totalCapexEok * d);
       const annualRevenue = revenueByYear;
-      const annualExpense = utils.map((u, i) => capexByYear[i] + electricityByYear[i] + swOpexByYear[i] + opexEok);
+      const annualExpense = utils.map((u, i) => capexByYear[i] + electricityByYear[i] + swOpexByYear[i] + leaseByYear[i]);
       let sumR = 0, sumE = 0;
       const cumRevenue = annualRevenue.map(v => (sumR += v));
       const cumExpense = annualExpense.map(v => (sumE += v));
@@ -2850,8 +2892,11 @@
       const primary = types.find(x => x.ok) || types[0] || null;
       const fallback = inputTypes.gb300;
       return {
-        key: 'mix', types, hasServer,
+        key: 'mix', types,
         mode: neo ? 'neo' : 'csp', neoMarginPct: neoMargin(inputState) * 100, neoUtilPct: nu * 100, swRateUsd, swGpus,
+        totalSu, servers, positions, remainingItKw: Math.max(0, itPowerKw - usedItPower),
+        equipCapexUsd, equipCapexEok, cduMode, cduUnits, cduUsd, cduCapexUsd, cduCapexEok, integrationEok,
+        leaseArea, leaseRentMonthKrw, leaseMgmtMonthKrw, leaseRentEok, leaseMgmtEok, leaseDepositEok, leaseDepositRatePct, leaseDepositCostEok, leaseOpexEok, leaseAgentFeeEok, leaseByYear,
         grossByYear, takeByYear: grossByYear.map((v, i) => v - revenueByYear[i]), gpuHours: utils.map(u => gpus * HOURS * u),
         system: primary ? primary.type : fallback, systemKey: primary ? primary.key : null, su: primary ? primary.n : 0,
         gpus, totalGpu: gpus, racks, totalFp4,
@@ -2859,7 +2904,6 @@
         perSuUsd: primary ? primary.perUnitUsd : 0, itCapexUsd, itCapexEok, facilityEok, totalCapexEok,
         annualRevenue, annualExpense, cumRevenue, cumExpense, cumProfit,
         electricityByYear, energyByYear, capexByYear, swOpexEok, swOpexByYear, baseEok, energyEok, electricityEok,
-        opexEok, extraOpexEok: opexEok,
         totalPowerKw, pue, utils, usedItPower, allocationPct,
         floorArea, supportArea, usableArea, occupiedArea, areaPct, constraint,
         configText: gpuMixText(inputState, inputTypes), shortConfigText: gpuMixText(inputState, inputTypes, true)
@@ -3153,55 +3197,55 @@
       const on = gpuOn(key);
       const n = gpuCount(key);
       const ok = gpuSpecOk(g);
-      const isServer = g.kind === 'server';
+      const en = state.lang === 'en';
       const unit = gpuUnitLabel(g);
-      const td = data.types.find(x => x.key === key);
       const sliderMax = gpuSliderMax(key);
       const maxNow = gpuMaxUnits(key);
       const overNow = on && ok && n > maxNow;
       const fp4 = Number(g.fp4PflopsPerUnit) || 0;
-      const editableSu = !isServer && (key === 'vr' || key === 'custom');
+      const editableSu = key === 'vr' || key === 'custom';
       const perUnit = gpuCapexPerUnitUsd(g);
-      const spr = isServer ? Math.max(1, Number(g.serversPerRack) || 1) : 1; // rev45: 서버형 카드는 랙당(서버 spr대) 기준으로 표기
       const nameHtml = key === 'custom'
         ? `<input type="text" class="sys-name" value="${escAttr(g.label || '')}" placeholder="${escAttr(t('gpuCustomNamePh'))}" data-gpu-key="custom" data-gpu-prop="label" aria-label="${escAttr(t('gpuCustomNamePh'))}" />`
         : `<strong>${gpuLabel(g, key)}</strong>`;
       const specHtml = editableSu
         ? `<span class="spec">FP4: ${gpuNumInput(key, 'fp4PflopsPerUnit', fp4, 'step="10"', 'sm')} <small>PFLOPS/SU</small></span>`
-        : `<span class="spec">FP4: ${nf.format(fp4)} <small>PFLOPS/${isServer ? t('unitServer').trim() : 'SU'}</small></span>`;
-      const subHtml = isServer
-        ? `${t('gpuSuLineB300', { spr: nf.format(Number(g.serversPerRack) || 0) })} · ≈ ${nf1.format(gpuUnitPowerKw(g) * (Number(g.serversPerRack) || 0))}kW/${state.lang === 'en' ? 'rack' : '랙'}`
-        : editableSu
-          ? `1 SU = ${state.lang === 'en' ? '' : '랙 '}${gpuNumInput(key, 'racksPerUnit', g.racksPerUnit, 'step="1"', 'sm')}${state.lang === 'en' ? ' racks' : '대'} · GPU ${gpuNumInput(key, 'gpusPerUnit', g.gpusPerUnit, 'step="8"', 'sm')}${state.lang === 'en' ? ' GPUs' : '개'}${ok ? ` · ≈ ${fmtKwAsMw(gpuUnitPowerKw(g))}` : ''}`
-          : `${systemDesc(g)} · ≈ ${fmtKwAsMw(gpuUnitPowerKw(g))}`;
+        : `<span class="spec">FP4: ${nf.format(fp4)} <small>PFLOPS/SU</small></span>`;
+      // rev58: 1 SU 구성 줄 — SU → 컴퓨팅 랙 → 서버(트레이) → GPU 순 · SU당 IT 전력
+      const noun = gpuSubUnitNoun(g);
+      const subHtml = editableSu
+        ? `1 SU = ${en ? '' : '컴퓨팅 '}${gpuNumInput(key, 'racksPerUnit', g.racksPerUnit, 'step="1"', 'sm')}${en ? ' racks' : '랙'} · ${en ? '' : noun + ' '}${gpuNumInput(key, 'serversPerUnit', g.serversPerUnit, 'step="1"', 'sm')}${en ? ' ' + noun : (g.subUnitCountKo || '대')} · GPU ${gpuNumInput(key, 'gpusPerUnit', g.gpusPerUnit, 'step="8"', 'sm')}${en ? ' GPUs' : '개'}${ok ? ` · ≈ ${fmtKwAsMw(gpuUnitPowerKw(g))}` : ''}`
+        : `${systemDesc(g)} · ≈ ${fmtKwAsMw(gpuUnitPowerKw(g))}`;
+      const fixedNote = key === 'b300' ? t('cardNoteB300', { p: nf.format(gpuPositionsPerUnit(g)), a: nf1.format(gpuUnitAreaSqm(g)) })
+        : key === 'gb300' ? t('cardNoteGb300', { p: nf.format(gpuPositionsPerUnit(g)), a: nf1.format(gpuUnitAreaSqm(g)) }) : '';
       const maxNote = !ok ? t('gpuMaxNoteBlank') : (overNow ? `${t('gpuMaxNote', { n: nf.format(maxNow), u: unit })} · ${t('gpuOverNote')}` : t('gpuMaxNote', { n: nf.format(maxNow), u: unit }));
-      const specs = isServer
-        ? [
-            [t('specPricePerRack'), gpuNumInput(key, 'rackPriceServer', (Number(g.capexUsd.server) || 0) * spr, 'step="10000"'), '$'],
-            [t('specAreaPerRack'), gpuNumInput(key, 'rackAreaSqm', g.rackAreaSqm, 'step="0.1"'), '㎡'],
-            [t('specPowerPerRack'), gpuNumInput(key, 'rackKwServer', gpuUnitPowerKw(g) * spr, 'step="5"'), 'kW']
-          ]
-        : [
-            [t('specPricePerRack'), gpuNumInput(key, 'rackPriceUsd', g.rackPriceUsd, 'step="10000"'), '$'],
-            [t('specAreaPerRack'), gpuNumInput(key, 'rackAreaSqm', g.rackAreaSqm, 'step="0.5"'), '㎡'],
-            [t('specPowerPerRack'), gpuNumInput(key, 'rackKw', g.rackKw, 'step="5"'), 'kW']
-          ];
-      const capexItems = isServer
-        ? SERVER_ITEM_KEYS.map(k => [k === 'si' && !((Number(state.siMultiplier) || 1) > 1) ? t('capexItemSi').replace(/\s*\(.*\)\s*$/, '') : t(SERVER_ITEM_LABEL_KEYS[k], { m: nf1.format(Number(state.siMultiplier) || 1), g: b300NetKey() }), usdPlain((Number(g.capexUsd[k]) || 0) * spr), (k === 'si' && (Number(state.siMultiplier) || 1) > 1) ? usdPlain((Number(g.capexUsd.si) || 0) * Math.max(1, Number(state.siMultiplier) || 1) * spr) : ''])
-        : CAPEX_ITEM_KEYS.map(k => [capexItemLabel(g, k), k === 'nvl72' ? `<span title="${escAttr(t('capexNvl72Derived', { r: nf.format(Number(g.racksPerUnit) || 0) }))}">${usdM(g.capexUsd.nvl72)}</span>` : (editableSu ? gpuNumInput(key, 'capex:' + k, g.capexUsd[k], 'step="10000"', 'sm') : usdM(g.capexUsd[k])), '']);
-      const capexOpen = openCapexCards.has(key);
+      // 사양 3행: GPU당 단가(설치·세팅비 포함 메모) · 랙당 면적 · 전력(서버당 또는 컴퓨팅 랙당)
+      const useServerKw = (Number(g.serversPerUnit) || 0) > 0 && (Number(g.serverKw) || 0) > 0;
+      const powerSpec = useServerKw
+        ? [t('specPowerPerSub', { noun: en ? noun.replace(/s$/, '') : noun }), gpuNumInput(key, 'serverKw', g.serverKw, 'step="0.5"'), 'kW']
+        : [t('specPowerPerRack'), gpuNumInput(key, 'rackKw', g.rackKw, 'step="5"'), 'kW'];
+      const specs = [
+        [t('specPricePerGpu') + infoIcon(t('tipPricePerGpu'), t('specPricePerGpu'), true), gpuNumInput(key, 'pricePerGpuUsd', g.pricePerGpuUsd, 'step="100"'), '$'],
+        [t('specAreaPerRack'), gpuNumInput(key, 'rackAreaSqm', g.rackAreaSqm, 'step="0.1"'), '㎡'],
+        powerSpec
+      ];
+      const capexItems = [
+        [t('capexItemEquip', { p: usdPlain(Number(g.pricePerGpuUsd) || 0), g: nf.format(Number(g.gpusPerUnit) || 0) }), usdM(perUnit), ''],
+        [`<span class="cx-note">${t('capexNoteSite')}</span>`, '', '']
+      ];
       return `
         <article class="sys-card ${on ? 'active' : ''} ${ok ? '' : 'blank'}" data-gpu-card="${key}" role="button" tabindex="0" aria-pressed="${on ? 'true' : 'false'}" style="--card-color:${g.color}">
           <div class="sys-in">
             <div class="sys-title">${nameHtml}${specHtml}</div>
             <div class="sys-sub">${subHtml}</div>
+            ${fixedNote ? `<div class="sys-sub sys-sub2">${fixedNote}</div>` : ''}
             ${ok ? '' : `<div class="sys-blank-note">${t('gpuBlankSpec')}</div>`}
             <div class="su-big card-count">
               <span class="u"><input type="number" min="0" max="${gpuAbsMax(g)}" step="1" value="${n}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} count" /></span>
               <span class="unit">${unit}</span>
-              ${isServer ? `<span class="racks" data-gpu-racks="${key}">${t('cardRacks', { n: nf.format(Math.ceil(n / spr)) })}</span>` : ''}
               <span class="max ${overNow ? 'text-danger' : ''}" data-gpu-chip="${key}">${maxNote}</span>
             </div>
+            <div class="su-units"><span class="racks" data-gpu-racks="${key}">= ${gpuUnitsText(g, n)}</span></div>
             <input type="range" class="track" min="0" max="${sliderMax}" step="1" value="${Math.min(n, sliderMax)}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} slider" ${ok ? '' : 'disabled'} />
             ${isNeo() ? `<div class="sys-neo ${neoPriceOf(key) > 0 ? '' : 'warn'}">${neoPriceOf(key) > 0 ? t('neoNetChip', { net: `$${nfEn(2).format(neoNetUsd(key))}`, gross: `$${nfEn(2).format(neoPriceOf(key))}`, m: nf1.format(Number(state.neoMarginPct) || 0) }) : t('neoPriceBlank')}${neoPriceOf(key) > 0 ? infoIcon(t('tipNetRate'), t('labelNeoPrice'), true) : ''}</div>` : ''}
             <div class="${isNeo() ? 'dim-rates' : ''}">${rateBlockHtml(g, `data-gpu-key="${key}" data-gpu-prop="baseRateUsd"`, `gpu:${key}`)}</div>
@@ -3209,8 +3253,8 @@
               ${specs.map(([lab, input, u]) => `<div class="sys-spec"><span class="lab">${lab}</span><span class="v">${input}<span class="unit">${u}</span></span></div>`).join('')}
             </div>
             <div class="sys-capex-h">
-              <span>${isServer ? t('capexHeadingServer', { n: nf.format(spr) }) : t('capexTotalLabel')}${infoIcon(t(isServer ? 'tipCardCapexServer' : 'tipCardCapexSu'), isServer ? t('capexHeadingServer', { n: nf.format(spr) }) : t('capexTotalLabel'), true)}</span>
-              <b data-gpu-capex-total="${key}">${usdWithKrw(perUnit * spr)}</b>
+              <span>${t('capexTotalLabel')}${infoIcon(t('tipCardCapexSu'), t('capexTotalLabel'), true)}</span>
+              <b data-gpu-capex-total="${key}">${usdWithKrw(perUnit)}</b>
             </div>
             <ul class="sys-capex">
               ${capexItems.map(([lab, val, extra]) => `<li><span>${lab}</span><span class="cx-val">${extra ? `<span class="cx-extra">= ${extra}</span>` : ''}${val}</span></li>`).join('')}
@@ -3479,7 +3523,6 @@
       `;
     }
 
-    // ---- rev38: HGX(B300) 서버 구성 ----
     function gb300StandaloneData() {
       const st = { ...state };
       GPU_KEYS.forEach(j => { st['on_' + j] = j === 'gb300'; });
@@ -3487,206 +3530,103 @@
       st.n_gb300 = Math.max(1, gpuMaxUnits('gb300', st, gpuTypes, true));
       return calcMix(st, gpuTypes);
     }
-    // 부대장비·SI 표 계산 (B300 몫): SI = 서버 수 × SW Setup·SI × 배수, 부대장비 = 네트워크 + 스토리지·관리 + CDU
-    function b300AuxCalc(data) {
-      const g = gpuTypes.b300;
-      const td = data.types.find(x => x.key === 'b300');
-      const n = td ? td.n : 0;
-      const fxv = Number(state.fxKrwUsd) || 0;
-      const mult = Math.max(1, Number(state.siMultiplier) || 1);
-      const siPer = n * (Number(g.capexUsd.si) || 0) * fxv / EOK;         // 배수 1당 SI CAPEX(억)
-      const siEok = siPer * mult;
-      const auxEok = n * ((Number(g.capexUsd.network) || 0) + (Number(g.capexUsd.storage) || 0) + (Number(g.capexUsd.cdu) || 0)) * fxv / EOK;
-      const itCapexEok = td ? td.itCapexEok : 0;
-      const swEok3 = data.swOpexEok * YEARS;
-      const depRatio = depTotalRatio();
-      const capexExp = (auxEok + siEok) * depRatio;
-      const add3 = capexExp + swEok3;
-      const profit3 = data.cumProfit[YEARS - 1];
-      let podProfit = 0;
-      try { podProfit = gb300StandaloneData().cumProfit[YEARS - 1]; } catch (e) { podProfit = 0; }
-      const slope = siPer * depRatio;
-      let breakevenHtml, mStar = null;
-      if (isNeo() && neoPriceOf('gb300') <= 0) breakevenHtml = t('auxBreakevenNoPrice');
-      else if (n <= 0 || siPer <= 0 || slope <= 0) breakevenHtml = t('auxBreakevenNone');
-      else {
-        mStar = mult + (profit3 - podProfit) / slope;
-        const gapVal = profit3 - podProfit;
-        const args = { m: nf2.format(mStar), pod: eok(podProfit), cur: nf1.format(mult), gap: `${gapVal >= 0 ? '+' : ''}${eok(gapVal)}` };
-        breakevenHtml = mStar < 1 ? t('auxBreakevenUnreachable', args) : (gapVal >= 0 ? t('auxBreakevenText', args) : t('auxBreakevenBelow', args));
-      }
-      return { n, mult, siEok, auxEok, itCapexEok, swEok3, capexExp, add3, profit3, podProfit, breakevenHtml, mStar };
+    // ---- rev58: IT 장비 CAPEX 구성 — 장비 구매비(SU당 단가 × SU 수) + CDU(SU 수에 따라 증설) + 초기 설치·통합비(프로젝트 고정) ----
+    function cduFormulaText(data) {
+      return data.cduMode === 'n1'
+        ? t('itcCduFormulaN1', { su: nf.format(data.totalSu), n: nf.format(data.cduUnits) })
+        : t('itcCduFormulaPerSu', { su: nf.format(data.totalSu), k: nf.format(CDU_PER_SU_DEFAULT), n: nf.format(data.cduUnits) });
     }
-    function b300AuxTableHtml(data) {
-      const a = b300AuxCalc(data);
-      return `
-          <div class="mx-sub">${t('auxSiTitle')}${infoIcon(t('auxSiTip'), t('auxSiTitle'), true)}</div>
-          <div class="srv-note">${t('srvAuxDesc')}</div>
-          <div class="dt-wrap" style="margin-top:20px">
-            <table class="dt aux">
-              <colgroup><col style="width:180px"><col><col><col><col><col><col><col></colgroup>
-              <thead>
+    function renderItCapexSection(data) {
+      const en = state.lang === 'en';
+      const okTypes = data.types.filter(td => td.ok && td.n > 0);
+      const equipRows = okTypes.map(td => `
                 <tr>
-                  <th>${t('auxColMultiplier')}<span class="aux-sub">${t('auxColMultiplierSub')}</span></th>
-                  <th>${t('auxColSi')}${infoIcon(t('tipAuxSi'), t('auxColSi'), true)}</th>
-                  <th>${t('auxColAux')}${infoIcon(t('tipAuxAux'), t('auxColAux'), true)}</th>
-                  <th>${t('auxColItCapex')}${infoIcon(t('tipAuxIt'), t('auxColItCapex'), true)}</th>
-                  <th>${t('auxColSw')}${infoIcon(t('tipAuxSw'), t('auxColSw'), true)}</th>
-                  <th>${t('auxColCapexExp')}${infoIcon(t('tipAuxExp'), t('auxColCapexExp'), true)}</th>
-                  <th>${t('auxColAdd3')}${infoIcon(t('tipAuxAdd'), t('auxColAdd3'), true)}</th>
-                  <th>${t('auxColProfit3')}${infoIcon(t('tipAuxProfit'), t('auxColProfit3'), true)}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="aux-value-row">
+                  <td><div class="itc-head">${t('itcRowEquip')} · ${gpuLabel(td.type, td.key)}</div>
+                    <div class="itc-basis">${t('itcEquipBasis', { n: nf.format(td.n), per: usdPlain(td.perUnitUsd), p: usdPlain(Number(td.type.pricePerGpuUsd) || 0), g: nf.format(Number(td.type.gpusPerUnit) || 0) })}</div></td>
+                  <td class="r">${usdM(td.itCapexUsd)}</td>
+                  <td class="r">${eok(td.itCapexEok)}</td>
+                </tr>`).join('');
+      const cduRow = `
+                <tr>
                   <td>
-                    <span class="aux-mult"><span class="u"><input type="number" min="1" max="5" step="0.1" value="${nf1.format(a.mult)}" data-aux-mult aria-label="${escAttr(t('labelSiMultiplier'))}" /></span><span class="unit">${state.lang === 'en' ? '×' : '배'}</span></span>
+                    <div class="itc-head">${t('itcRowCdu')}${infoIcon(t('tipCduUnits'), t('itcRowCdu'), true)}</div>
+                    <div class="itc-ctl">
+                      ${segBtns('data-cdu-mode', [['perSu', t('itcCduModePerSu')], ['n1', t('itcCduModeN1')]], data.cduMode === 'n1' ? 'n1' : 'perSu', true)}
+                      <span class="itc-inp"><span class="lab">${t('labelCduUsd')}</span><span class="pre">$</span>${numInputHtml('cduUsd')}<span class="unit">${unitOf('cduUsd')}</span></span>
+                    </div>
+                    <div class="itc-basis" data-itc-cdu-basis>${cduFormulaText(data)} × ${usdPlain(data.cduUsd)} = ${usdM(data.cduCapexUsd)}</div>
+                    <div class="itc-note">${t('itcCduNote')}</div>
                   </td>
-                  <td data-aux-cell="si">${eok(a.siEok)}</td>
-                  <td class="dim" data-aux-cell="aux">${eok(a.auxEok)}</td>
-                  <td data-aux-cell="itcapex"><strong>${eok(a.itCapexEok)}</strong></td>
-                  <td class="dim" data-aux-cell="sw">${eok(a.swEok3)}</td>
-                  <td data-aux-cell="capexexp">${eok(a.capexExp)}</td>
-                  <td data-aux-cell="add3">${eok(a.add3)}</td>
-                  <td data-aux-cell="profit3" class="${a.profit3 >= 0 ? 'text-success' : 'text-danger'}"><strong>${eok(a.profit3)}</strong></td>
-                </tr>
-                <tr class="aux-breakeven-row">
-                  <td><strong>${t('auxBreakevenLabel')}</strong></td>
-                  <td colspan="7" data-aux-cell="breakeven">${a.breakevenHtml}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>`;
-    }
-    function syncB300AuxLive(activeInput = null) {
-      const data = getActiveData();
-      const a = b300AuxCalc(data);
-      const set = (k, html) => { const el = document.querySelector(`[data-aux-cell="${k}"]`); if (el) el.innerHTML = html; };
-      set('si', eok(a.siEok)); set('aux', eok(a.auxEok)); set('itcapex', `<strong>${eok(a.itCapexEok)}</strong>`); set('sw', eok(a.swEok3));
-      set('capexexp', eok(a.capexExp)); set('add3', eok(a.add3));
-      const p = document.querySelector('[data-aux-cell="profit3"]');
-      if (p) { p.innerHTML = `<strong>${eok(a.profit3)}</strong>`; p.classList.toggle('text-success', a.profit3 >= 0); p.classList.toggle('text-danger', a.profit3 < 0); }
-      set('breakeven', a.breakevenHtml);
-      syncGpuLive(activeInput);
-    }
-    function renderServerConfigSection(data) {
-      const g = gpuTypes.b300;
-      const td = data.types.find(x => x.key === 'b300');
-      if (!td) return '';
-      const cool = B300_COOLING[b300CoolingKey()];
-      const net = B300_NET[b300NetKey()];
-      const L = (ko, en) => state.lang === 'en' ? en : ko;
-      const fxv = Number(state.fxKrwUsd) || 0;
-      const n = td.n;
-      const mult = Math.max(1, Number(state.siMultiplier) || 1);
-      const row = (label, valueHtml, hint) => `
-            <div class="srv-row">
-              <span class="srv-lab">${label}${hint ? `<span class="srv-hint">${hint}</span>` : ''}</span>
-              <span class="srv-val">${valueHtml}</span>
-            </div>`;
-      const inp = (prop, value, step, unit, pre) => `${pre ? `<span class="pre">${pre}</span>` : ''}<span class="u"><input type="number" min="0" step="${step}" value="${value}" data-gpu-key="b300" data-gpu-prop="${prop}" aria-label="${escAttr(prop)}" /></span>${unit ? `<span class="unit">${unit}</span>` : ''}`;
-      const costRows = [
-        row(t('srvCostServer'), inp('capex:server', g.capexUsd.server, 100, '', '$'), t('srvHintPerGpu', { v: usdPlain((Number(g.capexUsd.server) || 0) / Math.max(1, Number(g.gpusPerUnit) || 8)) })),
-        row(t('srvCostNet', { g: b300NetKey() }), inp('capex:network', g.capexUsd.network, 100, '', '$'), t('srvHintNetPreset')),
-        row(t('srvCostAux'), inp('capex:storage', g.capexUsd.storage, 100, '', '$'), ''),
-        row(t('srvCostCdu'), inp('capex:cdu', g.capexUsd.cdu, 100, '', '$'), t('srvHintCduPreset')),
-        row(t('srvCostSi'), inp('capex:si', g.capexUsd.si, 100, '', '$'), mult > 1 ? `× ${nf1.format(mult)} = ${usdPlain((Number(g.capexUsd.si) || 0) * mult)}` : '')
-      ].join('');
-      const specRows = [
-        row(t('srvSpecServerKw'), inp('serverKw', g.serverKw, 0.1, 'kW'), t('srvSpecServerKwHint', { v: nf1.format((Number(g.serverKw) || 0) * (Number(g.serversPerRack) || 0)) })),
-        row(t('srvSpecNetKw'), inp('netKw', g.netKw, 0.1, 'kW'), ''),
-        row(t('srvSpecAuxKw'), inp('auxKw', g.auxKw, 0.1, 'kW'), ''),
-        row(t('srvSpecPerRack'), inp('serversPerRack', g.serversPerRack, 1, L('대', '')), ''),
-        row(t('srvSpecRackArea'), inp('rackAreaSqm', g.rackAreaSqm, 0.1, '㎡'), ''),
-        row(t('srvSpecGpus'), inp('gpusPerUnit', g.gpusPerUnit, 1, L('개', '')), '')
-      ].join('');
-      const toEok = usd => n * usd * fxv / EOK;
-      const items = [
-        [t('srvCostServer'), toEok(Number(g.capexUsd.server) || 0)],
-        [t('srvCostNet', { g: b300NetKey() }), toEok(Number(g.capexUsd.network) || 0)],
-        [t('srvCostAux'), toEok(Number(g.capexUsd.storage) || 0)],
-        [t('srvCostCdu'), toEok(Number(g.capexUsd.cdu) || 0)],
-        [t('srvCostSi') + (mult > 1 ? ` × ${nf1.format(mult)}` : ''), toEok((Number(g.capexUsd.si) || 0) * mult)]
-      ];
-      const sub = items.reduce((a, b) => a + b[1], 0);
-      const total = sub + data.facilityEok;
-      const capRow = (label, v, cls) => `<tr class="${cls || ''}"><td>${label}</td><td class="r">${eok(v)}</td><td class="r">${total > 0 ? pct(v / total * 100, 1) : '—'}</td></tr>`;
-      const opexVal = isNeo() ? (Number(state.neoOpexEok) || 0) : (Number(state.opexEok) || 0);
-      const opexRow = isNeo()
-        ? row(t('srvOpexRowNeo'), `<span class="u u-off"><input type="number" value="${nfPlain(opexVal, 1)}" disabled aria-label="${escAttr(t('srvOpexHead'))}" /></span><span class="unit">${unitOf('neoOpexEok')}</span>`, t('srvOpexNeoNote'))
-        : row(t('srvOpexRowCsp'), `<span class="u"><input type="number" min="0" max="1000" step="10" value="${nfPlain(opexVal, 1)}" data-input="opexEok" aria-label="${escAttr(t('srvOpexHead'))}" /></span><span class="unit">${unitOf('opexEok')}</span>`, t('srvOpexCspHint'));
-      const opexBlock = `
-              <div class="srv-h srv-h2"><span>${t('srvOpexHead')}</span><b>${eok(opexVal)}</b></div>
-              ${opexRow}`;
+                  <td class="r" data-itc-cdu-usd>${usdM(data.cduCapexUsd)}</td>
+                  <td class="r" data-itc-cdu-eok>${eok(data.cduCapexEok)}</td>
+                </tr>`;
+      const intRow = `
+                <tr>
+                  <td>
+                    <div class="itc-head">${t('itcRowIntegration')}${infoIcon(t('tipIntegration'), t('itcRowIntegration'), true)}</div>
+                    <div class="itc-ctl"><span class="itc-inp"><span class="lab">${t('labelInitIntegration')}</span>${numInputHtml('initIntegrationEok')}<span class="unit">${unitOf('initIntegrationEok')}</span></span></div>
+                    <div class="itc-note">${t('itcIntegrationNote')}</div>
+                  </td>
+                  <td class="r">–</td>
+                  <td class="r" data-itc-int-eok>${eok(data.integrationEok)}</td>
+                </tr>`;
       return `
-        <section class="sec mt-116 indent2 srv-sec">
-          ${secHead(t('srvSecTitle') + infoIcon(t('tipSrvSec'), t('srvSecTitle'), true))}
-          <div class="sec-desc">${t('srvSecDesc')}</div>
-          <div class="srv-toggles">
-            <div class="srv-tg">
-              <div class="srv-tg-head"><span class="lab">${t('srvCooling')}</span><span class="note">${L(cool.noteKo, cool.noteEn)}</span></div>
-              ${segBtns('data-b300-cooling', [['air', L(B300_COOLING.air.ko, B300_COOLING.air.en)], ['liquid', L(B300_COOLING.liquid.ko, B300_COOLING.liquid.en)]], b300CoolingKey(), true)}
-            </div>
-            <div class="srv-tg">
-              <div class="srv-tg-head"><span class="lab">${t('srvNetwork')}</span><span class="note">${L(net.noteKo, net.noteEn)}</span></div>
-              ${segBtns('data-b300-net', [['400', '400G NDR'], ['800', '800G XDR']], b300NetKey(), true)}
-            </div>
-          </div>
-          <div class="srv-cols">
-            <div class="srv-col">
-              <div class="srv-h"><span>${t('srvCostHead')}</span><b data-gpu-capex-total="b300">${usdWithKrw(gpuCapexPerUnitUsd(g))}</b></div>
-              ${costRows}${opexBlock}
-            </div>
-            <div class="srv-col">
-              <div class="srv-h"><span>${t('srvSpecHead')}</span><b>${t('srvTotalKw', { v: nf2.format(gpuUnitPowerKw(g)) })}</b></div>
-              ${specRows}
-            </div>
-          </div>
-          <div class="dt-wrap" style="margin-top:40px">
-            <table class="dt srv-capex">
-              <colgroup><col><col style="width:220px"><col style="width:220px"></colgroup>
-              <thead><tr><th>${t('srvCapexHead')}</th><th class="r">${t('srvCapexAmount')}</th><th class="r">${t('srvCapexShare')}</th></tr></thead>
+        <section class="sec mt-116 itc-sec">
+          ${secHead(t('itcSecTitle') + infoIcon(t('tipItCapexSec'), t('itcSecTitle'), true))}
+          <div class="sec-desc">${t('itcSecDesc')}</div>
+          <div class="dt-wrap" style="margin-top:29.6px">
+            <table class="dt itc">
+              <colgroup><col><col style="width:200px"><col style="width:200px"></colgroup>
+              <thead><tr><th>${t('itcColItem')}</th><th class="r">USD</th><th class="r">${en ? 'KRW' : '원화 환산'}</th></tr></thead>
               <tbody>
-                ${items.map(([l, v]) => capRow(l, v)).join('')}
-                ${capRow(t('srvCapexSub'), sub, 'key')}
-                ${capRow(t('srvCapexFac'), data.facilityEok)}
-                ${capRow(t('srvCapexTotal'), total, 'key total')}
+                ${equipRows || `<tr><td colspan="3">${t('mixNoType')}</td></tr>`}
+                ${cduRow}
+                ${intRow}
+                <tr class="key total"><td>${t('itcRowTotal')}</td><td class="r" data-itc-total-usd>${usdM(data.itCapexUsd)}</td><td class="r" data-itc-total-eok><strong>${eok(data.itCapexEok)}</strong></td></tr>
               </tbody>
             </table>
           </div>
-          <div class="srv-aux">${b300AuxTableHtml(data)}</div>
         </section>
       `;
+    }
+    // CDU 단가·초기 통합비 입력 중 부분 갱신 (전체 재렌더 없이)
+    function syncItCapexLive() {
+      const data = getActiveData();
+      const set = (sel, html) => { const el = document.querySelector(sel); if (el) el.innerHTML = html; };
+      set('[data-itc-cdu-basis]', `${cduFormulaText(data)} × ${usdPlain(data.cduUsd)} = ${usdM(data.cduCapexUsd)}`);
+      set('[data-itc-cdu-usd]', usdM(data.cduCapexUsd));
+      set('[data-itc-cdu-eok]', eok(data.cduCapexEok));
+      set('[data-itc-int-eok]', eok(data.integrationEok));
+      set('[data-itc-total-usd]', usdM(data.itCapexUsd));
+      set('[data-itc-total-eok]', `<strong>${eok(data.itCapexEok)}</strong>`);
+      syncGpuLive(null);
+    }
+    // 사이드바 임차 조건 요약 문구
+    function leaseHintText(data) {
+      const d = data || getActiveData();
+      return t('leaseHint', { r: eok(d.leaseRentEok), m: eok(d.leaseMgmtEok), d: eok(d.leaseDepositEok), dc: eok(d.leaseDepositCostEok), t: eok(d.leaseOpexEok) });
     }
 
     // ---- rev36: 수전·면적 사용 현황 — 미터 + 카드별 임계표 ----
     function powerCapTextMix(data) {
       const over = data.allocationPct > 100;
-      return t('powerCapMix', { mix: data.shortConfigText, kw: fmtKwAsMw(data.usedItPower), it: fmtKwAsMw(state.itPowerKw) }) + (over ? ` · ${t('overCapacity')}` : '');
+      return t('powerCapMix', { mix: data.shortConfigText, kw: fmtKwAsMw(data.usedItPower), it: fmtKwAsMw(state.itPowerKw), left: fmtKwAsMw(Math.max(0, (Number(state.itPowerKw) || 0) - data.usedItPower)) }) + (over ? ` · ${t('overCapacity')}` : '');
     }
     function renderTypeThreshold(td, data) {
       const g = td.type;
-      const isServer = g.kind === 'server';
       const others = gpuOthersUsage(td.key);
       const support = data.supportArea + others.area;       // 부대공간 + 타 카드 점유
       const itLeft = Math.max(0, (Number(state.itPowerKw) || 0) - others.kw);
       const unit = gpuUnitLabel(g);
       const name = gpuLabel(g, td.key);
-      const spr = isServer ? Math.max(1, Number(g.serversPerRack) || 1) : 1;
-      const unitsPerRow = isServer ? spr : 1;                // 서버형은 랙 단위 행
-      const curRows = Math.ceil(td.n / unitsPerRow);
-      const powerMaxRows = Math.floor(td.powerMax / unitsPerRow);
-      const absRows = Math.floor(gpuAbsMax(g) / unitsPerRow);
-      const areaPerRow = isServer ? (Number(g.rackAreaSqm) || 0) : gpuUnitAreaSqm(g);
-      const kwPerRow = unitsPerRow * gpuUnitPowerKw(g);
+      const curRows = td.n;
+      const powerMaxRows = td.powerMax;
+      const absRows = gpuAbsMax(g);
+      const areaPerRow = gpuUnitAreaSqm(g);
+      const kwPerRow = gpuUnitPowerKw(g);
       const needFor = rows => support + rows * areaPerRow;
-      let points;
-      if (isServer) {
-        points = [...new Set([1, Math.max(1, curRows - 5), Math.max(1, curRows - 1), curRows, curRows + 1, curRows + 5, powerMaxRows, powerMaxRows + 1].filter(r => r >= 1 && r <= Math.max(powerMaxRows + 1, curRows + 1)))].sort((a, b) => a - b);
-      } else {
-        const rowsMax = Math.min(SU_ABS_MAX, Math.max(powerMaxRows + 2, curRows + 1, 5));
-        points = Array.from({ length: rowsMax }, (_, i) => i + 1);
-      }
+      const rowsMax = Math.min(SU_ABS_MAX, Math.max(powerMaxRows + 2, curRows + 1, 5));
+      const points = Array.from({ length: rowsMax }, (_, i) => i + 1);
       const rows = points.map(r => {
         const need = needFor(r);
         const overPower = r > powerMaxRows;
@@ -3694,25 +3634,23 @@
         const reached = !overPower && data.floorArea >= need - 0.01;
         const current = r === curRows;
         const stateText = overCap ? t('thStateCap') : overPower ? t('thStatePower') : reached ? t('thStateOk') : t('thStateNeed', { v: nf.format(Math.ceil(need - data.floorArea)) });
-        const label = isServer ? `${nf.format(r)}<span class="suf">${state.lang === 'en' ? ' racks' : '랙'}</span> <span class="th-sub">(${nf.format(r * spr)}${unit})</span>` : `${nf.format(r)}<span class="suf">SU</span>`;
+        const label = `${nf.format(r)}<span class="suf">SU</span> <span class="th-sub">(${gpuUnitsText(g, r)})</span>`;
         return `
           <tr class="${current ? 'cur' : ''} ${overPower ? 'dis' : ''}" data-th-row="${r}">
-            <td>${label}${isServer && r === powerMaxRows ? ` <span class="tag-box" style="margin-left:6px">${t('thPowerCapPoint')}</span>` : ''}</td>
+            <td>${label}${r === powerMaxRows ? ` <span class="tag-box" style="margin-left:6px">${t('thPowerCapPoint')}</span>` : ''}</td>
             <td class="r">${nf.format(Math.ceil(need))}m²</td>
             <td class="r">${nf.format(Math.round(r * kwPerRow))}kW</td>
             <td class="r">${stateText}</td>
           </tr>`;
       }).join('');
-      const desc = isServer
-        ? t('thServerDesc', { name, spr: nf.format(spr), area: nf1.format(Number(g.rackAreaSqm) || 0), sup: nf.format(Math.round(data.supportArea)) })
-        : t('thTypeDescMix', { sys: name, area: nf.format(gpuUnitAreaSqm(g)), sup: nf.format(Math.round(data.supportArea)) });
+      const desc = t('thTypeDescMix', { sys: name, area: nf.format(gpuUnitAreaSqm(g)), sup: nf.format(Math.round(data.supportArea)) });
       return `
-        <div class="th-type" data-th-type="${td.key}" data-th-rows="${unitsPerRow}">
+        <div class="th-type" data-th-type="${td.key}" data-th-rows="1">
           <div class="mx-sub">${name}</div>
           <div class="dt-wrap th-table">
-            <table class="dt th" style="--gap:3.3px" aria-label="${escAttr(isServer ? t('thRackTitle') : t('thTitle'))}">
-              <colgroup><col style="width:318.7px"><col style="width:217px"><col style="width:220.4px"><col></colgroup>
-              <thead><tr><th>${isServer ? t('thColServerRack') : t('thColSu')}</th><th class="r">${t('thColArea')}</th><th class="r">${t('thColPower')}</th><th class="r">${t('thColState')}</th></tr></thead>
+            <table class="dt th" style="--gap:3.3px" aria-label="${escAttr(t('thTitle'))}">
+              <colgroup><col style="width:418.7px"><col style="width:187px"><col style="width:190.4px"><col></colgroup>
+              <thead><tr><th>${t('thColSu')}</th><th class="r">${t('thColArea')}</th><th class="r">${t('thColPower')}</th><th class="r">${t('thColState')}</th></tr></thead>
               <tbody>${rows}</tbody>
             </table>
           </div>
@@ -3746,11 +3684,18 @@
     function renderFormulaPanelMix(data) {
       const [util, tot, it, pue, floor, support, fac] = commonChipItems(data);
       const okTypes = data.types.filter(td => td.ok && td.n > 0);
+      const depTxt = `${getDepreciationText().replace(/\//g, ' / ')}%`;
+      // rev58: IT 장비 CAPEX = 장비 구매비(카드별) + CDU + 초기 설치·통합비 · 운영비 = 전기료 + AI Enterprise + 임차 비용
+      const capexRows = okTypes.map(td => [t('blTypeCapex', { name: gpuShortLabel(td.type, td.key) }), `${eok(td.itCapexEok)} (${usdM(td.itCapexUsd)} = ${nf.format(td.n)}SU × ${usdM(td.perUnitUsd)})`, 'res']);
+      const cduRow = [t('blCdu'), `${eok(data.cduCapexEok)} (${nf.format(data.cduUnits)}${t('unitCdu')} × ${usdPlain(data.cduUsd)})`];
+      const intRow = [t('blIntegration'), eok(data.integrationEok)];
+      const itRow = [t('blItCapex'), `${eok(data.itCapexEok)} (${usdM(data.itCapexUsd)} + ${eok(data.integrationEok)})`, 'res'];
+      const leaseRow = [t('blLease'), `${eok(data.leaseOpexEok)} (${t('blLeaseDetail', { r: eok(data.leaseRentEok), m: eok(data.leaseMgmtEok), dc: eok(data.leaseDepositCostEok) })})`, 'res'];
+      const leaseChip = [t('chipLease'), `${nf1.format(data.leaseArea)}㎡ · ${nf.format(state.leaseRentPerSqm)}/${nf.format(state.leaseMgmtPerSqm)}${state.lang === 'en' ? ' KRW/㎡·mo' : '원/㎡·월'}`];
+      const swChip = [t('chipSwSub'), formatSwSub(data.swRateUsd)];
       if (data.mode === 'neo') {
         const usd = v => `$${nfEn(2).format(v)}`;
         const priceRows = okTypes.map(td => [t('blNeoPrice', { name: gpuShortLabel(td.type, td.key) }), td.priceUsd > 0 ? `${usd(td.priceUsd)} → ${usd(td.netUsd)} (${formatHourlyRate(td.netUsd * fx())})` : t('neoPriceBlank')]);
-        const capexRows = okTypes.map(td => [t('blTypeCapex', { name: gpuShortLabel(td.type, td.key) }), `${eok(td.itCapexEok)} (${usdM(td.itCapexUsd)})`, 'res']);
-        const depTxt = `${getDepreciationText().replace(/\//g, ' / ')}%`;
         const utilRow = [t('blNeoUtil'), `${nf1.format(data.neoUtilPct)}%`];
         const B = {
           config: [t('blConfig'), data.shortConfigText],
@@ -3758,18 +3703,16 @@
           rev: [t('blAnnualRevenue'), eok(data.annualRevenue[0]), 'res'],
           fac: [t('blFacility'), eok(data.facilityEok)],
           elec: [t('blElecCost'), eok(data.electricityEok), 'res'],
-          sw: [t('blSwOpexNeo'), `${eok(data.swOpexEok)} (${formatSwSub(data.swRateUsd)})`, 'res'],
-          opex: [t('blOtherOpexNeo'), eok(data.opexEok)],
+          sw: [t('blSwOpex'), `${eok(data.swOpexEok)} (${formatSwSub(data.swRateUsd)} × ${nf.format(data.swGpus)} GPU)`, 'res'],
           energy: [t('chipEnergyRate'), formatRateText('energyCostRate', state.energyCostRate)],
           basic: [t('chipBasicCharge'), formatRateText('basicChargeKwMonth', state.basicChargeKwMonth)],
-          fx: [t('chipFx'), `${nf.format(state.fxKrwUsd)}원/USD`],
-          swsub: [t('chipSwSubNeo'), formatSwSub(data.swRateUsd)]
+          fx: [t('chipFx'), `${nf.format(state.fxKrwUsd)}원/USD`]
         };
         return formulaSectionHtml([
           { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBodyNeo'), items: [B.config, ...priceRows, B.margin, utilRow, B.rev] },
-          { title: t('formulaCardCapexTitleMix'), body: t('formulaCardCapexBodyMix'), items: [...capexRows, [t('blItCapex'), `${eok(data.itCapexEok)} (${usdM(data.itCapexUsd)})`, 'res'], B.fac] },
-          { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyNeo'), items: [B.elec, B.sw, B.opex, [t('blDep'), depTxt], utilRow, tot, it, pue] },
-          { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyMix'), items: [floor, support, B.fac, B.energy, B.basic, B.fx, B.swsub, [t('chipDep'), depTxt]] }
+          { title: t('formulaCardCapexTitleMix'), body: t('formulaCardCapexBodyMix'), items: [...capexRows, cduRow, intRow, itRow, B.fac] },
+          { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyNeo'), items: [B.elec, B.sw, leaseRow, [t('blDep'), depTxt], utilRow, tot, it, pue] },
+          { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyMix'), items: [floor, support, B.fac, B.energy, B.basic, B.fx, swChip, leaseChip, [t('chipDep'), depTxt]] }
         ]);
       }
       const B = {
@@ -3778,25 +3721,21 @@
         rev: [t('blAnnualRevenue'), eok(data.annualRevenue[0]), 'res'],
         fac: [t('blFacility'), eok(data.facilityEok)],
         elec: [t('blElecCost'), eok(data.electricityEok), 'res'],
-        sw: [t('blSwOpex'), `${eok(data.swOpexEok)} (${formatSwSub(state.swSubUsdPerGpuYear)})`, 'res'],
-        opex: data.hasServer ? [t('blOtherOpex'), eok(data.opexEok)] : null,
+        sw: [t('blSwOpex'), `${eok(data.swOpexEok)} (${formatSwSub(state.swSubUsdPerGpuYear)} × ${nf.format(data.swGpus)} GPU)`, 'res'],
         util, tot, it, pue, floor, support,
         energy: [t('chipEnergyRate'), formatRateText('energyCostRate', state.energyCostRate)],
         basic: [t('chipBasicCharge'), formatRateText('basicChargeKwMonth', state.basicChargeKwMonth)],
-        fx: [t('chipFx'), `${nf.format(state.fxKrwUsd)}원/USD`],
-        swsub: [t('chipSwSub'), formatSwSub(state.swSubUsdPerGpuYear)]
+        fx: [t('chipFx'), `${nf.format(state.fxKrwUsd)}원/USD`]
       };
-      const depTxt = `${getDepreciationText().replace(/\//g, ' / ')}%`;
       const utilRow = [t('chipUtilYearly'), `${nf.format(state.utilY1)}-${nf.format(state.utilY2)}-${nf.format(state.utilY3)}%`];
       const rateRows = okTypes.map(td => [t('blTypeRate', { name: gpuShortLabel(td.type, td.key) }), `${t('labelMixOD')} ${formatHourlyRate(td.rates.od)} / ${t('labelMix1Y')} ${formatHourlyRate(td.rates.c1)} / ${t('labelMix3Y')} ${formatHourlyRate(td.rates.c3)}`]);
       const effRows = okTypes.map(td => [t('blTypeEff', { name: gpuShortLabel(td.type, td.key) }), effRateSummaryText(td.type)]);
-      const capexRows = okTypes.map(td => [t('blTypeCapex', { name: gpuShortLabel(td.type, td.key) }), `${eok(td.itCapexEok)} (${usdM(td.itCapexUsd)})`, 'res']);
       const vars = { loc: nf1.format(Number(state.locPremiumPct) || 0), d1: nf1.format(Number(state.disc1YPct) || 0), d3: nf1.format(Number(state.disc3YPct) || 0) };
       return formulaSectionHtml([
         { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBodyMix', vars), items: [B.config, ...rateRows, B.mix, ...effRows, B.rev] },
-        { title: t('formulaCardCapexTitleMix'), body: t('formulaCardCapexBodyMix'), items: [...capexRows, [t('blItCapex'), `${eok(data.itCapexEok)} (${usdM(data.itCapexUsd)})`, 'res'], B.fac] },
-        { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyMix'), items: [B.elec, B.sw, B.opex, [t('blDep'), depTxt], utilRow, B.tot, B.it, B.pue] },
-        { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyMix'), items: [B.floor, B.support, B.fac, B.energy, B.basic, B.fx, B.swsub, [t('chipDep'), depTxt]] }
+        { title: t('formulaCardCapexTitleMix'), body: t('formulaCardCapexBodyMix'), items: [...capexRows, cduRow, intRow, itRow, B.fac] },
+        { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyMix'), items: [B.elec, B.sw, leaseRow, [t('blDep'), depTxt], utilRow, B.tot, B.it, B.pue] },
+        { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyMix'), items: [B.floor, B.support, B.fac, B.energy, B.basic, B.fx, swChip, leaseChip, [t('chipDep'), depTxt]] }
       ]);
     }
 
@@ -4496,7 +4435,7 @@
         const dep = sum(data.capexByYear);
         const elec = sum(data.electricityByYear);
         const sw = sum(data.swOpexByYear || []);
-        const opex = (data.key === 'rack' ? (Number(state.opexEok) || 0) : (Number(data.opexEok) || 0)) * YEARS;
+        const opex = sum(data.leaseByYear || []);   // rev58: 임차 비용(임대료 + 관리비 + 보증금 환산 이자)
         const expense = sum(data.annualExpense);
         const profit = data.cumProfit[YEARS - 1];
         return { revenue, dep, elec, sw, opex, expense, profit, margin: revenue ? profit / revenue * 100 : 0 };
@@ -4847,8 +4786,7 @@
       // GPU 임대 (rev36): 차트 → 연차표 → 랙 시스템 선택(4카드) → 매출·가동률(카드별 표) → 수전·면적 사용 현황 → 시설비 → 기준값 → 재무구조
       const podFinHtml = (typeof PODFIN !== 'undefined') ? PODFIN.html(data) : '';
       const neoHtml = data.mode === 'neo' ? `${renderNeoTermsSection(data)}${renderNeoSensSection(data)}` : '';
-      const srvHtml = (gpuOn('b300') && gpuSpecOk(gpuTypes.b300)) ? renderServerConfigSection(data) : '';
-      content.innerHTML = `${renderChartPanel()}${renderTableHtml(data)}${neoHtml}${renderGpuSelector(data)}${renderMixSection(data)}${srvHtml}${renderCapacitySection(data)}${renderFacilityCapexPanel('pod')}${renderFormulaPanelMix(data)}${podFinHtml}`;
+      content.innerHTML = `${renderChartPanel()}${renderTableHtml(data)}${neoHtml}${renderGpuSelector(data)}${renderMixSection(data)}${renderItCapexSection(data)}${renderCapacitySection(data)}${renderFacilityCapexPanel('pod')}${renderFormulaPanelMix(data)}${podFinHtml}`;
       renderChart(data);
       if (typeof PODFIN !== 'undefined') PODFIN.attach(content, data);
       fitInputs(content);
@@ -4864,8 +4802,11 @@
         case 'totalPowerKw': case 'itPowerKw': return 'kW';
         case 'floorAreaSqm': case 'supportAreaBase': case 'supportAreaFixed': case 'whiteSpaceSqm': case 'greySpaceSqm': return '㎡';
         case 'swSubUsdPerGpuYear': case 'neoSwUsdPerGpuYear': return en ? 'GPU·yr' : 'GPU·년';
-        case 'opexEok': case 'neoOpexEok': return en ? '$M' : '억';
-        case 'siMultiplier': return en ? '×' : '배';
+        case 'leaseAgentFeeEok': case 'initIntegrationEok': return en ? '$M' : '억';
+        case 'leaseAreaSqm': return '㎡';
+        case 'leaseRentPerSqm': case 'leaseMgmtPerSqm': return en ? 'KRW/㎡·mo' : '원/㎡·월';
+        case 'leaseDepositMonths': return en ? 'mo' : '개월';
+        case 'cduUsd': return en ? '/unit' : '/대';
         default: return '%';
       }
     }
@@ -4953,7 +4894,6 @@
         </section>
         <section class="s-group neo-opex last" data-views="superpod,compare">
           ${ctlRow('neoSwUsdPerGpuYear', t('labelNeoSw'), { pre: '$', labCls: 'md' })}
-          ${ctlRow('neoOpexEok', t('labelNeoOpex'), { labCls: 'md' })}
         </section>`;
       const cspHtml = `
         <section class="s-group util" data-views="superpod,compare">
@@ -4969,7 +4909,6 @@
         </section>
         <section class="s-group neo-opex last" data-views="superpod,compare">
           ${ctlRow('swSubUsdPerGpuYear', t('labelNeoSw'), { pre: '$', labCls: 'md' })}
-          ${ctlRow('opexEok', t('labelNeoOpex'), { labCls: 'md' })}
         </section>`;
       const common = modeHtml + (neo ? neoHtml : cspHtml) + `
         <div class="s-rule mid" data-views="superpod,compare"></div>
@@ -4993,6 +4932,16 @@
         <section class="s-group" data-views="superpod,compare">
           ${ctlRow('energyCostRate', t('labelEnergyCostRate'))}
           ${ctlRow('basicChargeKwMonth', t('labelBasicCharge'))}
+        </section>
+        <section class="s-group lease" data-views="superpod,compare">
+          <span class="s-lab sm">${t('groupLeaseTitle')}${infoIcon(t('tipLease'), t('groupLeaseTitle'), true)}</span>
+          ${ctlRow('leaseAreaSqm', t('labelLeaseArea'))}
+          ${ctlRow('leaseRentPerSqm', t('labelLeaseRent'))}
+          ${ctlRow('leaseMgmtPerSqm', t('labelLeaseMgmt'))}
+          ${ctlRow('leaseDepositMonths', t('labelLeaseDeposit'))}
+          ${ctlRow('leaseDepositRatePct', t('labelLeaseDepositRate'), { unitCls: 'pct' })}
+          ${ctlRow('leaseAgentFeeEok', t('labelLeaseAgentFee'))}
+          <div class="s-hint" data-lease-hint>${leaseHintText()}</div>
         </section>
         <section class="s-group rate ${neo ? 'off' : ''}" data-views="superpod,compare">
           <span class="s-lab sm">${t('groupRateTitle')}</span>
@@ -5045,6 +4994,7 @@
       document.querySelectorAll('[data-opmode-hint]').forEach(h => { h.innerHTML = isNeo() ? t('opModeNeoHint') : t('opModeCspHint'); });
       document.querySelectorAll('[data-fac-mode]').forEach(btn => { btn.classList.toggle('active', btn.dataset.facMode === (isRemodelOnly() ? 'remodel' : 'both')); });
       document.querySelectorAll('[data-facmode-hint]').forEach(h => { h.innerHTML = isRemodelOnly() ? t('facModeHintRemodel') : t('facModeHintBoth'); });
+      document.querySelectorAll('[data-lease-hint]').forEach(h => { h.innerHTML = leaseHintText(); });
       document.querySelectorAll('[data-bm-mode]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.bmMode === (state.bmMode === 'B' ? 'B' : 'A'));
       });
@@ -5525,10 +5475,13 @@
       const strip = items => ({ type: 'strip', items });
       const split = (total, n, first) => { const rest = Math.floor((total - first) / n); return [first, ...Array.from({ length: n }, (_, i) => (i === n - 1 ? total - first - rest * (n - 1) : rest))]; };
       const ctr = n => Array.from({ length: n }, (_, i) => (i === 0 ? 'left' : 'center'));
-      const opexSum = Number(d.opexEok) || 0;
+      // rev58: 임차 비용(임대료 + 관리비 + 보증금 환산 이자) · IT 장비 CAPEX = 장비 + CDU + 초기 통합비 · 투자원금 = 자기자본 + 보증금
+      const leaseSum = Number(d.leaseOpexEok) || 0;
+      const RInv = R ? (R.inv != null ? R.inv : R.E) : 0;
+      const unitsOf = td => gpuUnitsText(td.type, td.n);
 
       // ═════════ 1p. 요약 ═════════
-      const typeName = td => (td.type.kind === 'server' ? `HGX ${gpuShortLabel(td.type, td.key)}` : gpuLabel(td.type, td.key));
+      const typeName = td => gpuLabel(td.type, td.key);
       const cfgLine = activeTypes.map(td => `${typeName(td)} ${nf.format(td.n)}${gpuUnitLabel(td.type)}(${nf.format(td.gpus)} GPU)`).join(' + ') || gpuMixText(state, gpuTypes, true);
       blocks.push({ type: 'title', lines: [L('AI Data Center GPU 임대', 'AI Data Center GPU Leasing'), L('수익구조 분석', 'Revenue Structure Analysis')], sub: `${cfgLine} · ${modeName} · ${t('labelFloorArea')} ${sqm(d.floorArea)} (${isRemodelOnly() ? L('리모델링', 'remodel') : L('신축+리모델링', 'new build + remodel')})` });
       // ① 재무구조 반영 전 (5개)
@@ -5542,7 +5495,7 @@
         ]),
         para(L('1년차 매출 ', 'Year-1 revenue is '), B(eok(d.annualRevenue[0])), L(`, 연간 지출 `, ' against annual expense of '), B(eok(d.annualExpense[0])),
           L(`입니다. ${YEARS}년간 매출 `, `. Over ${YEARS} years, revenue of `), B(eok(d.cumRevenue[last])),
-          L('에서 전기료·SW·운영비·감가상각 등 지출 ', ' less expenses (electricity, SW, opex, depreciation) of '), B(eok(d.cumExpense[last])),
+          L('에서 전기료·AI Enterprise 구독·임차 비용·감가상각 등 지출 ', ' less expenses (electricity, AI Enterprise, lease, depreciation) of '), B(eok(d.cumExpense[last])),
           L('을 차감한 누적 손익은 ', ' leaves a cumulative profit of '), B(eok(profit3), colorOf(profit3)), ` (${L('매출 대비', 'margin')} ${pct(cumMarginPct, 1)})`,
           L('이며, ', ', with '), B(bep), L('입니다.', '.'))
       );
@@ -5550,8 +5503,8 @@
       if (R) {
         const cums = []; let c = 0; R.rows.forEach(x => { c += x.fcfe; cums.push(c); });
         let payback = null;
-        for (let i = 0; i < R.rows.length; i++) { if (cums[i] >= R.E && payback === null) { const prev = i === 0 ? 0 : cums[i - 1]; payback = i + (R.rows[i].fcfe > 0 ? (R.E - prev) / R.rows[i].fcfe : 1); } }
-        const recovPct = R.E > 0 ? R.cumFcfe / R.E * 100 : 0;
+        for (let i = 0; i < R.rows.length; i++) { if (cums[i] >= RInv && payback === null) { const prev = i === 0 ? 0 : cums[i - 1]; payback = i + (R.rows[i].fcfe > 0 ? (RInv - prev) / R.rows[i].fcfe : 1); } }
+        const recovPct = RInv > 0 ? R.cumFcfe / RInv * 100 : 0;
         sec('post', L('재무구조 반영 후', 'After financing'),
           strip([
             { label: L('자기자본 투입', 'Equity invested'), value: eok(R.E) },
@@ -5564,7 +5517,7 @@
             L('을 투입하고 PF ', ' is invested and PF debt of '), B(eok(R.D0)), ` (${L('금리', 'rate')} ${pc(P.ir)} · ${repayName} · ${vehName})`,
             L('를 조달합니다. 이자·법인세 차감 후 ', ' is raised. After interest and tax, '), L(`${YEARS}년 누적 세후 순이익은 `, `${YEARS}-yr net income is `), B(eok(R.cumNI), colorOf(R.cumNI)),
             L(', 원금상환까지 마친 뒤 주주에게 귀속되는 현금(FCFE)은 ', ' and, after principal repayment, cash to equity (FCFE) is '), B(fm('fcfe'), colorOf(R.cumFcfe)),
-            L('으로 투자원금의 ', ', recovering '), B(pct(recovPct, 1)), L('를 회수합니다', ' of the equity invested'),
+            L('으로 투자원금의 ', ', recovering '), B(pct(recovPct, 1)), L('를 회수합니다', ' of the capital invested'),
             payback === null ? L(' (3년 내 원금 미회수).', ' (not fully recovered within 3 years).') : L(` (회수 시점 약 ${payback.toFixed(1)}년차).`, ` (payback at about year ${payback.toFixed(1)}).`))
         );
         // ③ 주주수익률 지표 (5개)
@@ -5588,10 +5541,10 @@
       sec('app', L('개요', 'Overview'),
         grid([1555, W - 1555], [
           { cells: [L('운영 방식', 'Operating model'), [B(modeName), ` · ${priceLine}`]] },
-          { cells: [L('GPU 구성', 'GPU configuration'), [B(gpuMixText(state, gpuTypes, false)), ` · ${L('총', 'total')} ${nf.format(d.totalGpu)} GPU · ${L('랙', 'racks')} ${nf.format(d.racks)} · FP4 ${nf.format(Math.round(d.totalFp4))} PFLOPS`]] },
+          { cells: [L('GPU 구성', 'GPU configuration'), [B(gpuMixText(state, gpuTypes, false)), ` · ${activeTypes.length > 1 ? activeTypes.map(td => `${gpuShortLabel(td.type, td.key)} ${gpuUnitsText(td.type, td.n)}`).join(' / ') : activeTypes.map(td => gpuUnitsText(td.type, td.n)).join('')}`]] },
           { cells: [L('전력·면적', 'Power & space'), `${t('labelItPowerKw')} ${kw(state.itPowerKw)} ${L('중', 'of which')} ${kw(d.usedItPower)} ${L('사용', 'used')} (${pct(d.allocationPct, 1)}) · ${t('labelFloorArea')} ${sqm(d.floorArea)} ${L('중', 'of which')} ${sqm(d.supportArea + d.occupiedArea)} ${L('사용', 'used')} (${pct(d.areaPct, 1)})`] },
-          { cells: [L('투자비', 'Capex'), [B(`${L('총 CAPEX', 'Total capex')} ${eok(d.totalCapexEok)}`, RPT.OR), ` = IT ${L('장비', 'equipment')} ${eok(d.itCapexEok)} (${fmtUsdLarge(d.itCapexUsd)}) + ${L('시설', 'facility')} ${eok(d.facilityEok)}`]] },
-          { cells: [L('연간 운영비(1년차)', 'Annual opex (Y1)'), `${L('전기료', 'Electricity')} ${eok(d.electricityByYear[0])} · SW ${eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)} · ${L('기타', 'other')} ${eok(opexSum)} · ${L('감가상각', 'depreciation')} ${eok(d.capexByYear[0])}`] },
+          { cells: [L('투자비', 'Capex'), [B(`${L('총 CAPEX', 'Total capex')} ${eok(d.totalCapexEok)}`, RPT.OR), ` = IT ${L('장비', 'equipment')} ${eok(d.itCapexEok)} + ${L('시설', 'facility')} ${eok(d.facilityEok)}`]] },
+          { cells: [L('연간 운영비(1년차)', 'Annual opex (Y1)'), `${L('전기료', 'Electricity')} ${eok(d.electricityByYear[0])} · AI Enterprise ${eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)} · ${L('임차 비용', 'lease')} ${eok(leaseSum)} · ${L('감가상각', 'depreciation')} ${eok(d.capexByYear[0])}`] },
           ...(R ? [{ cells: [L('조달 구조', 'Financing'), `${L('자기자본', 'Equity')} ${pc(P.eq)} (${eok(R.E)}) · PF ${eok(R.D0)} · ${L('금리', 'rate')} ${pc(P.ir)} · ${repayName} · ${vehName}`] }] : [])
         ], { align: ['left', 'left'] })
       );
@@ -5603,13 +5556,13 @@
         [t('labelDepGroup'), `${nf1.format(state.depY1)} / ${nf1.format(state.depY2)} / ${nf1.format(state.depY3)}%`],
         [L('수전용량', 'Power capacity'), `${L('총', 'Total')} ${kw(state.totalPowerKw)} · IT ${kw(state.itPowerKw)} · PUE ${nf2.format(d.pue)}`],
         [L('공간', 'Space'), `${t('labelFloorArea')} ${sqm(d.floorArea)} · ${L('그레이', 'grey')} ${sqm(d.supportArea)} · ${L('화이트', 'white')} ${sqm(d.usableArea)}`],
-        [L('SW 구독 · 기타 운영비', 'SW · other opex'), `${formatSwSub(d.swRateUsd)} · ${perYr(eok(opexSum))}`],
+        [L('AI Enterprise · 임차 비용', 'AI Enterprise · lease'), `${formatSwSub(d.swRateUsd)} · ${perYr(eok(leaseSum))}`],
         [t('labelLocPremium'), pc(state.locPremiumPct)]
       ];
       if (neo) settingRows.push([t('neoTargetIrr'), pc(state.neoTargetIrrPct)]);
       if (activeKeys.includes('b300')) {
-        const cooling = b300CoolingKey() === 'air' ? L('공랭 8U', 'Air 8U') : L('수랭 4U (DLC)', 'Liquid 4U (DLC)');
-        settingRows.push([L('서버 구성 (B300)', 'Server config (B300)'), `${cooling} · ${b300NetKey() === '800' ? '800G XDR' : '400G NDR'} · ${L('SI 할증', 'SI premium')} ${nf1.format(Math.max(1, Number(state.siMultiplier) || 1))}${L('배', 'x')}`]);
+        const gB = gpuTypes.b300;
+        settingRows.push([L('구성 (B300)', 'Configuration (B300)'), L(`수랭 4U · 800G XDR 고정 · 컴퓨팅 ${nf.format(gB.racksPerUnit)}랙/SU · ${nf.format(gpuPositionsPerUnit(gB))}개 위치/SU`, `Liquid 4U · 800G XDR fixed · ${nf.format(gB.racksPerUnit)} compute racks/SU · ${nf.format(gpuPositionsPerUnit(gB))} positions/SU`)]);
       }
       sec('app', L('주요 설정값', 'Key settings'), grid2(settingRows));
       pageBreak();
@@ -5690,14 +5643,17 @@
       sec('pre', L('투자·운영비', 'Capex & opex'),
         table([1800, 1500, W - 3300], [
           head([L('항목', 'Item'), L('금액', 'Amount'), L('산출 근거', 'Basis')]),
-          { cells: [L('IT 장비 CAPEX', 'IT equipment capex'), eok(d.itCapexEok), `${L('GPU당', 'per GPU')} ${fmtUsdLarge(d.itCapexUsd / Math.max(1, d.totalGpu))} × ${nf.format(d.totalGpu)} GPU = ${fmtUsdLarge(d.itCapexUsd)}`] },
+          { cells: [L('장비 구매비', 'Equipment purchase'), eok(d.equipCapexEok), activeTypes.map(td => `${gpuShortLabel(td.type, td.key)} ${nf.format(td.n)}SU × ${usdM(td.perUnitUsd)} (${L('GPU당', 'per GPU')} ${usdPlain(Number(td.type.pricePerGpuUsd) || 0)} × ${nf.format(Number(td.type.gpusPerUnit) || 0)} GPU)`).join(' + ') + ` = ${fmtUsdLarge(d.equipCapexUsd)}`] },
+          { cells: [L('CDU', 'CDU'), eok(d.cduCapexEok), `${cduFormulaText(d)} × ${usdPlain(d.cduUsd)} (${L('단가 미확정 가정값', 'placeholder price')}) = ${fmtUsdLarge(d.cduCapexUsd)}`] },
+          { cells: [L('초기 설치·통합비', 'Initial integration'), eok(d.integrationEok), L('40M/M × 월 2,000만원 + 예비비 2억 · 프로젝트 전체 고정', '40 man-months × KRW 20M + 0.2B contingency · fixed per project')] },
+          { bold: true, cells: [L('IT 장비 CAPEX', 'IT equipment capex'), eok(d.itCapexEok), L('장비 구매비 + CDU + 초기 설치·통합비', 'Equipment + CDU + initial integration')] },
           { cells: [L('시설 CAPEX', 'Facility capex'), eok(d.facilityEok), `${L('연면적', 'Floor area')} ${sqm(d.floorArea)} · ${L('총 수전', 'total power')} ${kw(state.totalPowerKw)} ${L('기준 (내역은 시설 CAPEX 내역 참조)', 'basis (see facility breakdown)')}`] },
           { bold: true, cells: [L('총 CAPEX', 'Total capex'), { t: eok(d.totalCapexEok), color: RPT.OR }, L('IT 장비 + 시설', 'IT equipment + facility')] },
           { cells: [L('연간 전기료', 'Electricity (Y1)'), perYr(eok(d.electricityByYear[0])), `${L('전력량', 'Energy')} ${eok(d.energyByYear[0])} + ${L('기본요금', 'basic charge')} ${eok(d.baseEok)}`] },
-          { cells: [L('SW 구독', 'SW subscription'), perYr(eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)), `${formatSwSub(d.swRateUsd)} × ${L('서버형(B300) GPU', 'server-type (B300) GPUs')} ${nf.format(d.swGpus || 0)}`] },
-          { cells: [L('기타 운영비', 'Other opex'), perYr(eok(opexSum)), neo ? L('타사위탁 기타 운영비', 'Outsourced other opex') : L('서버형(B300) 별도 운영비', 'Separate opex for the server type (B300)')] },
+          { cells: [L('AI Enterprise 구독', 'AI Enterprise subscription'), perYr(eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)), `${formatSwSub(d.swRateUsd)} × ${nf.format(d.swGpus || 0)} GPU`] },
+          { cells: [L('임차 비용', 'Lease cost'), perYr(eok(leaseSum)), `${L('임대료', 'rent')} ${eok(d.leaseRentEok)} + ${L('관리비', 'management')} ${eok(d.leaseMgmtEok)} + ${L('보증금', 'deposit')} ${eok(d.leaseDepositEok)} × ${nf1.format(d.leaseDepositRatePct)}% = ${eok(d.leaseDepositCostEok)} (${nf1.format(d.leaseArea)}㎡ × ${nf.format(state.leaseRentPerSqm)}/${nf.format(state.leaseMgmtPerSqm)}${L('원/㎡·월', ' KRW/㎡·mo')})${(d.leaseAgentFeeEok || 0) > 0 ? ` + ${L('임대대행 수수료(1년차)', 'agent fee (Y1)')} ${eok(d.leaseAgentFeeEok)}` : ''}`] },
           { cells: [L('감가상각(1년차)', 'Depreciation (Y1)'), perYr(eok(d.capexByYear[0])), `${t('labelDepGroup')} ${nf1.format(state.depY1)} / ${nf1.format(state.depY2)} / ${nf1.format(state.depY3)}%`] },
-          { bold: true, cells: [L('연간 지출(1년차)', 'Annual expense (Y1)'), perYr(eok(d.annualExpense[0])), L('감가상각 + 전기료 + SW + 기타 운영비', 'Depreciation + electricity + SW + other opex')] }
+          { bold: true, cells: [L('연간 지출(1년차)', 'Annual expense (Y1)'), perYr(eok(d.annualExpense[0])), L('감가상각 + 전기료 + AI Enterprise + 임차 비용', 'Depreciation + electricity + AI Enterprise + lease')] }
         ], { align: ['left', 'center', 'left'] })
       );
       // [pre] 시설 CAPEX 내역
@@ -5725,10 +5681,8 @@
         const nT = activeTypes.length;
         const cols = split(W, nT, 1900);
         const row = (label, fn, opt = {}) => ({ cells: [label, ...activeTypes.map(fn)], bold: opt.bold });
-        const unitOf = td => (td.type.kind === 'server' ? L('랙당', 'per rack') : L('SU당', 'per SU'));
-        const spr = td => (td.type.kind === 'server' ? Math.max(1, Number(td.type.serversPerRack) || 1) : 1);
         const rows = [head([L('항목', 'Item'), ...activeTypes.map(td => gpuLabel(td.type, td.key))])];
-        rows.push(row(L('수량 · GPU', 'Units · GPUs'), td => `${nf.format(td.n)}${gpuUnitLabel(td.type)} · ${nf.format(td.gpus)} GPU · ${L('랙', 'racks')} ${nf.format(td.racks)} · FP4 ${nf.format(Math.round(td.fp4))} PFLOPS`));
+        rows.push(row(L('수량', 'Quantity'), td => `${nf.format(td.n)}SU · ${gpuUnitsText(td.type, td.n, { positions: true })} · FP4 ${nf.format(Math.round(td.fp4))} PFLOPS`));
         if (neo) {
           rows.push(row(t('labelNeoPrice'), td => (td.priceUsd > 0 ? `${usd2(td.priceUsd)}/GPU·h` : t('neoPriceBlank'))));
           rows.push(row(L('순단가 (마진 차감)', 'Net rate (after margin)'), td => (td.priceUsd > 0 ? B(`${usd2(td.netUsd)}/GPU·h`) : '-')));
@@ -5737,34 +5691,11 @@
           rows.push(row(t('labelMix1Y'), td => `${usd2(td.rates.c1Usd)}/GPU·h (${formatHourlyRate(td.rates.c1)})`));
           rows.push(row(t('labelMix3Y'), td => `${usd2(td.rates.c3Usd)}/GPU·h (${formatHourlyRate(td.rates.c3)})`));
         }
-        rows.push(row(L('구매가 · 면적 · 전력', 'Price · area · power'), td => `${usdPlain(td.perUnitUsd * spr(td))} · ${nf1.format(td.type.kind === 'server' ? (Number(td.type.rackAreaSqm) || 0) : gpuUnitAreaSqm(td.type))}㎡ · ${kw(gpuUnitPowerKw(td.type) * spr(td))} (${unitOf(td)})`));
-        rows.push(row(L('CAPEX 구성', 'CAPEX items'), td => {
-          const g = td.type;
-          if (g.kind === 'server') {
-            const m = Math.max(1, Number(state.siMultiplier) || 1);
-            return SERVER_ITEM_KEYS.map(k => {
-              const lab = k === 'si' ? t('capexItemSi').replace(/\s*\(.*\)\s*$/, '') + (m > 1 ? ` ×${nf1.format(m)}` : '') : stripTags(t(SERVER_ITEM_LABEL_KEYS[k], { m: nf1.format(m), g: b300NetKey() }));
-              return `${lab} ${usdPlain((Number(g.capexUsd[k]) || 0) * (k === 'si' ? m : 1) * spr(td))}`;
-            }).join(' · ');
-          }
-          return CAPEX_ITEM_KEYS.map(k => `${stripTags(capexItemLabel(g, k))} ${usdM(g.capexUsd[k])}`).join(' · ');
-        }));
-        rows.push(row(L('IT CAPEX', 'IT CAPEX'), td => B(`${usdWithKrw(td.perUnitUsd * spr(td))} (${unitOf(td)}) · ${L('합계', 'total')} ${eok(td.itCapexEok)}`, RPT.OR)));
-        sec('pre', L('랙 시스템 구성·단가', 'Rack systems & pricing'), table(cols, rows, { align: Array.from({ length: nT + 1 }, () => 'left') }));
-      }
-      // [pre] 부대장비 및 SI CAPEX (B300)
-      if (activeKeys.includes('b300')) {
-        const a = b300AuxCalc(d);
-        sec('pre', t('auxSiTitle'),
-          para(stripTags(t('srvAuxDesc'))),
-          grid2([
-            [`${t('auxColMultiplier')} ${t('auxColMultiplierSub')}`, B(`${nf1.format(a.mult)}${L('배', 'x')}`)], [t('auxColSi'), eok(a.siEok)],
-            [t('auxColAux'), eok(a.auxEok)], [t('auxColItCapex'), eok(a.itCapexEok)],
-            [t('auxColSw'), eok(a.swEok3)], [t('auxColCapexExp'), eok(a.capexExp)],
-            [t('auxColAdd3'), eok(a.add3)], [t('auxColProfit3'), B(eok(a.profit3), colorOf(a.profit3))]
-          ]),
-          para(B(`${t('auxBreakevenLabel')}: `), stripTags(a.breakevenHtml))
-        );
+        rows.push(row(L('SU당 면적 · 전력', 'Area · power per SU'), td => `${nf1.format(gpuUnitAreaSqm(td.type))}㎡ (${nf.format(gpuPositionsPerUnit(td.type))}${L('개 위치', ' positions')} × ${nf1.format(Number(td.type.rackAreaSqm) || 0)}㎡) · ${kw(gpuUnitPowerKw(td.type))} (${L('컴퓨팅', 'compute')} ${kw(td.type.computeKwPerUnit || 0)} + ${L('지원', 'support')} ${nf.format(Number(td.type.supportPct) || 0)}%)`));
+        rows.push(row(L('GPU당 적용 단가', 'Applied price per GPU'), td => `${usdPlain(Number(td.type.pricePerGpuUsd) || 0)} × ${nf.format(Number(td.type.gpusPerUnit) || 0)} GPU = ${usdM(td.perUnitUsd)}/SU (${L('설치·세팅비 포함 거래가 ÷ GPU 수', 'deal price incl. install/setup ÷ GPUs')})`));
+        rows.push(row(L('장비 구매비', 'Equipment purchase'), td => B(`${usdWithKrw(td.perUnitUsd)} (${L('SU당', 'per SU')}) · ${L('합계', 'total')} ${eok(td.itCapexEok)}`, RPT.OR)));
+        sec('pre', L('SU 구성·단가', 'SU configuration & pricing'), table(cols, rows, { align: Array.from({ length: nT + 1 }, () => 'left') }),
+          note(L(`CDU ${nf.format(d.cduUnits)}${t('unitCdu')}(${eok(d.cduCapexEok)})와 초기 설치·통합비 ${eok(d.integrationEok)}는 부지 단위로 별도 계상 (투자·운영비 표 참조).`, `CDUs (${nf.format(d.cduUnits)}, ${eok(d.cduCapexEok)}) and initial integration (${eok(d.integrationEok)}) are costed at site level (see capex & opex table).`)));
       }
       // [pre] 수전·면적 사용 현황
       const whitePct = d.usableArea > 0 ? d.occupiedArea / d.usableArea * 100 : 0;
@@ -5773,7 +5704,7 @@
         grid([1555, W - 1555], [
           { cells: [L('IT 전력', 'IT power'), [B(`${kw(d.usedItPower)} / ${kw(state.itPowerKw)}`), ` (${pct(d.allocationPct, 1)}) · ${L('총 수전', 'total power')} ${kw(state.totalPowerKw)} · PUE ${nf2.format(d.pue)}`]] },
           { cells: [t('labelFloorArea'), [B(`${sqm(d.supportArea + d.occupiedArea)} / ${sqm(d.floorArea)}`), ` (${pct(d.areaPct, 1)}) = ${L('그레이스페이스 및 기타', 'grey space & other')} ${sqm(d.supportArea)} + ${L('랙 점유', 'rack footprint')} ${sqm(d.occupiedArea)}`]] },
-          { cells: [L('화이트스페이스', 'White space'), [B(`${sqm(d.occupiedArea)} / ${sqm(d.usableArea)}`), ` (${pct(whitePct, 1)}) · ${L('랙', 'racks')} ${nf.format(d.racks)} · ${L('제약 유형', 'binding constraint')}: ${conName(d.constraint)}`]] },
+          { cells: [L('화이트스페이스', 'White space'), [B(`${sqm(d.occupiedArea)} / ${sqm(d.usableArea)}`), ` (${pct(whitePct, 1)}) · ${L('컴퓨팅 랙', 'compute racks')} ${nf.format(d.racks)} · ${L('공간', 'positions')} ${nf.format(d.positions)}${L('개 위치', '')} · ${L('잔여 IT', 'IT left')} ${kw(d.remainingItKw)} · ${L('제약 유형', 'binding constraint')}: ${conName(d.constraint)}`]] },
           ...activeTypes.map(td => ({ cells: [`${gpuLabel(td.type, td.key)} ${L('최대', 'max')}`, [`${L('현재', 'current')} ${nf.format(td.n)}${gpuUnitLabel(td.type)} · ${L('전력 기준', 'by power')} ${nf.format(td.powerMax)} · ${L('면적 기준', 'by area')} ${nf.format(td.areaMax)} → ${L('적용 최대', 'applied max')} `, B(`${nf.format(td.maxUnits)}${gpuUnitLabel(td.type)}`), ` (${conName(td.constraint)})`]] }))
         ], { align: ['left', 'left'] }),
         note(L('카드별 상한은 다른 카드가 쓰는 전력·면적을 뺀 잔여분으로 산출하며, 초과분은 화면에서 빨간색으로 표시됩니다.', 'Each type\'s cap is derived from the power and area left after the other types; overruns are shown in red on screen.'))
@@ -5789,7 +5720,8 @@
           grid2([
             [L('자기자본 비율', 'Equity ratio'), pc(P.eq)], [L('PF 금리', 'PF interest rate'), pc(P.ir)],
             [L('상환방식', 'Repayment'), repayName], [L('사업기구', 'Vehicle'), vehName],
-            [L('자기자본 투입', 'Equity invested'), B(eok(R.E))], [L('PF 차입', 'PF debt'), B(eok(R.D0))]
+            [L('자기자본 투입', 'Equity invested'), B(eok(R.E))], [L('PF 차입', 'PF debt'), B(eok(R.D0))],
+            ...((R.deposit || 0) > 0 ? [[L('임차 보증금 (0년차 납입)', 'Lease deposit (Yr 0)'), B(eok(R.deposit))], [L('투자원금 합계', 'Capital invested'), B(eok(RInv))]] : [])
           ])
         );
         sec('post', L('연차별 손익·주주 현금흐름', 'Annual P&L and cash flow to equity'),
@@ -5804,10 +5736,10 @@
             frow(L('법인세(공제 후)', 'Income tax (after credits)'), x => x.tax),
             frow(L('세후 순이익', 'Net income'), x => x.ni, { bold: true }),
             frow(L('PF 원금상환', 'PF principal repayment'), x => x.P),
-            frow(L('주주 현금흐름(FCFE)', 'Free cash flow to equity'), x => x.fcfe, { bold: true, zero: -R.E }),
+            frow(L('주주 현금흐름(FCFE)', 'Free cash flow to equity'), x => x.fcfe, { bold: true, zero: -RInv }),
             { cells: [L('부채잔액 / DSCR', 'Debt balance / DSCR'), `${eok(R.D0)} / -`, ...R.rows.map(x => `${eok(x.bal)} / ${x.dscr == null ? '-' : x.dscr.toFixed(2)}`), '-'] }
           ], { align: ctr(6) }),
-          note(L('0년차 = 투자 실행 시점(자기자본 납입·PF 인출). FCFE = EBITDA − PF 이자 − 법인세 − 원금상환, 3년차에는 감가상각 잔존가액 회수분 ' + eok(R.resid) + ' 포함.', 'Yr 0 = investment date (equity paid in, PF drawn). FCFE = EBITDA − PF interest − tax − principal; Yr 3 adds ' + eok(R.resid) + ' recovered as undepreciated residual.')),
+          note(L('0년차 = 투자 실행 시점(자기자본 납입·PF 인출' + ((R.deposit || 0) > 0 ? '·임차 보증금 ' + eok(R.deposit) + ' 납입' : '') + '). FCFE = EBITDA − PF 이자 − 법인세 − 원금상환, 3년차에는 감가상각 잔존가액 회수분 ' + eok(R.resid) + ((R.deposit || 0) > 0 ? '과 보증금 회수 ' + eok(R.deposit) : '') + ' 포함.', 'Yr 0 = investment date (equity paid in, PF drawn). FCFE = EBITDA − PF interest − tax − principal; Yr 3 adds ' + eok(R.resid) + ' recovered as undepreciated residual.')),
           note(L('지표 정의: Equity IRR = 자기자본 대비 3년 FCFE의 내부수익률 · MIRR = 재투자 3% 가정 · NPV@12% = 12% 할인 FCFE − 자기자본 · MoIC = 회수 현금 합계 ÷ 자기자본 · 최소 DSCR = (EBITDA − 법인세) ÷ 연간 원리금의 3개년 최저값 (PF 요건 1.20 이상)', 'Definitions: Equity IRR = IRR of 3-yr FCFE vs equity · MIRR = reinvestment at 3% · NPV@12% = FCFE discounted at 12% less equity · MoIC = cash returned ÷ equity · Min DSCR = lowest annual (EBITDA − tax) ÷ debt service (covenant ≥ 1.20)'))
         );
       }
@@ -5895,7 +5827,7 @@
         const siteCols = [];
         candidates.forEach(k => {
           const g = gpuTypes[k];
-          const nm = g.kind === 'server' ? `HGX ${gpuShortLabel(g, k)}` : gpuLabel(g, k);
+          const nm = gpuLabel(g, k);
           const stA = { ...state };
           GPU_KEYS.forEach(j => { stA['on_' + j] = j === k; });
           stA['n_' + k] = Math.max(1, gpuMaxUnits(k, stA, gpuTypes, true));
@@ -5940,7 +5872,7 @@
       }
       // 각주는 마지막 섹션 끝에
       const lastSec = [...blocks].reverse().find(b => b.type === 'sec');
-      if (lastSec) lastSec.body.push(note(L('※ 재무구조 반영 전 = 매출 − 전기료·SW·운영비·감가상각, 반영 후 = 자기자본·PF 금리·상환방식·사업기구를 반영한 주주 관점. AI Data Center 수익구조 시뮬레이션에서 생성.', '※ Before financing = revenue − electricity, SW, opex, depreciation; after financing = shareholder view with equity, PF rate, repayment and vehicle. Generated by the AI Data Center revenue-structure simulator.')));
+      if (lastSec) lastSec.body.push(note(L('※ 재무구조 반영 전 = 매출 − 전기료·AI Enterprise·임차 비용·감가상각, 반영 후 = 자기자본·PF 금리·상환방식·사업기구를 반영한 주주 관점. AI Data Center 수익구조 시뮬레이션에서 생성.', '※ Before financing = revenue − electricity, AI Enterprise, lease, depreciation; after financing = shareholder view with equity, PF rate, repayment and vehicle. Generated by the AI Data Center revenue-structure simulator.')));
       return rptCleanDash({ blocks, ymd, header: `${L('전략사업실 Rev. Date: ', 'Rev. Date: ')}${ymd}`, title: L('AI Data Center GPU 임대 수익구조 분석', 'AI Data Center GPU Leasing: Revenue Structure Analysis') });
     }
 
@@ -6571,22 +6503,9 @@
         syncDerivedRateHints();
         return true;
       }
-      if (prop === 'rackKwServer' && g.kind === 'server') {
-        // rev45: 카드의 '랙당 사용 전력' = 서버 1대 IT 부하 × 랙당 서버 수 — 네트워크·스토리지 몫을 뺀 나머지를 서버 본체 전력으로
-        const perServer = Math.max(0.1, v / Math.max(1, Number(g.serversPerRack) || 1));
-        g.serverKw = Math.max(0.1, perServer - (Number(g.netKw) || 0) - (Number(g.auxKw) || 0));
-      } else if (prop === 'rackPriceServer' && g.kind === 'server') {
-        // rev45: 카드의 '랙당 구매가' = 서버 본체 가격 × 랙당 서버 수
-        g.capexUsd.server = Math.max(0, v / Math.max(1, Number(g.serversPerRack) || 1));
-      } else if (prop.startsWith('capex:')) {
-        const item = prop.slice(6);
-        if (!(item in g.capexUsd)) return false;
-        g.capexUsd[item] = v;
-      } else if (prop === 'unitItPowerKw' && g.kind === 'server') {
-        // 카드의 '대당 사용 전력'은 합계값 — 네트워크·스토리지 몫을 뺀 나머지를 서버 본체 전력으로
-        g.serverKw = Math.max(0.1, v - (Number(g.netKw) || 0) - (Number(g.auxKw) || 0));
-      } else if (['rackAreaSqm', 'rackKw', 'rackPriceUsd', 'unitItPowerKw', 'gpusPerUnit', 'racksPerUnit', 'fp4PflopsPerUnit', 'serversPerRack', 'serverKw', 'netKw', 'auxKw'].includes(prop)) {
-        g[prop] = (prop === 'gpusPerUnit' || prop === 'racksPerUnit' || prop === 'serversPerRack') ? Math.max(1, Math.round(v)) : v;
+      if (['rackAreaSqm', 'rackKw', 'serverKw', 'pricePerGpuUsd', 'gpusPerUnit', 'racksPerUnit', 'serversPerUnit', 'positionsPerUnit', 'supportPct', 'fp4PflopsPerUnit'].includes(prop)) {
+        // rev58: SU 사양 입력 — 정수 항목은 반올림, 나머지는 그대로 (파생값은 syncGpuDerived 가 다시 계산)
+        g[prop] = ['gpusPerUnit', 'racksPerUnit', 'serversPerUnit', 'positionsPerUnit'].includes(prop) ? Math.max(0, Math.round(v)) : v;
       } else return false;
       syncGpuDerived(g);
       if (finalize) {
@@ -6614,7 +6533,7 @@
           chip.classList.toggle('text-danger', over);
         }
         const rk = document.querySelector(`[data-gpu-racks="${key}"]`);
-        if (rk && g.kind === 'server') rk.textContent = t('cardRacks', { n: nf.format(Math.ceil(n / Math.max(1, Number(g.serversPerRack) || 1))) });
+        if (rk) rk.textContent = `= ${gpuUnitsText(g, n)}`;
         document.querySelectorAll(`[data-gpu-count="${key}"]`).forEach(control => {
           if (control === activeInput) return;
           control.value = n;
@@ -6623,9 +6542,7 @@
         const mc = document.querySelector(`[data-mix-count="${key}"]`);
         if (mc) mc.textContent = nf.format(n);
         document.querySelectorAll(`[data-gpu-capex-total="${key}"]`).forEach(tot => {
-          // rev45: 카드는 랙당(서버 수 배), 서버 구성 섹션은 서버 1대당
-          const k = (g.kind === 'server' && tot.closest('.sys-card')) ? Math.max(1, Number(g.serversPerRack) || 1) : 1;
-          tot.innerHTML = usdWithKrw(gpuCapexPerUnitUsd(g) * k);
+          tot.innerHTML = usdWithKrw(gpuCapexPerUnitUsd(g));
         });
         const th = document.querySelector(`[data-th-type="${key}"]`);
         if (th) {
@@ -6900,22 +6817,11 @@
         return;
       }
       if (event.target.dataset.gpuKey && event.target.dataset.gpuProp) {
-        if (applyGpuPropInput(event.target)) { if (document.querySelector('.srv-sec')) syncB300AuxLive(event.target); else syncGpuLive(event.target); refreshLiveMetrics(); }
+        if (applyGpuPropInput(event.target)) { syncGpuLive(event.target); refreshLiveMetrics(); }
         return;
       }
       if (event.target.matches('[data-su-count]')) {
         if (applySuInput(event.target)) { syncSuLive(event.target); refreshLiveMetrics(); }
-        return;
-      }
-
-      if (event.target.hasAttribute && event.target.hasAttribute('data-aux-mult')) {
-        const v = readNumericInput(event.target);
-        if (v !== null) {
-          state.siMultiplier = Math.max(1, Math.min(5, v));
-          syncB300AuxLive(event.target);
-          refreshControls();
-          refreshLiveMetrics();
-        }
         return;
       }
 
@@ -6950,6 +6856,17 @@
       }
 
       const inputId = event.target.dataset.input;
+      if (inputId === 'cduUsd' || inputId === 'initIntegrationEok') {
+        // rev58: 본문(IT 장비 CAPEX 구성) 입력은 타이핑 중 전체 재렌더 없이 부분 갱신
+        const def = getControlDef(inputId);
+        let v = Number(String(event.target.value).replace(/,/g, '').trim());
+        if (!Number.isFinite(v)) return;
+        if (def) v = Math.max(def.min, Math.min(def.max, v));
+        state[inputId] = v;
+        syncItCapexLive();
+        refreshLiveMetrics();
+        return;
+      }
       if (inputId) {
         const def = getControlDef(inputId);
         const kind = RATE_KIND[inputId];
@@ -6994,17 +6911,11 @@
 
     document.addEventListener('change', event => {
       if (event.target.matches('[data-input="neoTargetIrrPct"]')) { fitInput(event.target); refreshNeoSens(); return; }
+      if (event.target.matches('[data-input="cduUsd"], [data-input="initIntegrationEok"]')) { render(); return; }
       if (event.target.matches('[data-neo-key]')) { state.neoPriceKey = event.target.value; buildControls(); refreshControls(); return; }
       if (event.target.matches('[data-gpu-count]')) { applyGpuCountInput(event.target, true); render(); return; }
       if (event.target.dataset.gpuKey && event.target.dataset.gpuProp) { applyGpuPropInput(event.target, true); buildControls(); render(); return; }
       if (event.target.matches('[data-su-count]')) { applySuInput(event.target, true); render(); return; }
-      if (event.target.hasAttribute && event.target.hasAttribute('data-aux-mult')) {
-        const v = readNumericInput(event.target);
-        if (v !== null) state.siMultiplier = Math.max(1, Math.min(5, v));
-        buildControls();
-        render();
-        return;
-      }
       if (event.target.dataset.rackCount) { applyRackCountInput(event.target, true); render(); return; }
       if (event.target.dataset.rackKey && event.target.dataset.rackProp) { applyRackSpecInput(event.target, true); render(); return; }
       if (event.target.dataset.sysKey && event.target.dataset.sysProp) { applySystemRateInput(event.target, true); render(); return; }
@@ -7020,7 +6931,7 @@
     }, true);
     document.addEventListener('keydown', event => {
       if (event.key !== 'Enter') return;
-      if (event.target.matches('[data-gpu-count]') || (event.target.dataset.gpuKey && event.target.dataset.gpuProp) || event.target.matches('[data-su-count]') || (event.target.hasAttribute && event.target.hasAttribute('data-aux-mult')) || event.target.dataset.rackCount || (event.target.dataset.rackKey && event.target.dataset.rackProp) || (event.target.dataset.sysKey && event.target.dataset.sysProp) || event.target.classList.contains('fac-input')) event.target.blur();
+      if (event.target.matches('[data-gpu-count]') || (event.target.dataset.gpuKey && event.target.dataset.gpuProp) || event.target.matches('[data-su-count]') || event.target.dataset.rackCount || (event.target.dataset.rackKey && event.target.dataset.rackProp) || (event.target.dataset.sysKey && event.target.dataset.sysProp) || event.target.classList.contains('fac-input')) event.target.blur();
     });
 
     document.addEventListener('click', event => {
@@ -7102,10 +7013,8 @@
       if (opButton) { applyOpMode(opButton.dataset.opMode); return; }
       const facBtn = event.target.closest('[data-fac-mode]');
       if (facBtn) { applyFacMode(facBtn.dataset.facMode); return; }
-      const coolBtn = event.target.closest('[data-b300-cooling]');
-      if (coolBtn) { applyB300Cooling(coolBtn.dataset.b300Cooling); return; }
-      const netBtn = event.target.closest('[data-b300-net]');
-      if (netBtn) { applyB300Net(netBtn.dataset.b300Net); return; }
+      const cduBtn = event.target.closest('[data-cdu-mode]');
+      if (cduBtn) { applyCduMode(cduBtn.dataset.cduMode); return; }
       const bmButton = event.target.closest('[data-bm-mode]');
       if (bmButton) { applyBmMode(bmButton.dataset.bmMode); return; }
 
@@ -7373,15 +7282,18 @@ const FIN = (function () {
   }
 
   // ---- 조달·세무 계층 (공통) ----
-  // a: {capex, itcExclBase, rev[], opex[], dep[], resid, eq, ir, repay, vehicle, itcRate}
+  // a: {capex, itcExclBase, rev[], opex[], dep[], resid, deposit, eq, ir, repay, vehicle, itcRate}
   //  - rev/opex/dep 는 억 원 단위 연차 배열, opex 는 현금성 운영비(감가상각 제외)
   function lever(a) {
     const n = a.rev.length;
     const capex = a.capex;
     const E = capex * a.eq, D0 = capex - E;
+    // rev58: 임차 보증금 — 0년차에 자기자본과 함께 납입, 마지막 연차에 전액 회수 (손익에는 환산 이자만 반영)
+    const deposit = Math.max(0, Number(a.deposit) || 0);
+    const inv = E + deposit;
     let itc = (a.vehicle === 'corp') ? Math.max(0, capex - (a.itcExclBase || 0)) * a.itcRate : 0;
     let bal = D0, carry = 0;
-    const cf = [-E], rows = [];
+    const cf = [-inv], rows = [];
     for (let y = 0; y < n; y++) {
       const R = a.rev[y], OP = a.opex[y], dep = a.dep[y], EB = R - OP;
       const I = bal * a.ir;
@@ -7398,16 +7310,16 @@ const FIN = (function () {
       else { const availCash = EB - tax - I; P = Math.max(0, Math.min(bal, availCash)); }
       const cfads = EB - tax, ds = I + P;
       bal -= P;
-      const fcfe = EB - I - tax - P + (y === n - 1 ? (a.resid || 0) : 0);
+      const fcfe = EB - I - tax - P + (y === n - 1 ? (a.resid || 0) + deposit : 0);
       cf.push(fcfe);
       rows.push({ y: y + 1, R, OP, EB, dep, I, ebt, tax, itcUsed, P, fcfe, bal, dscr: ds > 0 ? cfads / ds : null, ni: ebt - tax });
     }
     const posSum = cf.slice(1).reduce((s, c) => s + (c > 0 ? c : 0), 0);
     const ds = rows.map(x => x.dscr).filter(x => x != null && isFinite(x));
     return {
-      capex, E, D0, rows, cf, resid: a.resid || 0,
+      capex, E, D0, deposit, inv, rows, cf, resid: a.resid || 0,
       irr: irr(cf), mirr: mirr(cf, a.ir, 0.03), npv: npv(cf, 0.12),
-      moic: E > 0 ? posSum / E : null,
+      moic: inv > 0 ? posSum / inv : null,
       cumFcfe: cf.slice(1).reduce((s, c) => s + c, 0),
       cumRev: rows.reduce((s, r) => s + r.R, 0),
       cumOpex: rows.reduce((s, r) => s + r.OP, 0),
@@ -7459,7 +7371,7 @@ const FIN = (function () {
     return Object.assign(r, { itKrw, blend0, baseKrwRate });
   }
   const DEFAULTS = {
-    fx: 1350, fxBase: 1350, usdLinked: false,
+    fx: 1400, fxBase: 1400, usdLinked: false,
     mixY3: 0.50, mixY1: 0.30, mixOd: 0.10, churn: 0.9, decayY2: 0, decayY3: 0, bm: 'pro',
     eq: 0.30, ir: 0.085, repay: 'equal', vehicle: 'corp', itcRate: 0.05, depRate: 0.33
   };
@@ -7744,8 +7656,8 @@ const FINVIEW = (function () {
         def: L('가용 GPU-시간에 계약 포트폴리오 가중평균 단가와 연차별 가동률 계수를 곱한 값입니다.', 'Available GPU-hours multiplied by the portfolio-weighted rate and the annual utilization factor.'),
         formula: L('GPU 수 × 연간 8,760시간 × 실효비중 × 가중평균 실현단가', 'GPUs x 8,760 hours x effective share x weighted realized rate'), v: sum(x => x.R) },
       OP: { term: 'Operating Expenses (OPEX)', termDef: L('영업활동을 유지하기 위해 반복적으로 지출되는 비용', 'Recurring costs incurred to keep operations running'),
-        def: L('전력비와 소프트웨어 구독료로 구성된 현금성 운영비입니다. 감가상각비는 비현금 비용이므로 여기에 포함되지 않습니다.', 'Cash operating costs: electricity and software subscription. Depreciation is non-cash and excluded here.'),
-        formula: L('전력비(기본요금 + 사용량요금) + SW 구독료($4,500/GPU·년)', 'Electricity (demand + usage charge) + software subscription ($4,500/GPU-yr)'), v: sum(x => x.OP) },
+        def: L('전력비, NVIDIA AI Enterprise 구독료, 임차 비용(임대료·관리비·보증금 환산 이자)으로 구성된 현금성 운영비입니다. 감가상각비는 비현금 비용이므로 여기에 포함되지 않습니다.', 'Cash operating costs: electricity, NVIDIA AI Enterprise subscription and lease costs (rent, management fee, deposit carrying cost). Depreciation is non-cash and excluded here.'),
+        formula: L('전력비(기본요금 + 사용량요금) + AI Enterprise 구독료(GPU 수 × GPU당 연 단가 × 환율) + 임차 비용(계약면적 × (임대료 + 관리비 단가) × 12 + 보증금 × 환산 이자율)', 'Electricity (demand + usage charge) + AI Enterprise (GPUs x annual rate per GPU x FX) + lease (area x (rent + management rate) x 12 + deposit x carrying rate)'), v: sum(x => x.OP) },
       EB: { term: 'Earnings Before Interest, Taxes, Depreciation and Amortization', termDef: L('이자·법인세·감가상각비 차감 전 영업이익 — 자본구조와 회계정책의 영향을 배제한 영업현금 창출력', 'Operating profit before interest, tax, depreciation and amortization — a measure of cash-generating power that strips out capital structure and accounting policy'),
         def: L('조달구조(이자)와 세무·회계처리(법인세·감가상각)의 영향을 제거한 값이라, 자기자본 비율을 바꿔도 변하지 않습니다. 사업 자체의 힘을 보는 지표입니다.', 'Because financing and accounting effects are removed, it does not move when the equity ratio changes. It measures the business itself.'),
         formula: L('매출액 − 운영비(OPEX)', 'Revenue - operating expenses') + ' = ' + E(sum(x => x.R)) + ' − ' + E(sum(x => x.OP)) + ' = ' + E(sum(x => x.EB)) + L('억', 'B'), v: sum(x => x.EB) },
@@ -7805,7 +7717,7 @@ const FINVIEW = (function () {
       + row('ebt', L('세전이익(EBT)', 'Pre-tax income'), x => x.ebt)
       + row('tax', L('법인세(공제 후)', 'Income tax (after credits)'), x => x.tax)
       + row('P', L('PF 원금상환', 'PF principal repayment'), x => x.P)
-      + row('fcfe', L('주주 현금흐름(FCFE)', 'Free cash flow to equity'), x => x.fcfe, 'key', -r.E)
+      + row('fcfe', L('주주 현금흐름(FCFE)', 'Free cash flow to equity'), x => x.fcfe, 'key', -(r.inv != null ? r.inv : r.E))
       + dscrRow + '</tbody></table>';
   }
 
@@ -7832,24 +7744,26 @@ const FINVIEW = (function () {
         + row(L('(+) 감가상각비 — 비현금 비용 가산', '(+) Depreciation — non-cash add-back'), x => x.dep, 'sub')
         + row(L('(−) PF 원금상환 — 비용이 아닌 현금유출', '(-) PF principal — cash outflow, not a cost'), x => -x.P, 'sub')
         + row(L('(+) 감가상각 잔존가액 회수', '(+) Recovery of undepreciated residual'), resid, 'sub', r.resid || 0)
+        + ((r.deposit || 0) > 0 ? row(L('(+) 임차 보증금 회수 — 0년차 납입분', '(+) Lease deposit returned — paid in Year 0'), x => (x.y === n ? (r.deposit || 0) : 0), 'sub', r.deposit || 0) : '')
         + row(L('주주 현금흐름 (FCFE)', 'Free cash flow to equity'), x => x.fcfe, 'key'))
       + '</section>';
 
     // ② 투자원금 회수 진행률
     let cum = 0, payback = null;
+    const inv = r.inv != null ? r.inv : r.E;   // rev58: 투자원금 = 자기자본 + 임차 보증금
     const cums = R.map(x => { cum += x.fcfe; return cum; });
     for (let i = 0; i < n; i++) {
-      if (cums[i] >= r.E && payback === null) {
+      if (cums[i] >= inv && payback === null) {
         const prev = i === 0 ? 0 : cums[i - 1];
-        payback = i + (R[i].fcfe > 0 ? (r.E - prev) / R[i].fcfe : 1);
+        payback = i + (R[i].fcfe > 0 ? (inv - prev) / R[i].fcfe : 1);
       }
     }
-    const pct1 = v => r.E > 0 ? (v / r.E * 100).toFixed(1) + '%' : '—';
+    const pct1 = v => inv > 0 ? (v / inv * 100).toFixed(1) + '%' : '—';
     const recov = `<section class="sec">${secHead(L('투자원금 회수 진행률', 'Payback progress'))}`
       + tbl(
         `<tr class="sub"><td>${L('연간 회수액', 'Annual distribution')}</td>` + R.map(x => `<td>${fmt(x.fcfe)}</td>`).join('') + `<td class="r">${fmt(r.cumFcfe)}</td></tr>`
         + `<tr class="sub"><td>${L('누적 회수액', 'Cumulative')}</td>` + cums.map(v => `<td>${fmt(v)}</td>`).join('') + `<td class="r">${fmt(r.cumFcfe)}</td></tr>`
-        + `<tr class="key"><td>${L('투자원금(', 'Against equity of ')}${eok(r.E, 1)}${L(') 대비 회수율', '')}</td>`
+        + `<tr class="key"><td>${L('투자원금(', 'Against ')}${(r.deposit || 0) > 0 ? L('자기자본 ' + eok(r.E, 1) + ' + 보증금 ' + eok(r.deposit, 1), 'equity ' + eok(r.E, 1) + ' + deposit ' + eok(r.deposit, 1)) : (L('', 'equity of ') + eok(r.E, 1))}${L(') 대비 회수율', '')}</td>`
         + cums.map(v => `<td>${pct1(v)}</td>`).join('') + `<td class="r tot">${pct1(r.cumFcfe)}</td></tr>`)
       + `<div class="fin-hint">${payback === null
         ? L('3년 내 투자원금 회수 미달 — 잔여 회수는 3년 이후 매각·잔존가치에 의존합니다.', 'Equity is not recovered within three years; the remainder depends on post-period sale or residual value.')
@@ -8000,7 +7914,7 @@ const FINFAB = (function () {
 
 // ===== SuperPOD 탭 내장 재무구조 패널 (탭 입력값 실시간 연동) =====
 const PODFIN = (function () {
-  const FX_BASE = 1350;
+  const FX_BASE = 1400;
   // 재무구조 탭 모델 선택: 'pod' | 'rack' | 'both'
   let finModel = 'pod';
   function dataFor(key) {
@@ -8053,14 +7967,14 @@ const PODFIN = (function () {
     const modelKey = data.key === 'rack' ? 'rack' : 'pod';
     const adj = revAdjust();
     const rev = data.annualRevenue.map((v, i) => v * (adj[i] == null ? 1 : adj[i]));
-    // 임대 모델은 전기료·SW 외에 별도 운영비(state.opexEok, 연간 고정)가 계상된다 — 누락 시 EBITDA 과대계상
-    const extraOpex = data.extraOpexEok != null ? (Number(data.extraOpexEok) || 0) : ((data.key === 'rack' && typeof state !== 'undefined') ? (Number(state.opexEok) || 0) : 0);
-    const opex = data.annualRevenue.map((_, i) => (data.electricityByYear[i] || 0) + (data.swOpexByYear[i] || 0) + extraOpex);
+    // rev58: 운영비 = 전기료 + AI Enterprise 구독료 + 임차 비용(임대료 + 관리비 + 보증금 환산 이자, 1년차 임대대행 수수료 포함)
+    const lease = Array.isArray(data.leaseByYear) ? data.leaseByYear : data.annualRevenue.map(() => Number(data.leaseOpexEok) || 0);
+    const opex = data.annualRevenue.map((_, i) => (data.electricityByYear[i] || 0) + (data.swOpexByYear[i] || 0) + (lease[i] || 0));
     const dep = data.capexByYear.slice();
     const capex = data.totalCapexEok;
     const resid = Math.max(0, capex - dep.reduce((s, v) => s + v, 0));
     return FIN.lever({
-      capex, itcExclBase: itcExclBase(modelKey), rev, opex, dep, resid,
+      capex, itcExclBase: itcExclBase(modelKey), rev, opex, dep, resid, deposit: Number(data.leaseDepositEok) || 0,
       eq: P.eq / 100, ir: P.ir / 100, repay: P.repay, vehicle: P.veh, itcRate: 0.05
     });
   }
@@ -8101,7 +8015,7 @@ const PODFIN = (function () {
         <h3>${L('매출 조건', 'Revenue terms')}</h3>
         ${seg('cur', L('매출 계약통화', 'Revenue contract currency'), [['usd', L('달러 연동', 'USD-linked')], ['krw', L('원화 고정', 'KRW-fixed')]], P.cur,
       L('달러 연동: 매출이 환율을 따라 움직여 IT 투자비·SW 구독료와 자연헤지가 작동합니다. 원화 고정: 임대료가 기준환율 1,350원 시점 단가로 고정되어 투자비만 환율에 노출됩니다.',
-        'USD-linked: revenue moves with FX, hedging IT capex and software fees naturally. KRW-fixed: rates lock at the 1,350 baseline, leaving only capex FX-exposed.'))}
+        'USD-linked: revenue moves with FX, hedging IT capex and software fees naturally. KRW-fixed: rates lock at the 1,400 baseline, leaving only capex FX-exposed.'))}
         ${slider('d2', L('재계약 체감 — 2년차', 'Renewal decay — Yr 2'), P.d2, 0, 30, 5, P.d2 + '%')}
         ${slider('d3', L('재계약 체감 — 3년차', 'Renewal decay — Yr 3'), P.d3, 0, 50, 5, P.d3 + '%')}
         <div class="fin-hint">${L('체감은 1년 예약·온디맨드 재계약분에만 적용됩니다(3년 예약은 계약상 고정).', 'Decay applies only to 1Y reserve and on-demand renewals; 3-yr contracts are locked.')}</div>
@@ -8322,16 +8236,17 @@ const PODFIN = (function () {
     set('pfinTable', FINVIEW.table(r));
     set('pfinFinal', FINVIEW.finalStructure(r, P.veh));
     if (typeof applyCollapsedSecs === 'function') applyCollapsedSecs(panel);
-    const extra = d.extraOpexEok != null ? (Number(d.extraOpexEok) || 0) : ((d.key === 'rack' && typeof state !== 'undefined') ? (Number(state.opexEok) || 0) : 0);
+    const leaseNote = Number(d.leaseOpexEok) || 0;
+    const depositNote = Number(d.leaseDepositEok) || 0;
     set('pfinNote', L(
-      '※ 매출·운영비·감가상각은 본 모델의 입력값에서 그대로 가져옵니다(운영비 = 전기료 + SW 구독료'
-      + (extra > 0 ? ' + 별도 운영비 ' + FINVIEW.fmt(extra, 1) + '억/년' : '')
-      + ', 감가상각 = 상각률 스케줄). 잔존가액은 3년차 FCFE에 회수분으로 반영됩니다. 통합투자세액공제 5%는 건축·토목 시설비 '
+      '※ 매출·운영비·감가상각은 본 모델의 입력값에서 그대로 가져옵니다(운영비 = 전기료 + AI Enterprise 구독료 + 임차 비용 '
+      + FINVIEW.fmt(leaseNote, 1) + '억/년[임대료 + 관리비 + 보증금 환산 이자]'
+      + ', 감가상각 = 상각률 스케줄). 잔존가액은 3년차 FCFE에 회수분으로 반영됩니다. 임차 보증금 ' + FINVIEW.fmt(depositNote, 1) + '억은 0년차에 자기자본과 함께 납입하고 3년차에 회수합니다. 통합투자세액공제 5%는 건축·토목 시설비 '
       + FINVIEW.fmt(itcExclBase(d.key === 'rack' ? 'rack' : 'pod'), 1)
       + '억을 제외한 금액에 적용됩니다. 상단 「3년 누적 지출」은 운영비 + 감가상각 + PF 이자 + 법인세의 합계이며, 「3년 누적 손익」은 매출에서 이를 차감한 세후 순이익 누계입니다(PF 원금상환은 비용이 아니므로 제외).',
-      'Revenue, operating cost and depreciation come straight from this model (operating cost = electricity + software'
-      + (extra > 0 ? ' + a separate operating charge of ' + FINVIEW.fmt(extra, 1) + 'B a year' : '')
-      + '; depreciation follows the schedule). The residual is recovered in Year-3 FCFE. The 5% investment tax credit excludes '
+      'Revenue, operating cost and depreciation come straight from this model (operating cost = electricity + AI Enterprise + lease costs of '
+      + FINVIEW.fmt(leaseNote, 1) + 'B a year [rent + management fee + deposit carrying cost]'
+      + '; depreciation follows the schedule). The residual is recovered in Year-3 FCFE. The lease deposit of ' + FINVIEW.fmt(depositNote, 1) + 'B is paid in Year 0 with equity and returned in Year 3. The 5% investment tax credit excludes '
       + FINVIEW.fmt(itcExclBase(d.key === 'rack' ? 'rack' : 'pod'), 1)
       + 'B of building/civil facility cost. "3-yr cumulative cost" is opex + depreciation + interest + tax; "3-yr cumulative profit" is revenue less that total.'));
     return r;
