@@ -713,7 +713,7 @@
     .cfg-stats { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 64px; row-gap: 10px; margin-top: 14px; }
     .cfg-stat { display: inline-flex; align-items: baseline; color: var(--g60); cursor: help; outline: none; }
     .cfg-stat .num { font-size: 55px; font-weight: 400; line-height: 74.5px; letter-spacing: -0.04em; font-variant-numeric: proportional-nums; font-feature-settings: 'pnum' 1, 'tnum' 0; }
-    .cfg-stat .unit { font-size: 25px; font-weight: 600; margin-left: 6px; }
+    .cfg-stat .unit { font-size: 25px; font-weight: 600; margin-left: 2.5px; letter-spacing: -0.825px; } /* 시설비 CAPEX 합계의 '억' 단위와 동일 (25px/600 · 자간 -0.015em@55px · 간격 2.5px) */
     .cfg-stat:hover .num, .cfg-stat:focus .num, .cfg-head .cfg-mw:hover { color: var(--orange); }
     .yr-table .lease-memo { margin-top: 14px; }
     .sec.indent2 { padding-left: 48px; }
