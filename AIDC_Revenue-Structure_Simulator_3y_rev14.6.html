@@ -853,6 +853,7 @@
     .dt.fac tr.fac-sub td::before, .dt.fac tr.fac-sum td::before, .dt.fac tr.fac-total td::before { content: ""; position: absolute; left: 0; right: var(--gap); top: 0; height: 1.5px; background: var(--g60); z-index: 1; }
     .dt.fac tr.fac-sub td::after, .dt.fac tr.fac-sum td::after { height: 1.5px; z-index: 1; }
     .dt.fac tbody tr.fac-total td::after { display: block; height: 1.5px; }
+    .fac-table.dt-wrap { border-bottom: 0; } /* 합계 행 아래 1.5px 선만 남김 (표 테두리와 겹치지 않게) */
     .dt.fac tr.fac-sub td .fac-sum-note, .dt.fac tr.fac-sum td .fac-sum-note { font-size: 13px; font-weight: 400; line-height: 20px; color: var(--ga0); }
     .dt.fac tr.fac-row.fac-overhead .fac-lab, .dt.fac tr.fac-row.fac-extra .fac-lab { font-size: 15px; }
 
