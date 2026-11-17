@@ -821,6 +821,38 @@
     .dt.fac tr.fac-total td .fac-note { font-size: 17px; font-weight: 600; }
     .dt.fac th.h-num, .dt.fac td.h-num { text-align: left; }
     .fac-cdu { margin-top: 8.3px; }
+    /* rev65: 시설비 패널 — 소계/합계 행, 근거 펼침 */
+    .dt.fac .fac-note .fac-summary { font-size: 14px; line-height: 22px; color: var(--g60); }
+    .dt.fac .fac-note .fac-logic { margin-top: 4px; font-size: 13px; line-height: 20px; color: var(--ga0); }
+    .dt.fac .fac-expand { display: inline-flex; align-items: center; margin-top: 10px; padding: 0; border: 0; background: transparent; font: inherit; font-size: 13px; font-weight: 600; color: var(--g60); line-height: 18px; cursor: pointer; }
+    .dt.fac .fac-expand .cx-tri { transform: rotate(-90deg); margin-right: 7px; }
+    .dt.fac .fac-expand.open .cx-tri { transform: none; }
+    .dt.fac tr.fac-row.open td::after { display: none; }
+    .dt.fac tr.fac-detail-row td { padding: 0 0 26px; }
+    .dt.fac tr.fac-detail-row td::after { background: var(--g60); }
+    .dt.fac .fac-est { padding: 0 0 0 20px; border-left: 2px solid var(--ge2); }
+    .dt.fac .fac-est-scale { font-size: 13px; line-height: 20px; color: var(--ga0); }
+    .dt.fac .fac-est-sec { margin-top: 18px; }
+    .dt.fac .fac-est-head { display: flex; align-items: baseline; font-size: 14px; font-weight: 600; color: var(--g60); line-height: 20px; }
+    .dt.fac .fac-est-head .id { font-weight: 500; color: var(--ga0); margin-right: 8px; }
+    .dt.fac .fac-est-head b { margin-left: auto; font-size: 15px; font-weight: 600; color: var(--g60); }
+    .dt.fac table.fac-est-tbl { margin-top: 8px; }
+    .dt.fac .fac-est-tbl th, .dt.fac .fac-est-tbl td { height: 28px; padding: 4px 0; font-size: 13px; line-height: 18px; white-space: normal; vertical-align: middle; }
+    .dt.fac .fac-est-tbl th { height: 24px; font-weight: 600; color: var(--g60); }
+    .dt.fac .fac-est-tbl th::after, .dt.fac .fac-est-tbl td::after { background: var(--gcc); }
+    .dt.fac .fac-est-tbl th.n, .dt.fac .fac-est-tbl td.n { text-align: right; padding-right: 7.5px; font-variant-numeric: tabular-nums; }
+    .dt.fac .fac-est-tbl tr.sum td { font-weight: 600; color: var(--g60); }
+    .dt.fac .fac-est-tbl tr.sum td::after { background: var(--g60); }
+    .dt.fac .fac-est-tbl tbody tr:last-child td::after { display: block; }
+    .dt.fac .fac-est-note { margin-top: 8px; font-size: 13px; line-height: 20px; color: var(--g60); }
+    .dt.fac .fac-est-note b { font-weight: 600; }
+    .dt.fac .fac-est-note.warn { color: var(--red); }
+    .dt.fac .fac-est-src { margin-top: 16px; font-size: 12px; line-height: 18px; color: var(--ga0); }
+    .dt.fac tr.fac-sub td, .dt.fac tr.fac-sum td { padding: 14px 0 14px; font-size: 16px; font-weight: 600; color: var(--g60); line-height: 24px; }
+    .dt.fac tr.fac-sub td strong, .dt.fac tr.fac-sum td strong { font-size: 16px; font-weight: 600; color: var(--g60); }
+    .dt.fac tr.fac-sub td::before { content: ""; position: absolute; left: 0; right: var(--gap); top: 0; height: 1px; background: var(--k100); }
+    .dt.fac tr.fac-sub td .fac-sum-note, .dt.fac tr.fac-sum td .fac-sum-note { font-size: 13px; font-weight: 400; line-height: 20px; color: var(--ga0); }
+    .dt.fac tr.fac-row.fac-overhead .fac-lab, .dt.fac tr.fac-row.fac-extra .fac-lab { font-size: 15px; }
 
     /* =====================================================================
        메인: 기준값 및 산식
@@ -1646,11 +1678,11 @@
       facilityColHeader: { ko: '상세내역', en: 'Item' },
       facilityColNewbuild: { ko: '신축 예산', en: 'New Build Budget' },
       facilityColRemodel: { ko: '리모델링 예산', en: 'Remodel Budget' },
-      facilityColNote: { ko: '비고 (세부 내역 및 원가 조정 논리)', en: 'Notes (Details & Cost Rationale)' },
+      facilityColNote: { ko: '근거 (세부 공사항목 · 산정 해석)', en: 'Basis (detail items & rationale)' },
       factDetailHead: { ko: '[세부 내역]', en: '[Details]' },
       factCostSame: { ko: '비용 100% 동일', en: 'Cost 100% Identical' },
       factCostSave: { ko: '비용 절감', en: 'Cost Savings' },
-      facilityTotalRow: { ko: '총 CAPEX', en: 'Total CAPEX' },
+      facilityTotalRow: { ko: '시설 CAPEX 합계', en: 'Facility capex total' },
       facilityTotalNote: { ko: '리모델링의 경우 신축({a}) 대비 총 {b}(약 {c}%)이 절감됩니다.', en: 'Compared to new build ({a}), remodeling saves a total of {b} (about {c}%).' },
       facInputAria: { ko: '{item} {col} 직접 입력', en: 'Direct input for {item} {col}' },
       exportDocxBtn: { ko: 'Word 보고서', en: 'Word report' },
@@ -1802,10 +1834,10 @@
       labelFacMode: { ko: '시설 공사 방식', en: 'Facility works' },
       facModeBoth: { ko: '신축', en: 'New build' },
       facModeRemodel: { ko: '리모델링', en: 'Remodel only' },
-      facModeTip: { ko: '시설비 CAPEX 산정 방식. [리모델링] 신축동 없이 기존 건물만 리모델링 — 전력·공조 예산은 전액 리모델링으로 계상, 건축/토목·통신/소방의 신축 고정분(40억·16억)은 제외. [신축+리모델링] 신축 전력동(700㎡) 병행안.', en: 'How facility capex is costed. [Remodel only] no new building — electrical and mechanical budgets go fully to remodel, and the fixed new-build portions of architecture and telecom/fire are dropped. [New build + remodel] keeps the 700㎡ new power building.' },
-      facModeHintRemodel: { ko: '신축동 제외 · 계획 면적 기준 리모델링 예산만 계상 (전력·공조 전액 리모델링, 건축/통신 신축분 삭제, 설계·감리·간접비 10% 유지)', en: 'No new building · remodel budget on the planned area only (electrical/mechanical fully remodel, new-build portions dropped, soft costs 10%)' },
-      facModeHintBoth: { ko: '신축 전력동(700㎡) 병행 · 신축 + 리모델링 두 열의 합이 시설비', en: 'With the new 700㎡ power building · facility capex = new build + remodel columns' },
-      facilityDescRemodel: { ko: '[리모델링] 신축동 없이 기존 건물 리모델링만으로 구성합니다. 전력·공조 예산은 전액 리모델링으로 계상되고, 건축/토목·통신/소방의 신축 고정분(40억·16억)은 제외됩니다. 면적비례 단가는 고하중(화이트스페이스) 구간과 일반(그레이스페이스 및 기타) 구간으로 나눠 계획 면적에 적용하며, 설계/감리/간접비는 직접공사비의 10%입니다(행별 수동 전환 가능, 단가 입력은 억 원).', en: '[Remodel only] the existing building is remodeled with no new construction. Electrical and mechanical budgets are costed fully as remodel; the fixed new-build portions of architecture and telecom/fire (KRW 4.0B and 1.6B) are dropped. Area-based rates apply a heavy-load rate to the white space and a general rate to grey space & other; soft costs are 10% of direct works (rows can be set manually; rates in KRW 0.1B).' },
+      facModeTip: { ko: '시설비 CAPEX 산정 방식. [리모델링] 기존 건물(B1) 용도변경·설비 개보수 견적(446.12억 기준)만 계상. [신축] 신축 전력동(700㎡) 병행안 — 신축 열에 구 모델 고정분 56억(건축/토목 40 · 소방/보안 16)을 가산하며 신축 견적은 별도 산정 전입니다.', en: 'How facility capex is costed. [Remodel] only the B1 change-of-use / MEP refurbishment estimate (446.12 base). [New build] adds a 700㎡ power building — the new-build column carries the legacy fixed 5.6B (architecture/civil 40 · fire/security 16) until a new-build estimate is prepared.' },
+      facModeHintRemodel: { ko: '기존 건물 리모델링 견적(446.12억 기준) · 직접공사비 + 공통비 12% + 예비비 20% + 지반조사 0.80억', en: 'Remodel estimate of the existing building (446.12 base) · direct cost + overhead 12% + contingency 20% + geotechnical 0.80' },
+      facModeHintBoth: { ko: '신축 전력동(700㎡) 병행 · 신축 열(구 모델 고정분 56억) + 리모델링 열의 합이 시설비', en: 'With the new 700㎡ power building · facility capex = new-build column (legacy fixed 5.6B) + remodel column' },
+      facilityDescRemodel: { ko: '판교 B1 용도변경·설비 개보수 기준 「공종별 개략공사비 산정보고서」(2026.11.17)의 공종별 직접공사비를 연면적(건축·구조·통신·소방)과 총 수전(기계·전기)에 비례 연동해 산출합니다. 직접공사비 소계 아래에 공통비 12%·예비비 20%를 가산하고, 지반조사용역(0.80억)은 공통비·예비비 없이 별도 합산합니다. 설계/감리/간접비는 보고서 미계상(0)이며 비율·금액을 직접 입력할 수 있습니다. 단가 입력은 억 원 단위, 행별 수동 전환 가능하며 각 공종의 근거는 행마다 펼쳐 볼 수 있습니다.', en: 'Direct construction cost by trade from the detailed cost estimate (2026-11-17, B1 change-of-use and MEP refurbishment) is linked to floor area (architecture, structure, telecom, fire) and total power (mechanical, electrical). Overhead 12% and contingency 20% are added below the direct-cost subtotal, and the geotechnical fee (0.08B) is added separately without overhead or contingency. Design/supervision/indirect is not in the report (0) and can be entered as a % or amount. Rates are in 0.1B KRW, each row can be switched to manual, and the basis of every trade expands in place.' },
       cardRacks: { ko: '= {n}랙', en: '= {n} racks' },
       tipSystemSelector: { ko: '켜진 카드의 SU 수 합이 IT 수전용량과 화이트스페이스 안에 들어오도록 상한을 계산합니다(완결된 SU 단위). 카드별 장비 구매비 = GPU당 적용 단가 × SU당 GPU 수 × SU 수, 매출은 GPU 수 × 시간당 단가 × 가동 시간.', en: 'Caps the total SUs of active cards to the IT power and white space (whole SUs only). Equipment per card = price per GPU × GPUs per SU × SUs; revenue = GPUs × hourly rate × hours.' },
       tipMixTable: { ko: '연매출 = GPU 수 × 8,760h × Σ(계약 비중 × 연차 가동률 계수 × 계약별 단가). 계약별 단가 = 기초단가($) × (1 + 입지 프리미엄) × (1 − 예약 할인) × 환율.', en: 'Annual revenue = GPUs × 8,760h × Σ(contract share × yearly utilization × contract rate). Contract rate = base rate × (1 + location premium) × (1 − reserve discount) × FX.' },
@@ -1816,7 +1848,7 @@
       tipCapSec: { ko: '사용 IT 전력 = Σ SU 수 × SU당 전력(컴퓨팅 전력 × 1.1, 지원 장비 10%) · 면적 사용 = 그레이스페이스 및 기타 + Σ SU 수 × SU당 면적(위치 수 × 랙당 면적) · 카드별 상한 = min(전력 기준, 면적 기준) SU 수, 다른 카드가 쓰는 잔여분 기준.', en: 'IT power used = Σ SUs × power per SU (compute × 1.1 for support gear) · area used = grey space & other + Σ SUs × area per SU (positions × area per rack) · cap per card = min(power-based, area-based) SUs on the remaining budget.' },
       tipFormula: { ko: '화면 계산에 쓰인 기준값과 산식을 한곳에 모았습니다. 각 표의 숫자는 여기 산식으로 재계산할 수 있습니다.', en: 'All inputs and formulas used on screen in one place; every figure in the tables can be recomputed from them.' },
       tipChart: { ko: '누적 손익 = 누적 매출 − 누적 지출(감가상각 + 전기료 + SW 구독 + 기타 운영비), 재무구조 반영 전.', en: 'Cumulative profit = cumulative revenue − cumulative expense (depreciation + electricity + SW + other opex), before financing.' },
-      tipFacility: { ko: '면적비례 항목 = ㎡당 단가 × 연면적(리모델링 모드는 고하중/일반 2단 단가) · 용량비례 항목 = kW당 단가 × 총 수전용량 · 설계/감리/간접비 = 직접공사비 × 10%. 행별로 수동 전환해 예산을 직접 입력할 수 있습니다.', en: 'Area items = rate/㎡ × floor area (remodel mode splits heavy/general rates) · capacity items = rate/kW × total power · soft costs = 10% of direct works. Any row can be switched to manual input.' },
+      tipFacility: { ko: '면적비례 = ㎡당 단가 × 연면적(기준 1,850㎡) · 용량비례 = MW당 단가 × 총 수전(기준 3.6MW) · 고정 = 면적·용량 비연동 · 간접비율 = 단가 행 합계 × % · 공통비·예비비 = 직접공사비 × %. 기본값은 보고서 446.12억을 그대로 재현하며, 행별로 수동 전환해 예산을 직접 입력할 수 있습니다.', en: 'Area items = rate/㎡ × floor area (1,850㎡ base) · capacity items = rate/MW × total power (3.6MW base) · fixed = independent of area and power · indirect = sum of rate rows × % · overhead/contingency = direct cost × %. Defaults reproduce the report total of 446.12; any row can be switched to manual input.' },
       tipProd: { ko: 'SuperPOD(턴키 패키지)와 랙 낱개 조달의 범위·검증·확장 단위를 정성 비교합니다.', en: 'Qualitative comparison of the SuperPOD turnkey package and standalone rack procurement.' },
       tipPnl: { ko: '3년 누적 매출 − 3년 누적 지출(감가상각·전기료·SW·운영비)의 구조를 모델별로 비교합니다.', en: 'Compares 3-year cumulative revenue less expense (depreciation, electricity, SW, opex) by model.' },
       tipCompare: { ko: '켜진 유형마다 같은 연면적·수전 안에서 그 유형만으로 채운 최대 구성과, 2개 이상이면 현재 혼합 구성을 비교합니다.', en: 'Each enabled type at its standalone maximum within the same floor area and power, plus the current mix when two or more are enabled.' },
@@ -1897,10 +1929,31 @@
       facManualBadge: { ko: '고정값(수동)', en: 'Fixed (manual)' },
       facAutoCell: { ko: '자동', en: 'auto' },
       facManualToggle: { ko: '수동 전환', en: 'Manual override' },
-      facilityDescV7: { ko: '신축 전력동(700㎡)과 리모델링(B1)을 병행하는 구조로 두 열의 합이 총 시설비입니다. 면적·용량 단가로 자동 산출되며(행별 수동 전환 가능), 단가 입력은 억 원 단위입니다.<br>면적비례 단가는 고하중 보강·매트슬래브 레벨다운을 포함한 리모델링 기준이므로 확장 구간에서는 보수적(고가)으로 산출될 수 있습니다.', en: 'The new power building (700㎡) and B1 remodeling run in parallel — the two columns sum to the total. Costs are auto-derived from area/capacity unit rates (per-row manual override available); rate inputs are in 0.1B KRW. The area rate reflects heavy-duty remodeling (slab reinforcement, mat-slab level-down), so expansion-zone estimates are conservative.' },
+      facilityDescV7: { ko: '[신축] 신축 전력동(700㎡)을 병행하는 안입니다. 리모델링 열은 「공종별 개략공사비 산정보고서」(446.12억 기준)를 연면적·총 수전에 비례 연동한 값이고, 신축 열에는 구 모델의 신축 전력동 고정분(건축/토목 40억 · 소방/보안 16억)을 가산합니다(신축 견적 별도 산정 전). 두 열의 직접공사비 합계에 공통비 12%·예비비 20%를 가산하고 지반조사용역(0.80억)은 별도 합산합니다.', en: '[New build] Option with a new 700㎡ power building. The remodel column is the detailed cost estimate (446.12 base) linked to floor area and total power; the new-build column carries the legacy fixed portions of the power building (architecture/civil 40 · fire/security 16) until a new-build estimate is prepared. Overhead 12% and contingency 20% apply to the direct cost of both columns; the geotechnical fee (0.08B) is added separately.' },
       facilityGrandBadge: { ko: '합계 {v}', en: 'Total {v}' },
       facilityColShare: { ko: '구성비', en: 'Share' },
       facilityTotalNoteV7: { ko: '신축 소계 {a} + 리모델링 소계 {b} = 시설비 CAPEX 합계 {c}', en: 'New-build subtotal {a} + remodel subtotal {b} = facility CAPEX total {c}' },
+      facilityTotalNoteEst: { ko: '직접공사비 {d} + 공통비 {o} + 예비비 {c} = 공사비 {s} · 지반조사 {g} 별도 = 시설 CAPEX {t}', en: 'Direct {d} + overhead {o} + contingency {c} = construction {s} · geotechnical {g} separate = facility capex {t}' },
+      facilityTotalNoteCols: { ko: '신축 {a} + 리모델링 {b}', en: 'New build {a} + remodel {b}' },
+      kindFixed: { ko: '고정', en: 'Fixed' },
+      kindPct: { ko: '비율', en: 'Ratio' },
+      ratePctLabel: { ko: '직접공사비 대비(%)', en: 'Of direct cost (%)' },
+      facRowDirect: { ko: '직접공사비', en: 'Direct construction cost' },
+      facRowDirectNote: { ko: '공종별 직접공사비 소계 — 공통비·예비비 산정 기준', en: 'Subtotal of direct cost by trade — base for overhead and contingency' },
+      facRowConstruction: { ko: '공사비 합계', en: 'Construction cost total' },
+      facRowConstructionNote: { ko: '직접공사비 + 공통비 + 예비비', en: 'Direct cost + overhead + contingency' },
+      facOverheadBasis: { ko: '직접공사비 {d} × {p}% — 보고서 예산 가정(법정 단일 요율 아님)', en: 'Direct cost {d} × {p}% — a budget assumption of the report, not a statutory rate' },
+      facSoftBasis: { ko: '보고서 미계상(0) — 단가 행 합계 × {p}% · 비율 또는 수동 금액으로 입력 가능', en: 'Not included in the estimate (0) — sum of rate rows × {p}% · enter a % or a manual amount' },
+      facExpandOpen: { ko: '근거 펼치기', en: 'Show basis' },
+      facExpandClose: { ko: '근거 접기', en: 'Hide basis' },
+      facEstSubtotal: { ko: '소계', en: 'Subtotal' },
+      facEstScaleArea: { ko: '비례 연동 — 보고서 기준 연면적 {base}㎡ → 현재 {now}㎡ (×{f}). 아래 표는 보고서의 기준 수량·금액입니다.', en: 'Proportional link — report base floor area {base}㎡ → current {now}㎡ (×{f}). The table below shows the report base quantities and amounts.' },
+      facEstScaleCap: { ko: '비례 연동 — 보고서 기준 총 수전 {base}kW → 현재 {now}kW (×{f}). 아래 표는 보고서의 기준 수량·금액입니다.', en: 'Proportional link — report base total power {base}kW → current {now}kW (×{f}). The table below shows the report base quantities and amounts.' },
+      facEstScaleFixed: { ko: '고정 항목 — 연면적·수전과 무관하게 보고서 금액을 그대로 적용합니다.', en: 'Fixed item — the report amount is applied regardless of floor area and power.' },
+      facEstScaleManual: { ko: '수동 입력 중 — 아래 표는 보고서의 기준 수량·금액이며 입력값과 연동되지 않습니다.', en: 'Manual input in effect — the table below shows the report base and is not linked to the entered value.' },
+      facEstSource: { ko: '출처: 공종별 개략공사비 산정보고서 (2026.11.17) · 기획단계 예산가정 · 업체 견적·구조계산·실측 없음 · VAT 별도', en: 'Source: detailed cost estimate by trade (2026-11-17) · planning-stage budget assumptions · no vendor quotes, structural calculation or site measurement · VAT excluded' },
+      facEstSourceFoot: { ko: '기본값은 「공종별 개략공사비 산정보고서」(2026.11.17)의 446.12억(공사비 445.32 + 지반조사 0.80)을 재현합니다. 제시 수량·복합단가는 설계 가정이며 발주용 예정가격 또는 투자비 확정액이 아닙니다. VAT·토지·건물 취득비·금융비·GPU 서버·고속 스위치·스토리지·SW·대규모 한전 외부망은 제외입니다.', en: 'Defaults reproduce the 446.12 (construction 445.32 + geotechnical 0.80) of the detailed cost estimate (2026-11-17). Quantities and composite rates are design assumptions, not tender prices or approved investment. VAT, land/building acquisition, financing, GPU servers, high-speed switches, storage, software and large utility grid works are excluded.' },
+      facilityCduNoteEst: { ko: '※ 기계설비 5.1의 CDU 1,250kW급 3대(12.60억)는 IT 장비 CAPEX(서버 선택 카드)의 CDU 구매비와 범위가 겹칠 수 있습니다 — 중복 계상 여부 확인 전까지 보고서 수치를 그대로 유지합니다.', en: '※ The three 1,250kW CDUs (1.26B KRW) in mechanical 5.1 may overlap with the CDU purchase in IT equipment capex (server cards) — the report figure is kept until double counting is checked.' },
       facilityTotalNoteB1: { ko: '리모델링 단일 항목 {b} = 시설비 CAPEX 합계 {c} (신축 전력동 폐지로 신축분 0)', en: 'Remodel-only {b} = facility CAPEX total {c} (new-build portion is zero — the power building is dropped)' },
       facilityDescB1: { ko: '[B1 전체] 신축 전력동을 폐지하고 수배전·UPS·비상발전기·급수탱크를 B1 내부로 흡수한 구조입니다. 전력·공조는 총액이 그대로 리모델링으로 이관되고, 건축/토목·통신/소방의 신축 고정분(40억·16억)만 소멸합니다. 면적비례 단가는 고하중(데이터홀) 구간과 일반 구간을 분리 적용합니다.', en: '[Full B1] the new power building is dropped and switchgear, UPS, emergency generators and the water tank are absorbed into B1. Power and mechanical costs transfer wholly to the remodel column at unchanged totals; only the fixed new-build portions of architecture (4.0B) and telecom/fire (1.6B) disappear. Area-proportional rates are split between the heavy-load (data hall) zone and the general zone.' },
       b1FacilityNotice: { ko: '면적비례 단가 분리 적용 중 — 고하중(화이트스페이스) 구간 {h}㎡ · 일반(그레이스페이스 및 기타) 구간 {g}㎡. 기존시설 철거비는 전 구간 동일 단가입니다.', en: 'Split area rates in effect — heavy-load (white space) {h}㎡ · general (grey space & other) {g}㎡. Demolition uses one rate across all area.' },
@@ -1920,106 +1973,205 @@
       2: { ko: '2년차 80% — 고객·워크로드 교체 주기가 길어지며 공백이 확대되는 구간.', en: 'Yr2 80% — turnover cycles lengthen and the idle gap widens.' },
       3: { ko: '3년차 80% — 차세대 칩셋 진입기의 보수적 가정.', en: 'Yr3 80% — conservative assumption as next-gen chipsets enter the market.' }
     };
-    // ---- 시설비 CAPEX (rev07): 모델별 독립 데이터셋, 6행(철거 포함), 면적/용량/고정 분류 ----
-    // 기준: 연면적 500㎡(리모델링 B1) + 신축 전력동 700㎡ 병행, 총 6MW / IT 4.8MW
-    // SuperPOD 580억(CDU 본체 제외) / 서버·GPU 임대 613억(CDU 본체 포함)
-    const FAC_ROW_KEYS = ['demolition', 'electrical', 'mechanical', 'architecture', 'lowVoltage', 'softCosts'];
-    const FAC_BASE_AREA_SQM = 500;
-    const FAC_BASE_TOTAL_KW = 6000;
+    // ---- 시설비 CAPEX (rev65): 「공종별 개략공사비 산정보고서」(2026.11.17 · 446.12억) 구조 ----
+    // 직접공사비(건축·구조·토목·기계·전기·통신·소방 + 설계/감리/간접비 0) → 공통비 12% → 예비비 20% → 공사비 합계 → 지반조사용역 0.80(공통비·예비비 미적용) → 총 446.12억
+    // 비례 연동: 건축·구조·통신·소방 = 연면적(기준 1,850㎡) 비례 · 기계·전기 = 총 수전(기준 3,600kW) 비례 · 토목·지반조사 = 고정 · 기본값은 보고서 수치를 그대로 재현
+    const FAC_ROW_KEYS = ['architecture', 'structure', 'civil', 'mechanical', 'electrical', 'telecom', 'fire', 'softCosts'];
+    const FAC_BASE_AREA_SQM = 1850;
+    const FAC_BASE_TOTAL_KW = 3600;
+    const FAC_EST_COLS = { ko: ['세부 공사항목', '가정 수량', '예산 복합단가', '금액(억원)'], en: ['Item', 'Assumed qty', 'Budget unit rate', 'Amount (0.1B KRW)'] };
+    // 보고서 3~7p 세부 공사항목 — [항목(ko), 항목(en), 가정 수량, 예산 복합단가, 금액(억원)]
+    const FAC_EST = {
+      architecture: { sections: [
+        { id: '4.1', titleKo: '건축공사', titleEn: 'Architectural works', amount: 15.16, items: [
+          ['기존 마감·칸막이 철거·폐기물', 'Demolition of existing finishes/partitions & waste', '1,800㎡', '10 만원/㎡', 1.80],
+          ['신규 구획·내화벽체', 'New partitions & fire-rated walls', '900㎡', '25 만원/㎡', 2.25],
+          ['방화문·장비 출입문', 'Fire doors & equipment access doors', '25 개소', '500 만원/개소', 1.25],
+          ['일반 설비실 바닥 보수·마감', 'General plant-room floor repair & finish', '1,400㎡', '18 만원/㎡', 2.52],
+          ['서버룸 바닥 마감·보완', 'Server-room floor finish & upgrade', '157.62㎡', '65 만원/㎡', 1.02],
+          ['지하층 누수·방수 보수', 'Basement leak & waterproofing repair', '700㎡', '20 만원/㎡', 1.40],
+          ['벽체·천장 마감·보수', 'Wall & ceiling finish repair', '1,200㎡', '16 만원/㎡', 1.92],
+          ['관통부 내화충전·기밀 보완', 'Penetration fire-stopping & air sealing', '1식', '1.20 억원/식', 1.20],
+          ['장비 반입구·외부 개구부', 'Equipment access & exterior openings', '1식', '1.80 억원/식', 1.80]],
+          noteKo: '산정 해석 — 서버룸 157.62㎡만 CAD 문자표기 면적을 잠정 적용했습니다. 그 외 철거·신규 벽체·방수 수량은 면적 실측이 아닌 예산 모델용 가정입니다.',
+          noteEn: 'Basis — Only the 157.62㎡ server room uses the CAD-labelled area provisionally; demolition, new-wall and waterproofing quantities are budget-model assumptions, not measured areas.' }
+      ] },
+      structure: { sections: [
+        { id: '4.2', titleKo: '구조공사', titleEn: 'Structural works', amount: 61.00, items: [
+          ['B1 슬래브·보·기둥 보강', 'B1 slab/beam/column strengthening', '영향면적 1,500㎡', '180 만원/㎡', 27.00],
+          ['옥탑 냉각탑 지지철골·보강', 'Rooftop cooling-tower steel support & reinforcement', '1식', '9.00 억원/식', 9.00],
+          ['중량장비 기초', 'Heavy-equipment foundations', '20 개소', '3,000 만원/개소', 6.00],
+          ['PD·PS 구조체 개구부 보강', 'PD/PS structural opening reinforcement', '6 개소', '5,000 만원/개소', 3.00],
+          ['가설 동바리·하중분산', 'Temporary shoring & load distribution', '1식', '4.00 억원/식', 4.00],
+          ['기존 건축물 기초 지지력 보강 (추가)', 'Existing-building foundation strengthening (added)', '마이크로파일 288m 등', '일괄 구성', 12.00]],
+          noteKo: '산정 해석 — 기존 49억원에 기초 지지력 보강 시나리오 12억원을 추가했습니다. 기존 6억원의 중량장비 「장비기초 신설」과 「건물 기초 지지력 보강」은 서로 다른 공사범위로 구분했습니다.',
+          noteEn: 'Basis — A 1.2B KRW foundation-strengthening scenario was added to the previous 4.9B. The existing 0.6B "new equipment foundations" and the "building foundation strengthening" are separate scopes.' },
+        { id: '4.2-A', titleKo: '기존 건축물 기초보강 12억원 세부 구성', titleEn: 'Breakdown of the 1.2B KRW foundation strengthening', amount: 12.00,
+          cols: { ko: ['기초보강 항목', '잠정 물량', '예산단가', '금액(억원)'], en: ['Strengthening item', 'Provisional qty', 'Budget rate', 'Amount (0.1B KRW)'] }, items: [
+          ['마이크로파일 시공', 'Micropile installation', '24 공 × 12m = 288m', '250 만원/m', 7.20],
+          ['기초 확대·파일캡 신설', 'Footing enlargement & new pile caps', '6 개소', '5,000 만원/개소', 3.00],
+          ['기초 연결·그라우팅', 'Foundation tie-in & grouting', '1식', '1.80 억원/식', 1.80]],
+          noteKo: '구조주의 — 24공, 12m, 250만원/m는 실제 지반조사로 확인된 공법·물량이 아닙니다. 기존 건물의 지반 및 기초 형식에 따라 마이크로파일 보강이 필요 없을 수도 있고, 추가파일·기초증설로 12억원을 초과할 수도 있습니다.',
+          noteEn: 'Structural caution — 24 piles × 12m at KRW 2.5M/m are not a method or quantity confirmed by a site investigation. Depending on the existing soil and foundation type, micropiles may be unnecessary, or extra piles and footing extensions could exceed 1.2B KRW.' }
+      ] },
+      civil: { sections: [
+        { id: '4.3', titleKo: '토목·외부공사', titleEn: 'Civil & external works', amount: 6.80, items: [
+          ['외부 설비 트렌치·복구', 'External utility trench & reinstatement', '150m', '80 만원/m', 1.20],
+          ['외부 포장 철거·복구', 'External paving removal & reinstatement', '400㎡', '45 만원/㎡', 1.80],
+          ['집수정·배수시설 정비', 'Sump & drainage upgrade', '1식', '1.50 억원/식', 1.50],
+          ['국부 레벨조정·옹벽 보완', 'Local regrading & retaining-wall repair', '1식', '1.50 억원/식', 1.50],
+          ['대형 장비 반입로 정비', 'Heavy-equipment access-road works', '1식', '0.80 억원/식', 0.80]],
+          noteKo: '산정 해석 — 경사지 B1 외부 설비 트렌치·포장·집수정·반입동선 등 국부공사만 가정했습니다. 대규모 부지조성·별도 토지공사는 제외했습니다.',
+          noteEn: 'Basis — Only local works on the sloping B1 exterior (utility trench, paving, sump, access route) are assumed; large-scale site development and separate land works are excluded.' }
+      ] },
+      geotech: { sections: [
+        { id: '4.4', titleKo: '지반조사용역 (별도)', titleEn: 'Geotechnical investigation (separate)', amount: 0.80,
+          cols: { ko: ['항목', '잠정 수량', '예산단가', '금액(억원)'], en: ['Item', 'Provisional qty', 'Budget rate', 'Amount (0.1B KRW)'] }, items: [
+          ['시추조사', 'Boring investigation', '4공', '1,200 만원/공', 0.48],
+          ['현장·실내 지반시험', 'Field & laboratory soil tests', '1식', '0.12 억원/식', 0.12],
+          ['기존 자료 조사·성과보고', 'Review of existing data & reporting', '1식', '0.20 억원/식', 0.20]],
+          noteKo: '산정 해석 — 지반조사 0.80억원은 시추 4공, 현장·실내시험, 기존 자료검토·성과보고를 포함한 용역 예산입니다. 기존 지반조사 성과·기초형식 자료를 확보한 뒤 조사 범위를 조정해야 합니다. 공통비·예비비는 적용하지 않습니다.',
+          noteEn: 'Basis — The 0.08B KRW budget covers 4 borings, field/lab tests and review of existing data with reporting. Adjust the scope once existing investigation results and foundation records are obtained. No overhead or contingency is applied.' }
+      ] },
+      mechanical: { sections: [
+        { id: '5.1', titleKo: '직접수랭 계통', titleEn: 'Direct liquid-cooling system', amount: 43.98, items: [
+          ['밀폐형 냉각탑 350CRT 급', 'Closed-circuit cooling towers, 350 CRT class', '3대', '3.20 억원/대', 9.60],
+          ['CDU 1,250kW 급', 'CDU, 1,250kW class', '3대', '4.20 억원/대', 12.60],
+          ['액체냉각 순환펌프', 'Liquid-cooling circulation pumps', '3 세트', '1.10 억원/세트', 3.30],
+          ['버퍼·팽창탱크', 'Buffer & expansion tanks', '2식', '1.00 억원/식', 2.00],
+          ['시설수 배관·밸브·보온', 'Facility-water piping, valves & insulation', '500m', '140 만원/m', 7.00],
+          ['랙별 분기관·매니폴드', 'Per-rack branch piping & manifolds', '24 개 랙', '1,200 만원/랙', 2.88],
+          ['보급수·수처리설비', 'Make-up water & treatment', '1식', '2.50 억원/식', 2.50],
+          ['누수감지·현장제어', 'Leak detection & local controls', '1식', '1.80 억원/식', 1.80],
+          ['장비 양중·설치 보조공사', 'Equipment rigging & installation support', '1식', '2.30 억원/식', 2.30]],
+          noteKo: '산정 해석 — DLC 열부하 2,250kW, 밀폐형 냉각탑 350CRT 3대 및 CDU 1,250kW 3대(각 2+1)를 가정했습니다. 설계 외기 습구온도·서버 공급수 온도에 따른 실용량 검증 전입니다.',
+          noteEn: 'Basis — Assumes a 2,250kW DLC heat load with three 350 CRT closed-circuit towers and three 1,250kW CDUs (2+1 each). Actual capacity against design wet-bulb and server supply-water temperatures is unverified.',
+          cautionKo: '중복 주의 — CDU 1,250kW급 3대(12.60억)는 IT 장비 CAPEX(서버 선택 카드)의 CDU 구매비와 범위가 겹칠 수 있습니다. 중복 계상 여부를 확인하기 전까지 보고서 수치를 그대로 둡니다.',
+          cautionEn: 'Overlap caution — The three 1,250kW CDUs (1.26B KRW) may overlap with the CDU purchase in IT equipment capex (server cards). The report figure is kept as is until double counting is checked.' },
+        { id: '5.2', titleKo: '공조냉각 계통', titleEn: 'HVAC cooling system', amount: 34.20, items: [
+          ['냉동기 150USRT 급', 'Chillers, 150 USRT class', '3대', '3.00 억원/대', 9.00],
+          ['공조용 냉각탑 200CRT 급', 'HVAC cooling towers, 200 CRT class', '3대', '1.20 억원/대', 3.60],
+          ['CRAH 250kW 급', 'CRAH units, 250kW class', '4대', '2.00 억원/대', 8.00],
+          ['냉수·냉각수 순환펌프', 'Chilled/condenser-water pumps', '6대', '0.65 억원/대', 3.90],
+          ['냉수·냉각수 배관·밸브·보온', 'Chilled/condenser-water piping, valves & insulation', '350m', '120 만원/m', 4.20],
+          ['기류분배·컨테인먼트', 'Airflow distribution & containment', '1식', '4.00 억원/식', 4.00],
+          ['공조 현장제어·TAB', 'HVAC local controls & TAB', '1식', '1.50 억원/식', 1.50]],
+          noteKo: '산정 해석 — 공조 현열부하 750kW. 냉동기 150USRT 3대(2+1)와 CRAH 250kW 4대(3+1)로 가정했습니다. 장비의 실제 현열능력과 PUE 전력수지는 미검증입니다.',
+          noteEn: 'Basis — Sensible HVAC load of 750kW, with three 150 USRT chillers (2+1) and four 250kW CRAHs (3+1). Actual sensible capacity and the PUE power balance are unverified.' },
+        { id: '5.3', titleKo: '공통 기계설비·기존 장비 철거', titleEn: 'Common mechanical & removal of existing equipment', amount: 12.10, items: [
+          ['일반 급배기 및 덕트공사', 'General supply/exhaust & ductwork', '1식', '4.00 억원/식', 4.00],
+          ['급수·배수·트렌치 연결', 'Water supply, drainage & trench connections', '1식', '2.50 억원/식', 2.50],
+          ['내진가대·행거·설비 지지대', 'Seismic frames, hangers & supports', '1식', '2.80 억원/식', 2.80],
+          ['기계계통 종합 연동시험', 'Mechanical integrated commissioning', '1식', '1.80 억원/식', 1.80],
+          ['기존 기계장비 철거·반출·폐기 (추가)', 'Removal & disposal of existing mechanical equipment (added)', '1식', '1.00 억원/식', 1.00]],
+          noteKo: '산정 해석 — 기존 11.10억원에 사용자 요청 철거 1억원(1식)을 반영했습니다. 건축마감 철거 1.8억원, 발전기 전용 급배기 비용과 중복되지 않도록 범위를 분리했습니다.',
+          noteEn: 'Basis — Adds the requested 0.1B KRW demolition lot to the previous 1.11B. Scope is kept separate from the 0.18B architectural demolition and the generator-dedicated ventilation.' }
+      ] },
+      electrical: { sections: [
+        { id: '6.1', titleKo: '수변전·주배전', titleEn: 'HV/LV switchgear & main distribution', amount: 40.00, items: [
+          ['특고압 수배전반', 'HV switchgear', '1식', '6.00 억원/식', 6.00],
+          ['변압기 2,500kVA 급', 'Transformers, 2,500kVA class', '3대', '4.00 억원/대', 12.00],
+          ['저압 주배전반', 'LV main switchboard', '1식', '8.00 억원/식', 8.00],
+          ['동력제어반(MCC)', 'Motor control centers (MCC)', '1식', '4.00 억원/식', 4.00],
+          ['수변전 간선·부스덕트·전선관', 'Feeders, busduct & conduit', '1식', '6.50 억원/식', 6.50],
+          ['접지·전력품질·보호장치', 'Grounding, power quality & protection', '1식', '3.50 억원/식', 3.50]],
+          noteKo: '산정 해석 — 변압기 2,500kVA 3대(2+1) 예산 구성입니다. 수전전력 3.6MW는 전력운전 한도이며 변압기 설치 정격용량과 혼동해서는 안 됩니다.',
+          noteEn: 'Basis — Three 2,500kVA transformers (2+1). The 3.6MW supply limit is an operating ceiling and must not be confused with installed transformer rating.' },
+        { id: '6.2', titleKo: 'UPS·배터리·IT 배전', titleEn: 'UPS, battery & IT distribution', amount: 57.12, items: [
+          ['UPS 1,200kW 급', 'UPS, 1,200kW class', '4 모듈', '5.00 억원/모듈', 20.00],
+          ['배터리 시스템 명목 1.2MWh', 'Battery system, nominal 1.2MWh', '1식', '12.00 억원/식', 12.00],
+          ['A/B 배전 버스웨이', 'A/B distribution busway', '240m', '260 만원/m', 6.24],
+          ['고밀도 랙 PDU', 'High-density rack PDUs', '24 개 랙', '1,200 만원/랙', 2.88],
+          ['IT 전력간선·케이블', 'IT power feeders & cabling', '1식', '10.00 억원/식', 10.00],
+          ['UPS 분전반·A/B 배전반', 'UPS panels & A/B switchboards', '1식', '6.00 억원/식', 6.00]],
+          noteKo: '산정 해석 — UPS 1,200kW 4모듈(3+1) 및 명목 배터리 1.2MWh를 가정했습니다. 15분 IT 부하 유지와 A/B 배전은 실제 제품 성능 검증이 필요하며 전 계통 2N을 의미하지 않습니다.',
+          noteEn: 'Basis — Four 1,200kW UPS modules (3+1) and a nominal 1.2MWh battery. 15-minute ride-through and A/B distribution need product-level verification and do not imply full 2N.' },
+        { id: '6.3', titleKo: '비상발전기', titleEn: 'Emergency generators', amount: 41.00, items: [
+          ['디젤발전기 2,750kVA 급', 'Diesel generators, 2,750kVA class', '3대', '7.00 억원/대', 21.00],
+          ['병렬운전반·ATS·제어', 'Paralleling switchgear, ATS & controls', '1식', '5.00 억원/식', 5.00],
+          ['연료저장·공급배관', 'Fuel storage & supply piping', '1식', '4.00 억원/식', 4.00],
+          ['발전기 급배기·방음·배기', 'Generator ventilation, acoustic & exhaust', '1식', '6.00 억원/식', 6.00],
+          ['발전기 전력케이블·접속', 'Generator power cabling & terminations', '1식', '5.00 억원/식', 5.00]],
+          noteKo: '산정 해석 — 2,750kVA 발전기 3대(2+1), 약 4.4MW 명목 출력(2대, 역률 0.8) 가정. 기동·냉각필수부하, 급배기, 연료 및 기존 발전기실 물리 배치 확인이 필요합니다.',
+          noteEn: 'Basis — Three 2,750kVA generators (2+1), about 4.4MW nominal from two units at PF 0.8. Start-up and essential cooling loads, ventilation, fuel and the existing generator-room layout need confirmation.' },
+        { id: '6.4', titleKo: '전력감시 및 시험', titleEn: 'Power monitoring & testing', amount: 6.00, items: [
+          ['전력감시·계량·기계설비 연동', 'Power monitoring, metering & mechanical interlock', '1식', '3.50 억원/식', 3.50],
+          ['전기설비 검사·시험·부하연동', 'Electrical inspection, testing & load tests', '1식', '2.50 억원/식', 2.50]],
+          noteKo: '산정 해석 — 전기 현장감시·기본시험 금액입니다. 상위 DCIM 및 중복되는 통합성능시험(IST)은 별도 사업범위를 결정해야 합니다.',
+          noteEn: 'Basis — Covers on-site electrical monitoring and basic testing. Upper-level DCIM and overlapping integrated system testing (IST) need a separate scope decision.' }
+      ] },
+      telecom: { sections: [
+        { id: '7.1', titleKo: '통신공사', titleEn: 'Telecom works', amount: 8.50, items: [
+          ['광케이블 주간선·트레이·접속', 'Fibre backbone, trays & splicing', '600m', '45 만원/m', 2.70],
+          ['구내 데이터 통합배선', 'Structured data cabling', '120 포트', '120 만원/포트', 1.44],
+          ['ODF·통신랙·광접속함', 'ODF, telecom racks & fibre enclosures', '6식', '2,500 만원/식', 1.50],
+          ['CCTV 및 영상저장·관리', 'CCTV, recording & management', '24 대', '500 만원/대', 1.20],
+          ['출입통제·보안인증', 'Access control & authentication', '10 개소', '800 만원/개소', 0.80],
+          ['인터폰·비상방송·통신 인입 연계', 'Intercom, PA & carrier entry interface', '1식', '0.86 억원/식', 0.86]],
+          noteKo: '산정 해석 — 광배선·구내통신·시설 보안통신 중심입니다. HGX B300 서버 간 고속 네트워크 스위치·트랜시버·AI 클러스터 통신장비는 IT 시스템 구매비로 제외했습니다.',
+          noteEn: 'Basis — Focused on fibre cabling, in-building telecom and facility security comms. High-speed switches, transceivers and AI-cluster networking between HGX B300 servers are excluded as IT system purchases.' }
+      ] },
+      fire: { sections: [
+        { id: '7.2', titleKo: '소방공사', titleEn: 'Fire protection works', amount: 11.50, items: [
+          ['가스계 소화설비', 'Clean-agent suppression', '3 개 방호구역', '1.60 억원/구역', 4.80],
+          ['스프링클러·준비작동식 계통 보완', 'Sprinkler / pre-action system upgrade', '1,200㎡', '15 만원/㎡', 1.80],
+          ['조기연기감지(VESDA 등)', 'Early smoke detection (VESDA etc.)', '12 구역', '1,500 만원/구역', 1.80],
+          ['자동화재탐지·수신반·방재 연동', 'Fire alarm, panel & interlocks', '1식', '1.00 억원/식', 1.00],
+          ['과압배출·소화 연동·부속장치', 'Pressure relief, suppression interlocks & accessories', '1식', '0.80 억원/식', 0.80],
+          ['배터리 화재위험 감시·경보 연계', 'Battery fire-risk monitoring & alarm interface', '1식', '1.30 억원/식', 1.30]],
+          noteKo: '산정 해석 — 가스계 소화 3개 구역, 소화배관 보완 1,200㎡, 조기연기감지 12구역 등은 임시 수량입니다. 기존 법정소방시설 이용 여부, 배터리 종류, 실제 방호구역 체적 및 소화약제 산정을 확인해야 합니다.',
+          noteEn: 'Basis — Three suppression zones, 1,200㎡ of piping upgrade and 12 detection zones are provisional. Reuse of existing code-required systems, battery type, actual protected volumes and agent sizing need confirmation.' }
+      ] }
+    };
     function makeFacilityRows(modelKey) {
-      const mech = modelKey === 'pod'
-        ? { newbuild: 24, remodel: 108, ratePerKw: 132 / FAC_BASE_TOTAL_KW }
-        : { newbuild: 24, remodel: 138, ratePerKw: 162 / FAC_BASE_TOTAL_KW };
-      const soft = modelKey === 'pod' ? { newbuild: 25, remodel: 27 } : { newbuild: 25, remodel: 30 };
+      // 신축 열(시설 공사 방식 [신축] 선택 시)에는 구 모델의 신축 전력동 고정분(건축/토목 40억 · 소방/보안 16억)을 가산 — 신축 견적은 별도 산정 전
+      const direct = (key, labelKo, labelEn, kind, amount, extra) => ({
+        key, labelKo, labelEn, kind, group: 'direct', remodel: amount, newbuild: 0,
+        ratePerSqm: kind === 'area' ? amount / FAC_BASE_AREA_SQM : 0,
+        ratePerKw: kind === 'capacity' ? amount / FAC_BASE_TOTAL_KW : 0,
+        fixedEok: kind === 'fixed' ? amount : 0,
+        est: key, ...(extra || {})
+      });
       return [
-        {
-          key: 'demolition', labelKo: '기존시설 철거비', labelEn: 'Demolition of Existing Facilities',
-          kind: 'area', ratePerSqm: 10 / FAC_BASE_AREA_SQM, fixedEok: 0,
-          newbuild: 0, remodel: 10,
-          detailsKo: ['기존 B1 기전실 설비 전면 철거(전량 미사용 전제): 냉동기·보일러·AHU·저수조·펌프류·전기실 큐비클·노후 발전기 등', '소방설비 포함 전면 철거 — 소방용수설비는 이설이 아닌 신설 대체', '배관·덕트·케이블 철거 및 폐기물 처리(유해물질 사전조사 포함)'],
-          detailsEn: ['Full demolition of the existing B1 MEP room (nothing reused): chillers, boiler, AHUs, water tank, pumps, electrical cubicles, aged generators, etc.', 'Fire protection equipment demolished as well — fire water systems rebuilt new, not relocated', 'Removal of piping/duct/cabling and waste disposal (incl. hazardous material survey)'],
-          logicKo: '면적비례 항목 — 기전실 외 구간(작업장 등)에도 동일 단가가 적용되므로 보수적 산정',
-          logicEn: 'Area-proportional item — the same unit rate applies to non-MEP zones (workshops, etc.), so the estimate is conservative.'
-        },
-        {
-          key: 'electrical', labelKo: '전력 설비', labelEn: 'Electrical Systems',
-          kind: 'capacity', ratePerKw: 227 / FAC_BASE_TOTAL_KW, fixedEok: 0,
-          newbuild: 193, remodel: 34,
-          detailsKo: ['수배전반·변압기·이중화 UPS — 신축 전력동(700㎡) 전기실·UPS실 배치', '비상발전기(3대), ATS/CTTS, 배터리 뱅크 — 신축 전력동 발전기실 배치', '간선 케이블·버스바(Busbar), 총 수전용량 기준 수전 인입·승압 공사'],
-          detailsEn: ['Switchgear, transformers, redundant UPS — located in the new 700㎡ power building', 'Emergency generators (3), ATS/CTTS, battery banks — generator room of the new building', 'Trunk cabling and busbars; utility intake/step-up works sized to total power capacity'],
-          detailsKoB1: ['수배전반·변압기·이중화 UPS — 신축동 폐지에 따라 B1 내 전기실·UPS실로 흡수 배치', '비상발전기(3대), ATS/CTTS, 배터리 뱅크 — B1 발전기실로 흡수 배치(반입구·배기덕트 신설 필요)', '간선 케이블·버스바(Busbar), 총 수전용량 기준 수전 인입·승압 공사'],
-          detailsEnB1: ['Switchgear, transformers, redundant UPS — absorbed into B1 electrical/UPS rooms since the new building is dropped', 'Emergency generators (3), ATS/CTTS, battery banks — absorbed into a B1 generator room (new access opening and exhaust ducting required)', 'Trunk cabling and busbars; utility intake/step-up works sized to total power capacity'],
-          logicKo: '용량비례 항목 — 총 수전용량(kW)에 비례하여 산정',
-          logicKoB1: '용량비례 항목 — 총액은 그대로 두고 신축 비율 0%로 전환하여 전액 리모델링에 계상(배치 장소만 변경)',
-          logicEn: 'Capacity-proportional item — scales with total power capacity (kW).',
-          logicEnB1: 'Capacity-proportional item — the total is unchanged; the new-build share is set to 0% and the full amount is booked as remodeling (location only changes).'
-        },
-        {
-          key: 'mechanical', labelKo: '공조/냉각 설비', labelEn: 'Mechanical/Cooling Systems',
-          kind: 'capacity', ratePerKw: mech.ratePerKw, fixedEok: 0,
-          newbuild: mech.newbuild, remodel: mech.remodel,
-          detailsKo: modelKey === 'pod'
-            ? ['고효율 원심식 냉동기(650USRT급), 냉각탑, 항온항습기(CRAC) — 기존동 기계실(층고 7.8m)', 'DLC 2차측 배관·매니폴드 및 Hot Aisle Containment(차폐) — ※ CDU 본체는 IT 장비 CAPEX에 포함되어 시설비에서 제외(약 30억 차감)', '버퍼탱크(33㎥×2) 및 장비급수탱크(유효 130톤, 신축동)']
-            : ['고효율 원심식 냉동기(650USRT급), 냉각탑, 항온항습기(CRAC) — 기존동 기계실(층고 7.8m)', 'DLC 분배 장치(CDU) 본체 및 2차측 배관·매니폴드, Hot Aisle Containment(차폐) — ※ CDU 본체(약 30억)는 랙 구매가에 미포함이므로 시설비에 계상', '버퍼탱크(33㎥×2) 및 장비급수탱크(유효 130톤, 신축동)'],
-          detailsEn: modelKey === 'pod'
-            ? ['High-efficiency centrifugal chillers (650USRT class), cooling towers, CRAC units — existing mechanical room (7.8m clear height)', 'DLC secondary piping/manifolds and hot-aisle containment — CDU units are included in IT equipment CAPEX and excluded here (approx. -3.0B KRW)', 'Buffer tanks (33㎥ × 2) and equipment supply tank (130t effective, new building)']
-            : ['High-efficiency centrifugal chillers (650USRT class), cooling towers, CRAC units — existing mechanical room (7.8m clear height)', 'DLC distribution units (CDU) plus secondary piping/manifolds and hot-aisle containment — CDUs are not included in rack purchase price, so they are carried here', 'Buffer tanks (33㎥ × 2) and equipment supply tank (130t effective, new building)'],
-          detailsKoB1: modelKey === 'pod'
-            ? ['고효율 원심식 냉동기(650USRT급), 냉각탑, 항온항습기(CRAC) — 기존동 기계실(층고 7.8m)', 'DLC 2차측 배관·매니폴드 및 Hot Aisle Containment(차폐) — ※ CDU 본체는 IT 장비 CAPEX에 포함되어 시설비에서 제외(약 30억 차감)', '버퍼탱크(33㎥×2) 및 장비급수탱크(유효 130톤) — 신축동 폐지로 B1 내부에 설치']
-            : ['고효율 원심식 냉동기(650USRT급), 냉각탑, 항온항습기(CRAC) — 기존동 기계실(층고 7.8m)', 'DLC 분배 장치(CDU) 본체 및 2차측 배관·매니폴드, Hot Aisle Containment(차폐) — ※ CDU 본체(약 30억)는 랙 구매가에 미포함이므로 시설비에 계상', '버퍼탱크(33㎥×2) 및 장비급수탱크(유효 130톤) — 신축동 폐지로 B1 내부에 설치'],
-          detailsEnB1: modelKey === 'pod'
-            ? ['High-efficiency centrifugal chillers (650USRT class), cooling towers, CRAC units — existing mechanical room (7.8m clear height)', 'DLC secondary piping/manifolds and hot-aisle containment — CDU units are included in IT equipment CAPEX and excluded here (approx. -3.0B KRW)', 'Buffer tanks (33㎥ × 2) and equipment supply tank (130t effective) — installed inside B1 since the new building is dropped']
-            : ['High-efficiency centrifugal chillers (650USRT class), cooling towers, CRAC units — existing mechanical room (7.8m clear height)', 'DLC distribution units (CDU) plus secondary piping/manifolds and hot-aisle containment — CDUs are not included in rack purchase price, so they are carried here', 'Buffer tanks (33㎥ × 2) and equipment supply tank (130t effective) — installed inside B1 since the new building is dropped'],
-          logicKo: '용량비례 항목 — 총 수전용량(kW)에 비례하여 산정',
-          logicKoB1: '용량비례 항목 — 총액은 그대로 두고 신축 비율 0%로 전환하여 전액 리모델링에 계상(배치 장소만 변경)',
-          logicEn: 'Capacity-proportional item — scales with total power capacity (kW).',
-          logicEnB1: 'Capacity-proportional item — the total is unchanged; the new-build share is set to 0% and the full amount is booked as remodeling (location only changes).'
-        },
-        {
-          key: 'architecture', labelKo: '건축/토목', labelEn: 'Architecture/Civil Works',
-          kind: 'areaFixed', ratePerSqm: 65 / FAC_BASE_AREA_SQM, ratePerSqmGeneral: 0.05, fixedEok: 40,
-          newbuild: 40, remodel: 65,
-          detailsKo: ['데이터홀 고하중 슬래브 보강(3,000kg/㎡)·이중마루·단열/방수 — 면적비례분', '버퍼탱크 구간 매트슬래브 3m 레벨다운(굴착·구조보강) 공사 포함', '신축 전력동(700㎡) 골조·외장·토목 — B1 연면적과 무관한 고정분(40억)'],
-          detailsEn: ['Data-hall heavy-load slab reinforcement (3,000kg/㎡), access floor, insulation/waterproofing — area-proportional portion', 'Includes the 3m mat-slab level-down works (excavation & reinforcement) at the buffer tank zone', 'New 700㎡ power building structure/exterior/civil — fixed portion (4.0B KRW) independent of B1 floor area'],
-          detailsKoB1: ['데이터홀 고하중 슬래브 보강(3,000kg/㎡)·이중마루·단열/방수 — 고하중 구간(SU 수 연동)에만 0.13억/㎡ 적용', '기계실·전기실·발전기실·로비·코어 등 일반 구간은 0.05억/㎡ 적용', '버퍼탱크 구간 매트슬래브 3m 레벨다운(굴착·구조보강) 포함 · 신축 전력동 폐지로 고정분 40억 소멸'],
-          detailsEnB1: ['Data-hall heavy-load slab reinforcement (3,000kg/㎡), access floor, insulation/waterproofing — 0.13B/㎡ applied only to the heavy-load zone (linked to SU count)', 'General zones (mechanical/electrical/generator rooms, lobby, core) are costed at 0.05B/㎡', 'Includes 3m mat-slab level-down at the buffer tank zone · the 4.0B fixed new-building portion disappears'],
-          logicKo: '면적비례(리모델링분 0.13억/㎡) + 고정(신축 전력동 40억) 혼합 — 단가는 고난도 리모델링 기준이라 확장 구간에 보수적',
-          logicKoB1: '면적비례 2단 단가 — 고하중 0.13억/㎡ × 데이터홀 면적 + 일반 0.05억/㎡ × 잔여 면적. 신축 고정분 40억은 소멸',
-          logicEn: 'Mixed: area-proportional remodel portion (0.13B/㎡) + fixed new-building portion (4.0B). The unit rate reflects high-difficulty remodeling, hence conservative for expansion zones.',
-          logicEnB1: 'Two-tier area rate — 0.13B/㎡ × data-hall area + 0.05B/㎡ × remaining area. The 4.0B fixed new-build portion is removed.'
-        },
-        {
-          key: 'lowVoltage', labelKo: '통신/소방/보안', labelEn: 'Telecom/Fire/Security',
-          kind: 'areaFixed', ratePerSqm: 38 / FAC_BASE_AREA_SQM, ratePerSqmGeneral: 0.03, fixedEok: 16,
-          newbuild: 16, remodel: 38,
-          detailsKo: ['광케이블 트레이·MMR, 가스계 소화설비(IG-541 등)·VESDA — 면적비례분', '소방용수 수조·소방펌프 신설(전면 철거 전제), 출입통제·CCTV·DCIM·중앙감시실', '신축 전력동 가스소화실·보안설비 — 고정분(16억)'],
-          detailsEn: ['Fiber trays & MMR, clean-agent suppression (IG-541 etc.) and VESDA — area-proportional portion', 'New fire water tank & fire pumps (full-demolition premise), access control, CCTV, DCIM, central monitoring room', 'Gas suppression & security for the new power building — fixed portion (1.6B KRW)'],
-          detailsKoB1: ['광케이블 트레이·MMR, 가스계 소화설비(IG-541 등)·VESDA — 고하중(전산) 구간에만 0.076억/㎡ 적용', '일반 구간(기계실·전기실·로비·코어)은 0.03억/㎡ 적용', '소방용수 수조·소방펌프 신설, 출입통제·CCTV·DCIM·중앙감시실 · 신축동 폐지로 고정분 16억 소멸'],
-          detailsEnB1: ['Fiber trays & MMR, clean-agent suppression (IG-541 etc.) and VESDA — 0.076B/㎡ applied only to the data-hall zone', 'General zones (mechanical/electrical rooms, lobby, core) are costed at 0.03B/㎡', 'New fire water tank & pumps, access control, CCTV, DCIM, central monitoring · the 1.6B fixed new-build portion disappears'],
-          logicKo: '면적비례(리모델링분 0.076억/㎡) + 고정(신축 전력동 16억) 혼합',
-          logicKoB1: '면적비례 2단 단가 — 고하중 0.076억/㎡ × 데이터홀 면적 + 일반 0.03억/㎡ × 잔여 면적. 신축 고정분 16억은 소멸',
-          logicEn: 'Mixed: area-proportional remodel portion (0.076B/㎡) + fixed new-building portion (1.6B).',
-          logicEnB1: 'Two-tier area rate — 0.076B/㎡ × data-hall area + 0.03B/㎡ × remaining area. The 1.6B fixed new-build portion is removed.'
-        },
-        {
-          key: 'softCosts', labelKo: '설계/감리/간접비', labelEn: 'Design/Supervision/Indirect Costs',
-          kind: 'soft', softPct: 10,
-          newbuild: soft.newbuild, remodel: soft.remodel,
-          detailsKo: ['개념/기본/실시 설계비, PM/CM 및 책임 감리비', '인허가(신축 전력동 건축 인허가, 기존동 용도변경 포함) 및 예비비'],
-          detailsKoB1: ['개념/기본/실시 설계비, PM/CM 및 책임 감리비', '인허가 — 신축 인허가 불요, 기존동 용도변경·대수선 인허가 및 예비비'],
-          detailsEn: ['Conceptual/basic/detailed design fees, PM/CM and supervision', 'Permitting (new power building permit, change-of-use for the existing building) and contingency'],
-          detailsEnB1: ['Conceptual/basic/detailed design fees, PM/CM and supervision', 'Permitting — no new-build permit required; change-of-use / major-renovation permits and contingency'],
-          logicKo: '간접비율 항목 — 자동 산출 시 직접공사비 합계의 10% 연동',
-          logicKoB1: '간접비율 항목 — 직접공사비 합계의 10% 연동(전액 리모델링분)',
-          logicEn: 'Indirect-ratio item — in Expansion auto mode, linked to 10% of total direct construction cost.',
-          logicEnB1: 'Indirect-ratio item — 10% of total direct construction cost (entirely within the remodel column).'
-        }
+        direct('architecture', '건축', 'Architecture', 'area', 15.16, { newbuildFixedEok: 40, newbuild: 40,
+          summaryKo: '철거·구획·방화문·바닥/방수/마감 보수·관통부·반입구 9개 항목', summaryEn: '9 items: demolition, partitions, fire doors, floor/waterproofing/finish repairs, penetrations, access openings',
+          logicKo: '면적비례 — 연면적 1,850㎡ 기준 15.16억을 ㎡당 단가로 환산해 계획 연면적에 연동', logicEn: 'Area-proportional — 15.16 at the 1,850㎡ base, converted to a per-㎡ rate and linked to the planned floor area' }),
+        direct('structure', '구조', 'Structure', 'area', 61.00, {
+          summaryKo: '슬래브 보강 27 · 옥탑 철골 9 · 장비기초 6 · 개구부 3 · 가설 4 · 기초보강(마이크로파일) 12', summaryEn: 'Slab strengthening 27 · rooftop steel 9 · equipment foundations 6 · openings 3 · shoring 4 · foundation strengthening (micropiles) 12',
+          logicKo: '면적비례 — 보강 영향면적이 연면적에 비례한다고 가정(기초보강 12억은 지반조사 후 변동 가능)', logicEn: 'Area-proportional — strengthening area assumed to scale with floor area (the 1.2B foundation item may change after the site investigation)' }),
+        direct('civil', '토목', 'Civil', 'fixed', 6.80, {
+          summaryKo: '외부 트렌치·포장·집수정·레벨/옹벽·반입로 국부공사', summaryEn: 'Local exterior works: trench, paving, sump, regrading/retaining wall, access road',
+          logicKo: '고정 — 외부 국부공사로 연면적·수전과 무관', logicEn: 'Fixed — local exterior works independent of floor area and power' }),
+        direct('mechanical', '기계', 'Mechanical', 'capacity', 90.28, {
+          summaryKo: '직접수랭 43.98 (냉각탑·CDU·펌프·배관) · 공조냉각 34.20 (냉동기·CRAH) · 공통설비·철거 12.10', summaryEn: 'DLC 43.98 (towers, CDU, pumps, piping) · HVAC 34.20 (chillers, CRAH) · common & demolition 12.10',
+          logicKo: '용량비례 — 총 수전 3,600kW 기준 90.28억을 MW당 단가로 환산해 수전용량에 연동', logicEn: 'Capacity-proportional — 90.28 at the 3,600kW base, converted to a per-MW rate and linked to total power' }),
+        direct('electrical', '전기', 'Electrical', 'capacity', 144.12, {
+          summaryKo: '수변전 40.00 · UPS·배터리·IT 배전 57.12 · 비상발전기 41.00 · 감시·시험 6.00', summaryEn: 'Switchgear 40.00 · UPS/battery/IT distribution 57.12 · generators 41.00 · monitoring & testing 6.00',
+          logicKo: '용량비례 — 총 수전 3,600kW 기준 144.12억을 MW당 단가로 환산해 수전용량에 연동', logicEn: 'Capacity-proportional — 144.12 at the 3,600kW base, converted to a per-MW rate and linked to total power' }),
+        direct('telecom', '통신', 'Telecom', 'area', 8.50, {
+          summaryKo: '광간선·구내배선·ODF·CCTV·출입통제·비상방송 (AI 네트워크 장비 제외)', summaryEn: 'Fibre backbone, structured cabling, ODF, CCTV, access control, PA (AI network gear excluded)',
+          logicKo: '면적비례 — 연면적 1,850㎡ 기준 8.50억을 ㎡당 단가로 환산', logicEn: 'Area-proportional — 8.50 at the 1,850㎡ base, converted to a per-㎡ rate' }),
+        direct('fire', '소방', 'Fire protection', 'area', 11.50, { newbuildFixedEok: 16, newbuild: 16,
+          summaryKo: '가스계 소화 3구역 · 스프링클러 보완 · VESDA 12구역 · 수신반·과압배출·배터리 화재감시', summaryEn: 'Clean-agent 3 zones · sprinkler upgrade · VESDA 12 zones · panel, pressure relief, battery fire monitoring',
+          logicKo: '면적비례 — 연면적 1,850㎡ 기준 11.50억을 ㎡당 단가로 환산', logicEn: 'Area-proportional — 11.50 at the 1,850㎡ base, converted to a per-㎡ rate' }),
+        { key: 'softCosts', labelKo: '설계/감리/간접비', labelEn: 'Design/Supervision/Indirect', kind: 'soft', group: 'direct', softPct: 0, newbuild: 0, remodel: 0,
+          summaryKo: '보고서 미계상(0) — 추가 검토 항목. 필요 시 직접비 대비 비율 또는 수동 금액 입력', summaryEn: 'Not included in the estimate (0) — under review. Enter a % of direct cost or a manual amount if needed',
+          logicKo: '간접비율 — 단가 행 합계 × % (현재 0%), 직접공사비에 포함되어 공통비·예비비 산정 기준에 들어감', logicEn: 'Indirect ratio — sum of rate rows × % (currently 0%), included in direct cost and therefore in the overhead/contingency base' },
+        { key: 'overhead', labelKo: '공통비', labelEn: 'General overhead', kind: 'pct', group: 'overhead', pct: 12, newbuild: 6.72, remodel: 40.4832,
+          summaryKo: '직접공사비 × 12% — 보고서 예산 가정(법정 단일 요율 아님)', summaryEn: 'Direct cost × 12% — a budget assumption of the report, not a statutory rate',
+          logicKo: '비율 — 직접공사비 소계 × 공통비율', logicEn: 'Ratio — direct-cost subtotal × overhead %' },
+        { key: 'contingency', labelKo: '예비비', labelEn: 'Contingency', kind: 'pct', group: 'overhead', pct: 20, newbuild: 11.2, remodel: 67.472,
+          summaryKo: '직접공사비 × 20% — 기획단계 예비비(견적·물량 미확정 리스크)', summaryEn: 'Direct cost × 20% — planning-stage contingency for unconfirmed quotes and quantities',
+          logicKo: '비율 — 직접공사비 소계 × 예비비율', logicEn: 'Ratio — direct-cost subtotal × contingency %' },
+        { key: 'geotech', labelKo: '지반조사용역', labelEn: 'Geotechnical investigation', kind: 'fixed', group: 'extra', fixedEok: 0.80, newbuild: 0, remodel: 0.80, est: 'geotech',
+          summaryKo: '시추 4공·현장/실내시험·기존 자료조사 — 공통비·예비비 미적용', summaryEn: '4 borings, field/lab tests, data review — no overhead or contingency applied',
+          logicKo: '고정 — 용역비(공사비 외 별도 가산)', logicEn: 'Fixed — service fee added outside construction cost' }
       ];
     }
     function makeFacilityModel(modelKey) {
       return {
         rows: makeFacilityRows(modelKey),
-        manual: {} // rowKey -> true 인 행은 [확장]에서도 수동값(newbuild/remodel) 사용
+        manual: {} // rowKey -> true 인 행은 단가 자동 산출 대신 수동값(newbuild/remodel) 사용
       };
     }
 
@@ -2065,64 +2217,63 @@
       return usableAreaSqm(inputState);
     }
 
-    // ---- 시설비 산출 ----
+    // ---- 시설비 산출 (rev65) ----
     function facilityRowAuto(row, modelKey, inputState = state) {
-      // 자동 모드: 면적/용량/고정 단가 기반. soft는 별도 처리.
+      // 자동 모드: 면적/용량/고정 단가 기반. soft(간접비율)·pct(공통비·예비비)는 computeFacility에서 처리.
       const area = Number(inputState.floorAreaSqm) || 0;
       const totalKw = Number(inputState.totalPowerKw) || 0;
       const b1 = isRemodelOnly(inputState);
-
-      // [B1 전체] 면적비례분은 고하중(데이터홀) 구간과 일반 구간 단가를 분리 적용
-      const areaCost = () => {
-        if (!b1 || !(row.ratePerSqmGeneral > 0)) return (row.ratePerSqm || 0) * area;
-        const heavy = Math.min(area, heavyAreaSqm(modelKey, inputState));
-        const general = Math.max(0, area - heavy);
-        return (row.ratePerSqm || 0) * heavy + row.ratePerSqmGeneral * general;
-      };
-
-      if (row.kind === 'area') return { newbuild: 0, remodel: (row.ratePerSqm || 0) * area };
-      if (row.kind === 'capacity') {
-        const total = (row.ratePerKw || 0) * totalKw;
-        // [B1 전체]: 신축 전력동 폐지 → 설비를 B1으로 흡수. 총액 불변, 전액 리모델링 이관
-        if (b1) return { newbuild: 0, remodel: total };
-        const baseSum = row.newbuild + row.remodel;
-        const share = baseSum > 0 ? row.newbuild / baseSum : 0;
-        return { newbuild: total * share, remodel: total * (1 - share) };
-      }
-      // [B1 전체]: 고정분(신축동 골조·외장·가스소화실)은 소멸, 면적비례분만 유지
-      if (row.kind === 'areaFixed') return { newbuild: b1 ? 0 : (row.fixedEok || 0), remodel: areaCost() };
+      const nb = b1 ? 0 : (Number(row.newbuildFixedEok) || 0); // [신축] 열: 구 모델 신축 전력동 고정분
+      if (row.kind === 'area') return { newbuild: nb, remodel: (row.ratePerSqm || 0) * area };
+      if (row.kind === 'capacity') return { newbuild: nb, remodel: (row.ratePerKw || 0) * totalKw };
+      if (row.kind === 'fixed') return { newbuild: nb, remodel: Number(row.fixedEok) || 0 };
       return { newbuild: 0, remodel: 0 };
     }
     function computeFacility(modelKey, inputState = state, inputFacility = facility) {
       const model = inputFacility[modelKey];
       const auto = inputState.spaceMode !== 'base';
+      const b1 = isRemodelOnly(inputState);
       const rows = [];
-      let directNew = 0;
-      let directRemodel = 0;
-      model.rows.forEach(row => {
-        if (row.kind === 'soft') return;
-        let value;
-        if (auto && !model.manual[row.key]) value = facilityRowAuto(row, modelKey, inputState);
-        else value = { newbuild: Number(row.newbuild) || 0, remodel: Number(row.remodel) || 0 };
-        directNew += value.newbuild;
-        directRemodel += value.remodel;
-        rows.push({ def: row, auto: auto && !model.manual[row.key], newbuild: value.newbuild, remodel: value.remodel, total: value.newbuild + value.remodel });
+      const fixedVal = row => ({ newbuild: b1 ? 0 : (Number(row.newbuild) || 0), remodel: Number(row.remodel) || 0 });
+      const push = (row, value, isAuto) => rows.push({ def: row, group: row.group, auto: isAuto, newbuild: value.newbuild, remodel: value.remodel, total: value.newbuild + value.remodel });
+      let dNew = 0, dRem = 0;
+      // 1) 직접공사비 — 단가 행(건축·구조·토목·기계·전기·통신·소방)
+      model.rows.filter(r => r.group === 'direct' && r.kind !== 'soft').forEach(row => {
+        const isAuto = auto && !model.manual[row.key];
+        const v = isAuto ? facilityRowAuto(row, modelKey, inputState) : fixedVal(row);
+        push(row, v, isAuto); dNew += v.newbuild; dRem += v.remodel;
       });
-      const softRow = model.rows.find(r => r.kind === 'soft');
-      let softNew;
-      let softRemodel;
-      if (auto && !model.manual[softRow.key]) {
-        const pct = (Number(softRow.softPct) || 0) / 100;
-        softNew = directNew * pct;
-        softRemodel = directRemodel * pct;
-      } else {
-        softNew = Number(softRow.newbuild) || 0;
-        softRemodel = Number(softRow.remodel) || 0;
-      }
-      rows.push({ def: softRow, auto: auto && !model.manual[softRow.key], newbuild: softNew, remodel: softRemodel, total: softNew + softRemodel });
-      const newbuildSum = directNew + softNew;
-      const remodelSum = directRemodel + softRemodel;
-      return { rows, newbuildSum, remodelSum, total: newbuildSum + remodelSum, direct: directNew + directRemodel, auto };
+      // 2) 설계/감리/간접비 — 단가 행 합계 × %(기본 0), 직접공사비에 포함
+      model.rows.filter(r => r.group === 'direct' && r.kind === 'soft').forEach(row => {
+        const isAuto = auto && !model.manual[row.key];
+        const pct = (Number(row.softPct) || 0) / 100;
+        const v = isAuto ? { newbuild: dNew * pct, remodel: dRem * pct } : fixedVal(row);
+        push(row, v, isAuto); dNew += v.newbuild; dRem += v.remodel;
+      });
+      const direct = { newbuild: dNew, remodel: dRem, total: dNew + dRem };
+      // 3) 공통비·예비비 — 직접공사비 × %
+      let oNew = 0, oRem = 0;
+      model.rows.filter(r => r.group === 'overhead').forEach(row => {
+        const isAuto = auto && !model.manual[row.key];
+        const pct = (Number(row.pct) || 0) / 100;
+        const v = isAuto ? { newbuild: dNew * pct, remodel: dRem * pct } : fixedVal(row);
+        push(row, v, isAuto); oNew += v.newbuild; oRem += v.remodel;
+      });
+      const construction = { newbuild: dNew + oNew, remodel: dRem + oRem, total: dNew + oNew + dRem + oRem };
+      // 4) 별도 항목(지반조사용역) — 공통비·예비비 미적용
+      let eNew = 0, eRem = 0;
+      model.rows.filter(r => r.group === 'extra').forEach(row => {
+        const isAuto = auto && !model.manual[row.key];
+        const v = isAuto ? facilityRowAuto(row, modelKey, inputState) : fixedVal(row);
+        push(row, v, isAuto); eNew += v.newbuild; eRem += v.remodel;
+      });
+      const extra = { newbuild: eNew, remodel: eRem, total: eNew + eRem };
+      const newbuildSum = construction.newbuild + eNew;
+      const remodelSum = construction.remodel + eRem;
+      return {
+        rows, direct, construction, extra, newbuildSum, remodelSum, total: newbuildSum + remodelSum, auto, b1,
+        directRows: rows.filter(r => r.group === 'direct'), overheadRows: rows.filter(r => r.group === 'overhead'), extraRows: rows.filter(r => r.group === 'extra')
+      };
     }
     function facilityTotalEok(modelKey, inputState = state, inputFacility = facility) {
       return computeFacility(modelKey, inputState, inputFacility).total;
@@ -2435,6 +2586,12 @@
       if (abs >= 1e6) return `${sign}$${nfEn(2).format(abs / 1e6)}M`;
       if (abs >= 1e3) return `${sign}$${nf.format(Math.round(abs / 1e3))}K`;
       return `${sign}$${nf.format(Math.round(abs))}`;
+    }
+    // rev65: 시설비 패널·보고서용 소수 2자리 억 표기 (보고서 446.12억 재현)
+    const nf2f = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    function eokF(value) {
+      if (state.lang === 'en') return eok(value);
+      return `${value < 0 ? '-' : ''}${nf2f.format(Math.abs(value))}\uC5B5`;
     }
     function eok(value) {
       if (state.lang === 'en') {
@@ -3042,8 +3199,9 @@
       return { ...DEFAULTS, lang: state.lang, opMode: state.opMode }; // rev44: 기본값 대비는 현재 운영 방식의 기본값 기준
     }
     function baselineFacilityTotal(modelKey) {
-      const rows = makeFacilityRows(modelKey);
-      return rows.reduce((sum, r) => sum + (Number(r.newbuild) || 0) + (Number(r.remodel) || 0), 0);
+      // 기본 상태(보고서 기준 연면적·수전)에서의 시설비 — 446.12억 재현
+      const base = { ...DEFAULTS, spaceMode: 'base' };
+      return computeFacility(modelKey, base, { pod: makeFacilityModel('pod'), rack: makeFacilityModel('rack') }).total;
     }
     function getBaselineData() {
       const baselineState = makeBaselineState();
@@ -4337,11 +4495,11 @@
         const toM = (v) => +(((v * EOK) / fx()) / 1e6).toFixed(1);
         return { step: 0.1, value: toM(valueEok), suffix: '$M' };
       }
-      return { step: 0.5, value: +Number(valueEok).toFixed(1), suffix: '\uC5B5' };
+      return { step: 0.01, value: +Number(valueEok).toFixed(2), suffix: '\uC5B5' };
     }
 
     function facKindBadge(row) {
-      const map = { area: t('kindArea'), capacity: t('kindCapacity'), areaFixed: t('kindAreaFixed'), soft: t('kindSoft') };
+      const map = { area: t('kindArea'), capacity: t('kindCapacity'), areaFixed: t('kindAreaFixed'), fixed: t('kindFixed'), soft: t('kindSoft'), pct: t('kindPct') };
       return `<span class="tag-box">${map[row.kind] || row.kind}</span>`;
     }
     function facRateInputs(modelKey, row) {
@@ -4356,14 +4514,77 @@
           + ((b1 && row.ratePerSqmGeneral > 0) ? one(t('rateAreaGeneralLabel'), +Number(row.ratePerSqmGeneral).toFixed(4), 'ratePerSqmGeneral', 0.001) : '')
           + (b1 ? '' : one(t('rateFixedLabel'), +Number(row.fixedEok).toFixed(1), 'fixedEok', 1));
       }
+      if (row.kind === 'fixed') return one(t('rateFixedLabel'), +Number(row.fixedEok).toFixed(2), 'fixedEok', 0.1);
       if (row.kind === 'soft') return one(t('rateSoftLabel'), +Number(row.softPct).toFixed(1), 'softPct', 0.5, 100);
+      if (row.kind === 'pct') return one(t('ratePctLabel'), +Number(row.pct).toFixed(1), 'pct', 0.5, 100);
       return '';
     }
+    // rev65: 세부 근거(보고서 3~7p) — 영문 수량·단가 변환
+    function facEstQty(q, en) {
+      if (!en) return q;
+      let r = String(q).replace('영향면적 ', 'affected ').replace('마이크로파일 ', 'micropiles ').replace(' 등', ' etc.');
+      r = r.replace(/(\d)\s*개 방호구역/, '$1 zones').replace(/(\d)\s*개 랙/, '$1 racks').replace(/(\d)\s*개소/, '$1 locations').replace(/(\d)\s*세트/, '$1 sets')
+        .replace(/(\d)\s*모듈/, '$1 modules').replace(/(\d)\s*포트/, '$1 ports').replace(/(\d)\s*구역/, '$1 zones').replace(/(\d)\s*대$/, '$1 units').replace(/(\d)\s*공$/, '$1 borings')
+        .replace(/(\d+)\s*식$/, (m, n) => (Number(n) === 1 ? '1 lot' : `${n} lots`));
+      return r;
+    }
+    function facEstRate(rate, en) {
+      if (!en) return rate;
+      if (rate === '일괄 구성') return 'lump sum';
+      const m = String(rate).match(/^([\d,.]+)\s*(만원|억원)\/(.+)$/);
+      if (!m) return rate;
+      const krw = Number(m[1].replace(/,/g, '')) * (m[2] === '억원' ? 1e8 : 1e4);
+      const unitMap = { '㎡': '㎡', '개소': 'location', '식': 'lot', 'm': 'm', '대': 'unit', '세트': 'set', '랙': 'rack', '모듈': 'module', '포트': 'port', '구역': 'zone', '공': 'boring' };
+      const amt = krw >= 1e6 ? `${nf2.format(+(krw / 1e6).toFixed(2))}M` : `${nf.format(Math.round(krw / 1e3))}k`;
+      return `KRW ${amt}/${unitMap[m[3]] || m[3]}`;
+    }
+    function facScaleText(def, row) {
+      if (!row.auto) return t('facEstScaleManual');
+      if (def.kind === 'area') return t('facEstScaleArea', { base: nf.format(FAC_BASE_AREA_SQM), now: nf1.format(Number(state.floorAreaSqm) || 0), f: nf2.format((Number(state.floorAreaSqm) || 0) / FAC_BASE_AREA_SQM) });
+      if (def.kind === 'capacity') return t('facEstScaleCap', { base: nf.format(FAC_BASE_TOTAL_KW), now: nf.format(Number(state.totalPowerKw) || 0), f: nf2.format((Number(state.totalPowerKw) || 0) / FAC_BASE_TOTAL_KW) });
+      return t('facEstScaleFixed');
+    }
+    function facEstHtml(def, row) {
+      const en = state.lang === 'en';
+      const est = FAC_EST[def.est];
+      if (!est) return '';
+      const secs = est.sections.map(sec => {
+        const cols = (sec.cols || FAC_EST_COLS)[en ? 'en' : 'ko'];
+        const items = sec.items.map(it => `<tr><td>${en ? it[1] : it[0]}</td><td>${facEstQty(it[2], en)}</td><td>${facEstRate(it[3], en)}</td><td class="n">${nf2f.format(it[4])}</td></tr>`).join('');
+        return `
+          <section class="fac-est-sec">
+            <div class="fac-est-head"><span class="id">${sec.id}</span><span class="ttl">${en ? sec.titleEn : sec.titleKo}</span><b>${nf2f.format(sec.amount)}${en ? '' : '\uC5B5'}</b></div>
+            <table class="dt fac-est-tbl" style="--gap:7.5px">
+              <colgroup><col><col style="width:150px"><col style="width:150px"><col style="width:110px"></colgroup>
+              <thead><tr>${cols.map((c, i) => `<th class="${i === 3 ? 'n' : ''}">${c}</th>`).join('')}</tr></thead>
+              <tbody>${items}<tr class="sum"><td>${t('facEstSubtotal')}</td><td></td><td></td><td class="n">${nf2f.format(sec.amount)}</td></tr></tbody>
+            </table>
+            ${sec.noteKo ? `<div class="fac-est-note">${bracketLead(en ? sec.noteEn : sec.noteKo)}</div>` : ''}
+            ${sec.cautionKo ? `<div class="fac-est-note warn">${bracketLead(en ? sec.cautionEn : sec.cautionKo)}</div>` : ''}
+          </section>`;
+      }).join('');
+      return `<div class="fac-est"><div class="fac-est-scale">${facScaleText(def, row)}</div>${secs}<div class="fac-est-src">${t('facEstSource')}</div></div>`;
+    }
+    const facOpen = new Set(); // 펼쳐 둔 근거 행 (modelKey:rowKey)
+    function toggleFacDetail(btn) {
+      const id = btn.dataset.facExpand;
+      const panel = btn.closest('[data-fac-panel]');
+      const detail = panel ? panel.querySelector(`[data-fac-detail="${id}"]`) : null;
+      const row = panel ? panel.querySelector(`[data-fac-row="${id}"]`) : null;
+      if (!detail) return;
+      const open = detail.classList.contains('hidden');
+      detail.classList.toggle('hidden', !open);
+      if (row) row.classList.toggle('open', open);
+      btn.classList.toggle('open', open);
+      btn.querySelector('.txt').textContent = open ? t('facExpandClose') : t('facExpandOpen');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) facOpen.add(id); else facOpen.delete(id);
+    }
     function facTotalNoteHtml(showNew, result, grand) {
-      const txt = showNew
-        ? t('facilityTotalNoteV7', { a: eok(result.newbuildSum), b: eok(result.remodelSum), c: eok(grand) })
-        : t('facilityTotalNoteB1', { b: eok(result.remodelSum), c: eok(grand) });
-      return txt.replace(/\s=\s/, '<br>= ');
+      const over = result.overheadRows || [];
+      const o = over.find(r => r.def.key === 'overhead'), c = over.find(r => r.def.key === 'contingency');
+      const txt = t('facilityTotalNoteEst', { d: eokF(result.direct.total), o: eokF(o ? o.total : 0), c: eokF(c ? c.total : 0), s: eokF(result.construction.total), g: eokF(result.extra.total), t: eokF(grand) });
+      return (showNew ? `${t('facilityTotalNoteCols', { a: eokF(result.newbuildSum), b: eokF(result.remodelSum) })}<br>` : '') + txt.replace(/\s=\s/, '<br>= ');
     }
     function bigNumInner(str) {
       const p = splitUnit(str);
@@ -4376,48 +4597,73 @@
       const modelName = modelKey === 'pod' ? t('podModelName') : t('rackModelName');
       const showNew = !isRemodelOnly();
       const modeLabel = state.spaceMode === 'base' ? t('facManualBadge') : t('facAutoBadge');
-      const b1Mode = isRemodelOnly();
-      const pickDetails = c => (state.lang === 'en'
-        ? (b1Mode && c.detailsEnB1 ? c.detailsEnB1 : c.detailsEn)
-        : (b1Mode && c.detailsKoB1 ? c.detailsKoB1 : c.detailsKo));
-      const pickLogic = c => (state.lang === 'en'
-        ? (b1Mode && c.logicEnB1 ? c.logicEnB1 : c.logicEn)
-        : (b1Mode && c.logicKoB1 ? c.logicKoB1 : c.logicKo));
-      const noteCell = c => `
-        <div class="fac-note">
-          <div class="head">${t('factDetailHead')}</div>
-          <ul class="fac-detail-list">${pickDetails(c).map(d => `<li>${d}</li>`).join('')}</ul>
-          <div class="fac-logic">${bracketLead(pickLogic(c))}</div>
-        </div>`;
+      const en = state.lang === 'en';
+      const nCols = showNew ? 5 : 4;
+      const share = v => (grand > 0 ? `${nf1.format(Math.round(v / grand * 1000) / 10)}%` : '0%');
       const valueCell = (row, col) => {
         const editable = !row.auto;
         const value = row[col];
-        const label = state.lang === 'en' ? row.def.labelEn : row.def.labelKo;
+        const label = en ? row.def.labelEn : row.def.labelKo;
         const colLabel = col === 'newbuild' ? t('facilityColNewbuild') : t('facilityColRemodel');
-        if (!editable) return `<span class="fac-val"><span data-fac-display="${modelKey}:${row.def.key}:${col}">${eok(value)}</span></span><span class="fac-auto">${t('facAutoCell')}</span>`;
-        const props = facInputProps(row.def.kind === 'soft' ? value : Number(row.def[col]) || 0);
+        if (!editable) return `<span class="fac-val"><span data-fac-display="${modelKey}:${row.def.key}:${col}">${eokF(value)}</span></span><span class="fac-auto">${t('facAutoCell')}</span>`;
+        const props = facInputProps(value);
         return `
           <span class="fac-val"><span class="u"><input class="fac-input" type="number" min="0" step="${props.step}" value="${props.value}" data-fac-model="${modelKey}" data-fac-key="${row.def.key}" data-fac-col="${col}" aria-label="${escAttr(t('facInputAria', { item: label, col: colLabel }))}" /></span><span class="fac-unit">${props.suffix}</span></span>
-          <span class="hidden" data-fac-display="${modelKey}:${row.def.key}:${col}">${eok(value)}</span>`;
+          <span class="hidden" data-fac-display="${modelKey}:${row.def.key}:${col}">${eokF(value)}</span>`;
       };
       const manualToggle = row => {
         if (state.spaceMode === 'base') return '';
         const checked = model.manual[row.def.key] ? 'checked' : '';
         return `<label class="fac-manual"><input type="checkbox" ${checked} data-fac-manual="${modelKey}:${row.def.key}" />${t('facManualToggle')}</label>`;
       };
-      const rows = result.rows.map(row => `
-        <tr>
+      const noteCell = row => {
+        const def = row.def;
+        const id = `${modelKey}:${def.key}`;
+        const open = facOpen.has(id);
+        const summary = def.kind === 'pct'
+          ? t('facOverheadBasis', { p: nf1.format(Number(def.pct) || 0), d: eokF(result.direct.total) })
+          : (def.kind === 'soft' && row.auto ? t('facSoftBasis', { p: nf1.format(Number(def.softPct) || 0) }) : (en ? def.summaryEn : def.summaryKo));
+        const logic = en ? def.logicEn : def.logicKo;
+        const btn = FAC_EST[def.est]
+          ? `<button type="button" class="fac-expand ${open ? 'open' : ''}" data-fac-expand="${id}" aria-expanded="${open ? 'true' : 'false'}"><span class="cx-tri"></span><span class="txt">${open ? t('facExpandClose') : t('facExpandOpen')}</span></button>`
+          : '';
+        return `
+          <div class="fac-note">
+            <div class="fac-summary">${summary}</div>
+            ${logic ? `<div class="fac-logic">${bracketLead(logic)}</div>` : ''}
+            ${btn}
+          </div>`;
+      };
+      const dataRow = row => {
+        const id = `${modelKey}:${row.def.key}`;
+        const open = facOpen.has(id);
+        const detail = FAC_EST[row.def.est] ? `<tr class="fac-detail-row ${open ? '' : 'hidden'}" data-fac-detail="${id}"><td colspan="${nCols}">${facEstHtml(row.def, row)}</td></tr>` : '';
+        return `
+        <tr class="fac-row ${open ? 'open' : ''} fac-${row.group}" data-fac-row="${id}">
           <td class="fac-cat">
-            <div class="fac-lab">${state.lang === 'en' ? row.def.labelEn : row.def.labelKo}${facKindBadge(row.def)}</div>
+            <div class="fac-lab">${en ? row.def.labelEn : row.def.labelKo}${facKindBadge(row.def)}</div>
             ${facRateInputs(modelKey, row.def)}
             ${manualToggle(row)}
           </td>
           ${showNew ? `<td>${valueCell(row, 'newbuild')}</td>` : ''}
           <td>${valueCell(row, 'remodel')}</td>
-          <td><span class="fac-val" data-fac-share="${modelKey}:${row.def.key}">${grand > 0 ? nf.format(Math.round(row.total / grand * 100)) : 0}%</span></td>
-          <td>${noteCell(row.def)}</td>
-        </tr>
-      `).join('');
+          <td><span class="fac-val" data-fac-share="${modelKey}:${row.def.key}">${share(row.total)}</span></td>
+          <td>${noteCell(row)}</td>
+        </tr>${detail}`;
+      };
+      const sumRow = (cls, name, label, sum, note) => `
+        <tr class="${cls}">
+          <td><strong>${label}</strong></td>
+          ${showNew ? `<td><strong data-fac-sum="${modelKey}:${name}:newbuild">${eokF(sum.newbuild)}</strong></td>` : ''}
+          <td><strong data-fac-sum="${modelKey}:${name}:remodel">${eokF(sum.remodel)}</strong></td>
+          <td><strong data-fac-share="${modelKey}:__${name}">${share(sum.total)}</strong></td>
+          <td><div class="fac-note fac-sum-note" data-fac-sumnote="${modelKey}:${name}">${note}</div></td>
+        </tr>`;
+      const rowsHtml = result.directRows.map(dataRow).join('')
+        + sumRow('fac-sub', 'direct', t('facRowDirect'), result.direct, t('facRowDirectNote'))
+        + result.overheadRows.map(dataRow).join('')
+        + sumRow('fac-sum', 'construction', t('facRowConstruction'), result.construction, t('facRowConstructionNote'))
+        + result.extraRows.map(dataRow).join('');
       const cols = showNew
         ? '<col style="width:300px"><col style="width:86.8px"><col style="width:106px"><col style="width:107.4px"><col>'
         : '<col style="width:300px"><col style="width:192.8px"><col style="width:107.4px"><col>';
@@ -4427,7 +4673,7 @@
           ${secHead(t('facilityTitle') + infoIcon(t('tipFacility'), t('facilityTitle'), true), { badge: `<span id="facBadge-${modelKey}">${modeLabel}</span>` })}
           ${extraBadge ? `<div style="margin-top:6px">${extraBadge}</div>` : ''}
           <div class="sec-desc">${isRemodelOnly() ? t('facilityDescRemodel') : t('facilityDescV7')}</div>
-          <div class="fac-big"><span class="big-num" id="facGrandBig-${modelKey}">${bigNumInner(eok(grand))}</span></div>
+          <div class="fac-big"><span class="big-num" id="facGrandBig-${modelKey}">${bigNumInner(eokF(grand))}</span></div>
           <div class="dt-wrap fac-table">
             <table class="dt fac" style="--gap:7.5px">
               <colgroup>${cols}</colgroup>
@@ -4441,19 +4687,19 @@
                 </tr>
               </thead>
               <tbody>
-                ${rows}
+                ${rowsHtml}
                 <tr class="fac-total">
                   <td><strong>${t('facilityTotalRow')}</strong></td>
-                  ${showNew ? `<td><strong id="facTotalNewbuild-${modelKey}">${eok(result.newbuildSum)}</strong><div class="fac-pct">${grand > 0 ? `(${Math.round(result.newbuildSum / grand * 100)}%)` : ''}</div></td>` : ''}
-                  <td><strong id="facTotalRemodel-${modelKey}">${eok(result.remodelSum)}</strong><div class="fac-pct">${showNew ? (grand > 0 ? `(${Math.round(result.remodelSum / grand * 100)}%)` : '') : t('facSubtotalEqualsTotal')}</div></td>
-                  <td><strong id="facGrand-${modelKey}">${eok(grand)}</strong><div class="fac-pct">(100%)</div></td>
+                  ${showNew ? `<td><strong id="facTotalNewbuild-${modelKey}">${eokF(result.newbuildSum)}</strong><div class="fac-pct">${grand > 0 ? `(${Math.round(result.newbuildSum / grand * 100)}%)` : ''}</div></td>` : ''}
+                  <td><strong id="facTotalRemodel-${modelKey}">${eokF(result.remodelSum)}</strong><div class="fac-pct">${showNew ? (grand > 0 ? `(${Math.round(result.remodelSum / grand * 100)}%)` : '') : t('facSubtotalEqualsTotal')}</div></td>
+                  <td><strong id="facGrand-${modelKey}">${eokF(grand)}</strong><div class="fac-pct">(100%)</div></td>
                   <td><div class="fac-note" id="facTotalNote-${modelKey}">${facTotalNoteHtml(showNew, result, grand)}</div></td>
                 </tr>
               </tbody>
             </table>
           </div>
-          ${isRemodelOnly() ? `<div class="foot-note info">${t('b1FacilityNotice', { h: nf1.format(heavyAreaSqm(modelKey)), g: nf1.format(Math.max(0, (Number(state.floorAreaSqm) || 0) - heavyAreaSqm(modelKey))) })}</div>` : ''}
-          <div class="foot-note fac-cdu">${modelKey === 'pod' ? t('facilityCduNotePod') : t('facilityCduNoteRack')}</div>
+          <div class="foot-note info">${t('facEstSourceFoot')}</div>
+          <div class="foot-note fac-cdu">${t('facilityCduNoteEst')}</div>
         </section>
       `;
     }
@@ -5816,24 +6062,28 @@
           { bold: true, cells: [L('연간 지출(1년차)', 'Annual expense (Y1)'), perYr(eok(d.annualExpense[0])), L('감가상각 + 전기료 + AI Enterprise + 임차 비용', 'Depreciation + electricity + AI Enterprise + lease')] }
         ], { align: ['left', 'center', 'left'] })
       );
-      // [pre] 시설 CAPEX 내역
+      // [pre] 시설 CAPEX 내역 (rev65: 보고서 446.12억 구조 — 직접공사비 → 공통비·예비비 → 공사비 합계 → 지반조사 → 총계)
       let fac = null;
       try { fac = computeFacility('pod'); } catch (e) { fac = null; }
       if (fac && fac.rows.length) {
         const remodelOnly = isRemodelOnly();
+        const lab = r => (en ? r.def.labelEn : r.def.labelKo) + (r.def.kind === 'pct' ? ` (${nf1.format(Number(r.def.pct) || 0)}%)` : '');
+        const line2 = (label, v, bold, color) => ({ bold, cells: [label, color ? { t: eokF(v.total), color } : eokF(v.total)] });
+        const line4 = (label, v, bold, color) => ({ bold, cells: [label, eokF(v.newbuild), eokF(v.remodel), color ? { t: eokF(v.total), color } : eokF(v.total)] });
+        const rowsOf = line => [
+          ...fac.directRows.map(r => line(lab(r), r)),
+          line(L('직접공사비', 'Direct construction cost'), fac.direct, true),
+          ...fac.overheadRows.map(r => line(lab(r), r)),
+          line(L('공사비 합계', 'Construction cost total'), fac.construction, true),
+          ...fac.extraRows.map(r => line(lab(r) + L(' (별도)', ' (separate)'), r)),
+          line(L('시설 CAPEX 합계', 'Facility capex total'), { newbuild: fac.newbuildSum, remodel: fac.remodelSum, total: fac.total }, true, RPT.OR)
+        ];
         sec('pre', L('시설 CAPEX 내역', 'Facility capex breakdown'),
           remodelOnly
-            ? table([3200, W - 3200], [
-              head([L('항목', 'Item'), L('리모델링 예산', 'Remodel budget')]),
-              ...fac.rows.map(r => ({ cells: [en ? r.def.labelEn : r.def.labelKo, eok(r.total)] })),
-              { bold: true, cells: [L('시설 CAPEX 합계', 'Facility capex total'), { t: eok(fac.total), color: RPT.OR }] }
-            ], { align: ctr(2) })
-            : table([2600, 1500, 1500, W - 5600], [
-              head([L('항목', 'Item'), L('신축', 'New build'), L('리모델링', 'Remodel'), L('합계', 'Total')]),
-              ...fac.rows.map(r => ({ cells: [en ? r.def.labelEn : r.def.labelKo, eok(r.newbuild), eok(r.remodel), eok(r.total)] })),
-              { bold: true, cells: [L('시설 CAPEX 합계', 'Facility capex total'), eok(fac.newbuildSum), eok(fac.remodelSum), { t: eok(fac.total), color: RPT.OR }] }
-            ], { align: ctr(4) }),
-          note(remodelOnly ? L('신축동 제외 — 전력·공조 전액 리모델링, 건축/토목·통신/소방의 신축 고정분 제외, 면적비례 단가는 화이트스페이스(고하중)·그레이스페이스 및 기타(일반) 구간별 적용, 설계/감리/간접비 = 직접공사비 10%.', 'No new building — electrical/mechanical fully remodel, fixed new-build portions dropped, area rates split by white space (heavy) and grey & other (general), soft costs 10% of direct works.') : L('신축 전력동(700㎡) + 기존 건물 리모델링 병행.', 'New 700㎡ power building plus remodel of the existing building.'))
+            ? table([3200, W - 3200], [head([L('항목', 'Item'), L('리모델링 예산', 'Remodel budget')]), ...rowsOf(line2)], { align: ctr(2) })
+            : table([2600, 1500, 1500, W - 5600], [head([L('항목', 'Item'), L('신축', 'New build'), L('리모델링', 'Remodel'), L('합계', 'Total')]), ...rowsOf(line4)], { align: ctr(4) }),
+          note(L(`출처: 공종별 개략공사비 산정보고서(2026.11.17, 기획단계 예산가정 · VAT·IT 시스템 별도). 기본값은 보고서 446.12억(공사비 445.32 + 지반조사 0.80)을 재현하며, 건축·구조·통신·소방은 연면적 ${nf.format(FAC_BASE_AREA_SQM)}㎡, 기계·전기는 총 수전 ${nf.format(FAC_BASE_TOTAL_KW)}kW 기준에서 비례 연동됩니다. 설계/감리/간접비는 보고서 미계상(0). 공통비·예비비는 직접공사비 기준이며 지반조사용역에는 적용하지 않습니다.${remodelOnly ? '' : ' 신축 열은 구 모델의 신축 전력동 고정분(건축 40억 · 소방/보안 16억)이며 신축 견적은 별도 산정 전입니다.'}`,
+            `Source: detailed cost estimate by trade (2026-11-17, planning-stage budget assumptions; VAT and IT systems excluded). Defaults reproduce the report's 446.12 (construction 445.32 + geotechnical 0.80); architecture, structure, telecom and fire scale with floor area from a ${nf.format(FAC_BASE_AREA_SQM)}㎡ base and mechanical/electrical with total power from a ${nf.format(FAC_BASE_TOTAL_KW)}kW base. Design/supervision/indirect is not in the report (0). Overhead and contingency apply to direct cost only, not to the geotechnical fee.${remodelOnly ? '' : ' The new-build column carries the legacy fixed portions of the new power building (architecture 40 · fire/security 16); a new-build estimate is still pending.'}`))
         );
       }
       // [pre] 랙 시스템 구성·단가 (IT CAPEX 내역)
@@ -6887,13 +7137,22 @@
     function syncFacilityLive(modelKey) {
       const result = computeFacility(modelKey);
       const grand = result.total;
+      const share = v => (grand > 0 ? `${nf1.format(Math.round(v / grand * 1000) / 10)}%` : '0%');
       result.rows.forEach(row => {
         ['newbuild', 'remodel'].forEach(col => {
           const display = document.querySelector(`[data-fac-display="${modelKey}:${row.def.key}:${col}"]`);
-          if (display) display.textContent = eok(row[col]);
+          if (display) display.textContent = eokF(row[col]);
         });
-        const share = document.querySelector(`[data-fac-share="${modelKey}:${row.def.key}"]`);
-        if (share) share.textContent = `${grand > 0 ? nf.format(Math.round(row.total / grand * 100)) : 0}%`;
+        const sh = document.querySelector(`[data-fac-share="${modelKey}:${row.def.key}"]`);
+        if (sh) sh.textContent = share(row.total);
+        if (row.def.kind === 'pct') {
+          const note = document.querySelector(`[data-fac-row="${modelKey}:${row.def.key}"] .fac-summary`);
+          if (note) note.textContent = t('facOverheadBasis', { p: nf1.format(Number(row.def.pct) || 0), d: eokF(result.direct.total) });
+        }
+      });
+      [['direct', result.direct], ['construction', result.construction]].forEach(([name, sum]) => {
+        ['newbuild', 'remodel'].forEach(col => { const el = document.querySelector(`[data-fac-sum="${modelKey}:${name}:${col}"]`); if (el) el.textContent = eokF(sum[col]); });
+        const sh = document.querySelector(`[data-fac-share="${modelKey}:__${name}"]`); if (sh) sh.textContent = share(sum.total);
       });
       const totalNew = document.getElementById(`facTotalNewbuild-${modelKey}`);
       const totalRemodel = document.getElementById(`facTotalRemodel-${modelKey}`);
@@ -6902,10 +7161,10 @@
       const note = document.getElementById(`facTotalNote-${modelKey}`);
       const badge = document.getElementById(`facBadge-${modelKey}`);
       const showNew = !isRemodelOnly();
-      if (totalNew) totalNew.textContent = eok(result.newbuildSum);
-      if (totalRemodel) totalRemodel.textContent = eok(result.remodelSum);
-      if (grandEl) grandEl.textContent = eok(grand);
-      if (grandBig) grandBig.innerHTML = bigNumInner(eok(grand));
+      if (totalNew) totalNew.textContent = eokF(result.newbuildSum);
+      if (totalRemodel) totalRemodel.textContent = eokF(result.remodelSum);
+      if (grandEl) grandEl.textContent = eokF(grand);
+      if (grandBig) grandBig.innerHTML = bigNumInner(eokF(grand));
       if (note) note.innerHTML = facTotalNoteHtml(showNew, result, grand);
       if (badge) badge.textContent = state.spaceMode === 'base' ? t('facManualBadge') : t('facAutoBadge');
     }
@@ -6941,13 +7200,15 @@
       else if (field === 'ratePerMw') row.ratePerKw = value / 1000;
       else if (field === 'fixedEok') row.fixedEok = value;
       else if (field === 'softPct') row.softPct = Math.min(100, value);
+      else if (field === 'pct') row.pct = Math.min(100, value);
       else return false;
       if (finalize) {
         if (field === 'ratePerSqm') input.value = +Number(row.ratePerSqm).toFixed(4);
         if (field === 'ratePerSqmGeneral') input.value = +Number(row.ratePerSqmGeneral).toFixed(4);
         if (field === 'ratePerMw') input.value = +(Number(row.ratePerKw) * 1000).toFixed(3);
-        if (field === 'fixedEok') input.value = +Number(row.fixedEok).toFixed(1);
+        if (field === 'fixedEok') input.value = +Number(row.fixedEok).toFixed(2);
         if (field === 'softPct') input.value = +Number(row.softPct).toFixed(1);
+        if (field === 'pct') input.value = +Number(row.pct).toFixed(1);
       }
       return modelKey;
     }
@@ -7193,6 +7454,8 @@
       if (opButton) { applyOpMode(opButton.dataset.opMode); return; }
       const facBtn = event.target.closest('[data-fac-mode]');
       if (facBtn) { applyFacMode(facBtn.dataset.facMode); return; }
+      const facExp = event.target.closest('[data-fac-expand]');
+      if (facExp) { toggleFacDetail(facExp); return; }
       const cduBtn = event.target.closest('[data-cdu-mode]');
       if (cduBtn) { applyCduMode(cduBtn.dataset.cduMode); return; }
       const bmButton = event.target.closest('[data-bm-mode]');
@@ -8111,8 +8374,8 @@ const PODFIN = (function () {
     try {
       if (typeof computeFacility !== 'function') return 0;
       const f = computeFacility(modelKey);
-      const row = f.rows.find(r => r.def && r.def.key === 'architecture');
-      return row ? row.total : 0;
+      // rev65: 투자세액공제 제외 기준 = 건축·구조·토목(건물·구조물 공사)
+      return f.rows.filter(r => r.def && ['architecture', 'structure', 'civil'].includes(r.def.key)).reduce((sum, r) => sum + r.total, 0);
     } catch (e) { return 0; }
   }
 
