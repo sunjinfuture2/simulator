@@ -638,15 +638,16 @@
     .sys-card .su-big.card-price .u { font-size: 52px; line-height: 68px; }
     .sys-card .su-big.card-price .u input { width: 2.4em; }
     .sys-card .su-big.card-price .unit { font-size: 22px; }
-    .card-net { margin-top: 30px; }
-    .card-net .lab { display: inline-flex; align-items: center; font-size: 15px; font-weight: 500; color: var(--g60); line-height: 20px; white-space: nowrap; }
-    .card-net .v { display: inline-flex; align-items: baseline; margin-top: 8px; font-size: 22px; font-weight: 500; color: var(--k100); line-height: 30px; }
+    .card-col { display: flex; flex-direction: column; }
+    .card-net { margin-top: auto; padding-top: 26px; display: flex; flex-direction: column; }
+    .card-net .lab { display: flex; align-items: flex-end; min-height: 32px; font-size: 13px; font-weight: 600; color: var(--g60); line-height: 16px; white-space: nowrap; }
+    .card-net .v { display: inline-flex; align-items: baseline; margin-top: 3.9px; font-size: 22px; font-weight: 500; color: var(--k100); line-height: 29.8px; white-space: nowrap; }
     .card-net > .v { display: flex; }
-    .card-net .v .unit { font-size: 12px; font-weight: 600; color: var(--g77); margin-left: 4px; }
-    .card-net .rates { display: flex; flex-wrap: wrap; column-gap: 18px; margin-top: 4px; }
-    .card-net .rates .v { font-size: 18px; margin-top: 4px; }
-    .card-net .rates .k { font-size: 12px; font-weight: 500; color: var(--g77); margin-right: 4px; }
-    .card-specs.sys-specs2 { margin-top: 26px; }
+    .card-net .v .unit { font-size: 12px; font-weight: 600; color: var(--g77); margin-left: 3px; }
+    .card-net .rates { display: flex; flex-wrap: wrap; column-gap: 16px; margin-top: 3.9px; }
+    .card-net .rates .v { margin-top: 0; }
+    .card-net .rates .k { font-size: 12px; font-weight: 600; color: var(--g77); margin-right: 4px; }
+    .card-specs.sys-specs2 { margin-top: auto; padding-top: 26px; }
     .card-specs .sys-spec { flex: 1 1 50%; min-width: 0; }
     .card-specs .sys-spec + .sys-spec { padding-left: 16px; margin-left: 0; }
     .card-specs .sys-spec .lab { white-space: normal; line-height: 16px; min-height: 32px; display: flex; align-items: flex-end; }
@@ -1280,7 +1281,7 @@
       cardRowTotal: { ko: 'SU당 장비 구매비 + CDU', en: 'Equipment + CDU per SU' },
       tipCduShare: { ko: 'CDU 구매비는 부지 공용(N+1)으로 계상하고, 카드에는 전체 CDU 구매비 ÷ 전체 SU 수로 나눈 SU당 배분액을 표시합니다. 산식·대수·단가는 아래 도입 구성 상세 참조.', en: 'CDU purchase is costed at site level (N+1); the card shows total CDU cost ÷ total SUs. See the deployment detail below for the formula, count and unit price.' },
       labelSwInitial: { ko: 'SW 초기 설치·통합비 (1회)', en: 'SW initial install & integration (one-off)' },
-      labelSwMaint: { ko: 'AI Enterprise 유지비 (GPU당·년)', en: 'AI Enterprise upkeep (per GPU·yr)' },
+      labelSwMaint: { ko: 'AI Enterprise 유지비', en: 'AI Enterprise upkeep' },
       tipSwMaint: { ko: 'NVIDIA AI Enterprise 연 구독료. 전체 GPU × GPU당 연 단가 × 환율을 매년 운영비에 반영합니다 (3년 $13,500 · 5년 선구매 $18,000 옵션은 단가를 바꿔 반영).', en: 'NVIDIA AI Enterprise annual subscription: all GPUs × annual rate per GPU × FX, charged to opex every year (3-yr $13,500 or 5-yr prepaid $18,000 can be entered as a rate).' },
       labelCduUnitEok: { ko: 'CDU 대당 구매비', en: 'CDU unit price' },
       labelCduCapKw: { ko: 'CDU 대당 냉각능력', en: 'CDU capacity per unit' },
@@ -3516,7 +3517,6 @@
           ${secHead(title + infoIcon(tip, title, true))}
           ${basisNote ? `<div class="sec-desc">${basisNote}</div>` : ''}
           <div class="cfg-rows">${rows || `<div class="notice warn">${t('mixNoType')}</div>`}</div>
-          ${okTypes.length ? cfgDetailHtml(data) : ''}
           ${neo ? '' : (okTypes.length ? tables + totalRow : (rows ? `<div class="notice warn">${t('mixNoType')}</div>` : ''))}
         </section>
       `;
@@ -5095,7 +5095,7 @@
         <section class="s-group" data-views="superpod,compare">
           ${ctlRow('fxKrwUsd', t('labelFx'))}
         </section>
-        <section class="s-group sw" data-views="superpod,compare">
+        <section class="s-group swcost" data-views="superpod,compare">
           ${ctlRow('initIntegrationEok', `${t('labelSwInitial')}${infoIcon(t('tipIntegration'), t('labelSwInitial'), true)}`)}
           ${ctlRow('swSubUsdPerGpuYear', `${t('labelSwMaint')}${infoIcon(t('tipSwMaint'), t('labelSwMaint'), true)}`, { pre: '$' })}
         </section>
@@ -6702,8 +6702,6 @@
         if (mc) mc.textContent = nf.format(n);
         const td = data.types.find(x => x.key === key);
         if (td && td.ok) { const row = document.querySelector(`.cfg-row[data-cfg-row="${key}"]`); if (row) row.outerHTML = cfgRowHtml(td, data); }
-        const det = document.querySelector('.cfg-detail');
-        if (det && activeInput !== null) det.outerHTML = cfgDetailHtml(data);
         document.querySelectorAll(`[data-gpu-capex-total="${key}"]`).forEach(tot => {
           tot.innerHTML = tot.closest('.sys-card') ? usdM(gpuCapexPerUnitUsd(g)) : usdWithKrw(gpuCapexPerUnitUsd(g));
         });
