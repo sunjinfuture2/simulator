@@ -626,9 +626,27 @@
     .sys-card .su-units .racks { font-size: 13px; font-weight: 500; color: var(--g77); line-height: 18px; word-break: keep-all; }
     .sys-card .sys-sub2 { margin-top: 4px; color: var(--ga0); white-space: normal; line-height: 17px; word-break: keep-all; }
     .sys-capex li .cx-note { font-size: 12px; color: var(--ga0); white-space: normal; line-height: 15px; }
-    /* rev59: 카드 2열(수량·사양 | 단가) */
+    /* rev60: 카드 — 상단(SU + 단가·전력·면적) / 슬라이더 / 하단 2열(CDU | GPU 임대단가) */
+    .card-top { display: flex; align-items: flex-end; column-gap: 26px; margin-top: 28px; }
+    .card-top .su-big.card-count { margin-top: 0; flex: 0 0 auto; }
+    .card-top-specs { display: flex; flex: 1 1 auto; min-width: 0; column-gap: 22px; padding-bottom: 12px; }
+    .card-top-specs .sys-spec { flex: 0 1 auto; min-width: 0; }
+    .card-top-specs .sys-spec + .sys-spec { border-left: 0; padding-left: 0; }
+    .card-top-specs .sys-spec .v .u input { width: 3.3em; min-width: 0; }
+    .card-top-specs .sys-spec .lab { display: inline-flex; align-items: center; }
+    .sys-card .card-max { text-align: right; font-size: 13px; font-weight: 400; color: var(--ga0); line-height: 18px; margin-top: 6px; }
+    .sys-card .card-max .text-danger { color: var(--red); }
+    .card-cdu { display: flex; align-items: flex-end; column-gap: 24px; margin-top: 8px; }
+    .card-cdu .cdu-n { display: inline-flex; align-items: baseline; white-space: nowrap; }
+    .card-cdu .cdu-n .num { font-size: 44px; font-weight: 300; color: var(--g60); line-height: 56px; letter-spacing: -0.03em; }
+    .card-cdu .cdu-n .unit { font-size: 15px; font-weight: 600; color: var(--g77); margin-left: 4px; }
+    .card-cdu .sys-spec { padding-bottom: 6px; }
+    .card-cdu .sys-spec .v .u input { width: 4.8em; min-width: 0; }
+    .card-col.right .su-big.card-price { margin-top: 8px; }
     .card-cols { display: flex; margin-top: 30px; }
     .card-col { flex: 1 1 50%; min-width: 0; }
+    .card-col { flex: 1 1 58%; }
+    .card-col.right { flex: 1 1 42%; }
     .card-col + .card-col { border-left: var(--hair) solid var(--gcc); padding-left: 28px; margin-left: 28px; }
     .card-lab { font-size: 15px; font-weight: 500; color: var(--g60); line-height: 20px; white-space: nowrap; }
     .card-lab .max { font-weight: 500; color: var(--g60); }
@@ -656,17 +674,19 @@
     .dt.itc td .itc-basis, .dt.itc td .itc-note, .dt.itc td .itc-head { white-space: normal; }
     .sys-card .sys-capex { margin-top: 34px; }
     .sys-card .sys-capex li .u.sm { margin: 0 3px; }
-    .sys-card .sys-capex li small { font-size: 12px; color: var(--g77); margin-left: 2px; }
+    .sys-card .sys-capex li small { font-size: 12px; color: var(--g77); margin-left: 2px; font-weight: 400; }
     .cfg-detail { margin-top: 34px; }
     .cfg-detail .dt.itc td { vertical-align: top; }
-    .cfg-rows { margin-top: 34px; }
-    .cfg-row + .cfg-row { margin-top: 44px; padding-top: 36px; border-top: var(--hair) solid var(--gcc); }
-    .cfg-head strong { display: block; font-size: 24px; font-weight: 500; color: var(--g60); line-height: 32px; letter-spacing: -0.01em; }
-    .cfg-head .cfg-mw { display: inline-block; font-size: 22px; font-weight: 600; color: var(--g60); line-height: 30px; margin-top: 2px; cursor: help; }
-    .cfg-stats { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 88px; row-gap: 12px; margin-top: 26px; }
+    .sec.mt-cfg { margin-top: 72px; }
+    .cfg-rows { margin-top: 22px; }
+    .cfg-row + .cfg-row { margin-top: 36px; padding-top: 30px; border-top: var(--hair) solid var(--gcc); }
+    .cfg-head { display: flex; align-items: baseline; column-gap: 14px; }
+    .cfg-head strong { font-size: 24px; font-weight: 500; color: var(--g60); line-height: 32px; letter-spacing: -0.01em; }
+    .cfg-head .cfg-mw { display: inline-block; font-size: 22px; font-weight: 700; color: var(--g60); line-height: 30px; cursor: help; }
+    .cfg-stats { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 64px; row-gap: 10px; margin-top: 14px; }
     .cfg-stat { display: inline-flex; align-items: baseline; color: var(--g60); cursor: help; outline: none; }
-    .cfg-stat .num { font-size: 68px; font-weight: 300; line-height: 80px; letter-spacing: -0.06em; font-variant-numeric: proportional-nums; font-feature-settings: 'pnum' 1, 'tnum' 0; }
-    .cfg-stat .unit { font-size: 24px; font-weight: 700; margin-left: 8px; }
+    .cfg-stat .num { font-size: 55px; font-weight: 400; line-height: 74.5px; letter-spacing: -0.04em; font-variant-numeric: proportional-nums; font-feature-settings: 'pnum' 1, 'tnum' 0; }
+    .cfg-stat .unit { font-size: 25px; font-weight: 600; margin-left: 6px; }
     .cfg-stat:hover .num, .cfg-stat:focus .num, .cfg-head .cfg-mw:hover { color: var(--orange); }
     .yr-table .lease-memo { margin-top: 14px; }
     .sec.indent2 { padding-left: 48px; }
@@ -1210,7 +1230,7 @@
       // rev59: CDU — 'CAPEX 검토사항(CDU 추가)' 2SU 공용 1.35MW급 인로우 CDU 3대 N+1(필요 운전 2 + 예비 1), 대당 구매비 10.39억 (설치비 미반영)
       cduMode: 'n1',            // 'n1'(부지 공용 N+1: 필요 운전 대수 + 예비 1) | 'perSu'(SU당 운전 1 + 예비 1)
       cduCapKw: 1350,           // CDU 1대 명목 냉각능력(kW) — HPE/Vertiv XDU1350
-      cduUnitEok: 10.39,        // CDU 대당 구매비(억) — XDU1350 세전 표시가 €582,148.17·€831,832.10 평균 × 1,470.23원/€ (2026.11.16 ECB)
+      cduUnitUsd: 742143,       // CDU 대당 구매비(USD) — 10.39억(XDU1350 세전 표시가 €582,148.17·€831,832.10 평균 × 1,470.23원/€) ÷ 계획환율 1,400원
       initIntegrationEok: 10,   // 초기 SW 설치·통합비(억) — 40M/M × 월 2,000만원 = 8억 + 예비비 2억
       // rev58: 임차 조건 — 임대료·관리비는 연 환산해 운영비, 보증금은 환산 이자율만 운영비(원금은 0년차 납입 · 3년차 회수)
       leaseAreaSqm: 1937.2,     // 계약면적(㎡)
@@ -1270,6 +1290,13 @@
       capexNoteSite: { ko: 'CDU · 초기 설치·통합비는 부지 단위로 별도 계상 (아래 IT 장비 CAPEX 구성 참조)', en: 'CDUs and initial integration are costed at site level (see IT equipment CAPEX breakdown below)' },
       cardNoteB300: { ko: '수랭 4U · 800G XDR 고정 · IT 장비 {p}개 위치/SU(컴퓨팅 9 + 네트워크 2 + 스토리지 1 + 관리 1 + 예비 1) = {a}㎡ · CDU는 2SU 공용 3대(N+1) 공간 별도', en: 'Liquid 4U · 800G XDR fixed · {p} IT positions/SU (9 compute + 2 network + 1 storage + 1 mgmt + 1 spare) = {a}㎡ · 3 shared CDUs (N+1) for 2 SU, space separate' },
       cardNoteGb300: { ko: 'NVIDIA RA 기준 · IT 장비 {p}랙/SU(컴퓨팅 8 + 네트워크 6 + 스토리지 2 + 관리 2) = {a}㎡ · CDU는 2SU 공용 3대(N+1) 공간 별도', en: 'NVIDIA RA · {p} IT racks/SU (8 compute + 6 network + 2 storage + 2 mgmt) = {a}㎡ · 3 shared CDUs (N+1) for 2 SU, space separate' },
+      cardCduLab: { ko: 'CDU', en: 'CDU' },
+      cardCduUnitN1: { ko: 'U (N+1)', en: 'U (N+1)' },
+      cardCduUnitPerSu: { ko: 'U (SU당 2)', en: 'U (2 per SU)' },
+      cardCduPrice: { ko: '대당 단가', en: 'Unit price' },
+      cardPriceLab: { ko: 'GPU 임대단가 (온디맨드)', en: 'GPU rate (on-demand)' },
+      cardRowEquipX: { ko: 'GPU당 적용단가 x {g}', en: 'Price per GPU x {g}' },
+      cardRowTotalSub: { ko: '(CDU 포함)', en: '(incl. CDU)' },
       cardCountLabServer: { ko: '서버', en: 'Servers' },
       cardCountLabSystem: { ko: '랙 시스템', en: 'Rack systems' },
       cardPriceLabNeo: { ko: 'GPU 판매단가 (온디맨드)', en: 'GPU customer price (on-demand)' },
@@ -1278,12 +1305,12 @@
       cardRatesLab: { ko: '계약유형별 단가 (입지·예약 할인 반영)', en: 'Contract rates (location & reserve discount)' },
       cardRowEquip: { ko: 'GPU당 적용 단가', en: 'Applied price per GPU' },
       cardRowCdu: { ko: 'CDU (공용 {n}대 N+1 · SU당 배분)', en: 'CDU ({n} shared, N+1 · per-SU share)' },
-      cardRowTotal: { ko: 'SU당 장비 구매비 + CDU', en: 'Equipment + CDU per SU' },
+      cardRowTotal: { ko: 'SU당 장비 구매비', en: 'Equipment per SU' },
       tipCduShare: { ko: 'CDU 구매비는 부지 공용(N+1)으로 계상하고, 카드에는 전체 CDU 구매비 ÷ 전체 SU 수로 나눈 SU당 배분액을 표시합니다. 산식·대수·단가는 아래 도입 구성 상세 참조.', en: 'CDU purchase is costed at site level (N+1); the card shows total CDU cost ÷ total SUs. See the deployment detail below for the formula, count and unit price.' },
       labelSwInitial: { ko: 'SW 초기 설치·통합비 (1회)', en: 'SW initial install & integration (one-off)' },
       labelSwMaint: { ko: 'AI Enterprise 유지비', en: 'AI Enterprise upkeep' },
       tipSwMaint: { ko: 'NVIDIA AI Enterprise 연 구독료. 전체 GPU × GPU당 연 단가 × 환율을 매년 운영비에 반영합니다 (3년 $13,500 · 5년 선구매 $18,000 옵션은 단가를 바꿔 반영).', en: 'NVIDIA AI Enterprise annual subscription: all GPUs × annual rate per GPU × FX, charged to opex every year (3-yr $13,500 or 5-yr prepaid $18,000 can be entered as a rate).' },
-      labelCduUnitEok: { ko: 'CDU 대당 구매비', en: 'CDU unit price' },
+      labelCduUnitEok: { ko: 'CDU 대당 단가', en: 'CDU unit price' },
       labelCduCapKw: { ko: 'CDU 대당 냉각능력', en: 'CDU capacity per unit' },
       cfgSecTitle: { ko: '도입 구성', en: 'Deployment configuration' },
       cfgSecTitleCsp: { ko: '도입 구성 · 매출 산출', en: 'Deployment configuration & revenue' },
@@ -2341,7 +2368,7 @@
           { id: 'leaseDepositMonths', labelKey: 'labelLeaseDeposit', min: 0, max: 120, step: 1, numberOnly: true },
           { id: 'leaseDepositRatePct', labelKey: 'labelLeaseDepositRate', min: 0, max: 50, step: 0.1, numberOnly: true },
           { id: 'leaseAgentFeeEok', labelKey: 'labelLeaseAgentFee', min: 0, max: 100, step: 0.1, numberOnly: true },
-          { id: 'cduUnitEok', labelKey: 'labelCduUnitEok', min: 0, max: 1000, step: 0.01, numberOnly: true },
+          { id: 'cduUnitUsd', labelKey: 'labelCduUnitEok', min: 0, max: 10000000, step: 1000, numberOnly: true },
           { id: 'cduCapKw', labelKey: 'labelCduCapKw', min: 100, max: 10000, step: 10, numberOnly: true },
           { id: 'initIntegrationEok', labelKey: 'labelInitIntegration', min: 0, max: 1000, step: 0.1, numberOnly: true }
         ]
@@ -2503,7 +2530,7 @@
       if (id === 'leaseRentPerSqm' || id === 'leaseMgmtPerSqm') return `${nf.format(value)}\uC6D0/\u33A1\u00B7\uC6D4`;
       if (id === 'leaseDepositMonths') return `${nf.format(value)}\uAC1C\uC6D4`;
       if (id === 'leaseDepositRatePct') return `${nf1.format(value)}%`;
-      if (id === 'cduUnitEok') return `${nf2.format(value)}\uC5B5/\uB300`;
+      if (id === 'cduUnitUsd') return `$${nf.format(value)}`;
       if (id === 'locPremiumPct' || id === 'disc1YPct' || id === 'disc3YPct') return `${nf1.format(value)}%`;
       if (id.startsWith('depY')) return `${nf.format(value)}%`;
       return `${nf.format(value)}`;
@@ -2910,7 +2937,8 @@
       const cduCapKw = Math.max(1, Number(inputState.cduCapKw) || 1350);
       const cduDuty = totalSu > 0 ? Math.max(1, Math.ceil(computeKw / cduCapKw - 1e-9)) : 0;
       const cduUnits = totalSu > 0 ? (cduMode === 'n1' ? cduDuty + 1 : cduUnitsPerSu) : 0;
-      const cduUnitEok = Math.max(0, Number(inputState.cduUnitEok) || 0);
+      const cduUnitUsd = Math.max(0, Number(inputState.cduUnitUsd) || 0);
+      const cduUnitEok = cduUnitUsd * fxv / EOK;
       const cduCapexEok = cduUnits * cduUnitEok;
       const cduCapexUsd = fxv > 0 ? cduCapexEok * EOK / fxv : 0;   // 표시용 달러 환산
       const integrationEok = gpus > 0 ? Math.max(0, Number(inputState.initIntegrationEok) || 0) : 0;
@@ -2967,7 +2995,7 @@
         key: 'mix', types,
         mode: neo ? 'neo' : 'csp', neoMarginPct: neoMargin(inputState) * 100, neoUtilPct: nu * 100, swRateUsd, swGpus,
         totalSu, servers, positions, remainingItKw: Math.max(0, itPowerKw - usedItPower),
-        equipCapexUsd, equipCapexEok, cduMode, cduUnits, cduDuty, cduCapKw, cduUnitEok, computeKw, cduCapexUsd, cduCapexEok, integrationEok,
+        equipCapexUsd, equipCapexEok, cduMode, cduUnits, cduDuty, cduCapKw, cduUnitUsd, cduUnitEok, computeKw, cduCapexUsd, cduCapexEok, integrationEok,
         leaseArea, leaseRentMonthKrw, leaseMgmtMonthKrw, leaseRentEok, leaseMgmtEok, leaseDepositEok, leaseDepositRatePct, leaseDepositCostEok, leaseOpexEok, leaseAgentFeeEok, leaseByYear,
         grossByYear, takeByYear: grossByYear.map((v, i) => v - revenueByYear[i]), gpuHours: utils.map(u => gpus * HOURS * u),
         system: primary ? primary.type : fallback, systemKey: primary ? primary.key : null, su: primary ? primary.n : 0,
@@ -3298,7 +3326,6 @@
       const nameHtml = key === 'custom'
         ? `<input type="text" class="sys-name" value="${escAttr(g.label || '')}" placeholder="${escAttr(t('gpuCustomNamePh'))}" data-gpu-key="custom" data-gpu-prop="label" aria-label="${escAttr(t('gpuCustomNamePh'))}" />`
         : `<strong>${gpuLabel(g, key)}</strong>`;
-      // 제목 옆 정보 아이콘: 1 SU 구성 · 전력 · 공간 · FP4 (직접 입력 카드는 FP4 입력칸 유지)
       const titleExtra = editableSu
         ? `<span class="spec">FP4: ${gpuNumInput(key, 'fp4PflopsPerUnit', fp4, 'step="10"', 'sm')} <small>PFLOPS/SU</small></span>`
         : infoIcon(cardInfoTip(g, key), gpuLabel(g, key), true);
@@ -3306,62 +3333,58 @@
         ? `<div class="sys-sub">1 SU = ${en ? '' : '컴퓨팅 '}${gpuNumInput(key, 'racksPerUnit', g.racksPerUnit, 'step="1"', 'sm')}${en ? ' racks' : '랙'} · ${en ? '' : noun + ' '}${gpuNumInput(key, 'serversPerUnit', g.serversPerUnit, 'step="1"', 'sm')}${en ? ' ' + noun : (g.subUnitCountKo || '대')} · GPU ${gpuNumInput(key, 'gpusPerUnit', g.gpusPerUnit, 'step="8"', 'sm')}${en ? ' GPUs' : '개'}${ok ? ` · ≈ ${fmtKwAsMw(gpuUnitPowerKw(g))}` : ''}</div>`
         : '';
       const maxNote = !ok ? t('gpuMaxNoteBlank') : (overNow ? `${t('gpuMaxNote', { n: nf.format(maxNow), u: 'SU' })} · ${t('gpuOverNote')}` : t('gpuMaxNote', { n: nf.format(maxNow), u: 'SU' }));
-      const countLab = (Number(g.serversPerUnit) || 0) > 0 && (Number(g.serverKw) || 0) > 0 ? t('cardCountLabServer') : t('cardCountLabSystem');
-      // 좌: 수량(SU) + 슬라이더 + 면적·전력 사양 / 우: GPU 단가(판매단가 또는 기초단가) + 순단가(타사위탁) 또는 예약 단가(직접운영)
+      // 상단 행: SU 수량 + GPU당 적용 단가 · 전력(서버당 / 랙당) · 랙당 면적
       const useServerKw = (Number(g.serversPerUnit) || 0) > 0 && (Number(g.serverKw) || 0) > 0;
       const powerSpec = useServerKw
         ? [t('specPowerPerSub', { noun: en ? noun.replace(/s$/, '') : noun }), gpuNumInput(key, 'serverKw', g.serverKw, 'step="0.5"'), 'kW']
         : [t('specPowerPerRack'), gpuNumInput(key, 'rackKw', g.rackKw, 'step="5"'), 'kW'];
-      const specs = [[t('specAreaPerRack'), gpuNumInput(key, 'rackAreaSqm', g.rackAreaSqm, 'step="0.1"'), '㎡'], powerSpec];
-      const unitKrw = en ? '$/hr' : '원/hr';
-      const rateNum = v => (en ? nfEn(2).format(v / fx()) : nf.format(Math.round(v)));
-      const r = contractRates(g);
-      const priceVal = neoPriceOf(key) > 0 ? nfPlain(neoPriceOf(key), 2) : '';
-      const rightHtml = neo
-        ? `
-            <div class="card-lab">${t('cardPriceLabNeo')}</div>
-            <div class="su-big card-price"><span class="u"><input type="number" min="0" max="100" step="0.01" value="${priceVal}" placeholder="—" data-card-price="${key}" aria-label="${escAttr(t('cardPriceLabNeo'))}" /></span><span class="unit">$/GPU·h</span></div>
-            <div class="card-net">
-              <span class="lab">${t('cardNetLab', { m: nf1.format(Number(state.neoMarginPct) || 0) })}${infoIcon(t('tipNetRate'), t('cardNetLab', { m: nf1.format(Number(state.neoMarginPct) || 0) }), true)}</span>
-              <span class="v"><span data-card-net="${key}">${neoPriceOf(key) > 0 ? nfEn(2).format(neoNetUsd(key)) : '—'}</span><span class="unit">$/GPU·h</span></span>
-            </div>`
-        : `
-            <div class="card-lab">${t('cardPriceLabCsp')}</div>
-            <div class="su-big card-price"><span class="u">${gpuNumInput(key, 'baseRateUsd', g.baseRateUsd[bmMode()], 'step="0.01"')}</span><span class="unit">$/GPU·h</span></div>
-            <div class="card-net">
-              <span class="lab">${t('cardRatesLab')}${infoIcon(t('tipMixRate'), t('cardRatesLab'), true)}</span>
-              <div class="rates">
-                <span class="v"><span class="k">${t('specRateODLabel')}</span><span data-rate="gpu:${key}:od">${rateNum(r.od)}</span><span class="unit">${unitKrw}</span></span>
-                <span class="v"><span class="k">${t('specRate1YLabel')}</span><span data-rate="gpu:${key}:c1">${rateNum(r.c1)}</span><span class="unit">${unitKrw}</span></span>
-                <span class="v"><span class="k">${t('specRate3YLabel')}</span><span data-rate="gpu:${key}:c3">${rateNum(r.c3)}</span><span class="unit">${unitKrw}</span></span>
-              </div>
-            </div>`;
-      const cduShare = cduShareUsd(data);
+      const specs = [
+        [t('specPricePerGpu') + infoIcon(t('tipPricePerGpu'), t('specPricePerGpu'), true), gpuNumInput(key, 'pricePerGpuUsd', g.pricePerGpuUsd, 'step="100"'), '$'],
+        powerSpec,
+        [t('specAreaPerRack'), gpuNumInput(key, 'rackAreaSqm', g.rackAreaSqm, 'step="0.1"'), '㎡']
+      ];
+      // 하단 2열: CDU(공용 대수 · 대당 단가) | GPU 임대단가(온디맨드)
       const cduUnits = data.cduUnits || 0;
+      const cduUnit = data.cduMode === 'perSu' ? t('cardCduUnitPerSu') : t('cardCduUnitN1');
+      const priceVal = neoPriceOf(key) > 0 ? nfPlain(neoPriceOf(key), 2) : '';
+      const priceInput = neo
+        ? `<span class="u"><input type="number" min="0" max="100" step="0.01" value="${priceVal}" placeholder="—" data-card-price="${key}" aria-label="${escAttr(t('cardPriceLab'))}" /></span>`
+        : `<span class="u">${gpuNumInput(key, 'baseRateUsd', g.baseRateUsd[bmMode()], 'step="0.01"')}</span>`;
+      const cduShare = cduShareUsd(data);
       return `
         <article class="sys-card ${on ? 'active' : ''} ${ok ? '' : 'blank'}" data-gpu-card="${key}" role="button" tabindex="0" aria-pressed="${on ? 'true' : 'false'}" style="--card-color:${g.color}">
           <div class="sys-in">
             <div class="sys-title">${nameHtml}${titleExtra}</div>
             ${subHtml}
             ${ok ? '' : `<div class="sys-blank-note">${t('gpuBlankSpec')}</div>`}
+            <div class="card-top">
+              <div class="su-big card-count">
+                <span class="u"><input type="number" min="0" max="${gpuAbsMax(g)}" step="1" value="${n}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} count" /></span>
+                <span class="unit">SU</span>
+              </div>
+              <div class="card-top-specs">
+                ${specs.map(([lab, input, u]) => `<div class="sys-spec"><span class="lab">${lab}</span><span class="v">${input}<span class="unit">${u}</span></span></div>`).join('')}
+              </div>
+            </div>
+            <input type="range" class="track" min="0" max="${sliderMax}" step="1" value="${Math.min(n, sliderMax)}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} slider" ${ok ? '' : 'disabled'} />
+            <div class="card-max"><span class="max ${overNow ? 'text-danger' : ''}" data-gpu-chip="${key}">${maxNote}</span></div>
             <div class="card-cols">
               <div class="card-col">
-                <div class="card-lab">${countLab} (<span class="max ${overNow ? 'text-danger' : ''}" data-gpu-chip="${key}">${maxNote}</span>)</div>
-                <div class="su-big card-count">
-                  <span class="u"><input type="number" min="0" max="${gpuAbsMax(g)}" step="1" value="${n}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} count" /></span>
-                  <span class="unit">SU</span>
-                </div>
-                <input type="range" class="track" min="0" max="${sliderMax}" step="1" value="${Math.min(n, sliderMax)}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} slider" ${ok ? '' : 'disabled'} />
-                <div class="sys-specs2 card-specs">
-                  ${specs.map(([lab, input, u]) => `<div class="sys-spec"><span class="lab">${lab}</span><span class="v">${input}<span class="unit">${u}</span></span></div>`).join('')}
+                <div class="card-lab">${t('cardCduLab')}${infoIcon(t('tipCduUnits'), t('cardCduLab'), true)}</div>
+                <div class="card-cdu">
+                  <span class="cdu-n"><span class="num" data-card-cdu-n>${nf.format(cduUnits)}</span><span class="unit">${cduUnit}</span></span>
+                  <div class="sys-spec"><span class="lab">${t('cardCduPrice')}</span><span class="v"><span class="u"><input type="number" min="0" step="1000" value="${nf.format(Number(state.cduUnitUsd) || 0).replace(/,/g, '')}" data-input="cduUnitUsd" aria-label="${escAttr(t('cardCduPrice'))}" /></span><span class="unit">$</span></span></div>
                 </div>
               </div>
-              <div class="card-col right">${rightHtml}</div>
+              <div class="card-col right">
+                <div class="card-lab">${t('cardPriceLab')}${infoIcon(neo ? t('tipNetRate') : t('tipMixRate'), t('cardPriceLab'), true)}</div>
+                <div class="su-big card-price">${priceInput}<span class="unit">$/GPU/h</span></div>
+              </div>
             </div>
             <ul class="sys-capex">
-              <li><span>${t('cardRowEquip')}${infoIcon(t('tipPricePerGpu'), t('cardRowEquip'), true)} ${gpuNumInput(key, 'pricePerGpuUsd', g.pricePerGpuUsd, 'step="100"', 'sm')}<small>$ × ${nf.format(Number(g.gpusPerUnit) || 0)} GPU</small></span><span class="cx-val" data-gpu-capex-total="${key}">${usdM(perUnit)}</span></li>
-              <li><span>${t('cardRowCdu', { n: nf.format(cduUnits) })}${infoIcon(t('tipCduShare'), t('cardRowCdu', { n: nf.format(cduUnits) }), true)}</span><span class="cx-val" data-card-cdu="${key}">${cduShare > 0 ? usdM(cduShare) : '—'}</span></li>
-              <li class="total"><span>${t('cardRowTotal')}</span><b data-card-total="${key}">${usdWithKrw(perUnit + cduShare)}</b></li>
+              <li><span>${t('cardRowEquipX', { g: nf.format(Number(g.gpusPerUnit) || 0) })}</span><span class="cx-val" data-gpu-capex-total="${key}">${usdM(perUnit)}</span></li>
+              <li><span>${t('cardCduLab')}${infoIcon(t('tipCduShare'), t('cardCduLab'), true)}</span><span class="cx-val" data-card-cdu="${key}">${cduShare > 0 ? usdM(cduShare) : '—'}</span></li>
+              <li class="total"><span>${t('cardRowTotal')} <small>${t('cardRowTotalSub')}</small></span><b data-card-total="${key}">${usdWithKrw(perUnit + cduShare)}</b></li>
             </ul>
           </div>
         </article>`;
@@ -3513,8 +3536,8 @@
       const title = neo ? t('cfgSecTitle') : t('cfgSecTitleCsp');
       const tip = neo ? t('tipCfgSec') : t('tipCfgSec') + '\n' + t('tipMixTable');
       return `
-        <section class="sec mt-116 mix-sec">
-          ${secHead(title + infoIcon(tip, title, true))}
+        <section class="sec mt-cfg mix-sec">
+          ${secHead(title + infoIcon(tip, title, true), { tri: false })}
           ${basisNote ? `<div class="sec-desc">${basisNote}</div>` : ''}
           <div class="cfg-rows">${rows || `<div class="notice warn">${t('mixNoType')}</div>`}</div>
           ${neo ? '' : (okTypes.length ? tables + totalRow : (rows ? `<div class="notice warn">${t('mixNoType')}</div>` : ''))}
@@ -3700,65 +3723,6 @@
       if (data.cduMode === 'perSu') return t('itcCduFormulaPerSu', { su: nf.format(data.totalSu), k: nf.format(CDU_PER_SU_DEFAULT), n: nf.format(data.cduUnits) });
       return t('itcCduFormulaN1', { cap: `${nf.format(data.cduCapKw)}kW`, n: nf.format(data.cduUnits), duty: nf.format(data.cduDuty), kw: nf.format(Math.round(data.computeKw)), capkw: nf.format(data.cduCapKw) });
     }
-    function cfgDetailHtml(data) {
-      const en = state.lang === 'en';
-      const okTypes = data.types.filter(td => td.ok && td.n > 0);
-      const equipRows = okTypes.map(td => `
-                <tr>
-                  <td><div class="itc-head">${t('itcRowEquip')} · ${gpuLabel(td.type, td.key)}</div>
-                    <div class="itc-basis">${t('itcEquipBasis', { n: nf.format(td.n), per: usdPlain(td.perUnitUsd), p: usdPlain(Number(td.type.pricePerGpuUsd) || 0), g: nf.format(Number(td.type.gpusPerUnit) || 0) })}</div></td>
-                  <td class="r">${usdM(td.itCapexUsd)}</td>
-                  <td class="r">${eok(td.itCapexEok)}</td>
-                </tr>`).join('');
-      const cduRow = `
-                <tr>
-                  <td>
-                    <div class="itc-head">${t('itcRowCdu')}${infoIcon(t('tipCduUnits'), t('itcRowCdu'), true)}</div>
-                    <div class="itc-ctl">
-                      ${segBtns('data-cdu-mode', [['n1', t('itcCduModeN1')], ['perSu', t('itcCduModePerSu')]], data.cduMode === 'perSu' ? 'perSu' : 'n1', true)}
-                      <span class="itc-inp"><span class="lab">${t('labelCduUnitEok')}</span>${numInputHtml('cduUnitEok')}<span class="unit">${unitOf('cduUnitEok')}</span></span>
-                    </div>
-                    <div class="itc-basis" data-cfg-cdu-basis>${cduFormulaText(data)} × ${eok(data.cduUnitEok)}</div>
-                    <div class="itc-note">${t('itcCduNote')}</div>
-                  </td>
-                  <td class="r" data-cfg-cdu-usd>${usdM(data.cduCapexUsd)}</td>
-                  <td class="r" data-cfg-cdu-eok>${eok(data.cduCapexEok)}</td>
-                </tr>`;
-      const intRow = `
-                <tr>
-                  <td><div class="itc-head">${t('itcRowIntegration')}${infoIcon(t('tipIntegration'), t('itcRowIntegration'), true)}</div>
-                    <div class="itc-basis">${t('itcIntegrationNote')}</div></td>
-                  <td class="r">–</td>
-                  <td class="r">${eok(data.integrationEok)}</td>
-                </tr>`;
-      return `
-          <div class="cfg-detail">
-            <div class="dt-wrap">
-              <table class="dt itc">
-                <colgroup><col><col style="width:190px"><col style="width:190px"></colgroup>
-                <thead><tr><th>${t('itcColItem')}</th><th class="r">USD</th><th class="r">${en ? 'KRW' : '원화 환산'}</th></tr></thead>
-                <tbody>
-                  ${equipRows}
-                  ${cduRow}
-                  ${intRow}
-                  <tr class="key total"><td>${t('itcRowTotal')}${infoIcon(t('tipItCapexSec'), t('itcRowTotal'), true)}</td><td class="r" data-cfg-total-usd>${usdM(data.itCapexUsd)}</td><td class="r" data-cfg-total-eok><strong>${eok(data.itCapexEok)}</strong></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>`;
-    }
-    // CDU 대당 구매비 입력 중 부분 갱신 (전체 재렌더 없이)
-    function syncCfgDetail() {
-      const data = getActiveData();
-      const set = (sel, html) => { const el = document.querySelector(sel); if (el) el.innerHTML = html; };
-      set('[data-cfg-cdu-basis]', `${cduFormulaText(data)} × ${eok(data.cduUnitEok)}`);
-      set('[data-cfg-cdu-usd]', usdM(data.cduCapexUsd));
-      set('[data-cfg-cdu-eok]', eok(data.cduCapexEok));
-      set('[data-cfg-total-usd]', usdM(data.itCapexUsd));
-      set('[data-cfg-total-eok]', `<strong>${eok(data.itCapexEok)}</strong>`);
-      syncGpuLive(null);
-    }
-
     // ---- rev36: 수전·면적 사용 현황 — 미터 + 카드별 임계표 ----
     function powerCapTextMix(data) {
       const over = data.allocationPct > 100;
@@ -4975,7 +4939,7 @@
         case 'leaseAreaSqm': return '㎡';
         case 'leaseRentPerSqm': case 'leaseMgmtPerSqm': return en ? 'KRW/㎡·mo' : '원/㎡·월';
         case 'leaseDepositMonths': return en ? 'mo' : '개월';
-        case 'cduUnitEok': return en ? '$M/unit' : '억/대';
+        case 'cduUnitUsd': return '$';
         case 'cduCapKw': return 'kW';
         default: return '%';
       }
@@ -6706,6 +6670,7 @@
           tot.innerHTML = tot.closest('.sys-card') ? usdM(gpuCapexPerUnitUsd(g)) : usdWithKrw(gpuCapexPerUnitUsd(g));
         });
         const share = cduShareUsd(data);
+        document.querySelectorAll('[data-card-cdu-n]').forEach(el => { el.textContent = nf.format(data.cduUnits || 0); });
         document.querySelectorAll(`[data-card-cdu="${key}"]`).forEach(el => { el.textContent = share > 0 ? usdM(share) : '—'; });
         document.querySelectorAll(`[data-card-total="${key}"]`).forEach(el => { el.innerHTML = usdWithKrw(gpuCapexPerUnitUsd(g) + share); });
         const th = document.querySelector(`[data-th-type="${key}"]`);
@@ -7020,14 +6985,15 @@
       }
 
       const inputId = event.target.dataset.input;
-      if (inputId === 'cduUnitEok' || inputId === 'cduCapKw') {
-        // rev59: 본문(도입 구성 상세) 입력은 타이핑 중 전체 재렌더 없이 부분 갱신
+      if (inputId === 'cduUnitUsd' || inputId === 'cduCapKw') {
+        // rev60: 카드의 CDU 대당 단가 입력은 타이핑 중 전체 재렌더 없이 카드 합계만 갱신
         const def = getControlDef(inputId);
         let v = Number(String(event.target.value).replace(/,/g, '').trim());
         if (!Number.isFinite(v)) return;
         if (def) v = Math.max(def.min, Math.min(def.max, v));
         state[inputId] = v;
-        syncCfgDetail();
+        document.querySelectorAll(`[data-input="${inputId}"]`).forEach(inp => { if (inp !== event.target) inp.value = v; });
+        syncGpuLive(event.target);
         refreshLiveMetrics();
         return;
       }
@@ -7087,7 +7053,7 @@
 
     document.addEventListener('change', event => {
       if (event.target.matches('[data-input="neoTargetIrrPct"]')) { fitInput(event.target); refreshNeoSens(); return; }
-      if (event.target.matches('[data-input="cduUnitEok"], [data-input="cduCapKw"]')) { render(); return; }
+      if (event.target.matches('[data-input="cduUnitUsd"], [data-input="cduCapKw"]')) { render(); return; }
       if (event.target.matches('[data-card-price]')) { buildControls(); render(); return; }
       if (event.target.matches('[data-neo-key]')) { state.neoPriceKey = event.target.value; buildControls(); refreshControls(); return; }
       if (event.target.matches('[data-gpu-count]')) { applyGpuCountInput(event.target, true); render(); return; }
