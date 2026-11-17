@@ -814,8 +814,7 @@
     .dt.fac .fac-note .fac-detail-list li { padding-left: 8px; text-indent: -8px; }
     .dt.fac .fac-note .fac-detail-list li::before { content: "· "; }
     .dt.fac .fac-note .fac-logic b { font-weight: 600; }
-    .dt.fac tr.fac-total td { padding: 7.5px 0 34.8px; font-size: 17px; font-weight: 600; line-height: 25px; color: var(--g60); }
-    .dt.fac tr.fac-total td::after { display: none; }
+    .dt.fac tr.fac-total td { padding: 14px 0 14px; font-size: 17px; font-weight: 600; line-height: 25px; color: var(--g60); }
     .dt.fac tr.fac-total td .fac-pct { font-weight: 400; }
     .dt.fac tr.fac-total td strong { font-size: 17px; font-weight: 600; color: var(--g60); }
     .dt.fac tr.fac-total td .fac-note { font-size: 17px; font-weight: 600; }
@@ -848,9 +847,12 @@
     .dt.fac .fac-est-note b { font-weight: 600; }
     .dt.fac .fac-est-note.warn { color: var(--red); }
     .dt.fac .fac-est-src { margin-top: 16px; font-size: 12px; line-height: 18px; color: var(--ga0); }
-    .dt.fac tr.fac-sub td, .dt.fac tr.fac-sum td { padding: 14px 0 14px; font-size: 16px; font-weight: 600; color: var(--g60); line-height: 24px; }
-    .dt.fac tr.fac-sub td strong, .dt.fac tr.fac-sum td strong { font-size: 16px; font-weight: 600; color: var(--g60); }
-    .dt.fac tr.fac-sub td::before { content: ""; position: absolute; left: 0; right: var(--gap); top: 0; height: 1px; background: var(--k100); }
+    .dt.fac tr.fac-sub td, .dt.fac tr.fac-sum td { padding: 14px 0 14px; font-size: 17px; font-weight: 600; color: var(--g60); line-height: 25px; }
+    .dt.fac tr.fac-sub td strong, .dt.fac tr.fac-sum td strong { font-size: 17px; font-weight: 600; color: var(--g60); }
+    /* 직접공사비 · 공사비 합계 · 시설 CAPEX 합계: 위아래 구분선 1.5px (다른 행 헤어라인보다 굵게) */
+    .dt.fac tr.fac-sub td::before, .dt.fac tr.fac-sum td::before, .dt.fac tr.fac-total td::before { content: ""; position: absolute; left: 0; right: var(--gap); top: 0; height: 1.5px; background: var(--g60); z-index: 1; }
+    .dt.fac tr.fac-sub td::after, .dt.fac tr.fac-sum td::after { height: 1.5px; z-index: 1; }
+    .dt.fac tbody tr.fac-total td::after { display: block; height: 1.5px; }
     .dt.fac tr.fac-sub td .fac-sum-note, .dt.fac tr.fac-sum td .fac-sum-note { font-size: 13px; font-weight: 400; line-height: 20px; color: var(--ga0); }
     .dt.fac tr.fac-row.fac-overhead .fac-lab, .dt.fac tr.fac-row.fac-extra .fac-lab { font-size: 15px; }
 
@@ -1291,7 +1293,7 @@
       cduCapKw: 1350,           // CDU 1대 명목 냉각능력(kW) — HPE/Vertiv XDU1350
       cduUnitUsd: 742143,       // CDU 대당 구매비(USD) — 10.39억(XDU1350 세전 표시가 €582,148.17·€831,832.10 평균 × 1,470.23원/€) ÷ 계획환율 1,400원
       initIntegrationEok: 10,   // 초기 SW 설치·통합비(억) — 40M/M × 월 2,000만원 = 8억 + 예비비 2억
-      // rev66: 운영 인건비 — 4인 4교대 운영 기준 12명 × 인당 1억 = 12억/년 (가동률과 무관하게 매년 발생)
+      // rev66: 운영 인건비 — 4인 3교대 운영 기준 12명 × 인당 1억 = 12억/년 (가동률과 무관하게 매년 발생)
       laborHeadcount: 12,       // 운영 인원(명)
       laborCostPerHeadEok: 1,   // 인당 연 인건비(억)
       // rev58: 임차 조건 — 임대료·관리비는 연 환산해 운영비, 보증금은 환산 이자율만 운영비(원금은 0년차 납입 · 3년차 회수)
@@ -1392,11 +1394,11 @@
       tipLease: { ko: '임대료 = 계약면적 × 임대료 단가 × 12, 관리비 = 계약면적 × 관리비 단가 × 12, 보증금 = 월 임대료 × 개월수. 운영비에는 임대료 + 관리비 + 보증금 × 환산 이자율만 넣고, 보증금 원금은 재무구조에서 0년차 납입·3년차 회수로 반영합니다. 임대대행 수수료는 별도 협의(1년차 1회 지출).', en: 'Rent = area × rent rate × 12; management = area × fee rate × 12; deposit = monthly rent × months. Opex includes rent + management + deposit × carrying rate; the deposit principal is paid in Year 0 and returned in Year 3 in the financing view. Agent fee is to be negotiated (one-off in Year 1).' },
       blLease: { ko: '임차 비용(연)', en: 'Lease cost (per yr)' },
       blLabor: { ko: '인건비(연)', en: 'Labor cost (per yr)' },
-      blLaborDetail: { ko: '{n}명 × 인당 {c} · 4인 4교대 기준', en: '{n} people × {c} each · 4-person 4-shift' },
+      blLaborDetail: { ko: '{n}명 × 인당 {c} · 4인 3교대 기준', en: '{n} people × {c} each · 4-person 3-shift' },
       labelLaborHeadcount: { ko: '운영 인원', en: 'Operations staff' },
       labelLaborPerHead: { ko: '인당 인건비 (연)', en: 'Labor cost per head (yr)' },
-      laborHint: { ko: '4인 4교대 운영 기준 · {n}명 × {c} = 인건비 {t}/년 (가동률과 무관)', en: '4-person, 4-shift operation · {n} people × {c} = labor {t}/yr (independent of utilization)' },
-      tipLabor: { ko: '운영 인건비 = 운영 인원 × 인당 연 인건비. 기본값은 4인 4교대 운영 기준 12명 × 1억 = 12억/년이며 가동률과 무관하게 매년 운영비에 반영됩니다.', en: 'Labor cost = operations staff × annual cost per head. Default is 12 people × 0.1B = 1.2B KRW per year for a 4-person, 4-shift operation, charged every year regardless of utilization.' },
+      laborHint: { ko: '4인 3교대 운영 기준 · {n}명 × {c} = 인건비 {t}/년 (가동률과 무관)', en: '4-person, 3-shift operation · {n} people × {c} = labor {t}/yr (independent of utilization)' },
+      tipLabor: { ko: '운영 인건비 = 운영 인원 × 인당 연 인건비. 기본값은 4인 3교대 운영 기준 12명 × 1억 = 12억/년이며 가동률과 무관하게 매년 운영비에 반영됩니다.', en: 'Labor cost = operations staff × annual cost per head. Default is 12 people × 0.1B = 1.2B KRW per year for a 4-person, 3-shift operation, charged every year regardless of utilization.' },
       blLeaseDetail: { ko: '임대료 {r} + 관리비 {m} + 보증금 이자 {dc}', en: 'rent {r} + mgmt {m} + deposit interest {dc}' },
       chipLease: { ko: '임차 조건', en: 'Lease' },
       blCdu: { ko: 'CDU', en: 'CDU' },
@@ -1844,9 +1846,9 @@
       facModeBoth: { ko: '신축', en: 'New build' },
       facModeRemodel: { ko: '리모델링', en: 'Remodel only' },
       facModeTip: { ko: '시설비 CAPEX 산정 방식. [리모델링] 기존 건물(B1) 용도변경·설비 개보수 견적(446.12억 기준)만 계상. [신축] 신축 전력동(700㎡) 병행안 — 신축 열에 구 모델 고정분 56억(건축/토목 40 · 소방/보안 16)을 가산하며 신축 견적은 별도 산정 전입니다.', en: 'How facility capex is costed. [Remodel] only the B1 change-of-use / MEP refurbishment estimate (446.12 base). [New build] adds a 700㎡ power building — the new-build column carries the legacy fixed 5.6B (architecture/civil 40 · fire/security 16) until a new-build estimate is prepared.' },
-      facModeHintRemodel: { ko: '기존 건물 리모델링 견적(446.12억 기준) · 직접공사비 + 직접공사 공통비 12% + 예비비 20% + 지반조사 0.80억', en: 'Remodel estimate of the existing building (446.12 base) · direct cost + direct-cost overhead 12% + contingency 20% + geotechnical 0.80' },
+      facModeHintRemodel: { ko: '기존 건물 리모델링 견적(446.12억 기준) · 직접공사비 + 설계/감리 4% + 직접공사 공통비 12% + 예비비 20% + 지반조사 0.80억', en: 'Remodel estimate of the existing building (446.12 base) · direct cost + design/supervision 4% + direct-cost overhead 12% + contingency 20% + geotechnical 0.80' },
       facModeHintBoth: { ko: '신축 전력동(700㎡) 병행 · 신축 열(구 모델 고정분 56억) + 리모델링 열의 합이 시설비', en: 'With the new 700㎡ power building · facility capex = new-build column (legacy fixed 5.6B) + remodel column' },
-      facilityDescRemodel: { ko: '판교 B1 용도변경·설비 개보수 기준 「공종별 개략공사비 산정보고서」(2026.11.17)의 공종별 직접공사비를 연면적(건축·구조·통신·소방)과 총 수전(기계·전기)에 비례 연동해 산출합니다. 직접공사비 소계 아래에 직접공사 공통비 12%·예비비 20%를 가산하고, 지반조사용역(0.80억)은 공통비·예비비 없이 별도 합산합니다. 설계/감리/간접비는 보고서 미계상(0)이며 비율·금액을 직접 입력할 수 있습니다. 단가 입력은 억 원 단위, 행별 수동 전환 가능하며 각 공종의 근거는 행마다 펼쳐 볼 수 있습니다.', en: 'Direct construction cost by trade from the detailed cost estimate (2026-11-17, B1 change-of-use and MEP refurbishment) is linked to floor area (architecture, structure, telecom, fire) and total power (mechanical, electrical). Direct-cost overhead 12% and contingency 20% are added below the direct-cost subtotal, and the geotechnical fee (0.08B) is added separately without overhead or contingency. Design/supervision/indirect is not in the report (0) and can be entered as a % or amount. Rates are in 0.1B KRW, each row can be switched to manual, and the basis of every trade expands in place.' },
+      facilityDescRemodel: { ko: '판교 B1 용도변경·설비 개보수 기준 「공종별 개략공사비 산정보고서」(2026.11.17)의 공종별 직접공사비를 연면적(건축·구조·통신·소방)과 총 수전(기계·전기)에 비례 연동해 산출합니다. 직접공사비 소계 아래에 직접공사 공통비 12%·예비비 20%를 가산하고, 지반조사용역(0.80억)은 공통비·예비비 없이 별도 합산합니다. 설계/감리는 보고서 미계상 항목으로 직접공사비의 4%를 직접공사비 바로 아래에 가산합니다(비율·금액 수정 가능). 단가 입력은 억 원 단위, 행별 수동 전환 가능하며 각 공종의 근거는 행마다 펼쳐 볼 수 있습니다.', en: 'Direct construction cost by trade from the detailed cost estimate (2026-11-17, B1 change-of-use and MEP refurbishment) is linked to floor area (architecture, structure, telecom, fire) and total power (mechanical, electrical). Direct-cost overhead 12% and contingency 20% are added below the direct-cost subtotal, and the geotechnical fee (0.08B) is added separately without overhead or contingency. Design & supervision is not in the report and is added right below direct cost at 4% of direct cost (rate or amount editable). Rates are in 0.1B KRW, each row can be switched to manual, and the basis of every trade expands in place.' },
       cardRacks: { ko: '= {n}랙', en: '= {n} racks' },
       tipSystemSelector: { ko: '켜진 카드의 SU 수 합이 IT 수전용량과 화이트스페이스 안에 들어오도록 상한을 계산합니다(완결된 SU 단위). 카드별 장비 구매비 = GPU당 적용 단가 × SU당 GPU 수 × SU 수, 매출은 GPU 수 × 시간당 단가 × 가동 시간.', en: 'Caps the total SUs of active cards to the IT power and white space (whole SUs only). Equipment per card = price per GPU × GPUs per SU × SUs; revenue = GPUs × hourly rate × hours.' },
       tipMixTable: { ko: '연매출 = GPU 수 × 8,760h × Σ(계약 비중 × 연차 가동률 계수 × 계약별 단가). 계약별 단가 = 기초단가($) × (1 + 입지 프리미엄) × (1 − 예약 할인) × 환율.', en: 'Annual revenue = GPUs × 8,760h × Σ(contract share × yearly utilization × contract rate). Contract rate = base rate × (1 + location premium) × (1 − reserve discount) × FX.' },
@@ -1857,7 +1859,7 @@
       tipCapSec: { ko: '사용 IT 전력 = Σ SU 수 × SU당 전력(컴퓨팅 전력 × 1.1, 지원 장비 10%) · 면적 사용 = 그레이스페이스 및 기타 + Σ SU 수 × SU당 면적(위치 수 × 랙당 면적) · 카드별 상한 = min(전력 기준, 면적 기준) SU 수, 다른 카드가 쓰는 잔여분 기준.', en: 'IT power used = Σ SUs × power per SU (compute × 1.1 for support gear) · area used = grey space & other + Σ SUs × area per SU (positions × area per rack) · cap per card = min(power-based, area-based) SUs on the remaining budget.' },
       tipFormula: { ko: '화면 계산에 쓰인 기준값과 산식을 한곳에 모았습니다. 각 표의 숫자는 여기 산식으로 재계산할 수 있습니다.', en: 'All inputs and formulas used on screen in one place; every figure in the tables can be recomputed from them.' },
       tipChart: { ko: '누적 손익 = 누적 매출 − 누적 지출(감가상각 + 전기료 + SW 구독 + 기타 운영비), 재무구조 반영 전.', en: 'Cumulative profit = cumulative revenue − cumulative expense (depreciation + electricity + SW + other opex), before financing.' },
-      tipFacility: { ko: '면적비례 = ㎡당 단가 × 연면적(기준 1,850㎡) · 용량비례 = MW당 단가 × 총 수전(기준 3.6MW) · 고정 = 면적·용량 비연동 · 간접비율 = 단가 행 합계 × % · 직접공사 공통비·예비비 = 직접공사비 × %. 기본값은 보고서 446.12억을 그대로 재현하며, 행별로 수동 전환해 예산을 직접 입력할 수 있습니다.', en: 'Area items = rate/㎡ × floor area (1,850㎡ base) · capacity items = rate/MW × total power (3.6MW base) · fixed = independent of area and power · indirect = sum of rate rows × % · direct-cost overhead/contingency = direct cost × %. Defaults reproduce the report total of 446.12; any row can be switched to manual input.' },
+      tipFacility: { ko: '면적비례 = ㎡당 단가 × 연면적(기준 1,850㎡) · 용량비례 = MW당 단가 × 총 수전(기준 3.6MW) · 고정 = 면적·용량 비연동 · 설계/감리·직접공사 공통비·예비비 = 직접공사비 × %. 기본값은 보고서 446.12억에 설계/감리 4%(13.49억)를 더한 459.61억이며, 행별로 수동 전환해 예산을 직접 입력할 수 있습니다.', en: 'Area items = rate/㎡ × floor area (1,850㎡ base) · capacity items = rate/MW × total power (3.6MW base) · fixed = independent of area and power · design/supervision, direct-cost overhead and contingency = direct cost × %. Defaults equal the report total of 446.12 plus 4% design & supervision (459.61); any row can be switched to manual input.' },
       tipProd: { ko: 'SuperPOD(턴키 패키지)와 랙 낱개 조달의 범위·검증·확장 단위를 정성 비교합니다.', en: 'Qualitative comparison of the SuperPOD turnkey package and standalone rack procurement.' },
       tipPnl: { ko: '3년 누적 매출 − 3년 누적 지출(감가상각·전기료·SW·운영비)의 구조를 모델별로 비교합니다.', en: 'Compares 3-year cumulative revenue less expense (depreciation, electricity, SW, opex) by model.' },
       tipCompare: { ko: '켜진 유형마다 같은 연면적·수전 안에서 그 유형만으로 채운 최대 구성과, 2개 이상이면 현재 혼합 구성을 비교합니다.', en: 'Each enabled type at its standalone maximum within the same floor area and power, plus the current mix when two or more are enabled.' },
@@ -1942,16 +1944,16 @@
       facilityGrandBadge: { ko: '합계 {v}', en: 'Total {v}' },
       facilityColShare: { ko: '구성비', en: 'Share' },
       facilityTotalNoteV7: { ko: '신축 소계 {a} + 리모델링 소계 {b} = 시설비 CAPEX 합계 {c}', en: 'New-build subtotal {a} + remodel subtotal {b} = facility CAPEX total {c}' },
-      facilityTotalNoteEst: { ko: '직접공사비 {d} + 직접공사 공통비 {o} + 직접공사 예비비 {c} = 공사비 {s} · 지반조사 {g} 별도 = 시설 CAPEX {t}', en: 'Direct {d} + direct-cost overhead {o} + direct-cost contingency {c} = construction {s} · geotechnical {g} separate = facility capex {t}' },
+      facilityTotalNoteEst: { ko: '직접공사비 {d} + 설계/감리 {e} + 직접공사 공통비 {o} + 직접공사 예비비 {c} = 공사비 {s} · 지반조사 {g} 별도 = 시설 CAPEX {t}', en: 'Direct {d} + design/supervision {e} + direct-cost overhead {o} + direct-cost contingency {c} = construction {s} · geotechnical {g} separate = facility capex {t}' },
       facilityTotalNoteCols: { ko: '신축 {a} + 리모델링 {b}', en: 'New build {a} + remodel {b}' },
       kindFixed: { ko: '고정', en: 'Fixed' },
       kindPct: { ko: '비율', en: 'Ratio' },
       ratePctLabel: { ko: '직접공사비 대비(%)', en: 'Of direct cost (%)' },
       facRowDirect: { ko: '직접공사비', en: 'Direct construction cost' },
-      facRowDirectNote: { ko: '공종별 직접공사비 소계 — 직접공사 공통비·예비비 산정 기준', en: 'Subtotal of direct cost by trade — base for direct-cost overhead and contingency' },
+      facRowDirectNote: { ko: '공종별 직접공사비 소계 — 설계/감리·직접공사 공통비·예비비 산정 기준', en: 'Subtotal of direct cost by trade — base for design/supervision, direct-cost overhead and contingency' },
       facRowConstruction: { ko: '공사비 합계', en: 'Construction cost total' },
-      facRowConstructionNote: { ko: '직접공사비 + 직접공사 공통비 + 직접공사 예비비', en: 'Direct cost + direct-cost overhead + direct-cost contingency' },
-      facOverheadBasis: { ko: '직접공사비 {d} × {p}% — 보고서 예산 가정(법정 단일 요율 아님)', en: 'Direct cost {d} × {p}% — a budget assumption of the report, not a statutory rate' },
+      facRowConstructionNote: { ko: '직접공사비 + 설계/감리 + 직접공사 공통비 + 직접공사 예비비', en: 'Direct cost + design/supervision + direct-cost overhead + direct-cost contingency' },
+      facOverheadBasis: { ko: '직접공사비 {d} × {p}%', en: 'Direct cost {d} × {p}%' },
       facSoftBasis: { ko: '보고서 미계상(0) — 단가 행 합계 × {p}% · 비율 또는 수동 금액으로 입력 가능', en: 'Not included in the estimate (0) — sum of rate rows × {p}% · enter a % or a manual amount' },
       facExpandOpen: { ko: '근거 펼치기', en: 'Show basis' },
       facExpandClose: { ko: '근거 접기', en: 'Hide basis' },
@@ -1961,7 +1963,7 @@
       facEstScaleFixed: { ko: '고정 항목 — 연면적·수전과 무관하게 보고서 금액을 그대로 적용합니다.', en: 'Fixed item — the report amount is applied regardless of floor area and power.' },
       facEstScaleManual: { ko: '수동 입력 중 — 아래 표는 보고서의 기준 수량·금액이며 입력값과 연동되지 않습니다.', en: 'Manual input in effect — the table below shows the report base and is not linked to the entered value.' },
       facEstSource: { ko: '출처: 공종별 개략공사비 산정보고서 (2026.11.17) · 기획단계 예산가정 · 업체 견적·구조계산·실측 없음 · VAT 별도', en: 'Source: detailed cost estimate by trade (2026-11-17) · planning-stage budget assumptions · no vendor quotes, structural calculation or site measurement · VAT excluded' },
-      facEstSourceFoot: { ko: '기본값은 「공종별 개략공사비 산정보고서」(2026.11.17)의 446.12억(공사비 445.32 + 지반조사 0.80)을 재현합니다. 제시 수량·복합단가는 설계 가정이며 발주용 예정가격 또는 투자비 확정액이 아닙니다. VAT·토지·건물 취득비·금융비·GPU 서버·고속 스위치·스토리지·SW·대규모 한전 외부망은 제외입니다.', en: 'Defaults reproduce the 446.12 (construction 445.32 + geotechnical 0.80) of the detailed cost estimate (2026-11-17). Quantities and composite rates are design assumptions, not tender prices or approved investment. VAT, land/building acquisition, financing, GPU servers, high-speed switches, storage, software and large utility grid works are excluded.' },
+      facEstSourceFoot: { ko: '기본값은 「공종별 개략공사비 산정보고서」(2026.11.17)의 446.12억(공사비 445.32 + 지반조사 0.80)에 설계/감리 4%(13.49억)를 더한 459.61억입니다. 제시 수량·복합단가는 설계 가정이며 발주용 예정가격 또는 투자비 확정액이 아닙니다. VAT·토지·건물 취득비·금융비·GPU 서버·고속 스위치·스토리지·SW·대규모 한전 외부망은 제외입니다.', en: 'Defaults equal the 446.12 (construction 445.32 + geotechnical 0.80) of the detailed cost estimate (2026-11-17) plus 4% design & supervision (459.61). Quantities and composite rates are design assumptions, not tender prices or approved investment. VAT, land/building acquisition, financing, GPU servers, high-speed switches, storage, software and large utility grid works are excluded.' },
       facilityCduNoteEst: { ko: '※ 기계설비 5.1의 CDU 1,250kW급 3대(12.60억)는 IT 장비 CAPEX(서버 선택 카드)의 CDU 구매비와 범위가 겹칠 수 있습니다 — 중복 계상 여부 확인 전까지 보고서 수치를 그대로 유지합니다.', en: '※ The three 1,250kW CDUs (1.26B KRW) in mechanical 5.1 may overlap with the CDU purchase in IT equipment capex (server cards) — the report figure is kept until double counting is checked.' },
       facilityTotalNoteB1: { ko: '리모델링 단일 항목 {b} = 시설비 CAPEX 합계 {c} (신축 전력동 폐지로 신축분 0)', en: 'Remodel-only {b} = facility CAPEX total {c} (new-build portion is zero — the power building is dropped)' },
       facilityDescB1: { ko: '[B1 전체] 신축 전력동을 폐지하고 수배전·UPS·비상발전기·급수탱크를 B1 내부로 흡수한 구조입니다. 전력·공조는 총액이 그대로 리모델링으로 이관되고, 건축/토목·통신/소방의 신축 고정분(40억·16억)만 소멸합니다. 면적비례 단가는 고하중(데이터홀) 구간과 일반 구간을 분리 적용합니다.', en: '[Full B1] the new power building is dropped and switchgear, UPS, emergency generators and the water tank are absorbed into B1. Power and mechanical costs transfer wholly to the remodel column at unchanged totals; only the fixed new-build portions of architecture (4.0B) and telecom/fire (1.6B) disappear. Area-proportional rates are split between the heavy-load (data hall) zone and the general zone.' },
@@ -1983,7 +1985,7 @@
       3: { ko: '3년차 80% — 차세대 칩셋 진입기의 보수적 가정.', en: 'Yr3 80% — conservative assumption as next-gen chipsets enter the market.' }
     };
     // ---- 시설비 CAPEX (rev65): 「공종별 개략공사비 산정보고서」(2026.11.17 · 446.12억) 구조 ----
-    // 직접공사비(건축·구조·토목·기계·전기·통신·소방 + 설계/감리/간접비 0) → 공통비 12% → 예비비 20% → 공사비 합계 → 지반조사용역 0.80(공통비·예비비 미적용) → 총 446.12억
+    // 직접공사비(건축·구조·토목·기계·전기·통신·소방) → 설계/감리 4% → 직접공사 공통비 12% → 직접공사 예비비 20% → 공사비 합계 → 지반조사용역 0.80(비율 항목 미적용) → 총 459.61억(보고서 446.12 + 설계/감리 13.49)
     // 비례 연동: 건축·구조·통신·소방 = 연면적(기준 1,850㎡) 비례 · 기계·전기 = 총 수전(기준 3,600kW) 비례 · 토목·지반조사 = 고정 · 기본값은 보고서 수치를 그대로 재현
     const FAC_ROW_KEYS = ['architecture', 'structure', 'civil', 'mechanical', 'electrical', 'telecom', 'fire', 'softCosts'];
     const FAC_BASE_AREA_SQM = 1850;
@@ -2163,14 +2165,14 @@
         direct('fire', '소방', 'Fire protection', 'area', 11.50, { newbuildFixedEok: 16, newbuild: 16,
           summaryKo: '가스계 소화 3구역 · 스프링클러 보완 · VESDA 12구역 · 수신반·과압배출·배터리 화재감시', summaryEn: 'Clean-agent 3 zones · sprinkler upgrade · VESDA 12 zones · panel, pressure relief, battery fire monitoring',
           logicKo: '면적비례 — 연면적 1,850㎡ 기준 11.50억을 ㎡당 단가로 환산', logicEn: 'Area-proportional — 11.50 at the 1,850㎡ base, converted to a per-㎡ rate' }),
-        { key: 'softCosts', labelKo: '설계/감리/간접비', labelEn: 'Design/Supervision/Indirect', kind: 'soft', group: 'direct', softPct: 0, newbuild: 0, remodel: 0,
-          summaryKo: '보고서 미계상(0) — 추가 검토 항목. 필요 시 직접비 대비 비율 또는 수동 금액 입력', summaryEn: 'Not included in the estimate (0) — under review. Enter a % of direct cost or a manual amount if needed',
-          logicKo: '간접비율 — 단가 행 합계 × % (현재 0%), 직접공사비에 포함되어 공통비·예비비 산정 기준에 들어감', logicEn: 'Indirect ratio — sum of rate rows × % (currently 0%), included in direct cost and therefore in the overhead/contingency base' },
+        { key: 'softCosts', labelKo: '설계/감리', labelEn: 'Design & supervision', kind: 'pct', group: 'overhead', pct: 4, newbuild: 2.24, remodel: 13.4944,
+          summaryKo: '설계·감리비(보고서 미계상 항목) · 직접공사비의 4% 가정, 비율·금액 수정 가능', summaryEn: 'Design & supervision fee (not in the report) · assumed at 4% of direct cost, rate or amount editable',
+          logicKo: '비율 — 직접공사비 소계 × 설계/감리 비율 (공통비·예비비 산정 기준에는 미포함)', logicEn: 'Ratio — direct-cost subtotal × design/supervision % (not part of the overhead/contingency base)' },
         { key: 'overhead', labelKo: '직접공사 공통비', labelEn: 'Direct-cost overhead', kind: 'pct', group: 'overhead', pct: 12, newbuild: 6.72, remodel: 40.4832,
-          summaryKo: '직접공사비 × 12% — 보고서 예산 가정(법정 단일 요율 아님)', summaryEn: 'Direct cost × 12% — a budget assumption of the report, not a statutory rate',
+          summaryKo: '보고서 예산 가정(법정 단일 요율 아님)', summaryEn: 'A budget assumption of the report, not a statutory rate',
           logicKo: '비율 — 직접공사비 소계 × 공통비율', logicEn: 'Ratio — direct-cost subtotal × overhead %' },
         { key: 'contingency', labelKo: '직접공사 예비비', labelEn: 'Direct-cost contingency', kind: 'pct', group: 'overhead', pct: 20, newbuild: 11.2, remodel: 67.472,
-          summaryKo: '직접공사비 × 20% — 기획단계 예비비(견적·물량 미확정 리스크)', summaryEn: 'Direct cost × 20% — planning-stage contingency for unconfirmed quotes and quantities',
+          summaryKo: '기획단계 예비비(견적·물량 미확정 리스크)', summaryEn: 'Planning-stage contingency for unconfirmed quotes and quantities',
           logicKo: '비율 — 직접공사비 소계 × 예비비율', logicEn: 'Ratio — direct-cost subtotal × contingency %' },
         { key: 'geotech', labelKo: '지반조사용역', labelEn: 'Geotechnical investigation', kind: 'fixed', group: 'extra', fixedEok: 0.80, newbuild: 0, remodel: 0.80, est: 'geotech',
           summaryKo: '시추 4공·현장/실내시험·기존 자료조사 — 공통비·예비비 미적용', summaryEn: '4 borings, field/lab tests, data review — no overhead or contingency applied',
@@ -2252,7 +2254,7 @@
         const v = isAuto ? facilityRowAuto(row, modelKey, inputState) : fixedVal(row);
         push(row, v, isAuto); dNew += v.newbuild; dRem += v.remodel;
       });
-      // 2) 설계/감리/간접비 — 단가 행 합계 × %(기본 0), 직접공사비에 포함
+      // 2) (예비) 직접공사비 그룹의 비율 행 — 현재 설계/감리는 overhead 그룹(직접공사비 아래)에서 처리
       model.rows.filter(r => r.group === 'direct' && r.kind === 'soft').forEach(row => {
         const isAuto = auto && !model.manual[row.key];
         const pct = (Number(row.softPct) || 0) / 100;
@@ -3165,7 +3167,7 @@
       const leaseOpexEok = leaseRentEok + leaseMgmtEok + leaseDepositCostEok;
       const leaseAgentFeeEok = Math.max(0, Number(inputState.leaseAgentFeeEok) || 0);
       const leaseByYear = utils.map((_, i) => leaseOpexEok + (i === 0 ? leaseAgentFeeEok : 0));
-      // rev66: 운영 인건비 — 운영 인원 × 인당 연 인건비 (4인 4교대 운영 기준 12명 × 1억 = 12억/년, 가동률과 무관)
+      // rev66: 운영 인건비 — 운영 인원 × 인당 연 인건비 (4인 3교대 운영 기준 12명 × 1억 = 12억/년, 가동률과 무관)
       const laborHeads = Math.max(0, Number(inputState.laborHeadcount) || 0);
       const laborPerHeadEok = Math.max(0, Number(inputState.laborCostPerHeadEok) || 0);
       const laborEok = gpus > 0 ? laborHeads * laborPerHeadEok : 0;
@@ -4600,8 +4602,8 @@
     }
     function facTotalNoteHtml(showNew, result, grand) {
       const over = result.overheadRows || [];
-      const o = over.find(r => r.def.key === 'overhead'), c = over.find(r => r.def.key === 'contingency');
-      const txt = t('facilityTotalNoteEst', { d: eokF(result.direct.total), o: eokF(o ? o.total : 0), c: eokF(c ? c.total : 0), s: eokF(result.construction.total), g: eokF(result.extra.total), t: eokF(grand) });
+      const o = over.find(r => r.def.key === 'overhead'), c = over.find(r => r.def.key === 'contingency'), e = over.find(r => r.def.key === 'softCosts');
+      const txt = t('facilityTotalNoteEst', { d: eokF(result.direct.total), e: eokF(e ? e.total : 0), o: eokF(o ? o.total : 0), c: eokF(c ? c.total : 0), s: eokF(result.construction.total), g: eokF(result.extra.total), t: eokF(grand) });
       return (showNew ? `${t('facilityTotalNoteCols', { a: eokF(result.newbuildSum), b: eokF(result.remodelSum) })}<br>` : '') + txt.replace(/\s=\s/, '<br>= ');
     }
     function bigNumInner(str) {
@@ -4639,8 +4641,8 @@
         const id = `${modelKey}:${def.key}`;
         const open = facOpen.has(id);
         const summary = def.kind === 'pct'
-          ? t('facOverheadBasis', { p: nf1.format(Number(def.pct) || 0), d: eokF(result.direct.total) })
-          : (def.kind === 'soft' && row.auto ? t('facSoftBasis', { p: nf1.format(Number(def.softPct) || 0) }) : (en ? def.summaryEn : def.summaryKo));
+          ? `${t('facOverheadBasis', { p: nf1.format(Number(def.pct) || 0), d: eokF(result.direct.total) })} — ${en ? def.summaryEn : def.summaryKo}`
+          : (en ? def.summaryEn : def.summaryKo);
         const logic = en ? def.logicEn : def.logicKo;
         const btn = FAC_EST[def.est]
           ? `<button type="button" class="fac-expand ${open ? 'open' : ''}" data-fac-expand="${id}" aria-expanded="${open ? 'true' : 'false'}"><span class="cx-tri"></span><span class="txt">${open ? t('facExpandClose') : t('facExpandOpen')}</span></button>`
@@ -6083,7 +6085,7 @@
           { cells: [L('연간 전기료', 'Electricity (Y1)'), perYr(eok(d.electricityByYear[0])), `${L('전력량', 'Energy')} ${eok(d.energyByYear[0])} + ${L('기본요금', 'basic charge')} ${eok(d.baseEok)}`] },
           { cells: [L('AI Enterprise 구독', 'AI Enterprise subscription'), perYr(eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)), `${formatSwSub(d.swRateUsd)} × ${nf.format(d.swGpus || 0)} GPU`] },
           { cells: [L('임차 비용', 'Lease cost'), perYr(eok(leaseSum)), `${L('임대료', 'rent')} ${eok(d.leaseRentEok)} + ${L('관리비', 'management')} ${eok(d.leaseMgmtEok)} + ${L('보증금', 'deposit')} ${eok(d.leaseDepositEok)} × ${nf1.format(d.leaseDepositRatePct)}% = ${eok(d.leaseDepositCostEok)} (${nf1.format(d.leaseArea)}㎡ × ${nf.format(state.leaseRentPerSqm)}/${nf.format(state.leaseMgmtPerSqm)}${L('원/㎡·월', ' KRW/㎡·mo')})${(d.leaseAgentFeeEok || 0) > 0 ? ` + ${L('임대대행 수수료(1년차)', 'agent fee (Y1)')} ${eok(d.leaseAgentFeeEok)}` : ''} · ${L('현재 계약 조건 고정값', 'fixed at current contract terms')}`] },
-          { cells: [L('인건비', 'Labor cost'), perYr(eok(laborSum)), `${nf.format(d.laborHeads || 0)}${L('명', ' people')} × ${L('인당', 'per head')} ${eok(d.laborPerHeadEok || 0)} (${L('4인 4교대 운영 기준', '4-person, 4-shift operation')})`] },
+          { cells: [L('인건비', 'Labor cost'), perYr(eok(laborSum)), `${nf.format(d.laborHeads || 0)}${L('명', ' people')} × ${L('인당', 'per head')} ${eok(d.laborPerHeadEok || 0)} (${L('4인 3교대 운영 기준', '4-person, 3-shift operation')})`] },
           { cells: [L('감가상각(1년차)', 'Depreciation (Y1)'), perYr(eok(d.capexByYear[0])), `${t('labelDepGroup')} ${nf1.format(state.depY1)} / ${nf1.format(state.depY2)} / ${nf1.format(state.depY3)}%`] },
           { bold: true, cells: [L('연간 지출(1년차)', 'Annual expense (Y1)'), perYr(eok(d.annualExpense[0])), L('감가상각 + 전기료 + AI Enterprise + 임차 비용 + 인건비', 'Depreciation + electricity + AI Enterprise + lease + labor')] }
         ], { align: ['left', 'center', 'left'] })
@@ -6108,8 +6110,8 @@
           remodelOnly
             ? table([3200, W - 3200], [head([L('항목', 'Item'), L('리모델링 예산', 'Remodel budget')]), ...rowsOf(line2)], { align: ctr(2) })
             : table([2600, 1500, 1500, W - 5600], [head([L('항목', 'Item'), L('신축', 'New build'), L('리모델링', 'Remodel'), L('합계', 'Total')]), ...rowsOf(line4)], { align: ctr(4) }),
-          note(L(`출처: 공종별 개략공사비 산정보고서(2026.11.17, 기획단계 예산가정 · VAT·IT 시스템 별도). 기본값은 보고서 446.12억(공사비 445.32 + 지반조사 0.80)을 재현하며, 건축·구조·통신·소방은 연면적 ${nf.format(FAC_BASE_AREA_SQM)}㎡, 기계·전기는 총 수전 ${nf.format(FAC_BASE_TOTAL_KW)}kW 기준에서 비례 연동됩니다. 설계/감리/간접비는 보고서 미계상(0). 직접공사 공통비·예비비는 직접공사비 기준이며 지반조사용역에는 적용하지 않습니다.${remodelOnly ? '' : ' 신축 열은 구 모델의 신축 전력동 고정분(건축 40억 · 소방/보안 16억)이며 신축 견적은 별도 산정 전입니다.'}`,
-            `Source: detailed cost estimate by trade (2026-11-17, planning-stage budget assumptions; VAT and IT systems excluded). Defaults reproduce the report's 446.12 (construction 445.32 + geotechnical 0.80); architecture, structure, telecom and fire scale with floor area from a ${nf.format(FAC_BASE_AREA_SQM)}㎡ base and mechanical/electrical with total power from a ${nf.format(FAC_BASE_TOTAL_KW)}kW base. Design/supervision/indirect is not in the report (0). Overhead and contingency apply to direct cost only, not to the geotechnical fee.${remodelOnly ? '' : ' The new-build column carries the legacy fixed portions of the new power building (architecture 40 · fire/security 16); a new-build estimate is still pending.'}`))
+          note(L(`출처: 공종별 개략공사비 산정보고서(2026.11.17, 기획단계 예산가정 · VAT·IT 시스템 별도). 기본값은 보고서 446.12억(공사비 445.32 + 지반조사 0.80)에 설계/감리 4%(13.49억)를 더한 459.61억이며, 건축·구조·통신·소방은 연면적 ${nf.format(FAC_BASE_AREA_SQM)}㎡, 기계·전기는 총 수전 ${nf.format(FAC_BASE_TOTAL_KW)}kW 기준에서 비례 연동됩니다. 설계/감리는 직접공사비 × 4%로 가산(보고서 미계상 항목). 설계/감리·직접공사 공통비·예비비는 모두 직접공사비 기준이며 지반조사용역에는 적용하지 않습니다.${remodelOnly ? '' : ' 신축 열은 구 모델의 신축 전력동 고정분(건축 40억 · 소방/보안 16억)이며 신축 견적은 별도 산정 전입니다.'}`,
+            `Source: detailed cost estimate by trade (2026-11-17, planning-stage budget assumptions; VAT and IT systems excluded). Defaults equal the report's 446.12 (construction 445.32 + geotechnical 0.80) plus 4% design & supervision (459.61); architecture, structure, telecom and fire scale with floor area from a ${nf.format(FAC_BASE_AREA_SQM)}㎡ base and mechanical/electrical with total power from a ${nf.format(FAC_BASE_TOTAL_KW)}kW base. Design & supervision is added at 4% of direct cost (not in the report). Design/supervision, overhead and contingency all apply to direct cost only, not to the geotechnical fee.${remodelOnly ? '' : ' The new-build column carries the legacy fixed portions of the new power building (architecture 40 · fire/security 16); a new-build estimate is still pending.'}`))
         );
       }
       // [pre] 랙 시스템 구성·단가 (IT CAPEX 내역)
@@ -7173,7 +7175,7 @@
         if (sh) sh.textContent = share(row.total);
         if (row.def.kind === 'pct') {
           const note = document.querySelector(`[data-fac-row="${modelKey}:${row.def.key}"] .fac-summary`);
-          if (note) note.textContent = t('facOverheadBasis', { p: nf1.format(Number(row.def.pct) || 0), d: eokF(result.direct.total) });
+          if (note) note.textContent = `${t('facOverheadBasis', { p: nf1.format(Number(row.def.pct) || 0), d: eokF(result.direct.total) })} — ${state.lang === 'en' ? row.def.summaryEn : row.def.summaryKo}`;
         }
       });
       [['direct', result.direct], ['construction', result.construction]].forEach(([name, sum]) => {
@@ -8712,12 +8714,12 @@ const PODFIN = (function () {
     const depositNote = Number(d.leaseDepositEok) || 0;
     set('pfinNote', L(
       '※ 매출·운영비·감가상각은 본 모델의 입력값에서 그대로 가져옵니다(운영비 = 전기료 + AI Enterprise 구독료 + 임차 비용 '
-      + FINVIEW.fmt(leaseNote, 1) + '억/년[임대료 + 관리비 + 보증금 환산 이자] + 인건비 ' + FINVIEW.fmt(laborNote, 1) + '억/년[' + nf.format(Number(d.laborHeads) || 0) + '명 × 인당 ' + FINVIEW.fmt(Number(d.laborPerHeadEok) || 0, 1) + '억, 4인 4교대 기준]'
+      + FINVIEW.fmt(leaseNote, 1) + '억/년[임대료 + 관리비 + 보증금 환산 이자] + 인건비 ' + FINVIEW.fmt(laborNote, 1) + '억/년[' + nf.format(Number(d.laborHeads) || 0) + '명 × 인당 ' + FINVIEW.fmt(Number(d.laborPerHeadEok) || 0, 1) + '억, 4인 3교대 기준]'
       + ', 감가상각 = 상각률 스케줄). 잔존가액은 3년차 FCFE에 회수분으로 반영됩니다. 임차 보증금 ' + FINVIEW.fmt(depositNote, 1) + '억은 0년차에 자기자본과 함께 납입하고 3년차에 회수합니다. 통합투자세액공제 5%는 건축·토목 시설비 '
       + FINVIEW.fmt(itcExclBase(d.key === 'rack' ? 'rack' : 'pod'), 1)
       + '억을 제외한 금액에 적용됩니다. 상단 「3년 누적 지출」은 운영비 + 감가상각 + PF 이자 + 법인세의 합계이며, 「3년 누적 손익」은 매출에서 이를 차감한 세후 순이익 누계입니다(PF 원금상환은 비용이 아니므로 제외).',
       'Revenue, operating cost and depreciation come straight from this model (operating cost = electricity + AI Enterprise + lease costs of '
-      + FINVIEW.fmt(leaseNote, 1) + 'B a year [rent + management fee + deposit carrying cost] + labor of ' + FINVIEW.fmt(laborNote, 1) + 'B a year [' + nf.format(Number(d.laborHeads) || 0) + ' people × ' + FINVIEW.fmt(Number(d.laborPerHeadEok) || 0, 1) + 'B each, 4-person 4-shift operation]'
+      + FINVIEW.fmt(leaseNote, 1) + 'B a year [rent + management fee + deposit carrying cost] + labor of ' + FINVIEW.fmt(laborNote, 1) + 'B a year [' + nf.format(Number(d.laborHeads) || 0) + ' people × ' + FINVIEW.fmt(Number(d.laborPerHeadEok) || 0, 1) + 'B each, 4-person 3-shift operation]'
       + '; depreciation follows the schedule). The residual is recovered in Year-3 FCFE. The lease deposit of ' + FINVIEW.fmt(depositNote, 1) + 'B is paid in Year 0 with equity and returned in Year 3. The 5% investment tax credit excludes '
       + FINVIEW.fmt(itcExclBase(d.key === 'rack' ? 'rack' : 'pod'), 1)
       + 'B of building/civil facility cost. "3-yr cumulative cost" is opex + depreciation + interest + tax; "3-yr cumulative profit" is revenue less that total.'));
