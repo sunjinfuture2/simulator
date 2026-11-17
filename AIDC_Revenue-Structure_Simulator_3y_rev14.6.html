@@ -627,27 +627,49 @@
     .sys-card .sys-sub2 { margin-top: 4px; color: var(--ga0); white-space: normal; line-height: 17px; word-break: keep-all; }
     .sys-capex li .cx-note { font-size: 12px; color: var(--ga0); white-space: normal; line-height: 15px; }
     /* rev60: 카드 — 상단(SU + 단가·전력·면적) / 슬라이더 / 하단 2열(CDU | GPU 임대단가) */
-    .card-top { display: flex; align-items: flex-end; column-gap: 26px; margin-top: 28px; }
-    .card-top .su-big.card-count { margin-top: 0; flex: 0 0 auto; }
-    .card-top-specs { display: flex; flex: 1 1 auto; min-width: 0; column-gap: 22px; padding-bottom: 12px; }
-    .card-top-specs .sys-spec { flex: 0 1 auto; min-width: 0; }
+    /* 시안 실측(카드 폭 1,453px → 549.3px, ×0.378): 제목 cap-top 56, 수량 "2" 146~191, 슬라이더 중심 224, 2행 라벨 296 · baseline 366, 구분선 422, 행 442/464/492, 바닥 573 */
+    .sys-grid .sys-card { padding: 46px 50px 64px 46px; }
+    .sys-grid .sys-title { margin-left: -1.5px; }
+    .sys-grid .sys-title strong { font-size: 27px; }
+    .card-top { display: flex; align-items: flex-end; column-gap: 0; margin-top: 47.5px; }
+    .sys-grid .sys-card .card-top .su-big.card-count { margin: 0; flex: 0 0 113px; width: 113px; display: inline-flex; }
+    .card-top .su-big.card-count .u { font-size: 64px; font-weight: 300; line-height: 72px; letter-spacing: -0.015em; }
+    .card-top .su-big.card-count .u::after { bottom: 0.13em; left: 3px; right: 5px; }
+    .card-top .su-big.card-count .unit { font-size: 17px; font-weight: 800; color: var(--g60); margin-left: -1px; }
+    .card-top-specs { display: flex; flex: 1 1 auto; min-width: 0; column-gap: 33px; padding-bottom: 4.5px; }
+    .card-top-specs .sys-spec { flex: 0 0 auto; min-width: 0; }
     .card-top-specs .sys-spec + .sys-spec { border-left: 0; padding-left: 0; }
-    .card-top-specs .sys-spec .v .u input { width: 3.3em; min-width: 0; }
-    .card-top-specs .sys-spec .lab { display: inline-flex; align-items: center; }
-    .sys-card .card-max { text-align: right; font-size: 13px; font-weight: 400; color: var(--ga0); line-height: 18px; margin-top: 6px; }
+    .card-top-specs .sys-spec .lab { position: relative; display: block; font-weight: 500; }
+    .card-top-specs .sys-spec .lab .ico-i { position: absolute; left: 100%; top: 50%; margin: -7px 0 0 4px; width: 14px; height: 14px; }
+    .card-top-specs .sys-spec .v { width: 0; margin-top: 3.4px; }
+    .card-top-specs .sys-spec .v > * { flex: none; }
+    .card-top-specs .sys-spec .v .u input { min-width: var(--w, 0); }
+    .card-top-specs .sys-spec .v .u::after { bottom: 0.24em; left: 1px; right: 0; }
+    .card-top-specs .sys-spec .v .unit { margin-left: 2px; }
+    .sys-grid .sys-card .track { margin-top: 18px; height: 4px; }
+    .sys-grid .sys-card .track::-webkit-slider-runnable-track { height: 4px; }
+    .sys-grid .sys-card .track::-webkit-slider-thumb { width: 9.5px; height: 9.5px; margin-top: -2.75px; }
+    .sys-card .card-max { text-align: right; font-size: 13px; font-weight: 400; color: var(--ga0); line-height: 16px; margin-top: 8px; }
     .sys-card .card-max .text-danger { color: var(--red); }
-    .card-cdu { display: flex; align-items: flex-end; column-gap: 24px; margin-top: 8px; }
-    .card-cdu .cdu-n { display: inline-flex; align-items: baseline; white-space: nowrap; }
-    .card-cdu .cdu-n .num { font-size: 44px; font-weight: 300; color: var(--g60); line-height: 56px; letter-spacing: -0.03em; }
-    .card-cdu .cdu-n .unit { font-size: 15px; font-weight: 600; color: var(--g77); margin-left: 4px; }
-    .card-cdu .sys-spec { padding-bottom: 6px; }
-    .card-cdu .sys-spec .v .u input { width: 4.8em; min-width: 0; }
-    .card-col.right .su-big.card-price { margin-top: 8px; }
-    .card-cols { display: flex; margin-top: 30px; }
-    .card-col { flex: 1 1 50%; min-width: 0; }
-    .card-col { flex: 1 1 58%; }
-    .card-col.right { flex: 1 1 42%; }
-    .card-col + .card-col { border-left: var(--hair) solid var(--gcc); padding-left: 28px; margin-left: 28px; }
+    .card-cols { display: flex; margin-top: 46px; }
+    .card-col { flex: 0 0 238px; width: 238px; }
+    .card-col.right { flex: 1 1 auto; width: auto; }
+    .card-col + .card-col { border-left: 1px solid #e0e0e0; padding-left: 37px; margin-left: 0; }
+    .sys-grid .card-lab { position: relative; align-self: flex-start; font-size: 14px; font-weight: 600; color: var(--g60); line-height: 11px; white-space: nowrap; }
+    .sys-grid .card-lab .ico-i { position: absolute; left: 100%; top: 50%; margin: -7px 0 0 5px; width: 14px; height: 14px; }
+    .card-cdu { display: flex; align-items: flex-end; column-gap: 0; margin-top: 8px; }
+    .card-cdu .cdu-n { display: inline-flex; align-items: baseline; white-space: nowrap; flex: 0 0 109px; width: 109px; }
+    .card-cdu .cdu-n .num { font-size: 53px; font-weight: 400; color: var(--g60); line-height: 60px; letter-spacing: -0.015em; }
+    .card-cdu .cdu-n .unit { font-size: 14px; font-weight: 800; color: var(--g60); margin-left: 3px; }
+    .card-cdu .sys-spec { padding-bottom: 4px; }
+    .card-cdu .sys-spec .lab { font-weight: 500; }
+    .card-cdu .sys-spec .v { margin-top: 0.5px; }
+    .card-cdu .sys-spec .v .u::after { bottom: 0.11em; left: 1px; right: 2px; }
+    .card-cdu .sys-spec .v .unit { margin-left: 2px; }
+    .sys-grid .sys-card .su-big.card-price { margin: 15px 0 0; display: inline-flex; align-items: baseline; }
+    .sys-grid .sys-card .su-big.card-price .u { font-size: 44px; font-weight: 400; line-height: 55px; letter-spacing: 0; }
+    .sys-grid .sys-card .su-big.card-price .u::after { bottom: 0.19em; left: 2px; right: 2px; }
+    .sys-grid .sys-card .su-big.card-price .unit { font-size: 14px; font-weight: 600; color: var(--g60); margin-left: 1px; }
     .card-lab { font-size: 15px; font-weight: 500; color: var(--g60); line-height: 20px; white-space: nowrap; }
     .card-lab .max { font-weight: 500; color: var(--g60); }
     .card-lab .max.text-danger { color: var(--red); }
@@ -672,7 +694,12 @@
     .card-specs .sys-spec .v .u input { width: 2.2em; min-width: 0; }
     .card-col.right { min-width: 0; }
     .dt.itc td .itc-basis, .dt.itc td .itc-note, .dt.itc td .itc-head { white-space: normal; }
-    .sys-card .sys-capex { margin-top: 34px; }
+    .sys-grid .sys-card .sys-capex { margin-top: 44px; margin-right: 2.7px; border-top: 1px solid #2b2b2b; padding-top: 14px; }
+    .sys-grid .sys-card .sys-capex li { position: relative; height: 22px; padding-top: 3px; border-bottom: 1px solid #e0e0e0; font-size: 13px; line-height: 16px; }
+    .sys-grid .sys-card .sys-capex li > span:first-child { position: relative; }
+    .sys-grid .sys-card .sys-capex li .ico-i { position: absolute; left: 100%; top: 50%; margin: -6px 0 0 4px; width: 12px; height: 12px; }
+    .sys-grid .sys-card .sys-capex li.total { height: auto; padding-top: 10px; font-size: 13px; font-weight: 600; border-bottom: 0; }
+    .sys-grid .sys-card .sys-capex li.total b { font-size: 16px; font-weight: 600; }
     .sys-card .sys-capex li .u.sm { margin: 0 3px; }
     .sys-card .sys-capex li small { font-size: 12px; color: var(--g77); margin-left: 2px; font-weight: 400; }
     .cfg-detail { margin-top: 34px; }
@@ -2430,9 +2457,10 @@
     function usdM(usdValue) {
       return fmtUsdLarge(usdValue);
     }
-    function usdWithKrw(usdValue) {
+    function usdWithKrw(usdValue, tight) {
       if (state.lang === 'en') return fmtUsdLarge(usdValue);
-      return `${fmtUsdLarge(usdValue)} · \uC57D ${nf.format(Math.round(usdValue * fx() / EOK))}\uC5B5\uC6D0`;
+      const sep = tight ? '\u00B7' : ' \u00B7 ';
+      return `${fmtUsdLarge(usdValue)}${sep}\uC57D ${nf.format(Math.round(usdValue * fx() / EOK))}\uC5B5\uC6D0`;
     }
     function usdPlain(value) {
       return `$${nf.format(Math.round(value))}`;
@@ -3125,11 +3153,20 @@
         const n = Number(String(input.value).replace(/,/g, '').trim());
         if (Number.isFinite(n)) input.value = fmtComma(n);
       }
-      if (!_measureCtx) _measureCtx = document.createElement('canvas').getContext('2d');
+      // rev64: 캔버스 대신 실제 DOM 프로브로 측정 — 가변 폰트·자간·숫자 폭이 화면과 동일하게 반영된다
+      if (!_measureCtx || !_measureCtx.isConnected) {
+        _measureCtx = document.createElement('span');
+        _measureCtx.setAttribute('aria-hidden', 'true');
+        _measureCtx.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;white-space:pre;pointer-events:none;';
+        document.body.appendChild(_measureCtx);
+      }
       const cs = getComputedStyle(input);
-      _measureCtx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+      const ps = _measureCtx.style;
+      ps.fontFamily = cs.fontFamily; ps.fontSize = cs.fontSize; ps.fontWeight = cs.fontWeight; ps.fontStyle = cs.fontStyle; ps.fontStretch = cs.fontStretch;
+      ps.letterSpacing = cs.letterSpacing; ps.fontFeatureSettings = cs.fontFeatureSettings; ps.fontVariantNumeric = cs.fontVariantNumeric; ps.fontKerning = cs.fontKerning;
       const txt = String(input.value === '' ? (input.placeholder || '0') : input.value);
-      const w = _measureCtx.measureText(txt).width;
+      _measureCtx.textContent = txt;
+      const w = _measureCtx.getBoundingClientRect().width;
       input.style.width = `${Math.ceil(w + 2)}px`;
     }
     function syncRangeFill(range) {
@@ -3339,9 +3376,9 @@
         ? [t('specPowerPerSub', { noun: en ? noun.replace(/s$/, '') : noun }), gpuNumInput(key, 'serverKw', g.serverKw, 'step="0.5"'), 'kW']
         : [t('specPowerPerRack'), gpuNumInput(key, 'rackKw', g.rackKw, 'step="5"'), 'kW'];
       const specs = [
-        [t('specPricePerGpu') + infoIcon(t('tipPricePerGpu'), t('specPricePerGpu'), true), gpuNumInput(key, 'pricePerGpuUsd', g.pricePerGpuUsd, 'step="100"'), '$'],
-        powerSpec,
-        [t('specAreaPerRack'), gpuNumInput(key, 'rackAreaSqm', g.rackAreaSqm, 'step="0.1"'), '㎡']
+        [t('specPricePerGpu') + infoIcon(t('tipPricePerGpu'), t('specPricePerGpu'), true), gpuNumInput(key, 'pricePerGpuUsd', g.pricePerGpuUsd, 'step="100"'), '$', '3.66em'],
+        [...powerSpec, '1.4em'],
+        [t('specAreaPerRack'), gpuNumInput(key, 'rackAreaSqm', g.rackAreaSqm, 'step="0.1"'), '㎡', '1.5em']
       ];
       // 하단 2열: CDU(공용 대수 · 대당 단가) | GPU 임대단가(온디맨드)
       const cduUnits = data.cduUnits || 0;
@@ -3363,7 +3400,7 @@
                 <span class="unit">SU</span>
               </div>
               <div class="card-top-specs">
-                ${specs.map(([lab, input, u]) => `<div class="sys-spec"><span class="lab">${lab}</span><span class="v">${input}<span class="unit">${u}</span></span></div>`).join('')}
+                ${specs.map(([lab, input, u, w]) => `<div class="sys-spec"><span class="lab">${lab}</span><span class="v" style="--w:${w}">${input}<span class="unit">${u}</span></span></div>`).join('')}
               </div>
             </div>
             <input type="range" class="track" min="0" max="${sliderMax}" step="1" value="${Math.min(n, sliderMax)}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} slider" ${ok ? '' : 'disabled'} />
@@ -3384,7 +3421,7 @@
             <ul class="sys-capex">
               <li><span>${t('cardRowEquipX', { g: nf.format(Number(g.gpusPerUnit) || 0) })}</span><span class="cx-val" data-gpu-capex-total="${key}">${usdM(perUnit)}</span></li>
               <li><span>${t('cardCduLab')}${infoIcon(t('tipCduShare'), t('cardCduLab'), true)}</span><span class="cx-val" data-card-cdu="${key}">${cduShare > 0 ? usdM(cduShare) : '—'}</span></li>
-              <li class="total"><span>${t('cardRowTotal')} <small>${t('cardRowTotalSub')}</small></span><b data-card-total="${key}">${usdWithKrw(perUnit + cduShare)}</b></li>
+              <li class="total"><span>${t('cardRowTotal')}</span><b data-card-total="${key}">${usdWithKrw(perUnit + cduShare, true)}</b></li>
             </ul>
           </div>
         </article>`;
@@ -5158,7 +5195,7 @@
         tab.style.width = `${Math.ceil(Math.max(a, i)) + 1}px`;
       });
     }
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fitTabWidths());
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fitTabWidths(); fitInputs(); });
     function refreshTabs() {
       document.querySelectorAll('.view-tab[data-view]').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.view === state.activeView);
@@ -6672,7 +6709,7 @@
         const share = cduShareUsd(data);
         document.querySelectorAll('[data-card-cdu-n]').forEach(el => { el.textContent = nf.format(data.cduUnits || 0); });
         document.querySelectorAll(`[data-card-cdu="${key}"]`).forEach(el => { el.textContent = share > 0 ? usdM(share) : '—'; });
-        document.querySelectorAll(`[data-card-total="${key}"]`).forEach(el => { el.innerHTML = usdWithKrw(gpuCapexPerUnitUsd(g) + share); });
+        document.querySelectorAll(`[data-card-total="${key}"]`).forEach(el => { el.innerHTML = usdWithKrw(gpuCapexPerUnitUsd(g) + share, true); });
         const th = document.querySelector(`[data-th-type="${key}"]`);
         if (th) {
           const per = Math.max(1, Number(th.dataset.thRows) || 1);
