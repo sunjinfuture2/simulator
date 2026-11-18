@@ -1395,6 +1395,29 @@
       tipLease: { ko: '임대료 = 계약면적 × 임대료 단가 × 12, 관리비 = 계약면적 × 관리비 단가 × 12, 보증금 = 월 임대료 × 개월수. 운영비에는 임대료 + 관리비 + 보증금 × 환산 이자율만 넣고, 보증금 원금은 재무구조에서 0년차 납입·3년차 회수로 반영합니다. 임대대행 수수료는 별도 협의(1년차 1회 지출).', en: 'Rent = area × rent rate × 12; management = area × fee rate × 12; deposit = monthly rent × months. Opex includes rent + management + deposit × carrying rate; the deposit principal is paid in Year 0 and returned in Year 3 in the financing view. Agent fee is to be negotiated (one-off in Year 1).' },
       blLease: { ko: '임차 비용(연)', en: 'Lease cost (per yr)' },
       blLabor: { ko: '인건비(연)', en: 'Labor cost (per yr)' },
+      opexTitle: { ko: '연간 OPEX 세부 내역', en: 'Annual OPEX Breakdown' },
+      opexBadge: { ko: '1년차 기준', en: 'Year 1 basis' },
+      tipOpex: { ko: '연간 운영비(OPEX) = 전기료 + AI Enterprise 구독료 + 임차 비용 + 인건비. 전기료는 가동률에 따라 연차별로 달라지고 나머지는 매년 고정입니다. 감가상각은 별도이며 연간 지출 = OPEX + 감가상각입니다. 인건비(운영 인원·인당 인건비)는 이 표에서 입력합니다.', en: 'Annual OPEX = electricity + AI Enterprise subscription + lease + labor. Electricity varies by year with utilization; the rest is fixed each year. Depreciation is separate: annual expense = OPEX + depreciation. Labor (staff count, cost per head) is entered in this table.' },
+      opexDesc: { ko: '1년차 기준 연간 운영비를 항목별로 나눈 표입니다. 전기료는 사용 IT 전력·PUE·가동비중·요금으로, AI Enterprise 구독료는 GPU 수 × 연 단가 × 환율로, 임차 비용은 계약면적 × (임대료 + 관리비) + 보증금 환산 이자로, 인건비는 운영 인원 × 인당 인건비로 산출합니다. 전기요금·AI Enterprise 단가·환율·전력 조건은 왼쪽 공통값에서, 인건비는 이 표에서 조정합니다.', en: 'Annual operating cost broken down by item on a Year-1 basis. Electricity comes from used IT power, PUE, utilization and tariffs; AI Enterprise from GPU count × annual rate × FX; lease from contract area × (rent + management fee) plus deposit carrying cost; labor from staff count × cost per head. Tariffs, AI Enterprise rate, FX and power settings are in the sidebar; labor is edited here.' },
+      opexColAmount: { ko: '연간 금액 (1년차)', en: 'Annual amount (Year 1)' },
+      opexColBasis: { ko: '근거 (산출 기준 · 입력값)', en: 'Basis (calculation & inputs)' },
+      opexPerYear: { ko: '/년', en: '/yr' },
+      opexRowElec: { ko: '전기료', en: 'Electricity' },
+      opexRowSw: { ko: 'AI Enterprise 구독료', en: 'AI Enterprise subscription' },
+      opexRowLease: { ko: '임차 비용', en: 'Lease cost' },
+      opexRowLabor: { ko: '인건비', en: 'Labor cost' },
+      kindUtilLinked: { ko: '가동 연동', en: 'Utilization-linked' },
+      kindFixedYear: { ko: '연 고정', en: 'Fixed per year' },
+      opexElecSummary: { ko: '전력량 요금 {e} + 기본요금 {b}', en: 'Energy {e} + basic charge {b}' },
+      opexElecLogic: { ko: '가동 연동 — 사용 IT 전력 {kw}kW × PUE {pue} × 8,760h × 가동비중 {u}% × {rate} + 총 수전 {tot}kW × {basic} × 12개월 · {years}', en: 'Utilization-linked — used IT power {kw}kW × PUE {pue} × 8,760h × utilization {u}% × {rate} + total power {tot}kW × {basic} × 12 months · {years}' },
+      opexSwSummary: { ko: '{r} × {g} GPU × 환율 {fx}원', en: '{r} × {g} GPU × FX {fx} KRW/USD' },
+      opexSwLogic: { ko: '연 고정 — 가동률과 무관하게 전체 GPU에 매년 부과 · 단가는 왼쪽 「AI Enterprise 유지비」에서 조정', en: 'Fixed per year — charged on all GPUs every year regardless of utilization · rate set in the sidebar AI Enterprise upkeep' },
+      opexLeaseSummary: { ko: '임대료 {r} + 관리비 {m} + 보증금 환산 이자 {dc}', en: 'Rent {r} + management {m} + deposit carrying cost {dc}' },
+      opexLeaseLogicLead: { ko: '연 고정 —', en: 'Fixed per year —' },
+      opexLaborSummary: { ko: '{n}명 × 인당 {c} · 4인 3교대 운영 기준', en: '{n} people × {c} each · 4-person, 3-shift operation' },
+      opexLaborLogic: { ko: '연 고정 — 운영 인원 × 인당 연 인건비, 가동률과 무관하게 매년 반영 · 왼쪽 입력칸에서 조정', en: 'Fixed per year — staff count × annual cost per head, charged every year regardless of utilization · edit in the inputs on the left' },
+      opexTotalRow: { ko: '연간 OPEX 합계', en: 'Annual OPEX total' },
+      opexFoot: { ko: '※ 연간 지출 = OPEX + 감가상각(1년차 {dep}) = {exp}. 임차 보증금 원금은 운영비가 아니라 재무구조에서 0년차 납입·3년차 회수로 반영됩니다.', en: '※ Annual expense = OPEX + depreciation (Year 1 {dep}) = {exp}. The lease deposit principal is not an operating cost; it is paid in Year 0 and returned in Year 3 in the financing model.' },
       blLaborDetail: { ko: '{n}명 × 인당 {c} · 4인 3교대 기준', en: '{n} people × {c} each · 4-person 3-shift' },
       labelLaborHeadcount: { ko: '운영 인원', en: 'Operations staff' },
       labelLaborPerHead: { ko: '인당 인건비 (연)', en: 'Labor cost per head (yr)' },
@@ -4725,6 +4748,99 @@
       `;
     }
 
+    // rev73: 연간 OPEX 세부 내역 — 시설비 CAPEX 패널과 같은 디자인·레이아웃 (전기료 · AI Enterprise · 임차 · 인건비), 인건비 입력은 이 패널에서
+    function opexRows(d) {
+      const en = state.lang === 'en';
+      const u0 = (d.utils && d.utils[0] != null) ? d.utils[0] : 1;
+      const yr = i => t('yearLabel', { n: i + 1 });
+      const elecYears = d.electricityByYear.map((v, i) => `${yr(i)} ${eokF(v)}`).join(' · ');
+      return [
+        { key: 'elec', label: t('opexRowElec'), kind: t('kindUtilLinked'), value: d.electricityByYear[0],
+          summary: t('opexElecSummary', { e: eokF(d.energyByYear[0]), b: eokF(d.baseEok) }),
+          logic: t('opexElecLogic', { kw: nf.format(Math.round(d.usedItPower || 0)), pue: nf2.format(d.pue || 0), u: nf.format(Math.round(u0 * 100)), rate: formatRateText('energyCostRate', state.energyCostRate), tot: nf.format(Number(state.totalPowerKw) || 0), basic: formatRateText('basicChargeKwMonth', state.basicChargeKwMonth), years: elecYears }) },
+        { key: 'sw', label: t('opexRowSw'), kind: t('kindFixedYear'), value: d.swOpexEok,
+          summary: t('opexSwSummary', { r: formatSwSub(d.swRateUsd), g: nf.format(d.swGpus || 0), fx: nf.format(Number(state.fxKrwUsd) || 0) }),
+          logic: t('opexSwLogic') },
+        { key: 'lease', label: t('opexRowLease'), kind: t('kindFixedYear'), value: d.leaseOpexEok,
+          summary: t('opexLeaseSummary', { r: eokF(d.leaseRentEok), m: eokF(d.leaseMgmtEok), dc: eokF(d.leaseDepositCostEok) }),
+          logic: `${t('opexLeaseLogicLead')} ${leaseTermsText()}` },
+        { key: 'labor', label: t('opexRowLabor'), kind: t('kindFixedYear'), value: d.laborEok,
+          summary: t('opexLaborSummary', { n: nf.format(d.laborHeads || 0), c: eokF(d.laborPerHeadEok || 0) }),
+          logic: t('opexLaborLogic'), inputs: true }
+      ];
+    }
+    function opexTotalNoteHtml(d, rows, total) {
+      const parts = rows.map(r => `${r.label} ${eokF(r.value)}`).join(' + ');
+      const byYear = d.annualExpense.map((v, i) => `${t('yearLabel', { n: i + 1 })} ${eokF(v - d.capexByYear[i])}`).join(' · ');
+      return `${parts}<br>= ${t('opexTotalRow')} ${eokF(total)} · ${byYear}`;
+    }
+    function renderOpexPanel() {
+      const d = getActiveData();
+      if (!d || !Array.isArray(d.electricityByYear)) return '';
+      const rows = opexRows(d);
+      const total = rows.reduce((sum, r) => sum + (Number(r.value) || 0), 0);
+      const share = v => (total > 0 ? `${nf1.format(Math.round(v / total * 1000) / 10)}%` : '0%');
+      const laborInputs = `
+            <div class="fac-rate"><label>${t('labelLaborHeadcount')} (${unitOf('laborHeadcount')})</label>${numInputHtml('laborHeadcount')}</div>
+            <div class="fac-rate"><label>${t('labelLaborPerHead').replace(/\s*\((연|yr)\)/, '')} (${unitOf('laborCostPerHeadEok')}/${state.lang === 'en' ? 'yr' : '년'})</label>${numInputHtml('laborCostPerHeadEok')}</div>`;
+      const rowsHtml = rows.map(r => `
+        <tr class="fac-row opex-row" data-opex-row="${r.key}">
+          <td class="fac-cat">
+            <div class="fac-lab">${r.label}<span class="tag-box">${r.kind}</span></div>
+            ${r.inputs ? laborInputs : ''}
+          </td>
+          <td><span class="fac-val"><span data-opex-val="${r.key}">${eokF(r.value)}</span></span><span class="fac-auto">${t('opexPerYear')}</span></td>
+          <td><span class="fac-val" data-opex-share="${r.key}">${share(r.value)}</span></td>
+          <td><div class="fac-note"><div class="fac-summary" data-opex-sum="${r.key}">${r.summary}</div><div class="fac-logic">${bracketLead(r.logic)}</div></div></td>
+        </tr>`).join('');
+      return `
+        <section class="sec mt-163 fac-sec opex-sec" data-opex-panel>
+          ${secHead(t('opexTitle') + infoIcon(t('tipOpex'), t('opexTitle'), true), { badge: `<span>${t('opexBadge')}</span>` })}
+          <div class="sec-desc">${t('opexDesc')}</div>
+          <div class="fac-big"><span class="big-num" id="opexGrandBig">${bigNumInner(eokF(total))}</span></div>
+          <div class="dt-wrap fac-table">
+            <table class="dt fac" style="--gap:7.5px">
+              <colgroup><col style="width:300px"><col style="width:192.8px"><col style="width:107.4px"><col></colgroup>
+              <thead>
+                <tr>
+                  <th>${t('facilityColHeader')}</th>
+                  <th>${t('opexColAmount')}</th>
+                  <th>${t('facilityColShare')}</th>
+                  <th>${t('opexColBasis')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml}
+                <tr class="fac-total">
+                  <td><strong>${t('opexTotalRow')}</strong></td>
+                  <td><strong id="opexGrand">${eokF(total)}</strong><div class="fac-pct">${t('opexPerYear')}</div></td>
+                  <td><strong>${eokF(total)}</strong><div class="fac-pct">(100%)</div></td>
+                  <td><div class="fac-note" id="opexTotalNote">${opexTotalNoteHtml(d, rows, total)}</div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="foot-note info">${t('opexFoot', { dep: eokF(d.capexByYear[0]), exp: eokF(d.annualExpense[0]) })}</div>
+        </section>
+      `;
+    }
+    function syncOpexLive() {
+      const panel = document.querySelector('[data-opex-panel]');
+      if (!panel) return;
+      const d = getActiveData();
+      const rows = opexRows(d);
+      const total = rows.reduce((sum, r) => sum + (Number(r.value) || 0), 0);
+      const share = v => (total > 0 ? `${nf1.format(Math.round(v / total * 1000) / 10)}%` : '0%');
+      rows.forEach(r => {
+        const v = panel.querySelector(`[data-opex-val="${r.key}"]`); if (v) v.textContent = eokF(r.value);
+        const sh = panel.querySelector(`[data-opex-share="${r.key}"]`); if (sh) sh.textContent = share(r.value);
+        const sm = panel.querySelector(`[data-opex-sum="${r.key}"]`); if (sm) sm.innerHTML = r.summary;
+      });
+      const big = panel.querySelector('#opexGrandBig'); if (big) big.innerHTML = bigNumInner(eokF(total));
+      const g = panel.querySelector('#opexGrand'); if (g) g.textContent = eokF(total);
+      const note = panel.querySelector('#opexTotalNote'); if (note) note.innerHTML = opexTotalNoteHtml(d, rows, total);
+    }
+
     function renderTableHtml(data) {
       const rows = Array.from({ length: YEARS }, (_, index) => {
         const annualProfit = data.annualRevenue[index] - data.annualExpense[index];
@@ -5217,7 +5333,7 @@
       }
       if (state.activeView === 'compare') {
         const models = getModelComparison();
-        content.innerHTML = `${renderComparePanel()}${renderCompareChartPanel()}${renderModeComparePanel()}${renderPnlPanel()}${renderProductComparePanel()}${renderFacilityCapexPanel('pod')}`;
+        content.innerHTML = `${renderComparePanel()}${renderCompareChartPanel()}${renderModeComparePanel()}${renderPnlPanel()}${renderProductComparePanel()}${renderFacilityCapexPanel('pod')}${renderOpexPanel()}`;
         renderCompareChart(models);
         fitInputs(content);
         return;
@@ -5225,7 +5341,7 @@
       // GPU 임대 (rev36): 차트 → 연차표 → 랙 시스템 선택(4카드) → 매출·가동률(카드별 표) → 수전·면적 사용 현황 → 시설비 → 기준값 → 재무구조
       const podFinHtml = (typeof PODFIN !== 'undefined') ? PODFIN.html(data) : '';
       const neoHtml = data.mode === 'neo' ? `${renderNeoTermsSection(data)}${renderNeoSensSection(data)}` : '';
-      content.innerHTML = `${renderChartPanel()}${renderTableHtml(data)}${neoHtml}${renderGpuSelector(data)}${renderMixSection(data)}${renderCapacitySection(data)}${renderFacilityCapexPanel('pod')}${renderFormulaPanelMix(data)}${podFinHtml}`;
+      content.innerHTML = `${renderChartPanel()}${renderTableHtml(data)}${neoHtml}${renderGpuSelector(data)}${renderMixSection(data)}${renderCapacitySection(data)}${renderFacilityCapexPanel('pod')}${renderOpexPanel()}${renderFormulaPanelMix(data)}${podFinHtml}`;
       renderChart(data);
       if (typeof PODFIN !== 'undefined') PODFIN.attach(content, data);
       fitInputs(content);
@@ -5373,11 +5489,6 @@
         <section class="s-group" data-views="superpod,compare">
           ${ctlRow('energyCostRate', t('labelEnergyCostRate'))}
           ${ctlRow('basicChargeKwMonth', t('labelBasicCharge'))}
-        </section>
-        <section class="s-group labor" data-views="superpod,compare">
-          ${ctlRow('laborHeadcount', `${t('labelLaborHeadcount')}${infoIcon(t('tipLabor'), t('labelLaborHeadcount'), true)}`)}
-          ${ctlRow('laborCostPerHeadEok', t('labelLaborPerHead'))}
-          <div class="s-hint">${t('laborHint', { n: nf.format(Number(state.laborHeadcount) || 0), c: eok(Number(state.laborCostPerHeadEok) || 0), t: eok((Number(state.laborHeadcount) || 0) * (Number(state.laborCostPerHeadEok) || 0)) })}</div>
         </section>
         <section class="s-group rate ${neo ? 'off' : ''}" data-views="superpod,compare">
           <span class="s-lab sm">${t('groupRateTitle')}</span>
@@ -7314,6 +7425,18 @@
       }
 
       const inputId = event.target.dataset.input;
+      if (inputId === 'laborHeadcount' || inputId === 'laborCostPerHeadEok') {
+        // rev73: OPEX 패널의 인건비 입력 — 타이핑 중 패널 값만 갱신
+        const def = getControlDef(inputId);
+        let v = Number(String(event.target.value).replace(/,/g, '').trim());
+        if (!Number.isFinite(v)) return;
+        if (EOK_KIND[inputId] && state.lang === 'en') v = v * 1e6 * fx() / EOK;
+        if (def) v = Math.max(def.min, Math.min(def.max, v));
+        state[inputId] = v;
+        syncOpexLive();
+        refreshLiveMetrics();
+        return;
+      }
       if (inputId === 'cduUnitUsd' || inputId === 'cduCapKw') {
         // rev60: 카드의 CDU 대당 단가 입력은 타이핑 중 전체 재렌더 없이 카드 합계만 갱신
         const def = getControlDef(inputId);
