@@ -704,7 +704,12 @@
     .cfg-detail { margin-top: 34px; }
     .cfg-detail .dt.itc td { vertical-align: top; }
     .sec.mt-cfg { margin-top: 112px; }
-    .sec.mix-sec.collapsed + .sec.su-sec { display: none; } /* rev75: 도입 구성을 접으면 수전·면적 사용 현황도 함께 접힘 */
+    /* rev78: 도입 구성을 접으면 구성 요약(모델·MW·SU/랙/서버/GPU)과 수전·면적 미터만 남김 */
+    .sec.mix-sec.collapsed > .cfg-rows { display: block; }
+    .sec.mix-sec.collapsed > .cfg-rows .cfg-row + .cfg-row { margin-top: 24px; padding-top: 0; border-top: 0; }
+    .sec.mix-sec.collapsed + .sec.su-sec { margin-top: 36px; }
+    .sec.mix-sec.collapsed + .sec.su-sec > :not(.meters) { display: none; }
+    .sec.mix-sec.collapsed + .sec.su-sec > .meters { margin-top: 0; }
     .cfg-rows { margin-top: 22px; }
     .cfg-row + .cfg-row { margin-top: 36px; padding-top: 30px; border-top: var(--hair) solid var(--gcc); }
     .cfg-head { display: flex; align-items: baseline; column-gap: 14px; }
