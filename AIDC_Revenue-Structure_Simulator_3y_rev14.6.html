@@ -712,12 +712,12 @@
     .sec.mix-sec.collapsed + .sec.su-sec { margin-top: 36px; }
     .sec.mix-sec.collapsed + .sec.su-sec > :not(.meters) { display: none; }
     .sec.mix-sec.collapsed + .sec.su-sec > .meters { margin-top: 0; }
-    .cfg-rows { margin-top: 30px; }
+    .cfg-rows { margin-top: 44px; }
     .cfg-row + .cfg-row { margin-top: 36px; padding-top: 30px; border-top: var(--hair) solid var(--gcc); }
     .cfg-head { display: flex; align-items: baseline; column-gap: 14px; }
     .cfg-head strong { font-size: 22px; font-weight: 500; color: var(--g60); line-height: 30px; letter-spacing: -0.01em; }
     .cfg-head .cfg-mw { display: inline-block; font-size: 20px; font-weight: 700; color: var(--g60); line-height: 28px; cursor: help; }
-    .cfg-stats { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 40px; row-gap: 10px; margin-top: 6px; }
+    .cfg-stats { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 40px; row-gap: 10px; margin-top: 12px; }
     .cfg-stat { display: inline-flex; align-items: baseline; color: var(--g60); cursor: help; outline: none; }
     .cfg-stat .num { font-size: 55px; font-weight: 400; line-height: 62px; letter-spacing: -0.04em; font-variant-numeric: proportional-nums; font-feature-settings: 'pnum' 1, 'tnum' 0; }
     .cfg-stat .unit { font-size: 25px; font-weight: 600; margin-left: 2.5px; letter-spacing: -0.825px; } /* 시설비 CAPEX 합계의 '억' 단위와 동일 (25px/600 · 자간 -0.015em@55px · 간격 2.5px) */
@@ -851,6 +851,8 @@
     .dt.fac .fac-est-tbl th::after, .dt.fac .fac-est-tbl td::after { background: var(--gcc); }
     .dt.fac .fac-est-tbl th.n, .dt.fac .fac-est-tbl td.n { text-align: right; padding-right: 7.5px; font-variant-numeric: tabular-nums; }
     .dt.fac .fac-est-tbl tr.sum td { font-weight: 600; color: var(--g60); }
+    .dt.fac .fac-est-tbl.txt td { white-space: normal; line-height: 19px; padding-right: 14px; vertical-align: top; }
+    .dt.fac .fac-est-tbl.txt td.k { font-weight: 600; color: var(--g60); }
     .dt.fac .fac-est-tbl tr.sum td::after { background: var(--g60); }
     .dt.fac .fac-est-tbl tbody tr:last-child td::after { display: block; }
     .dt.fac .fac-est-note { margin-top: 8px; font-size: 13px; line-height: 20px; color: var(--g60); }
@@ -867,7 +869,8 @@
     .dt.fac tr.fac-sub td .fac-sum-note, .dt.fac tr.fac-sum td .fac-sum-note { font-size: 13px; font-weight: 400; line-height: 20px; color: var(--ga0); }
     .dt.fac tr.fac-row.fac-overhead .fac-lab, .dt.fac tr.fac-row.fac-extra .fac-lab { font-size: 15px; }
     /* rev74: OPEX 패널 입력칸 가로 배치 */
-    .opex-sec .fac-rate-row { display: flex; flex-wrap: wrap; column-gap: 32px; row-gap: 12px; margin-top: 28.9px; }
+    .opex-sec .fac-rate-row { display: flex; flex-wrap: wrap; column-gap: 32px; row-gap: 12px; margin-top: 28.9px; margin-bottom: 10px; }
+    .dt.fac td > .fac-rate:last-child { margin-bottom: 10px; }
     .opex-sec .dt.fac .fac-rate-row .fac-rate, .opex-sec .dt.fac .fac-rate-row .fac-rate + .fac-rate { margin-top: 0; }
     .dt.fac .fac-rate .u { display: inline-block; }
     .dt.fac .fac-rate .fac-unit { font-size: 12px; font-weight: 500; color: var(--g77); margin-left: 3px; vertical-align: baseline; }
@@ -2019,6 +2022,7 @@
       facEstSubtotal: { ko: '소계', en: 'Subtotal' },
       facEstScaleArea: { ko: '비례 연동 — 보고서 기준 연면적 {base}㎡ → 현재 {now}㎡ (×{f}). 아래 표는 보고서의 기준 수량·금액입니다.', en: 'Proportional link — report base floor area {base}㎡ → current {now}㎡ (×{f}). The table below shows the report base quantities and amounts.' },
       facEstScaleCap: { ko: '비례 연동 — 보고서 기준 총 수전 {base}kW → 현재 {now}kW (×{f}). 아래 표는 보고서의 기준 수량·금액입니다.', en: 'Proportional link — report base total power {base}kW → current {now}kW (×{f}). The table below shows the report base quantities and amounts.' },
+      facEstScalePct: { ko: '비율 항목 — 직접공사비 × {p}%. 아래는 「공통비 및 예비비 산정기준 검토보고서」(2026.11.18)의 요약입니다.', en: 'Ratio item — direct cost × {p}%. Below is a summary of the review note on the common-cost and contingency basis (2026-11-18).' },
       facEstScaleFixed: { ko: '고정 항목 — 연면적·수전과 무관하게 보고서 금액을 그대로 적용합니다.', en: 'Fixed item — the report amount is applied regardless of floor area and power.' },
       facEstScaleManual: { ko: '수동 입력 중 — 아래 표는 보고서의 기준 수량·금액이며 입력값과 연동되지 않습니다.', en: 'Manual input in effect — the table below shows the report base and is not linked to the entered value.' },
       facEstSource: { ko: '출처: 공종별 개략공사비 산정보고서 (2026.11.17) · 기획단계 예산가정 · 업체 견적·구조계산·실측 없음 · VAT 별도', en: 'Source: detailed cost estimate by trade (2026-11-17) · planning-stage budget assumptions · no vendor quotes, structural calculation or site measurement · VAT excluded' },
@@ -2181,6 +2185,69 @@
           noteKo: '산정 해석 — 광배선·구내통신·시설 보안통신 중심입니다. HGX B300 서버 간 고속 네트워크 스위치·트랜시버·AI 클러스터 통신장비는 IT 시스템 구매비로 제외했습니다.',
           noteEn: 'Basis — Focused on fibre cabling, in-building telecom and facility security comms. High-speed switches, transceivers and AI-cluster networking between HGX B300 servers are excluded as IT system purchases.' }
       ] },
+      overhead: { sourceKo: '출처: 공통비 및 예비비 산정기준 검토보고서 (2026.11.18, 기획단계 원가검토) · 시공사 견적·확정 예정가격 아님', sourceEn: 'Source: Review note on common-cost and contingency basis (2026-11-18, planning-stage cost review) · not a contractor quote or approved estimate', sections: [
+        { id: '검토 결론', idEn: 'Summary', titleKo: '공통비 12%는 가정요율 — 법정·조달청 통일요율이 아님', titleEn: 'The 12% is an assumed rate, not a statutory or PPS uniform rate', text: true,
+          cols: { ko: ['핵심 항목', '현재 적용액', '판정'], en: ['Item', 'Applied amount', 'Finding'] }, items: [
+          [['직접공사비', 'Direct construction cost'], ['337.36억원', 'KRW 33.736B'], ['가정 수량·복합단가 기반 (기획단계 원가모형)', 'Based on assumed quantities and composite rates (planning-stage model)']],
+          [['공통비 12%', 'Common cost 12%'], ['40.48억원', 'KRW 4.048B'], ['법정 적용률 아님 · 중복 검토 필요', 'Not a statutory rate · overlap check required']],
+          [['지반조사', 'Geotechnical investigation'], ['0.80억원', 'KRW 0.08B'], ['공통비·예비비 가산 대상에서 별도 처리', 'Kept outside the common-cost/contingency base']],
+          [['총 기획예산', 'Total planning budget'], ['446.12억원', 'KRW 44.612B'], ['기존 기준액 보존 · 신규 확정 공사비 아님', 'Preserved as the baseline · not a newly confirmed construction cost']]],
+          noteKo: '산식 — 공통비 12%와 예비비 20%는 각각 직접공사비(337.36억)에 병렬 가산하며, 12% 적용 후 금액에 다시 20%를 곱하지 않습니다. 산식의 재현성은 있으나 적용 근거의 검증은 완료되지 않았습니다.',
+          noteEn: 'Formula — Common cost 12% and contingency 20% are each applied to direct cost (33.736B) in parallel; the 20% is not compounded on the 12%-added amount. The formula is reproducible, but the basis for the rates has not been verified.' },
+        { id: '2.1', titleKo: '12%가 포괄하는 항목 (예산상 대용치)', titleEn: 'What the 12% stands in for (budget proxy)', text: true,
+          cols: { ko: ['구분', '포함될 수 있는 세부 항목', '기초 산정 단위·모수'], en: ['Category', 'Items that may be included', 'Basis / driver'] }, items: [
+          [['공통가설·현장운영', 'Site temporaries & operation'], ['가설전력·임시시설·양중 관리 등', 'Temporary power, site facilities, lifting management'], ['기간·현장 여건·실물 수량', 'Duration, site conditions, actual quantities']],
+          [['간접노무·기타경비', 'Indirect labor & misc. expenses'], ['현장관리 인건비, 소모품·운반 등', 'Site management staff, consumables, haulage'], ['노무비 또는 해당 경비 모수', 'Labor cost or the relevant expense base']],
+          [['법정경비', 'Statutory charges'], ['산재·고용·건강보험 등 관련 비용', 'Workers\' comp, employment and health insurance, etc.'], ['공종·사업자·법령별 적용 기준', 'By trade, contractor and statute']],
+          [['일반관리비', 'General & administrative'], ['시공사 본사 관리비 등', 'Contractor head-office overhead'], ['해당 공사원가 기준 (국가계약법 시행규칙 제8조 상한 8%는 별개 규정)', 'Based on construction cost (the 8% cap in the State Contracts Act rules is a separate provision)']],
+          [['이윤', 'Profit'], ['시공사 영업이익', 'Contractor margin'], ['관계 규정의 산정 모수·한도', 'Per applicable rules and caps']]],
+          noteKo: '공식 근거 — 조달청 「2026년 시설공사 원가계산 간접공사비(제비율) 적용기준」은 조달청 예정가격용 참고이며 타 기관 의무 단일 요율이 아니고, 전기·통신·소방은 건축 또는 토목 기준을 준용합니다. 「예정가격작성기준」은 직접·간접공사비, 일반관리비, 이윤을 나누어 산정하는 참고체계입니다.',
+          noteEn: 'Official references — The PPS 2026 indirect-cost (overhead rate) standard is a reference for PPS estimated prices, not a mandatory single rate for others; electrical, telecom and fire follow the building or civil tables. The Estimated Price Preparation Standard separates direct/indirect cost, G&A and profit.' },
+        { id: '2.3', titleKo: '판교 AIDC에 대한 판단', titleEn: 'Judgement for Pangyo AIDC', text: true,
+          cols: { ko: ['구분', '내용'], en: ['Decision', 'Detail'] }, items: [
+          [['유지 목적', 'Keep for tracking'], ['12% × 337.36억 = 40.48억은 과거 적산과 차이 추적을 위해 보존', 'Keep 12% × 33.736B = 4.048B to track differences from the prior estimate']],
+          [['확정 사용 보류', 'Not for firm use'], ['정식 예정가격·계약금액 산정에 12%를 검증된 규정 요율로 표시하지 않음', 'Do not present 12% as a verified statutory rate in formal estimates or contract sums']],
+          [['대체 방법', 'Replacement method'], ['장비비·자재비·노무비·경비를 구분한 뒤 적합한 제비율·법정경비·이윤 모수를 적용', 'Split equipment, material, labor and expense, then apply the appropriate overhead rates, statutory charges and profit base']]],
+          cautionKo: '중복 주의 — CDU·UPS·발전기 등 대형 장비 복합단가에 설치·양중·현장경비가 일부 포함되었다면 공통비 일괄 가산 시 중복 가능성이 있고, 반대로 보험료·안전관리비 등 필요한 경비가 빠졌을 가능성도 있습니다.',
+          cautionEn: 'Overlap caution — If composite rates for CDU, UPS and generators already include installation, lifting and site expenses, a flat common-cost add-on may double count; conversely, insurance and safety costs may be missing.' }
+      ] },
+      contingency: { sourceKo: '출처: 공통비 및 예비비 산정기준 검토보고서 (2026.11.18, 기획단계 원가검토) · 시공사 견적·확정 예정가격 아님', sourceEn: 'Source: Review note on common-cost and contingency basis (2026-11-18, planning-stage cost review) · not a contractor quote or approved estimate', sections: [
+        { id: '3.1', titleKo: '예비비 20%의 의미', titleEn: 'What the 20% contingency means', text: true,
+          cols: { ko: ['구분', '내용'], en: ['Item', 'Detail'] }, items: [
+          [['성격', 'Nature'], ['기존 건축물 구조·지반과 AI 냉각·전력계통의 불확실성을 반영한 사업주 관점의 임시 위험예산', 'A provisional owner-side risk budget for uncertainty in the existing structure/ground and the AI cooling/power systems']],
+          [['구분', 'Distinction'], ['공사원가계산상 일반관리비·이윤과 성격이 다르며 법정 최저율도, AACE의 일률 권고율도 아님', 'Different from G&A and profit in cost accounting; neither a statutory minimum nor a flat AACE-recommended rate']],
+          [['참고 원칙', 'Reference principles'], ['AACE RP 40R-08(예비비 산정 원칙)·44R-08(기대값 기반 위험분석) — AACE가 판교에 20%를 지정한 것은 아님', 'AACE RP 40R-08 (contingency principles) and 44R-08 (expected-value risk analysis) — AACE did not assign 20% to Pangyo']]],
+          noteKo: '권고 산정식 — 위험별 기대손실 = 발생확률 × 조건부 추가비용. 최종 예비비 = 위험대장 분석 + 설계수준에 따른 시스템 리스크 검토 − 이미 직접비에 포함된 중복 위험여유. 20%(67.47억)는 위험등록부로 검증한 금액이 아니라 가정비율로 얻은 값입니다.',
+          noteEn: 'Recommended formula — Expected loss per risk = probability × conditional extra cost. Final contingency = risk-register analysis + systemic risk by design maturity − risk allowance already in direct cost. The 20% (6.747B) is an assumed rate, not a register-verified amount.' },
+        { id: '3.2', titleKo: '사업별 주요 위험대장 (초안)', titleEn: 'Key project risk register (draft)', text: true,
+          cols: { ko: ['위험요인', '불확실한 조건', '비용 영향 추정방법'], en: ['Risk', 'Uncertain condition', 'How to estimate cost impact'] }, items: [
+          [['구조·기초', 'Structure & foundation'], ['보·기둥 보강, 기초 지지력, 마이크로파일 필요성', 'Beam/column strengthening, bearing capacity, need for micropiles'], ['공법별 보강물량·시나리오 비교', 'Compare strengthening quantities by method and scenario']],
+          [['지반·누수', 'Ground & water ingress'], ['시추 결과, 지하층 누수·방수 상태', 'Boring results, basement leakage and waterproofing condition'], ['추가 공법·공사범위별 비용', 'Cost by additional method and scope']],
+          [['냉각성능', 'Cooling performance'], ['OEM 수랭 온도조건, 냉각탑 여름철 성능', 'OEM liquid-cooling temperature limits, summer tower performance'], ['보조 냉동기·CDU 변경 시 비용', 'Cost of auxiliary chillers or CDU changes']],
+          [['전력계통', 'Power system'], ['N+1 부속 계통, 기존 수배전 연계', 'N+1 auxiliary systems, tie-in to existing switchgear'], ['장비·배전반·케이블 추가물량', 'Extra equipment, switchboards and cabling']],
+          [['배치·반입', 'Layout & access'], ['기계실 556.33㎡, 서버실 157.62㎡ 설치 가능성', 'Fit within the 556.33㎡ plant room and 157.62㎡ server room'], ['공간 변경·양중·동선 보완비', 'Space changes, lifting and access-route works']],
+          [['장비가격', 'Equipment prices'], ['CDU·UPS·발전기 등의 비교 견적 미확보', 'No comparative quotes yet for CDU, UPS, generators'], ['동급 사양 가격 범위 및 환율 변화', 'Price range for equivalent specs and FX movement']]],
+          noteKo: '적정화 방식 — 위험별로 ① 발생조건, ② 예상 추가공사비, ③ 발생가능성, ④ 이미 직접비에 반영된 위험여유, ⑤ 관리 책임자를 기록해 검토합니다. 단순 발생확률 × 비용은 1차 기대값이며 위험 간 상관관계나 사업주의 예산확실성 수준을 대체하지 못합니다.',
+          noteEn: 'Calibration — For each risk record (1) trigger, (2) expected extra cost, (3) likelihood, (4) allowance already in direct cost, (5) owner. Probability × cost is only a first-order expected value and does not replace correlation or the owner\'s required budget confidence.' },
+        { id: '4.1', titleKo: '예비비율 민감도 (직접비 337.36 · 공통비 12% · 지반조사 0.80 고정)', titleEn: 'Contingency-rate sensitivity (direct 337.36 · common 12% · geotech 0.80 fixed)', text: true,
+          cols: { ko: ['예비비율', '예비비(억원)', '총 기획예산(억원)'], en: ['Contingency rate', 'Contingency (0.1B KRW)', 'Total planning budget (0.1B KRW)'] }, items: [
+          [['0%', '0%'], ['0.00', '0.00'], ['378.64', '378.64']],
+          [['10%', '10%'], ['33.74', '33.74'], ['412.38', '412.38']],
+          [['15%', '15%'], ['50.60', '50.60'], ['429.25', '429.25']],
+          [['20% (현재)', '20% (current)'], ['67.47', '67.47'], ['446.12', '446.12']],
+          [['25%', '25%'], ['84.34', '84.34'], ['462.98', '462.98']],
+          [['30%', '30%'], ['101.21', '101.21'], ['479.85', '479.85']]],
+          noteKo: '해석 — 적정 예비비율을 권고하는 표가 아니라 비율만 바꾼 단순 민감도입니다. 외부 표기는 "기획단계 잠정 사업예산(기존 원가모형) 446.12억원, VAT·IT 시스템 별도"로 하고, "공통비 12%는 조달청 기준", "예비비 20%는 AACE 권고"라는 표현은 쓰지 않습니다. (본 시뮬레이터는 설계/감리 4%를 더한 459.61억을 기본값으로 사용)',
+          noteEn: 'Reading — This is a simple sensitivity on the rate only, not a recommendation. Externally state "provisional planning budget (prior cost model) KRW 44.612B, VAT and IT systems excluded"; do not describe 12% as a PPS standard or 20% as an AACE recommendation. (This simulator adds 4% design/supervision for a 459.61 default.)' },
+        { id: '4.2', titleKo: '비용 중복계상 점검표', titleEn: 'Double-counting checklist', text: true,
+          cols: { ko: ['원가항목 조합', '점검 사항'], en: ['Cost pair', 'Check'] }, items: [
+          [['CDU 공급가 ↔ 펌프·제어·양중', 'CDU price ↔ pumps/controls/lifting'], ['CDU 내장 펌프·제어·제작사 시운전이 외부 공사비에 중복되어 있는가', 'Are built-in pumps, controls and vendor commissioning repeated in external works?']],
+          [['발전기 패키지 ↔ 방음·배기·ATS', 'Generator package ↔ acoustic/exhaust/ATS'], ['현장 설치형 발전기 견적에 이미 포함된 공종이 있는가', 'Does the generator quote already include some of these works?']],
+          [['랙·서버 패키지 ↔ PDU·매니폴드', 'Rack/server package ↔ PDU/manifolds'], ['IT OEM 공급분을 시설공사비에 다시 포함했는가', 'Are IT OEM-supplied items repeated in facility works?']],
+          [['공종별 복합단가 ↔ 공통비 12%', 'Composite rates ↔ common cost 12%'], ['복합단가에 설치·운반·현장관리 항목이 포함됐는가', 'Do composite rates already include installation, haulage and site management?']],
+          [['공종별 단가 여유 ↔ 예비비 20%', 'Rate conservatism ↔ contingency 20%'], ['보수적 가격 가정과 동일한 위험을 예비비에 중복 반영했는가', 'Is the same risk covered by conservative rates and again by contingency?']],
+          [['지반조사·전문 엔지니어링 ↔ 설계비', 'Geotech/engineering ↔ design fee'], ['별도 용역비가 다른 발주자 간접비에 중복 포함됐는가', 'Are separate service fees repeated in other owner indirect costs?']]] }
+      ] },
       fire: { sections: [
         { id: '7.2', titleKo: '소방공사', titleEn: 'Fire protection works', amount: 11.50, items: [
           ['가스계 소화설비', 'Clean-agent suppression', '3 개 방호구역', '1.60 억원/구역', 4.80],
@@ -2227,11 +2294,11 @@
         { key: 'softCosts', labelKo: '설계/감리', labelEn: 'Design & supervision', kind: 'pct', group: 'overhead', pct: 4, newbuild: 2.24, remodel: 13.4944,
           summaryKo: '설계·감리비(보고서 미계상 항목) · 직접공사비의 4% 가정, 비율·금액 수정 가능', summaryEn: 'Design & supervision fee (not in the report) · assumed at 4% of direct cost, rate or amount editable',
           logicKo: '비율 — 직접공사비 소계 × 설계/감리 비율 (공통비·예비비 산정 기준에는 미포함)', logicEn: 'Ratio — direct-cost subtotal × design/supervision % (not part of the overhead/contingency base)' },
-        { key: 'overhead', labelKo: '직접공사 공통비', labelEn: 'Direct-cost overhead', kind: 'pct', group: 'overhead', pct: 12, newbuild: 6.72, remodel: 40.4832,
-          summaryKo: '보고서 예산 가정(법정 단일 요율 아님)', summaryEn: 'A budget assumption of the report, not a statutory rate',
+        { key: 'overhead', labelKo: '직접공사 공통비', labelEn: 'Direct-cost overhead', kind: 'pct', group: 'overhead', pct: 12, newbuild: 6.72, remodel: 40.4832, est: 'overhead',
+          summaryKo: '공통가설·간접노무·법정경비·일반관리비·이윤의 예산상 대용치 — 법정·조달청 통일요율 아님(검토보고서 2026.11.18)', summaryEn: 'Budget proxy for site temporaries, indirect labor, statutory charges, G&A and profit — not a statutory or PPS uniform rate (review note 2026-11-18)',
           logicKo: '비율 — 직접공사비 소계 × 공통비율', logicEn: 'Ratio — direct-cost subtotal × overhead %' },
-        { key: 'contingency', labelKo: '직접공사 예비비', labelEn: 'Direct-cost contingency', kind: 'pct', group: 'overhead', pct: 20, newbuild: 11.2, remodel: 67.472,
-          summaryKo: '기획단계 예비비(견적·물량 미확정 리스크)', summaryEn: 'Planning-stage contingency for unconfirmed quotes and quantities',
+        { key: 'contingency', labelKo: '직접공사 예비비', labelEn: 'Direct-cost contingency', kind: 'pct', group: 'overhead', pct: 20, newbuild: 11.2, remodel: 67.472, est: 'contingency',
+          summaryKo: '구조·지반·냉각·전원·배치·가격 불확실성에 대한 사업주 위험예산 — 위험대장 미검증 가정비율(검토보고서 2026.11.18)', summaryEn: 'Owner risk budget for structure, ground, cooling, power, layout and price uncertainty — assumed rate not yet verified by a risk register (review note 2026-11-18)',
           logicKo: '비율 — 직접공사비 소계 × 예비비율', logicEn: 'Ratio — direct-cost subtotal × contingency %' },
         { key: 'geotech', labelKo: '지반조사용역', labelEn: 'Geotechnical investigation', kind: 'fixed', group: 'extra', fixedEok: 0.80, newbuild: 0, remodel: 0.80, est: 'geotech',
           summaryKo: '시추 4공·현장/실내시험·기존 자료조사 — 공통비·예비비 미적용', summaryEn: '4 borings, field/lab tests, data review — no overhead or contingency applied',
@@ -4623,6 +4690,7 @@
       if (!row.auto) return t('facEstScaleManual');
       if (def.kind === 'area') return t('facEstScaleArea', { base: nf.format(FAC_BASE_AREA_SQM), now: nf1.format(Number(state.floorAreaSqm) || 0), f: nf2.format((Number(state.floorAreaSqm) || 0) / FAC_BASE_AREA_SQM) });
       if (def.kind === 'capacity') return t('facEstScaleCap', { base: nf.format(FAC_BASE_TOTAL_KW), now: nf.format(Number(state.totalPowerKw) || 0), f: nf2.format((Number(state.totalPowerKw) || 0) / FAC_BASE_TOTAL_KW) });
+      if (def.kind === 'pct') return t('facEstScalePct', { p: nf1.format(Number(def.pct) || 0) });
       return t('facEstScaleFixed');
     }
     function facEstHtml(def, row) {
@@ -4631,20 +4699,37 @@
       if (!est) return '';
       const secs = est.sections.map(sec => {
         const cols = (sec.cols || FAC_EST_COLS)[en ? 'en' : 'ko'];
-        const items = sec.items.map(it => `<tr><td>${en ? it[1] : it[0]}</td><td>${facEstQty(it[2], en)}</td><td>${facEstRate(it[3], en)}</td><td class="n">${nf2f.format(it[4])}</td></tr>`).join('');
-        return `
-          <section class="fac-est-sec">
-            <div class="fac-est-head"><span class="id">${sec.id}</span><span class="ttl">${en ? sec.titleEn : sec.titleKo}</span><b>${nf2f.format(sec.amount)}${en ? '' : '\uC5B5'}</b></div>
+        let table;
+        if (sec.text) {
+          // 텍스트형 섹션(검토보고서 요약): 열 수 자유, 금액 열 없음
+          const n = cols.length;
+          const widths = n === 2 ? ['200px', ''] : n === 3 ? ['200px', '', '300px'] : cols.map(() => '');
+          const body = sec.items.map(r => `<tr>${r.map((cell, i) => `<td class="${i === 0 ? 'k' : ''}">${en ? cell[1] : cell[0]}</td>`).join('')}</tr>`).join('');
+          table = `
+            <table class="dt fac-est-tbl txt" style="--gap:7.5px">
+              <colgroup>${widths.map(w => `<col${w ? ` style="width:${w}"` : ''}>`).join('')}</colgroup>
+              <thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead>
+              <tbody>${body}</tbody>
+            </table>`;
+        } else {
+          const items = sec.items.map(it => `<tr><td>${en ? it[1] : it[0]}</td><td>${facEstQty(it[2], en)}</td><td>${facEstRate(it[3], en)}</td><td class="n">${nf2f.format(it[4])}</td></tr>`).join('');
+          table = `
             <table class="dt fac-est-tbl" style="--gap:7.5px">
               <colgroup><col><col style="width:150px"><col style="width:150px"><col style="width:110px"></colgroup>
               <thead><tr>${cols.map((c, i) => `<th class="${i === 3 ? 'n' : ''}">${c}</th>`).join('')}</tr></thead>
               <tbody>${items}<tr class="sum"><td>${t('facEstSubtotal')}</td><td></td><td></td><td class="n">${nf2f.format(sec.amount)}</td></tr></tbody>
-            </table>
+            </table>`;
+        }
+        return `
+          <section class="fac-est-sec">
+            <div class="fac-est-head"><span class="id">${en && sec.idEn ? sec.idEn : sec.id}</span><span class="ttl">${en ? sec.titleEn : sec.titleKo}</span>${sec.amount != null ? `<b>${nf2f.format(sec.amount)}${en ? '' : '\uC5B5'}</b>` : ''}</div>
+            ${table}
             ${sec.noteKo ? `<div class="fac-est-note">${bracketLead(en ? sec.noteEn : sec.noteKo)}</div>` : ''}
             ${sec.cautionKo ? `<div class="fac-est-note warn">${bracketLead(en ? sec.cautionEn : sec.cautionKo)}</div>` : ''}
           </section>`;
       }).join('');
-      return `<div class="fac-est"><div class="fac-est-scale">${facScaleText(def, row)}</div>${secs}<div class="fac-est-src">${t('facEstSource')}</div></div>`;
+      const src = est.sourceKo ? (en ? est.sourceEn : est.sourceKo) : t('facEstSource');
+      return `<div class="fac-est"><div class="fac-est-scale">${facScaleText(def, row)}</div>${secs}<div class="fac-est-src">${src}</div></div>`;
     }
     const facOpen = new Set(); // 펼쳐 둔 근거 행 (modelKey:rowKey)
     function toggleFacDetail(btn) {
