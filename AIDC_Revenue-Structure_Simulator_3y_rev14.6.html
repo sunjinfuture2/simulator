@@ -372,7 +372,7 @@
     #mainContent.view-enter, #summaryCards.view-enter { animation: viewIn .32s cubic-bezier(.2, .7, .2, 1); }
     .sec.collapsed > :not(.sec-head) { display: none; }
     .sec-head .sec-amt { display: none; margin-left: 14px; margin-right: auto; font-size: 18px; font-weight: 500; color: var(--g60); line-height: 24.4px; letter-spacing: -0.015em; }
-    .sec.collapsed > .sec-head .sec-amt { display: inline-flex; } /* rev75: 접힌 상태에서 시설비 CAPEX·OPEX 합계 표시 */
+    .sec.fac-sec.collapsed > .fac-big { display: block; } /* rev76: 접힌 상태에서도 시설비 CAPEX·OPEX 큰 숫자(펼친 상태와 동일)는 그대로 표시 */
     .sec.collapsed .sec-tools { display: none; }
     .sec.collapsed + .table-after-chart { display: none; }
     .sec.collapsed .tri-btn::before { transform: rotate(-90deg); transform-origin: 50% 35%; }
@@ -1405,7 +1405,7 @@
       opexTitle: { ko: '연간 OPEX 세부 내역', en: 'Annual OPEX Breakdown' },
       opexBadge: { ko: '1년차 기준', en: 'Year 1 basis' },
       tipOpex: { ko: '연간 운영비(OPEX) = 전기료 + AI Enterprise 구독료 + 임차 비용 + 인건비. 전기료는 가동률에 따라 연차별로 달라지고 나머지는 매년 고정입니다. 감가상각은 별도이며 연간 지출 = OPEX + 감가상각입니다. AI Enterprise 단가와 인건비(운영 인원·인당 인건비)는 이 표에서 입력합니다.', en: 'Annual OPEX = electricity + AI Enterprise subscription + lease + labor. Electricity varies by year with utilization; the rest is fixed each year. Depreciation is separate: annual expense = OPEX + depreciation. The AI Enterprise rate and labor (staff count, cost per head) are entered in this table.' },
-      opexDesc: { ko: '1년차 기준 연간 운영비를 항목별로 나눈 표입니다. 전기료는 사용 IT 전력·PUE·가동비중·요금으로, AI Enterprise 구독료는 GPU 수 × 연 단가 × 환율로, 임차 비용은 계약면적 × (임대료 + 관리비) + 보증금 환산 이자로, 인건비는 운영 인원 × 인당 인건비로 산출합니다. 전기요금·환율·전력 조건은 왼쪽 공통값에서, AI Enterprise 단가와 인건비는 이 표에서 조정합니다.', en: 'Annual operating cost broken down by item on a Year-1 basis. Electricity comes from used IT power, PUE, utilization and tariffs; AI Enterprise from GPU count × annual rate × FX; lease from contract area × (rent + management fee) plus deposit carrying cost; labor from staff count × cost per head. Tariffs, FX and power settings are in the sidebar; the AI Enterprise rate and labor are edited here.' },
+      opexDesc: { ko: '1년차 기준 연간 운영비를 항목별로 나눈 표입니다. 전기료는 사용 IT 전력·PUE·가동비중·요금으로, AI Enterprise 구독료는 GPU 수 × 연 단가 × 환율로, 임차 비용은 계약면적 × (임대료 + 관리비) + 보증금 환산 이자로, 인건비는 운영 인원 × 인당 인건비로 산출합니다. 전기요금·환율·전력 조건은 왼쪽 공통값에서, AI Enterprise 단가·임대료·관리비·인건비는 이 표에서 조정합니다.', en: 'Annual operating cost broken down by item on a Year-1 basis. Electricity comes from used IT power, PUE, utilization and tariffs; AI Enterprise from GPU count × annual rate × FX; lease from contract area × (rent + management fee) plus deposit carrying cost; labor from staff count × cost per head. Tariffs, FX and power settings are in the sidebar; the AI Enterprise rate, rent, management fee and labor are edited here.' },
       opexColAmount: { ko: '연간 금액 (1년차)', en: 'Annual amount (Year 1)' },
       opexColBasis: { ko: '근거 (산출 기준 · 입력값)', en: 'Basis (calculation & inputs)' },
       opexPerYear: { ko: '/년', en: '/yr' },
@@ -4026,7 +4026,7 @@
       const over4Notice = okTypes.some(td => td.kind === 'su' && td.n > 4) ? `<div class="notice info">${t('over4SuNotice')}</div>` : '';
       return `
         <section class="sec mt-100 su-sec">
-          ${secHead(t('capSecTitle') + infoIcon(t('tipCapSec'), t('capSecTitle'), true), { badge: constraintBadgeHtml(data.constraint, false), badgeCls: (over || areaOver) ? 'warn' : (data.constraint === 'balanced' ? 'ok' : '') })}
+          ${secHead(t('capSecTitle') + infoIcon(t('tipCapSec'), t('capSecTitle'), true), { tri: false, badge: constraintBadgeHtml(data.constraint, false), badgeCls: (over || areaOver) ? 'warn' : (data.constraint === 'balanced' ? 'ok' : '') })}
           <div class="sec-desc">${t('capSecDesc')}</div>
           ${baseNotice}${over4Notice}
           <div class="meters">
@@ -4720,7 +4720,7 @@
       const extraBadge = state.activeView === 'compare' ? `<span class="tag-box" style="margin-left:5.4px">${modelName}</span>` : '';
       return `
         <section class="sec mt-163 fac-sec" data-fac-panel="${modelKey}">
-          ${secHead(t('facilityTitle') + infoIcon(t('tipFacility'), t('facilityTitle'), true), { badge: `<span id="facBadge-${modelKey}">${modeLabel}</span>`, amt: `<span data-sec-amt="fac-${modelKey}">${eokF(grand)}</span>` })}
+          ${secHead(t('facilityTitle') + infoIcon(t('tipFacility'), t('facilityTitle'), true), { badge: `<span id="facBadge-${modelKey}">${modeLabel}</span>` })}
           ${extraBadge ? `<div style="margin-top:6px">${extraBadge}</div>` : ''}
           <div class="sec-desc">${isRemodelOnly() ? t('facilityDescRemodel') : t('facilityDescV7')}</div>
           <div class="fac-big"><span class="big-num" id="facGrandBig-${modelKey}">${bigNumInner(eokF(grand))}</span></div>
@@ -4769,7 +4769,7 @@
           logic: t('opexSwLogic'), inputs: 'sw' },
         { key: 'lease', label: t('opexRowLease'), kind: t('kindFixedYear'), value: d.leaseOpexEok,
           summary: t('opexLeaseSummary', { r: eokF(d.leaseRentEok), m: eokF(d.leaseMgmtEok), dc: eokF(d.leaseDepositCostEok) }),
-          logic: `${t('opexLeaseLogicLead')} ${leaseTermsText()}` },
+          logic: `${t('opexLeaseLogicLead')} ${leaseTermsText()}`, inputs: 'lease' },
         { key: 'labor', label: t('opexRowLabor'), kind: t('kindFixedYear'), value: d.laborEok,
           summary: t('opexLaborSummary', { n: nf.format(d.laborHeads || 0), c: eokF(d.laborPerHeadEok || 0) }),
           logic: t('opexLaborLogic'), inputs: 'labor' }
@@ -4791,6 +4791,11 @@
               <div class="fac-rate"><label>${t('labelLaborHeadcount')} (${unitOf('laborHeadcount')})</label>${numInputHtml('laborHeadcount')}</div>
               <div class="fac-rate"><label>${t('labelLaborPerHead').replace(/\s*\((연|yr)\)/, '')} (${unitOf('laborCostPerHeadEok')}/${state.lang === 'en' ? 'yr' : '년'})</label>${numInputHtml('laborCostPerHeadEok')}</div>
             </div>`;
+      const leaseInputs = `
+            <div class="fac-rate-row">
+              <div class="fac-rate"><label>${t('labelLeaseRent')} (${unitOf('leaseRentPerSqm')})</label>${numInputHtml('leaseRentPerSqm')}</div>
+              <div class="fac-rate"><label>${t('labelLeaseMgmt')} (${unitOf('leaseMgmtPerSqm')})</label>${numInputHtml('leaseMgmtPerSqm')}</div>
+            </div>`;
       const swInputs = `
             <div class="fac-rate-row">
               <div class="fac-rate"><label>${t('labelSwMaint')}${infoIcon(t('tipSwMaint'), t('labelSwMaint'), true)} ($/${unitOf('swSubUsdPerGpuYear')})</label><span class="fac-pre">$</span>${numInputHtml('swSubUsdPerGpuYear')}</div>
@@ -4799,15 +4804,15 @@
         <tr class="fac-row opex-row" data-opex-row="${r.key}">
           <td class="fac-cat">
             <div class="fac-lab">${r.label}<span class="tag-box">${r.kind}</span></div>
-            ${r.inputs === 'labor' ? laborInputs : (r.inputs === 'sw' ? swInputs : '')}
+            ${r.inputs === 'labor' ? laborInputs : (r.inputs === 'sw' ? swInputs : (r.inputs === 'lease' ? leaseInputs : ''))}
           </td>
           <td><span class="fac-val"><span data-opex-val="${r.key}">${eokF(r.value)}</span></span><span class="fac-auto">${t('opexPerYear')}</span></td>
           <td><span class="fac-val" data-opex-share="${r.key}">${share(r.value)}</span></td>
-          <td><div class="fac-note"><div class="fac-summary" data-opex-sum="${r.key}">${r.summary}</div><div class="fac-logic">${bracketLead(r.logic)}</div></div></td>
+          <td><div class="fac-note"><div class="fac-summary" data-opex-sum="${r.key}">${r.summary}</div><div class="fac-logic" data-opex-logic="${r.key}">${bracketLead(r.logic)}</div></div></td>
         </tr>`).join('');
       return `
         <section class="sec mt-163 fac-sec opex-sec" data-opex-panel>
-          ${secHead(t('opexTitle') + infoIcon(t('tipOpex'), t('opexTitle'), true), { badge: `<span>${t('opexBadge')}</span>`, amt: `<span data-sec-amt="opex">${eokF(total)}</span>` })}
+          ${secHead(t('opexTitle') + infoIcon(t('tipOpex'), t('opexTitle'), true), { badge: `<span>${t('opexBadge')}</span>` })}
           <div class="sec-desc">${t('opexDesc')}</div>
           <div class="fac-big"><span class="big-num" id="opexGrandBig">${bigNumInner(eokF(total))}</span></div>
           <div class="dt-wrap fac-table">
@@ -4847,6 +4852,7 @@
         const v = panel.querySelector(`[data-opex-val="${r.key}"]`); if (v) v.textContent = eokF(r.value);
         const sh = panel.querySelector(`[data-opex-share="${r.key}"]`); if (sh) sh.textContent = share(r.value);
         const sm = panel.querySelector(`[data-opex-sum="${r.key}"]`); if (sm) sm.innerHTML = r.summary;
+        const lg = panel.querySelector(`[data-opex-logic="${r.key}"]`); if (lg) lg.innerHTML = bracketLead(r.logic);
       });
       const big = panel.querySelector('#opexGrandBig'); if (big) big.innerHTML = bigNumInner(eokF(total));
       const g = panel.querySelector('#opexGrand'); if (g) g.textContent = eokF(total);
@@ -7438,7 +7444,7 @@
       }
 
       const inputId = event.target.dataset.input;
-      if (inputId === 'laborHeadcount' || inputId === 'laborCostPerHeadEok' || inputId === 'swSubUsdPerGpuYear') {
+      if (inputId === 'laborHeadcount' || inputId === 'laborCostPerHeadEok' || inputId === 'swSubUsdPerGpuYear' || inputId === 'leaseRentPerSqm' || inputId === 'leaseMgmtPerSqm') {
         // rev73: OPEX 패널의 인건비 입력 — 타이핑 중 패널 값만 갱신
         const def = getControlDef(inputId);
         let v = Number(String(event.target.value).replace(/,/g, '').trim());
