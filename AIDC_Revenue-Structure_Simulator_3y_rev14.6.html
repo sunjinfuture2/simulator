@@ -1514,7 +1514,7 @@
       formulaCardCapexTitleMix: { ko: 'IT 장비 CAPEX', en: 'IT Equipment CAPEX' },
       formulaCardCapexBodyMix: { ko: 'Σ(SU 수 × GPU당 적용 단가 × SU당 GPU 수)(USD) + CDU 대수 × CDU 단가(USD) — 합계 × 환율 + 초기 설치·통합비(억, 프로젝트 고정)', en: 'Σ(SUs × price per GPU × GPUs per SU)(USD) + CDUs × CDU price (USD) — total × FX + initial integration (KRW, fixed per project)' },
       formulaCardOpexBodyMix: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동률 × 전력량 단가] + AI Enterprise 구독료[GPU 수 × GPU당 연 단가 × 환율] + 임차 비용[계약면적 × (임대료 + 관리비 단가) × 12 + 보증금 × 환산 이자율] ※ 전력량 요금은 켜진 카드의 사용 IT 전력 합계 기준 + 인건비[운영 인원 × 인당 연 인건비]', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 h × Utilization × Energy rate] + AI Enterprise [GPUs × annual rate per GPU × FX] + Lease [area × (rent + management rate) × 12 + deposit × carrying rate] ※ energy charge uses the IT power of all active cards + labor [operations staff × annual cost per head]' },
-      formulaCardDepBodyMix: { ko: '(IT 장비 CAPEX + 시설 CAPEX) × 연차별 감가상각 증가율[기본 33→66→99% 누적] + 연간 OPEX(전기료 + AI Enterprise + 임차 비용)', en: '(IT equipment CAPEX + Facility CAPEX) × Yearly depreciation increment [default 33→66→99% cumulative] + Annual OPEX (electricity + AI Enterprise + lease)' },
+      formulaCardDepBodyMix: { ko: '(IT 장비 CAPEX + 시설 CAPEX) × 연차별 감가상각 증가율[기본 33→66→99% 누적] + 연간 OPEX(전기료 + AI Enterprise + 임차 비용 + 인건비)', en: '(IT equipment CAPEX + Facility CAPEX) × Yearly depreciation increment [default 33→66→99% cumulative] + Annual OPEX (electricity + AI Enterprise + lease + labor)' },
       compareDescMix: { ko: '켜진 카드의 GPU 종류별로 각각 단독 구성(전력·면적 제약 내 최대 수량)했을 때의 {n}년 수익구조를 비교합니다. 카드가 2장 이상 켜져 있으면 현재 혼합 구성도 함께 보입니다. 전기료는 모두 사용 IT 전력 × PUE 기준입니다.', en: 'Compares the {n}-yr revenue structure of each active GPU type configured on its own (max units within power and area limits). With two or more cards on, the current mix is shown as well. Electricity is based on used IT power × PUE for all columns.' },
       compareMixName: { ko: '현재 구성(혼합)', en: 'Current mix' },
       compareNoteMix: { ko: '※ 단독 구성 열은 같은 부지(연면적·수전) 안에서 완결된 SU 단위 최대 수량으로 계산합니다. CDU·초기 설치·통합비·임차 비용은 모든 열에 같은 기준으로 계상됩니다.', en: '※ Each standalone column uses the maximum number of complete SUs that fit the same site (floor area and power). CDUs, initial integration and lease cost are applied on the same basis in every column.' },
@@ -5063,9 +5063,11 @@
       const hoverLines = Array.from({ length: YEARS }, (_, index) => `
         <line class="hover-line" data-hover-index="${index}" x1="${x(index)}" y1="${plotTop}" x2="${x(index)}" y2="${plotBottom}"></line>
       `).join('');
+      // 호버 구간 = 가장 가까운 연차 점 기준(점 사이 중간선으로 나눔) — 점 근처 어디에 커서를 두어도 그 연차 값이 표시된다
       const hoverZones = Array.from({ length: YEARS }, (_, index) => {
-        const x0 = xMonth(12 * index);
-        return `<rect class="hover-zone" data-hover-index="${index}" x="${x0}" y="${plotTop}" width="${Math.max(0, xMonth(12 * (index + 1)) - x0)}" height="${plotBottom - plotTop}"></rect>`;
+        const x0 = index === 0 ? xMonth(0) : (x(index - 1) + x(index)) / 2;
+        const x1 = index === YEARS - 1 ? width - pad.right : (x(index) + x(index + 1)) / 2;
+        return `<rect class="hover-zone" data-hover-index="${index}" x="${x0}" y="${plotTop}" width="${Math.max(0, x1 - x0)}" height="${plotBottom - plotTop}"></rect>`;
       }).join('');
       return `
         <svg class="chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escAttr(label)}">
@@ -8488,8 +8490,8 @@ const PODFIN = (function () {
       <div class="fin-ctl-col">
         <h3>${L('매출 조건', 'Revenue terms')}</h3>
         ${seg('cur', L('매출 계약통화', 'Revenue contract currency'), [['usd', L('달러 연동', 'USD-linked')], ['krw', L('원화 고정', 'KRW-fixed')]], P.cur,
-      L('달러 연동: 매출이 환율을 따라 움직여 IT 투자비·SW 구독료와 자연헤지가 작동합니다. 원화 고정: 임대료가 기준환율 1,350원 시점 단가로 고정되어 투자비만 환율에 노출됩니다.',
-        'USD-linked: revenue moves with FX, hedging IT capex and software fees naturally. KRW-fixed: rates lock at the 1,400 baseline, leaving only capex FX-exposed.'))}
+      L('달러 연동: 매출이 환율을 따라 움직여 IT 투자비·SW 구독료와 자연헤지가 작동합니다. 원화 고정: 임대료가 기준환율 ' + nf.format(Number(state.fxKrwUsd) || 0) + '원 시점 단가로 고정되어 투자비만 환율에 노출됩니다.',
+        'USD-linked: revenue moves with FX, hedging IT capex and software fees naturally. KRW-fixed: rates lock at the ' + nf.format(Number(state.fxKrwUsd) || 0) + ' KRW/USD baseline, leaving only capex FX-exposed.'))}
         ${slider('d2', L('재계약 체감 — 2년차', 'Renewal decay — Yr 2'), P.d2, 0, 30, 5, P.d2 + '%')}
         ${slider('d3', L('재계약 체감 — 3년차', 'Renewal decay — Yr 3'), P.d3, 0, 50, 5, P.d3 + '%')}
         <div class="fin-hint">${L('체감은 1년 예약·온디맨드 재계약분에만 적용됩니다(3년 예약은 계약상 고정).', 'Decay applies only to 1Y reserve and on-demand renewals; 3-yr contracts are locked.')}</div>
