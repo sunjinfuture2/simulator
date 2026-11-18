@@ -1319,6 +1319,10 @@
       // rev66: 운영 인건비 — 4인 3교대 운영 기준 12명 × 인당 1억 = 12억/년 (가동률과 무관하게 매년 발생)
       laborHeadcount: 12,       // 운영 인원(명)
       laborCostPerHeadEok: 1,   // 인당 연 인건비(억)
+      // rev87: DC OPEX 기준 단가표(2026.11.18, 성수 IM App.3 기준) — 백만원/MW(IT Load)·년, VAT 별도
+      maintRateMwYear: 44.5,    // 시설·인프라 유지보수 = 장비 유지보수 3,307 + 수선유지 400 = 3,707원/kW·월 × 0.012
+      insurRateMwYear: 48,      // 운영기 보험(재산종합보험) = 4,000원/kW·월 × 0.012 · 개발기 보험은 CAPEX 반영
+      netInferSharePct: 50,     // 네트워크 회선 추론 비중(%) — 혼합(학습 50%·추론 50%) 기준 3.92억/년
       // rev58: 임차 조건 — 임대료·관리비는 연 환산해 운영비, 보증금은 환산 이자율만 운영비(원금은 0년차 납입 · 3년차 회수)
       leaseAreaSqm: 1937.2,     // 계약면적(㎡)
       leaseRentPerSqm: 15126,   // 임대료(원/㎡·월) → 월 약 2,930만원
@@ -1420,8 +1424,8 @@
       blLabor: { ko: '인건비(연)', en: 'Labor cost (per yr)' },
       opexTitle: { ko: '연간 OPEX 세부 내역', en: 'Annual OPEX Breakdown' },
       opexBadge: { ko: '1년차 기준', en: 'Year 1 basis' },
-      tipOpex: { ko: '연간 운영비(OPEX) = 전기료 + AI Enterprise 구독료 + 임차 비용 + 인건비 + SW 초기 설치·통합비(1년차 1회). 전기료는 가동률에 따라 연차별로 달라지고 나머지는 매년 고정입니다. 감가상각은 별도이며 연간 지출 = OPEX + 감가상각입니다. AI Enterprise 단가와 인건비(운영 인원·인당 인건비)는 이 표에서 입력합니다.', en: 'Annual OPEX = electricity + AI Enterprise subscription + lease + labor + SW initial integration (once, Year 1). Electricity varies by year with utilization; the rest is fixed each year. Depreciation is separate: annual expense = OPEX + depreciation. The AI Enterprise rate and labor (staff count, cost per head) are entered in this table.' },
-      opexDesc: { ko: '1년차 기준 연간 운영비를 항목별로 나눈 표입니다. 전기료는 사용 IT 전력·PUE·가동비중·요금으로, AI Enterprise 구독료는 GPU 수 × 연 단가 × 환율로, 임차 비용은 계약면적 × (임대료 + 관리비) + 보증금 환산 이자로, 인건비는 운영 인원 × 인당 인건비로 산출합니다. SW 초기 설치·통합비는 1년차에 1회만 반영합니다. 전기요금·환율·전력 조건은 왼쪽 공통값에서, AI Enterprise 단가·임대료·관리비·인건비·초기 설치·통합비는 이 표에서 조정합니다.', en: 'Annual operating cost broken down by item on a Year-1 basis. Electricity comes from used IT power, PUE, utilization and tariffs; AI Enterprise from GPU count × annual rate × FX; lease from contract area × (rent + management fee) plus deposit carrying cost; labor from staff count × cost per head. SW initial integration is charged once in Year 1. Tariffs, FX and power settings are in the sidebar; the AI Enterprise rate, rent, management fee, labor and initial integration are edited here.' },
+      tipOpex: { ko: '연간 운영비(OPEX) = 전기료 + AI Enterprise 구독료 + 임차 비용 + 인건비 + 시설·인프라 유지보수 + 운영기 보험 + 네트워크 회선 + SW 초기 설치·통합비(1년차 1회). 전기료는 가동률에 따라 연차별로 달라지고 나머지는 매년 고정입니다. 감가상각은 별도이며 연간 지출 = OPEX + 감가상각입니다. AI Enterprise 단가·인건비·유지보수·보험 단가·회선 추론 비중은 이 표에서 입력합니다.', en: 'Annual OPEX = electricity + AI Enterprise subscription + lease + labor + facility maintenance + operating insurance + network lines + SW initial integration (once, Year 1). Electricity varies by year with utilization; the rest is fixed each year. Depreciation is separate: annual expense = OPEX + depreciation. The AI Enterprise rate, labor, maintenance and insurance rates and the inference share are entered in this table.' },
+      opexDesc: { ko: '1년차 기준 연간 운영비를 항목별로 나눈 표입니다. 전기료는 사용 IT 전력·PUE·가동비중·요금으로, AI Enterprise 구독료는 GPU 수 × 연 단가 × 환율로, 임차 비용은 계약면적 × (임대료 + 관리비) + 보증금 환산 이자로, 인건비는 운영 인원 × 인당 인건비로, 시설·인프라 유지보수와 운영기 보험은 DC OPEX 기준 단가(백만원/MW·년) × IT 수전으로, 네트워크 회선은 GPU 수·추론 비중에 따른 필요 대역의 약정 단가로 산출합니다. SW 초기 설치·통합비는 1년차에 1회만 반영합니다. 전기요금·환율·전력 조건은 왼쪽 공통값에서, 나머지 단가는 이 표에서 조정합니다.', en: 'Annual operating cost broken down by item on a Year-1 basis. Electricity comes from used IT power, PUE, utilization and tariffs; AI Enterprise from GPU count × annual rate × FX; lease from contract area × (rent + management fee) plus deposit carrying cost; labor from staff count × cost per head; facility maintenance and operating insurance from the DC OPEX unit rate (KRW M/MW·yr) × IT power; network lines from the committed bandwidth implied by GPU count and inference share. SW initial integration is charged once in Year 1. Tariffs, FX and power settings are in the sidebar; the other rates are edited here.' },
       opexColAmount: { ko: '연간 금액 (1년차)', en: 'Annual amount (Year 1)' },
       opexColBasis: { ko: '근거 (산출 기준 · 입력값)', en: 'Basis (calculation & inputs)' },
       opexPerYear: { ko: '/년', en: '/yr' },
@@ -1454,7 +1458,24 @@
       opexLaborSummary: { ko: '{n}명 × 인당 {c} · 4인 3교대 운영 기준', en: '{n} people × {c} each · 4-person, 3-shift operation' },
       opexLaborLogic: { ko: '연 고정 — 운영 인원 × 인당 연 인건비, 가동률과 무관하게 매년 반영 · 왼쪽 입력칸에서 조정', en: 'Fixed per year — staff count × annual cost per head, charged every year regardless of utilization · edit in the inputs on the left' },
       opexTotalRow: { ko: '연간 OPEX 합계', en: 'Annual OPEX total' },
-      opexFoot: { ko: '※ 연간 지출 = OPEX + 감가상각(1년차 {dep}) = {exp}. SW 초기 설치·통합비는 1년차에만 1회 포함되고, 임차 보증금 원금은 운영비가 아니라 재무구조에서 0년차 납입·3년차 회수로 반영됩니다.', en: '※ Annual expense = OPEX + depreciation (Year 1 {dep}) = {exp}. SW initial integration is included once in Year 1 only; the lease deposit principal is not an operating cost and is paid in Year 0 and returned in Year 3 in the financing model.' },
+      opexRowMaint: { ko: '시설·인프라 유지보수', en: 'Facility & infra maintenance' },
+      opexRowInsur: { ko: '운영기 보험', en: 'Operating insurance' },
+      opexRowNet: { ko: '네트워크 회선', en: 'Network lines' },
+      kindGpuLinked: { ko: 'GPU 연동', en: 'GPU-linked' },
+      labelMaintRate: { ko: '유지보수 단가', en: 'Maintenance rate' },
+      labelInsurRate: { ko: '보험 단가', en: 'Insurance rate' },
+      labelNetInferShare: { ko: '추론 비중', en: 'Inference share' },
+      opexMwSummary: { ko: '{r}백만원/MW·년 × IT {mw}MW', en: 'KRW {r}M/MW·yr × IT {mw}MW' },
+      opexMaintLogic: { ko: '연 고정 — 성수 AIDC IM 기준 장비 유지보수 3,307원 + 수선유지 400원 = 3,707원/kW·월 (×0.012 = 백만원/MW·년, 수도광열비 포함) · 단가는 왼쪽 입력칸에서 조정', en: 'Fixed per year — Seongsu AIDC IM basis: equipment maintenance 3,307 + upkeep 400 = 3,707 KRW/kW·mo (×0.012 = KRW M/MW·yr, utilities included) · rate editable on the left' },
+      opexInsurLogic: { ko: '연 고정 — 성수 AIDC IM 재산종합보험 4,000원/kW·월 (×0.012) · 개발기 건설공사·조립보험은 CAPEX 반영으로 제외 · IT 장비·기업휴지 보험 미포함', en: 'Fixed per year — Seongsu AIDC IM property all-risk 4,000 KRW/kW·mo (×0.012) · construction-period CAR/EAR cover sits in capex · IT equipment and business-interruption cover excluded' },
+      opexNetSummary: { ko: '추론 비중 {p}% → 필요 대역 {g}G → 회선당 {c}G 약정 × {u}만원/Gbps·월 + 크로스커넥트 {x}만원 × 2회선 × 12개월', en: 'Inference share {p}% → {g}G needed → {c}G commit per line × KRW {u}0k/Gbps·mo + cross-connect KRW {x}0k × 2 lines × 12 months' },
+      opexNetLogic: { ko: 'GPU 연동 — B300 1,152장 기준 대역(학습 2.5G · 추론 13.2G)을 현재 {n}장에 비례 환산, MW로 늘리지 않음 · 약정은 올림 G·10G·100G 중 가장 싼 구간(10G 미만 210 · 10G 이상 160 · 100G 이상 114.8만원/Gbps·월) · 추론 비중은 왼쪽 입력칸에서 조정', en: 'GPU-linked — bandwidth for 1,152 B300 GPUs (training 2.5G · inference 13.2G) scaled to the current {n} GPUs, never by MW · commit is the cheapest of ceil-G, 10G or 100G (KRW 2.1M below 10G, 1.6M from 10G, 1.148M from 100G per Gbps·mo) · inference share editable on the left' },
+      opexEstScaleMw: { ko: '단가 항목 — 백만원/MW(IT Load)·년 × IT 수전 {mw}MW. 아래는 「데이터센터 OPEX 기준 단가표」(2026.11.18)의 요약입니다.', en: 'Rate item — KRW M per MW (IT load) per year × IT power {mw}MW. Below is a summary of the data-center OPEX unit-rate table (2026-11-18).' },
+      opexEstScaleNet: { ko: 'GPU 연동 항목 — 현재 {n} GPU · 필요 대역 {g}G → 회선당 {c}G 약정. 아래는 「데이터센터 OPEX 기준 단가표」(2026.11.18) 근거 2·3의 요약입니다.', en: 'GPU-linked item — {n} GPUs now · {g}G needed → {c}G commit per line. Below is a summary of bases 2 and 3 of the data-center OPEX unit-rate table (2026-11-18).' },
+      blMaint: { ko: '시설·인프라 유지보수(연)', en: 'Facility maintenance (per yr)' },
+      blInsur: { ko: '운영기 보험(연)', en: 'Operating insurance (per yr)' },
+      blNet: { ko: '네트워크 회선(연)', en: 'Network lines (per yr)' },
+      opexFoot: { ko: '※ 연간 지출 = OPEX + 감가상각(1년차 {dep}) = {exp}. SW 초기 설치·통합비는 1년차에만 1회 포함되고, 임차 보증금 원금은 운영비가 아니라 재무구조에서 0년차 납입·3년차 회수로 반영됩니다. 유지보수·보험·회선은 「데이터센터 OPEX 기준 단가표」(2026.11.18, 사업 검토용 가정값)를 따르며 회선 설치비·인입 공사는 CAPEX라 제외합니다.', en: '※ Annual expense = OPEX + depreciation (Year 1 {dep}) = {exp}. SW initial integration is included once in Year 1 only; the lease deposit principal is not an operating cost and is paid in Year 0 and returned in Year 3 in the financing model. Maintenance, insurance and network lines follow the data-center OPEX unit-rate table (2026-11-18, planning assumptions); line installation and lead-in works are capex and excluded.' },
       blLaborDetail: { ko: '{n}명 × 인당 {c} · 4인 3교대 기준', en: '{n} people × {c} each · 4-person 3-shift' },
       labelLaborHeadcount: { ko: '운영 인원', en: 'Operations staff' },
       labelLaborPerHead: { ko: '인당 인건비 (연)', en: 'Labor cost per head (yr)' },
@@ -1521,7 +1542,7 @@
       blOtherOpexNeo: { ko: '기타 운영비(연)', en: 'Other opex (per yr)' },
       chipSwSubNeo: { ko: 'AI Enterprise 구독', en: 'AI Enterprise' },
       formulaCardGpuBodyNeo: { ko: 'Σ(GPU 종류별 수량 × 단위당 GPU 수 × 8,760시간 × 가동비중 × 판매단가($) × (1 − 마진율) × 환율) ※ 계약 포트폴리오·입지 프리미엄·예약 할인 미적용', en: 'Σ(per GPU type: units × GPUs/unit × 8,760 hrs × utilized share × list price ($) × (1 − margin) × FX) — no contract mix, location premium or reserve discounts' },
-      formulaCardOpexBodyNeo: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동비중 × 전력량 단가] + AI Enterprise 구독료[GPU 수 × GPU당 연 단가 × 환율] + 임차 비용[계약면적 × (임대료 + 관리비 단가) × 12 + 보증금 × 환산 이자율] + 인건비[운영 인원 × 인당 연 인건비]', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 h × Utilized share × Energy rate] + AI Enterprise [GPUs × annual rate per GPU × FX] + Lease [area × (rent + management rate) × 12 + deposit × carrying rate] + labor [operations staff × annual cost per head]' },
+      formulaCardOpexBodyNeo: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동비중 × 전력량 단가] + AI Enterprise 구독료[GPU 수 × GPU당 연 단가 × 환율] + 임차 비용[계약면적 × (임대료 + 관리비 단가) × 12 + 보증금 × 환산 이자율] + 인건비[운영 인원 × 인당 연 인건비] + 유지보수·보험[백만원/MW·년 단가 × IT 수전 MW] + 네트워크 회선[(약정 Gbps × 구간 단가 + 크로스커넥트) × 2회선 × 12]', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 h × Utilized share × Energy rate] + AI Enterprise [GPUs × annual rate per GPU × FX] + Lease [area × (rent + management rate) × 12 + deposit × carrying rate] + labor [operations staff × annual cost per head] + maintenance & insurance [KRW M/MW·yr rate × IT MW] + network lines [(committed Gbps × tier rate + cross-connect) × 2 lines × 12]' },
       cmpModeTitle: { ko: '운영 방식 비교 (현재 구성)', en: 'Operating model comparison (current configuration)' },
       cmpModeDesc: { ko: '현재 켜진 카드 구성을 CSP 직접운영과 CSP 타사위탁으로 각각 계산해 비교합니다. 다른 입력값은 동일합니다.', en: 'The current card configuration calculated under direct and outsourced operation with all other inputs equal.' },
       cmpModeRowBasis: { ko: '단가 기준', en: 'Rate basis' },
@@ -1574,7 +1595,7 @@
       formulaCardGpuBodyMix: { ko: 'Σ(GPU 종류별 수량 × 단위당 GPU 수 × 8,760시간 × Σ(계약비중 × 가동률 계수 × 계약유형별 단가)) ※ 단가 = 기초단가($) × 입지(+{loc}%) × 예약할인(0/-{d1}%/-{d3}%) × 환율', en: 'Σ(per GPU type: units × GPUs/unit × 8,760 hrs × Σ(mix × utilization coefficient × contract rate)) — rate = base ($) × location (+{loc}%) × reserve discount (0/-{d1}%/-{d3}%) × FX' },
       formulaCardCapexTitleMix: { ko: 'IT 장비 CAPEX', en: 'IT Equipment CAPEX' },
       formulaCardCapexBodyMix: { ko: 'Σ(SU 수 × GPU당 적용 단가 × SU당 GPU 수)(USD) + CDU 대수 × CDU 단가(USD) — 합계 × 환율 + 초기 설치·통합비(억, 프로젝트 고정)', en: 'Σ(SUs × price per GPU × GPUs per SU)(USD) + CDUs × CDU price (USD) — total × FX + initial integration (KRW, fixed per project)' },
-      formulaCardOpexBodyMix: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동률 × 전력량 단가] + AI Enterprise 구독료[GPU 수 × GPU당 연 단가 × 환율] + 임차 비용[계약면적 × (임대료 + 관리비 단가) × 12 + 보증금 × 환산 이자율] ※ 전력량 요금은 켜진 카드의 사용 IT 전력 합계 기준 + 인건비[운영 인원 × 인당 연 인건비]', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 h × Utilization × Energy rate] + AI Enterprise [GPUs × annual rate per GPU × FX] + Lease [area × (rent + management rate) × 12 + deposit × carrying rate] ※ energy charge uses the IT power of all active cards + labor [operations staff × annual cost per head]' },
+      formulaCardOpexBodyMix: { ko: '전기료[총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동률 × 전력량 단가] + AI Enterprise 구독료[GPU 수 × GPU당 연 단가 × 환율] + 임차 비용[계약면적 × (임대료 + 관리비 단가) × 12 + 보증금 × 환산 이자율] + 인건비[운영 인원 × 인당 연 인건비] + 유지보수·보험[백만원/MW·년 단가 × IT 수전 MW] + 네트워크 회선[(약정 Gbps × 구간 단가 + 크로스커넥트) × 2회선 × 12] ※ 전력량 요금은 켜진 카드의 사용 IT 전력 합계 기준', en: 'Electricity [Total power (kW) × Basic charge × 12 + Used IT power (kW) × PUE × 8,760 h × Utilization × Energy rate] + AI Enterprise [GPUs × annual rate per GPU × FX] + Lease [area × (rent + management rate) × 12 + deposit × carrying rate] + labor [operations staff × annual cost per head] + maintenance & insurance [KRW M/MW·yr rate × IT MW] + network lines [(committed Gbps × tier rate + cross-connect) × 2 lines × 12] ※ energy charge uses the IT power of all active cards' },
       formulaCardDepBodyMix: { ko: '(IT 장비 CAPEX + 시설 CAPEX) × 연차별 감가상각 증가율[기본 33→66→99% 누적] + 연간 OPEX(전기료 + AI Enterprise + 임차 비용 + 인건비)', en: '(IT equipment CAPEX + Facility CAPEX) × Yearly depreciation increment [default 33→66→99% cumulative] + Annual OPEX (electricity + AI Enterprise + lease + labor)' },
       compareDescMix: { ko: '켜진 카드의 GPU 종류별로 각각 단독 구성(전력·면적 제약 내 최대 수량)했을 때의 {n}년 수익구조를 비교합니다. 카드가 2장 이상 켜져 있으면 현재 혼합 구성도 함께 보입니다. 전기료는 모두 사용 IT 전력 × PUE 기준입니다.', en: 'Compares the {n}-yr revenue structure of each active GPU type configured on its own (max units within power and area limits). With two or more cards on, the current mix is shown as well. Electricity is based on used IT power × PUE for all columns.' },
       compareMixName: { ko: '현재 구성(혼합)', en: 'Current mix' },
@@ -2687,7 +2708,10 @@
           { id: 'cduCapKw', labelKey: 'labelCduCapKw', min: 100, max: 10000, step: 10, numberOnly: true },
           { id: 'initIntegrationEok', labelKey: 'labelInitIntegration', min: 0, max: 1000, step: 0.1, numberOnly: true },
           { id: 'laborHeadcount', labelKey: 'labelLaborHeadcount', min: 0, max: 1000, step: 1, numberOnly: true },
-          { id: 'laborCostPerHeadEok', labelKey: 'labelLaborPerHead', min: 0, max: 100, step: 0.1, numberOnly: true }
+          { id: 'laborCostPerHeadEok', labelKey: 'labelLaborPerHead', min: 0, max: 100, step: 0.1, numberOnly: true },
+          { id: 'maintRateMwYear', labelKey: 'labelMaintRate', min: 0, max: 1000, step: 0.1, numberOnly: true },
+          { id: 'insurRateMwYear', labelKey: 'labelInsurRate', min: 0, max: 1000, step: 0.1, numberOnly: true },
+          { id: 'netInferSharePct', labelKey: 'labelNetInferShare', min: 0, max: 100, step: 5, numberOnly: true }
         ]
       }
     ];
@@ -2854,6 +2878,8 @@
       if (id === 'leaseRentPerSqm' || id === 'leaseMgmtPerSqm') return `${nf.format(value)}\uC6D0/\u33A1\u00B7\uC6D4`;
       if (id === 'leaseDepositMonths') return `${nf.format(value)}\uAC1C\uC6D4`;
       if (id === 'leaseDepositRatePct') return `${nf1.format(value)}%`;
+      if (id === 'maintRateMwYear' || id === 'insurRateMwYear') return `${nf1.format(value)}${state.lang === 'en' ? ' KRW M/MW·yr' : '백만원/MW·년'}`;
+      if (id === 'netInferSharePct') return `${nf.format(value)}%`;
       if (id === 'cduUnitUsd') return `$${nf.format(value)}`;
       if (id === 'locPremiumPct' || id === 'disc1YPct' || id === 'disc3YPct') return `${nf1.format(value)}%`;
       if (id.startsWith('depY')) return `${nf.format(value)}%`;
@@ -3026,6 +3052,24 @@
     // ---- rev36: GPU 종류 통합 헬퍼 ----
     function gpuOn(key, s = state) { return !!s['on_' + key] && (key !== 'custom' || !!s.customOpen); }
     function gpuCount(key, s = state) { return Math.max(0, Math.round(Number(s['n_' + key]) || 0)); }
+    // rev87: 네트워크 회선 산정 — DC OPEX 기준 단가표(2026.11.18) 근거 2·3
+    //   기준 대역(B300 1,152장, 가동비중 90%): 학습 2.47G(월 반입 200TB × 집중 계수 4) · 추론 13.15G(GPU당 7,552 tok/s × 실효 70% × 100byte × 1.5 × 피크 2.0)
+    //   연간 비용 = (회선당 약정 Gbps × 구간 단가 + 크로스커넥트) × 2회선(N+N) × 12개월 — 약정은 올림 G·10G·100G 중 가장 싼 쪽
+    const NET = { baseGpus: 1152, trainGbps: 2.469, inferGbps: 13.154, crossKrw: 324800, lines: 2,
+      tiers: [[100, 1148000], [10, 1600000], [0, 2100000]] };          // [약정 하한 G, 원/Gbps·월]
+    function netUnitKrw(commitG) { return (NET.tiers.find(tr => commitG >= tr[0]) || NET.tiers[NET.tiers.length - 1])[1]; }
+    function netLineCost(gbps) {
+      if (!(gbps > 0)) return { gbps: 0, commitG: 0, unitKrw: 0, monthKrw: 0, annualEok: 0 };
+      const cands = [Math.ceil(gbps)];
+      if (cands[0] < 10) cands.push(10);
+      if (cands[0] < 100) cands.push(100);
+      let best = null;
+      cands.forEach(c => {
+        const monthKrw = c * netUnitKrw(c) + NET.crossKrw;
+        if (!best || monthKrw < best.monthKrw) best = { gbps, commitG: c, unitKrw: netUnitKrw(c), monthKrw, annualEok: monthKrw * NET.lines * 12 / EOK };
+      });
+      return best;
+    }
     function gpuUnitPowerKw(g) { return Math.max(0, Number(g.unitItPowerKw) || 0); }
     function gpuUnitAreaSqm(g) { return Number(g.unitAreaSqm) || 0; }
     function gpuSpecOk(g) { return gpuUnitPowerKw(g) > 0 && gpuUnitAreaSqm(g) > 0 && (Number(g.gpusPerUnit) || 0) > 0; }
@@ -3302,10 +3346,24 @@
       const laborPerHeadEok = Math.max(0, Number(inputState.laborCostPerHeadEok) || 0);
       const laborEok = gpus > 0 ? laborHeads * laborPerHeadEok : 0;
       const laborByYear = utils.map(() => laborEok);
+      // rev87: 시설·인프라 유지보수 · 운영기 보험 — DC OPEX 기준 단가표(2026.11.18) 백만원/MW(IT Load)·년 × IT 수전(MW), 매년 고정
+      const itMwOpex = (Number(inputState.itPowerKw) || 0) / 1000;
+      const maintRate = Math.max(0, Number(inputState.maintRateMwYear) || 0);
+      const insurRate = Math.max(0, Number(inputState.insurRateMwYear) || 0);
+      const maintEok = gpus > 0 ? maintRate * itMwOpex / 100 : 0;   // 백만원 → 억 (÷100)
+      const insurEok = gpus > 0 ? insurRate * itMwOpex / 100 : 0;
+      const maintByYear = utils.map(() => maintEok);
+      const insurByYear = utils.map(() => insurEok);
+      // rev87: 네트워크 회선 — GPU 수·용도(추론 비중)로 필요 대역을 정하고 약정 구간 단가로 연간 비용 산정 (MW 환산 안 함)
+      const netShare = Math.min(100, Math.max(0, Number(inputState.netInferSharePct) || 0)) / 100;
+      const netGbps = gpus > 0 ? (NET.trainGbps * (1 - netShare) + NET.inferGbps * netShare) * gpus / NET.baseGpus : 0;
+      const net = netLineCost(netGbps);
+      const netEok = net.annualEok;
+      const netByYear = utils.map(() => netEok);
       const depIncrements = getDepreciationIncrements(inputState);
       const capexByYear = depIncrements.map(d => totalCapexEok * d);
       const annualRevenue = revenueByYear;
-      const annualExpense = utils.map((u, i) => capexByYear[i] + electricityByYear[i] + swOpexByYear[i] + leaseByYear[i] + laborByYear[i] + integrationByYear[i]);
+      const annualExpense = utils.map((u, i) => capexByYear[i] + electricityByYear[i] + swOpexByYear[i] + leaseByYear[i] + laborByYear[i] + integrationByYear[i] + maintByYear[i] + insurByYear[i] + netByYear[i]);
       let sumR = 0, sumE = 0;
       const cumRevenue = annualRevenue.map(v => (sumR += v));
       const cumExpense = annualExpense.map(v => (sumE += v));
@@ -3331,6 +3389,8 @@
         equipCapexUsd, equipCapexEok, cduMode, cduUnits, cduDuty, cduCapKw, cduUnitUsd, cduUnitEok, computeKw, cduCapexUsd, cduCapexEok, integrationEok,
         leaseArea, leaseRentMonthKrw, leaseMgmtMonthKrw, leaseRentEok, leaseMgmtEok, leaseDepositEok, leaseDepositRatePct, leaseDepositCostEok, leaseOpexEok, leaseAgentFeeEok, leaseByYear,
         laborHeads, laborPerHeadEok, laborEok, laborByYear, integrationByYear,
+        itMwOpex, maintRate, maintEok, maintByYear, insurRate, insurEok, insurByYear,
+        netShare, netGbps, netCommitG: net.commitG, netUnitKrw: net.unitKrw, netMonthKrw: net.monthKrw, netEok, netByYear,
         grossByYear, takeByYear: grossByYear.map((v, i) => v - revenueByYear[i]), gpuHours: utils.map(u => gpus * HOURS * u),
         system: primary ? primary.type : fallback, systemKey: primary ? primary.key : null, su: primary ? primary.n : 0,
         gpus, totalGpu: gpus, racks, totalFp4,
@@ -4146,6 +4206,10 @@
       const itRow = [t('blItCapex'), `${eok(data.itCapexEok)} (${usdM(data.itCapexUsd)})`, 'res'];
       const leaseRow = [t('blLease'), `${eok(data.leaseOpexEok)} (${t('blLeaseDetail', { r: eok(data.leaseRentEok), m: eok(data.leaseMgmtEok), dc: eok(data.leaseDepositCostEok) })})`, 'res'];
       const laborRow = [t('blLabor'), `${eok(data.laborEok)} (${t('blLaborDetail', { n: nf.format(data.laborHeads), c: eok(data.laborPerHeadEok) })})`, 'res'];
+      // rev87: 유지보수 · 보험 · 회선 (DC OPEX 기준 단가표)
+      const maintRow = [t('blMaint'), `${eok(data.maintEok)} (${t('opexMwSummary', { r: (Number(data.maintRate) || 0).toFixed(1), mw: (Number(data.itMwOpex) || 0).toFixed(1) })})`, 'res'];
+      const insurRow = [t('blInsur'), `${eok(data.insurEok)} (${t('opexMwSummary', { r: (Number(data.insurRate) || 0).toFixed(1), mw: (Number(data.itMwOpex) || 0).toFixed(1) })})`, 'res'];
+      const netRow = [t('blNet'), `${eok(data.netEok)} (${nf.format(data.gpus || 0)} GPU · ${nf1.format(data.netGbps || 0)}G → ${nf.format(data.netCommitG || 0)}G × 2)`, 'res'];
       const leaseChip = [t('chipLease'), `${nf1.format(data.leaseArea)}㎡ · ${nf.format(state.leaseRentPerSqm)}/${nf.format(state.leaseMgmtPerSqm)}${state.lang === 'en' ? ' KRW/㎡·mo' : '원/㎡·월'} · ${t('chipLeaseFixed', { months: nf.format(state.leaseDepositMonths), rate: nf1.format(data.leaseDepositRatePct) })}`];
       const swChip = [t('chipSwSub'), formatSwSub(data.swRateUsd)];
       if (data.mode === 'neo') {
@@ -4166,7 +4230,7 @@
         return formulaSectionHtml([
           { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBodyNeo'), items: [B.config, ...priceRows, B.margin, utilRow, B.rev] },
           { title: t('formulaCardCapexTitleMix'), body: t('formulaCardCapexBodyMix'), items: [...capexRows, cduRow, itRow, B.fac] },
-          { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyNeo'), items: [B.elec, B.sw, leaseRow, laborRow, intRow, [t('blDep'), depTxt], utilRow, tot, it, pue] },
+          { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyNeo'), items: [B.elec, B.sw, leaseRow, laborRow, maintRow, insurRow, netRow, intRow, [t('blDep'), depTxt], utilRow, tot, it, pue] },
           { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyMix'), items: [floor, support, B.fac, B.energy, B.basic, B.fx, swChip, leaseChip, [t('chipDep'), depTxt]] }
         ]);
       }
@@ -4189,7 +4253,7 @@
       return formulaSectionHtml([
         { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBodyMix', vars), items: [B.config, ...rateRows, B.mix, ...effRows, B.rev] },
         { title: t('formulaCardCapexTitleMix'), body: t('formulaCardCapexBodyMix'), items: [...capexRows, cduRow, itRow, B.fac] },
-        { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyMix'), items: [B.elec, B.sw, leaseRow, laborRow, intRow, [t('blDep'), depTxt], utilRow, B.tot, B.it, B.pue] },
+        { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyMix'), items: [B.elec, B.sw, leaseRow, laborRow, maintRow, insurRow, netRow, intRow, [t('blDep'), depTxt], utilRow, B.tot, B.it, B.pue] },
         { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyMix'), items: [B.floor, B.support, B.fac, B.energy, B.basic, B.fx, swChip, leaseChip, [t('chipDep'), depTxt]] }
       ]);
     }
@@ -4686,6 +4750,100 @@
       const amt = krw >= 1e6 ? `${nf2.format(+(krw / 1e6).toFixed(2))}M` : `${nf.format(Math.round(krw / 1e3))}k`;
       return `KRW ${amt}/${unitMap[m[3]] || m[3]}`;
     }
+
+    // rev87: OPEX 근거 — 「데이터센터 OPEX 기준 단가표 (2차, MW 단위)」 2026.11.18 요약 (시설·인프라 유지보수 · 운영기 보험 · 네트워크 회선)
+    const OPEX_SRC_KO = '출처: 데이터센터 OPEX 기준 단가표 (2차, MW 단위, 2026.11.18) · 단위 백만원/MW(IT Load)·년, VAT 별도, 환율 1,400원/USD · 사업 검토용 가정값이며 견적이 아님';
+    const OPEX_SRC_EN = 'Source: Data-center OPEX unit-rate table (2nd ed., per MW, 2026-11-18) · KRW M per MW (IT load) per year, VAT excluded, FX 1,400 KRW/USD · planning assumptions, not quotes';
+    const OPEX_EST = {
+      maint: { sourceKo: OPEX_SRC_KO, sourceEn: OPEX_SRC_EN, sections: [
+        { id: '근거 1', idEn: 'Basis 1', titleKo: '기준값 원자료 — 성수 AIDC IM v5.0 App.3 (IT 3.13MW, 2026)', titleEn: 'Base data — Seongsu AIDC IM v5.0 App. 3 (IT 3.13MW, 2026)', text: true,
+          cols: { ko: ['항목', '산정 기준 (원문)', '원/kW·월', '백만원/MW·년'], en: ['Item', 'Basis (as stated)', 'KRW/kW·mo', 'KRW M/MW·yr'] }, widths: ['200px', '', '150px', '150px'], items: [
+          [['장비 유지보수비', 'Equipment maintenance'], ['수도광열비 포함', 'Includes utilities'], ['3,307', '3,307'], ['39.7', '39.7']],
+          [['수선유지비', 'Repair & upkeep'], ['CAPEX 성격', 'Capex-like'], ['400', '400'], ['4.8', '4.8']],
+          [['시설·인프라 유지보수 계', 'Facility & infrastructure maintenance total'], ['장비 유지보수 + 수선유지', 'Maintenance + upkeep'], ['3,707', '3,707'], ['44.5', '44.5']]],
+          noteKo: '환산 — 원/kW·월 × 1,000kW × 12개월 ÷ 1,000,000 = 백만원/MW·년 (×0.012). 성수 IM은 출처를 "KPMG Research 및 국내 데이터센터 운영 사례"로 적고 있으며, 규모(IT 3.13MW)와 구성이 판교(기존 건물 B1 리모델링, IT 3.0MW)와 비슷해 단일 기준값으로 씁니다.',
+          noteEn: 'Conversion — KRW/kW·mo × 1,000 kW × 12 ÷ 1,000,000 = KRW M/MW·yr (×0.012). The Seongsu IM cites "KPMG Research and domestic DC operating cases"; its scale (IT 3.13MW) and makeup resemble Pangyo (B1 retrofit, IT 3.0MW), so it is used as the single baseline.' },
+        { id: '비교', idEn: 'Compare', titleKo: '비교 사례 (기준값 산정에는 쓰지 않음)', titleEn: 'Comparable cases (not used for the baseline)', text: true,
+          cols: { ko: ['출처', '규모', '항목', '원/kW·월', '백만원/MW·년', '성수 기준과의 관계'], en: ['Source', 'Scale', 'Item', 'KRW/kW·mo', 'KRW M/MW·yr', 'vs. Seongsu'] }, widths: ['200px', '90px', '', '110px', '120px', '260px'], items: [
+          [['KPMG 대구 AIDC (2026) p.49', 'KPMG Daegu AIDC (2026) p.49'], ['IT 115MW', 'IT 115MW'], ['유지보수비', 'Maintenance'], ['5,000', '5,000'], ['60.0', '60.0'], ['대개체 적립(MEP 0.5%/년, 약 4,170원)은 별도', 'Major-replacement reserve (MEP 0.5%/yr, ~4,170 KRW) separate']],
+          [['KTC 아산 설계컨설팅 (2024) p.56', 'KTC Asan design consulting (2024) p.56'], ['IT 13MW', 'IT 13MW'], ['MEP 유지보수 견적', 'MEP maintenance quote'], ['5,724', '5,724'], ['68.7', '68.7'], ['Y+3년차부터 · 대개체 미포함', 'From year 3 · no major replacement']],
+          [['마북 사업계획서 (2024) p.23', 'Mabuk business plan (2024) p.23'], ['IT 24MW', 'IT 24MW'], ['설비 유지보수', 'Facility maintenance'], ['21,528', '21,528'], ['258.3', '258.3'], ['이상치로 제외', 'Excluded as an outlier']]],
+          noteKo: '해석 — 성수 3,707원은 대형 사례(5,000~5,700원)보다 낮지만 수도광열비까지 포함한 값입니다. 하자보증 기간(통상 2년) 무상 여부는 운영사 계약으로 확인합니다.',
+          noteEn: 'Reading — Seongsu 3,707 KRW is below the large-site cases (5,000–5,700) but includes utilities. Confirm with the operator contract whether the defect-warranty period (typically 2 years) is free of charge.',
+          cautionKo: '중복 주의 — 성수 IM은 작성 중인 문서이고 장비 유지보수비에 수도광열비가 포함되어 있습니다. 판교 수지에서 수도광열을 따로 잡으면 중복을 확인합니다.',
+          cautionEn: 'Overlap caution — The Seongsu IM is a working draft and its maintenance figure includes utilities. If Pangyo budgets utilities separately, check for double counting.' }
+      ] },
+      insur: { sourceKo: OPEX_SRC_KO, sourceEn: OPEX_SRC_EN, sections: [
+        { id: '근거 1', idEn: 'Basis 1', titleKo: '기준값 원자료 — 성수 AIDC IM v5.0 App.3', titleEn: 'Base data — Seongsu AIDC IM v5.0 App. 3', text: true,
+          cols: { ko: ['항목', '산정 기준', '원/kW·월', '백만원/MW·년'], en: ['Item', 'Basis', 'KRW/kW·mo', 'KRW M/MW·yr'] }, widths: ['200px', '', '150px', '150px'], items: [
+          [['운영기 보험', 'Operating-period insurance'], ['재산종합보험', 'Property all-risk insurance'], ['4,000', '4,000'], ['48.0', '48.0']],
+          [['개발기 보험', 'Construction-period insurance'], ['건설공사·조립보험 — CAPEX 반영 → OPEX에서 제외 (KPMG 대구 기준 CSA+MEP 공사비의 0.2%)', 'CAR/EAR insurance — in capex, excluded from OPEX (0.2% of CSA+MEP cost per KPMG Daegu)'], ['–', '–'], ['–', '–']]],
+          noteKo: '환산 — 4,000원/kW·월 × 0.012 = 48.0백만원/MW·년. 공사비 대비 연 0.29% 수준입니다.',
+          noteEn: 'Conversion — 4,000 KRW/kW·mo × 0.012 = 48.0 KRW M/MW·yr, about 0.29% of construction cost per year.' },
+        { id: '비교', idEn: 'Compare', titleKo: '비교 사례 (기준값 산정에는 쓰지 않음)', titleEn: 'Comparable cases (not used for the baseline)', text: true,
+          cols: { ko: ['출처', '규모', '원/kW·월', '백만원/MW·년', '성수 기준과의 관계'], en: ['Source', 'Scale', 'KRW/kW·mo', 'KRW M/MW·yr', 'vs. Seongsu'] }, widths: ['240px', '110px', '130px', '140px', ''], items: [
+          [['KPMG 대구 AIDC p.49', 'KPMG Daegu AIDC p.49'], ['IT 115MW', 'IT 115MW'], ['800', '800'], ['9.6', '9.6'], ['대형 단지라 낮음', 'Low because of campus scale']],
+          [['마북 사업계획서 p.23', 'Mabuk business plan p.23'], ['IT 24MW', 'IT 24MW'], ['1,250', '1,250'], ['15.0', '15.0'], ['–', '–']]],
+          noteKo: '해석 — 성수 4,000원은 대형 사례의 3~5배로 보수적인 값입니다.',
+          noteEn: 'Reading — Seongsu 4,000 KRW is 3–5× the large-site cases, a conservative figure.',
+          cautionKo: '미포함 — GPU 서버 같은 IT 장비 보험과 기업휴지(BI) 보험은 포함하지 않으므로 대주단 요구 시 따로 반영합니다.',
+          cautionEn: 'Not included — IT equipment (GPU servers) and business-interruption cover are excluded; add them if lenders require.' }
+      ] },
+      net: { sourceKo: OPEX_SRC_KO + ' · TeleGeography(2026.09) · KT 약관(2026.4) · Equinix/KINX · MLPerf Inference v6.0 · 웹 자료 조회일 2026.11.18', sourceEn: OPEX_SRC_EN + ' · TeleGeography (Sep 2026) · KT tariff (Apr 2026) · Equinix/KINX · MLPerf Inference v6.0 · web sources as of 2026-11-18', sections: [
+        { id: '근거 2', idEn: 'Basis 2', titleKo: 'GPU 클러스터 조건 (판교 AIDC 계획안)', titleEn: 'GPU cluster assumptions (Pangyo AIDC plan)', text: true,
+          cols: { ko: ['항목', '값', '근거'], en: ['Item', 'Value', 'Basis'] }, items: [
+          [['GPU 수 / 서버 수', 'GPUs / servers'], ['1,152장 / 144대', '1,152 / 144'], ['HGX B300 NVL8 2SU, 컴퓨팅 18랙, CSP 타사위탁', 'HGX B300 NVL8 2 SU, 18 compute racks, CSP-operated']],
+          [['서버당 전력', 'Power per server'], ['15kW × 1.1 (지원 장비 포함)', '15 kW × 1.1 (incl. support gear)'], ['사업계획서 CAPEX 반영사항 p.3', 'Business-plan capex notes p.3']],
+          [['GPU 클러스터 IT 부하', 'GPU cluster IT load'], ['2,376kW (MW당 단가의 분모)', '2,376 kW (denominator for per-MW rates)'], ['144 × 15 × 1.1 · 시설 계획 IT는 3.0MW', '144 × 15 × 1.1 · facility IT plan is 3.0MW']],
+          [['가동비중', 'Utilized share'], ['90%', '90%'], ['수익구조 시뮬레이션', 'Revenue simulator']],
+          [['이중화', 'Redundancy'], ['2회선 × 피크 전량 (N+N)', '2 lines × full peak (N+N)'], ['통신사 2곳 · 한 회선이 끊겨도 나머지가 피크 전량 수용', 'Two carriers; either line carries the full peak']],
+          [['비용 범위', 'Cost scope'], ['IP 트랜짓 + 크로스커넥트', 'IP transit + cross-connect'], ['GPU 직접 보유·CSP 위탁이므로 외부 대역은 사업주 비용 · GPU 간 통신(IB·RoCE)·스토리지는 내부망이라 제외', 'Owner-held GPUs under CSP operation, so external bandwidth is the owner\'s cost · GPU-to-GPU (IB/RoCE) and storage traffic are in-building and excluded']]] },
+        { id: '추론', idEn: 'Inference', titleKo: '추론 필요 대역 — 사용자 요청·응답 스트리밍', titleEn: 'Inference bandwidth — request/response streaming', text: true,
+          cols: { ko: ['항목', '하단', '기준', '상단', '근거'], en: ['Item', 'Low', 'Base', 'High', 'Basis'] }, widths: ['230px', '90px', '90px', '90px', ''], items: [
+          [['GPU당 출력 토큰 (tok/s)', 'Output tokens per GPU (tok/s)'], ['7,552', '7,552'], ['7,552', '7,552'], ['12,555', '12,555'], ['MLPerf v6.0 HGX B300 Server: DeepSeek-R1 60,413 · gpt-oss-120B 100,437 (8 GPU)', 'MLPerf v6.0 HGX B300 Server: DeepSeek-R1 60,413 · gpt-oss-120B 100,437 (8 GPUs)']],
+          [['실효 처리율', 'Effective throughput'], ['50%', '50%'], ['70%', '70%'], ['100%', '100%'], ['지연시간 SLO 때문에 벤치마크보다 낮음 (판단값)', 'Below benchmark because of latency SLOs (judgement)']],
+          [['클러스터 출력 (백만 tok/s)', 'Cluster output (M tok/s)'], ['3.91', '3.91'], ['5.48', '5.48'], ['13.02', '13.02'], ['가동비중 90% 반영', 'At 90% utilized share']],
+          [['출력 토큰당 전송 (byte)', 'Bytes per output token'], ['20', '20'], ['100', '100'], ['200', '200'], ['원문 4byte + SSE 이벤트 80~200byte', '4 bytes of text + 80–200 bytes of SSE framing']],
+          [['입력·멀티모달·부가 계수', 'Input/multimodal/overhead factor'], ['1.2', '1.2'], ['1.5', '1.5'], ['2.0', '2.0'], ['프롬프트·이미지 입력, 로그, 모델 갱신 (판단값)', 'Prompts, image input, logs, model updates (judgement)']],
+          [['평균 대역 (Gbps)', 'Average bandwidth (Gbps)'], ['0.75', '0.75'], ['6.58', '6.58'], ['41.65', '41.65'], ['월 전송량 약 240 / 2,130 / 13,500TB', 'About 240 / 2,130 / 13,500 TB per month']],
+          [['피크/평균', 'Peak-to-average'], ['1.5', '1.5'], ['2.0', '2.0'], ['2.5', '2.5'], ['주야간 수요 변동 (판단값)', 'Day/night demand swing (judgement)']],
+          [['추론 필요 대역 (Gbps)', 'Inference bandwidth needed (Gbps)'], ['1.1', '1.1'], ['13.2', '13.2'], ['104.1', '104.1'], ['', '']]],
+          noteKo: '산식 — 필요 대역 = GPU 수 × GPU당 출력 토큰/s × 실효율 × 가동비중 × 토큰당 전송 바이트 × 부가 계수 × 8 × 피크/평균.',
+          noteEn: 'Formula — bandwidth = GPUs × output tok/s per GPU × efficiency × utilized share × bytes per token × overhead factor × 8 × peak/average.' },
+        { id: '학습', idEn: 'Training', titleKo: '학습 필요 대역 — 데이터셋 반입 · 체크포인트·모델 반출', titleEn: 'Training bandwidth — dataset ingest, checkpoint/model egress', text: true,
+          cols: { ko: ['항목', '하단', '기준', '상단', '근거'], en: ['Item', 'Low', 'Base', 'High', 'Basis'] }, widths: ['230px', '90px', '90px', '90px', ''], items: [
+          [['월 데이터 반입 (TB)', 'Monthly ingest (TB)'], ['50', '50'], ['200', '200'], ['1,000', '1,000'], ['Llama 3 사전학습 15T 토큰 ≈ 60TB · LAION-5B ≈ 240TB', 'Llama 3 pre-training 15T tokens ≈ 60 TB · LAION-5B ≈ 240 TB']],
+          [['월 데이터 반출 (TB)', 'Monthly egress (TB)'], ['10', '10'], ['50', '50'], ['200', '200'], ['70B 모델 전체 체크포인트 약 1TB, 결과 다운로드', 'A full 70B checkpoint ≈ 1 TB, result downloads']],
+          [['평균 대역 (Gbps)', 'Average bandwidth (Gbps)'], ['0.15', '0.15'], ['0.62', '0.62'], ['3.09', '3.09'], ['트랜짓은 반입·반출 중 큰 값으로 과금', 'Transit bills on the larger of in/out']],
+          [['집중 전송 계수', 'Burst factor'], ['3', '3'], ['4', '4'], ['5', '5'], ['학습 시작 전 며칠에 반입이 몰림 (판단값)', 'Ingest clusters in the days before a run (judgement)']],
+          [['학습 필요 대역 (Gbps)', 'Training bandwidth needed (Gbps)'], ['0.5', '0.5'], ['2.5', '2.5'], ['15.4', '15.4'], ['', '']]],
+          noteKo: '산식 — 필요 대역 = max(월 반입 TB, 월 반출 TB) × 8,000 ÷ 30일(초) × 집중 전송 계수. 추론은 같은 GPU 수에서 학습보다 외부 대역이 약 5배 큽니다.',
+          noteEn: 'Formula — bandwidth = max(monthly ingest, egress TB) × 8,000 ÷ 30 days (s) × burst factor. For the same GPUs, inference needs about 5× the external bandwidth of training.' },
+        { id: '근거 3', idEn: 'Basis 3', titleKo: '적용 단가 (VAT 별도)', titleEn: 'Applied unit rates (VAT excluded)', text: true,
+          cols: { ko: ['항목', '단가', '근거'], en: ['Item', 'Rate', 'Basis'] }, widths: ['270px', '190px', ''], items: [
+          [['IP 트랜짓, 회선당 약정 100G 이상', 'IP transit, ≥100G commit per line'], ['1,148,000원/Gbps·월', 'KRW 1,148,000/Gbps·mo'], ['TeleGeography 서울 100GigE 중앙값 $0.82/Mbps (2026년 2분기) · 아시아 허브의 약 3배', 'TeleGeography Seoul 100GigE median $0.82/Mbps (Q2 2026), ~3× Asian hubs']],
+          [['IP 트랜짓, 10G 이상 100G 미만', 'IP transit, 10G to <100G'], ['1,600,000원/Gbps·월', 'KRW 1,600,000/Gbps·mo'], ['판단값 — 위아래 두 값 사이 (서울 10GigE 값은 유료 DB에만 있음)', 'Judgement between the two tiers (Seoul 10GigE only in the paid DB)']],
+          [['IP 트랜짓, 10G 미만', 'IP transit, <10G'], ['2,100,000원/Gbps·월', 'KRW 2,100,000/Gbps·mo'], ['국내 업체 1G flat 오퍼 $1.50/Mbps', 'Domestic 1G flat offer at $1.50/Mbps']],
+          [['크로스커넥트', 'Cross-connect'], ['324,800원/회선·월', 'KRW 324,800/line·mo'], ['Equinix 아시아태평양 평균 $232 (국내 KINX KDX는 월 20만원)', 'Equinix APAC average $232 (KINX KDX in Korea: KRW 200k/mo)']],
+          [['회선 설치비 (일회성)', 'Line installation (one-off)'], ['970,000원/회선', 'KRW 970,000/line'], ['KT 약관 가입설치비 106.7만원(VAT 포함) · CAPEX로 분류, OPEX 제외', 'KT tariff installation 1,067k incl. VAT · classed as capex, not OPEX']],
+          [['(선택) CSP 연동 전용회선 10G 시내', '(Optional) 10G metro leased line to CSP'], ['28,794,700원/월', 'KRW 28,794,700/mo'], ['KT 국내전용회선 공시 요금 · DC와 CSP 리전 직결이 필요할 때만 더함 (기본 계산 제외)', 'KT published leased-line rate · only if a direct DC-to-CSP-region link is needed (excluded by default)']]] },
+        { id: '연간', idEn: 'Annual', titleKo: '연간 회선 비용 (이중화 2회선 = 트랜짓 + 크로스커넥트)', titleEn: 'Annual line cost (2 redundant lines = transit + cross-connect)', text: true,
+          cols: { ko: ['용도 · 시나리오', '필요 대역', '회선당 약정', '실효 단가 (만원/Gbps·월)', '연간 비용', '백만원/MW·년'], en: ['Use · scenario', 'Bandwidth', 'Commit per line', 'Effective rate (KRW 10k/Gbps·mo)', 'Annual cost', 'KRW M/MW·yr'] }, widths: ['230px', '110px', '130px', '200px', '110px', ''], items: [
+          [['학습 전용 · 하단', 'Training only · low'], ['0.5G', '0.5G'], ['1G', '1G'], ['210', '210'], ['0.58억', '0.058B'], ['24.5', '24.5']],
+          [['학습 전용 · 기준', 'Training only · base'], ['2.5G', '2.5G'], ['3G', '3G'], ['210', '210'], ['1.59억', '0.159B'], ['66.9', '66.9']],
+          [['학습 전용 · 상단', 'Training only · high'], ['15.4G', '15.4G'], ['16G', '16G'], ['160', '160'], ['6.22억', '0.622B'], ['261.9', '261.9']],
+          [['추론 전용 · 하단', 'Inference only · low'], ['1.1G', '1.1G'], ['2G', '2G'], ['210', '210'], ['1.09억', '0.109B'], ['45.7', '45.7']],
+          [['추론 전용 · 기준', 'Inference only · base'], ['13.2G', '13.2G'], ['14G', '14G'], ['160', '160'], ['5.45억', '0.545B'], ['229.5', '229.5']],
+          [['추론 전용 · 상단', 'Inference only · high'], ['104.1G', '104.1G'], ['105G', '105G'], ['114.8', '114.8'], ['29.01억', '2.901B'], ['1,220.9', '1,220.9']],
+          [['혼합 50/50 · 하단', 'Mixed 50/50 · low'], ['0.8G', '0.8G'], ['1G', '1G'], ['210', '210'], ['0.58억', '0.058B'], ['24.5', '24.5']],
+          [['혼합 50/50 · 기준 (현재 기본값)', 'Mixed 50/50 · base (current default)'], ['7.8G', '7.8G'], ['8G → 10G', '8G → 10G'], ['200', '200'], ['3.92억', '0.392B'], ['164.9', '164.9']],
+          [['혼합 50/50 · 상단', 'Mixed 50/50 · high'], ['59.8G', '59.8G'], ['60G', '60G'], ['160', '160'], ['23.12억', '2.312B'], ['973.0', '973.0']]],
+          noteKo: '산식 — 연간 비용 = (회선당 약정 × 단가 + 크로스커넥트) × 2회선 × 12. 혼합 기준은 8G × 210만원(1,680만원)보다 10G 최소약정 × 160만원(1,600만원)이 싸서 10G로 약정합니다. MW당 단가 = 연간 비용 ÷ GPU 클러스터 IT 2.376MW이며, 본 시뮬레이터는 MW가 아닌 GPU 수 비례로 대역을 환산합니다.',
+          noteEn: 'Formula — annual cost = (commit per line × rate + cross-connect) × 2 lines × 12. For the mixed base, 10G at KRW 1.6M (16.0M) beats 8G at KRW 2.1M (16.8M), so 10G is committed. Per-MW rate = annual cost ÷ 2.376MW cluster IT load; this simulator scales bandwidth by GPU count, not MW.',
+          cautionKo: '결과를 크게 움직이는 가정 — ① 토큰당 전송 바이트(20~200byte, 10배) ② 추론 비중 ③ 단가 구간. 서비스 시작 후 CSP 게이트웨이 실측(95th percentile)으로 바꿉니다. CSP가 자기 백본으로 트래픽을 받는 계약이면 사업주 회선 비용은 크로스커넥트와 CSP 연동 회선만 남고, 인터넷 회선·DDoS·공인 IP 부담 주체는 위탁계약서에 정합니다. 국내 트랜짓은 공개 단가가 거의 없어 통신 3사·KINX·세종텔레콤 견적이 필수입니다.',
+          cautionEn: 'Assumptions that move the result most — (1) bytes per token (20–200, 10×), (2) inference share, (3) rate tier. Replace with measured CSP-gateway traffic (95th percentile) once live. If the CSP carries traffic on its own backbone, only cross-connects and the CSP link remain; the contract must assign internet, DDoS and public-IP costs. Domestic transit has almost no public pricing, so carrier/KINX/Sejong quotes are required.' }
+      ] }
+    };
     function facScaleText(def, row) {
       if (!row.auto) return t('facEstScaleManual');
       if (def.kind === 'area') return t('facEstScaleArea', { base: nf.format(FAC_BASE_AREA_SQM), now: nf1.format(Number(state.floorAreaSqm) || 0), f: nf2.format((Number(state.floorAreaSqm) || 0) / FAC_BASE_AREA_SQM) });
@@ -4694,16 +4852,19 @@
       return t('facEstScaleFixed');
     }
     function facEstHtml(def, row) {
-      const en = state.lang === 'en';
       const est = FAC_EST[def.est];
-      if (!est) return '';
+      return est ? estDetailHtml(est, facScaleText(def, row)) : '';
+    }
+    // rev87: 근거 상세 렌더러 — 시설비 CAPEX·OPEX 공용 (scaleText: 첫 줄 안내문)
+    function estDetailHtml(est, scaleText) {
+      const en = state.lang === 'en';
       const secs = est.sections.map(sec => {
         const cols = (sec.cols || FAC_EST_COLS)[en ? 'en' : 'ko'];
         let table;
         if (sec.text) {
           // 텍스트형 섹션(검토보고서 요약): 열 수 자유, 금액 열 없음
           const n = cols.length;
-          const widths = n === 2 ? ['200px', ''] : n === 3 ? ['200px', '', '300px'] : cols.map(() => '');
+          const widths = n === 2 ? ['200px', ''] : n === 3 ? ['200px', '', '300px'] : (sec.widths || cols.map(() => ''));
           const body = sec.items.map(r => `<tr>${r.map((cell, i) => `<td class="${i === 0 ? 'k' : ''}">${en ? cell[1] : cell[0]}</td>`).join('')}</tr>`).join('');
           table = `
             <table class="dt fac-est-tbl txt" style="--gap:7.5px">
@@ -4729,7 +4890,11 @@
           </section>`;
       }).join('');
       const src = est.sourceKo ? (en ? est.sourceEn : est.sourceKo) : t('facEstSource');
-      return `<div class="fac-est"><div class="fac-est-scale">${facScaleText(def, row)}</div>${secs}<div class="fac-est-src">${src}</div></div>`;
+      return `<div class="fac-est"><div class="fac-est-scale">${scaleText}</div>${secs}<div class="fac-est-src">${src}</div></div>`;
+    }
+    function opexScaleText(key, d) {
+      if (key === 'net') return t('opexEstScaleNet', { n: nf.format(d.gpus || 0), g: nf1.format(d.netGbps || 0), c: nf.format(d.netCommitG || 0) });
+      return t('opexEstScaleMw', { mw: (Number(d.itMwOpex) || 0).toFixed(1) });
     }
     const facOpen = new Set(); // 펼쳐 둔 근거 행 (modelKey:rowKey)
     function toggleFacDetail(btn) {
@@ -4890,6 +5055,16 @@
         { key: 'labor', label: t('opexRowLabor'), kind: t('kindFixedYear'), value: d.laborEok,
           summary: t('opexLaborSummary', { n: nf.format(d.laborHeads || 0), c: eokF(d.laborPerHeadEok || 0) }),
           logic: t('opexLaborLogic'), inputs: 'labor' },
+        // rev87: DC OPEX 기준 단가표(2026.11.18) — 유지보수 · 보험 · 회선
+        { key: 'maint', label: t('opexRowMaint'), kind: t('kindFixedYear'), value: d.maintEok, est: 'maint',
+          summary: t('opexMwSummary', { r: (Number(d.maintRate) || 0).toFixed(1), mw: (Number(d.itMwOpex) || 0).toFixed(1) }),
+          logic: t('opexMaintLogic'), inputs: 'maint' },
+        { key: 'insur', label: t('opexRowInsur'), kind: t('kindFixedYear'), value: d.insurEok, est: 'insur',
+          summary: t('opexMwSummary', { r: (Number(d.insurRate) || 0).toFixed(1), mw: (Number(d.itMwOpex) || 0).toFixed(1) }),
+          logic: t('opexInsurLogic'), inputs: 'insur' },
+        { key: 'net', label: t('opexRowNet'), kind: t('kindGpuLinked'), value: d.netEok, est: 'net',
+          summary: t('opexNetSummary', { p: nf.format(Math.round((d.netShare || 0) * 100)), g: nf1.format(d.netGbps || 0), c: nf.format(d.netCommitG || 0), u: nf.format(Math.round((d.netUnitKrw || 0) / 10000)), x: nf1.format(NET.crossKrw / 10000) }),
+          logic: t('opexNetLogic', { n: nf.format(d.gpus || 0) }), inputs: 'net' },
       ];
     }
     function opexTotalNoteHtml(d, rows, total) {
@@ -4921,18 +5096,32 @@
               ${rateInput('initIntegrationEok', `${t('opexIntegShort')} (${t('opexOnceShort')})${infoIcon(t('tipIntegration'), t('labelSwInitial'), true)}`, unitOf('initIntegrationEok'))}
               ${rateInput('swSubUsdPerGpuYear', `${t('labelSwMaintShort')}${infoIcon(t('tipSwMaint'), t('labelSwMaint'), true)}`, `$/${unitOf('swSubUsdPerGpuYear')}`, '$')}
             </div>`;
-      const rowsHtml = rows.map(r => `
-        <tr class="fac-row opex-row" data-opex-row="${r.key}">
+      // rev87: 유지보수·보험 단가(백만원/MW·년) · 회선 추론 비중(%)
+      const oneInput = (id, label) => `
+            <div class="fac-rate-row">
+              ${rateInput(id, label, unitOf(id))}
+            </div>`;
+      const inputsOf = r => ({ labor: laborInputs, sw: swInputs, lease: leaseInputs,
+        maint: oneInput('maintRateMwYear', t('labelMaintRate')), insur: oneInput('insurRateMwYear', t('labelInsurRate')), net: oneInput('netInferSharePct', t('labelNetInferShare')) }[r.inputs] || '');
+      const rowsHtml = rows.map(r => {
+        const id = `opex:${r.key}`;
+        const open = facOpen.has(id);
+        const est = r.est ? OPEX_EST[r.est] : null;
+        const btn = est ? `<button type="button" class="fac-expand ${open ? 'open' : ''}" data-fac-expand="${id}" aria-expanded="${open ? 'true' : 'false'}"><span class="cx-tri"></span><span class="txt">${open ? t('facExpandClose') : t('facExpandOpen')}</span></button>` : '';
+        const detail = est ? `<tr class="fac-detail-row ${open ? '' : 'hidden'}" data-fac-detail="${id}"><td colspan="4">${estDetailHtml(est, opexScaleText(r.key, d))}</td></tr>` : '';
+        return `
+        <tr class="fac-row opex-row ${open ? 'open' : ''}" data-opex-row="${r.key}" data-fac-row="${id}">
           <td class="fac-cat">
             <div class="fac-lab">${r.label}<span class="tag-box">${r.kind}</span></div>
-            ${r.inputs === 'labor' ? laborInputs : (r.inputs === 'sw' ? swInputs : (r.inputs === 'lease' ? leaseInputs : ''))}
+            ${inputsOf(r)}
           </td>
           <td><span class="fac-val"><span data-opex-val="${r.key}">${eokF(r.value)}</span></span><span class="fac-auto" data-opex-suffix="${r.key}">${r.suffix || (r.once ? t('opexOnce') : t('opexPerYear'))}</span></td>
           <td><span class="fac-val" data-opex-share="${r.key}">${share(r.value)}</span></td>
-          <td><div class="fac-note"><div class="fac-summary" data-opex-sum="${r.key}">${r.summary}</div><div class="fac-logic" data-opex-logic="${r.key}">${bracketLead(r.logic)}</div></div></td>
-        </tr>`).join('');
+          <td><div class="fac-note"><div class="fac-summary" data-opex-sum="${r.key}">${r.summary}</div><div class="fac-logic" data-opex-logic="${r.key}">${bracketLead(r.logic)}</div>${btn}</div></td>
+        </tr>${detail}`;
+      }).join('');
       return `
-        <section class="sec mt-163 fac-sec opex-sec" data-opex-panel>
+        <section class="sec mt-163 fac-sec opex-sec" data-opex-panel data-fac-panel="opex">
           ${secHead(t('opexTitle') + infoIcon(t('tipOpex'), t('opexTitle'), true), { badge: `<span>${t('opexBadge')}</span>` })}
           <div class="sec-desc">${t('opexDesc')}</div>
           <div class="fac-big"><span class="big-num" id="opexGrandBig">${bigNumInner(eokF(total))}</span></div>
@@ -4975,6 +5164,7 @@
         const sh = panel.querySelector(`[data-opex-share="${r.key}"]`); if (sh) sh.textContent = share(r.value);
         const sm = panel.querySelector(`[data-opex-sum="${r.key}"]`); if (sm) sm.innerHTML = r.summary;
         const lg = panel.querySelector(`[data-opex-logic="${r.key}"]`); if (lg) lg.innerHTML = bracketLead(r.logic);
+        const sc = panel.querySelector(`[data-fac-detail="opex:${r.key}"] .fac-est-scale`); if (sc) sc.textContent = opexScaleText(r.key, d);
       });
       const big = panel.querySelector('#opexGrandBig'); if (big) big.innerHTML = bigNumInner(eokF(total));
       const g = panel.querySelector('#opexGrand'); if (g) g.textContent = eokF(total);
@@ -5500,6 +5690,8 @@
         case 'swSubUsdPerGpuYear': case 'neoSwUsdPerGpuYear': return en ? 'GPU·yr' : 'GPU·년';
         case 'leaseAgentFeeEok': case 'initIntegrationEok': case 'laborCostPerHeadEok': return en ? '$M' : '억';
         case 'laborHeadcount': return en ? 'people' : '명';
+        case 'maintRateMwYear': case 'insurRateMwYear': return en ? 'KRW M/MW·yr' : '백만원/MW·년';
+        case 'netInferSharePct': return '%';
         case 'leaseAreaSqm': return '㎡';
         case 'leaseRentPerSqm': case 'leaseMgmtPerSqm': return en ? 'KRW/㎡·mo' : '원/㎡·월';
         case 'leaseDepositMonths': return en ? 'mo' : '개월';
@@ -6166,6 +6358,7 @@
       // rev58: 임차 비용(임대료 + 관리비 + 보증금 환산 이자) · IT 장비 CAPEX = 장비 + CDU + 초기 통합비 · 투자원금 = 자기자본 + 보증금
       const leaseSum = Number(d.leaseOpexEok) || 0;
       const laborSum = Number(d.laborEok) || 0;
+      const dcOpsSum = (Number(d.maintEok) || 0) + (Number(d.insurEok) || 0) + (Number(d.netEok) || 0);   // rev87: 유지보수 + 보험 + 회선
       const RInv = R ? (R.inv != null ? R.inv : R.E) : 0;
       const unitsOf = td => gpuUnitsText(td.type, td.n);
 
@@ -6233,7 +6426,7 @@
           { cells: [L('GPU 구성', 'GPU configuration'), [B(gpuMixText(state, gpuTypes, false)), ` · ${activeTypes.length > 1 ? activeTypes.map(td => `${gpuShortLabel(td.type, td.key)} ${gpuUnitsText(td.type, td.n)}`).join(' / ') : activeTypes.map(td => gpuUnitsText(td.type, td.n)).join('')}`]] },
           { cells: [L('전력·면적', 'Power & space'), `${t('labelItPowerKw')} ${kw(state.itPowerKw)} ${L('중', 'of which')} ${kw(d.usedItPower)} ${L('사용', 'used')} (${pct(d.allocationPct, 1)}) · ${t('labelFloorArea')} ${sqm(d.floorArea)} ${L('중', 'of which')} ${sqm(d.supportArea + d.occupiedArea)} ${L('사용', 'used')} (${pct(d.areaPct, 1)})`] },
           { cells: [L('투자비', 'Capex'), [B(`${L('총 CAPEX', 'Total capex')} ${eok(d.totalCapexEok)}`, RPT.OR), ` = IT ${eok(d.itCapexEok)} + ${L('시설', 'facility')} ${eok(d.facilityEok)}`]] },
-          { cells: [L('연간 운영비(1년차)', 'Annual opex (Y1)'), `${L('전기료', 'Electricity')} ${eok(d.electricityByYear[0])} · AI Enterprise ${eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)} · ${L('임차', 'lease')} ${eok(leaseSum)} · ${L('인건비', 'labor')} ${eok(laborSum)} · ${L('감가상각', 'depreciation')} ${eok(d.capexByYear[0])}`] },
+          { cells: [L('연간 운영비(1년차)', 'Annual opex (Y1)'), `${L('전기료', 'Electricity')} ${eok(d.electricityByYear[0])} · AI Enterprise ${eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)} · ${L('임차', 'lease')} ${eok(leaseSum)} · ${L('인건비', 'labor')} ${eok(laborSum)} · ${L('유지·보험·회선', 'maint./ins./lines')} ${eok(dcOpsSum)} · ${L('감가상각', 'depreciation')} ${eok(d.capexByYear[0])}`] },
           ...(R ? [{ cells: [L('조달 구조', 'Financing'), `${L('자기자본', 'Equity')} ${pc(P.eq)} (${eok(R.E)}) · PF ${eok(R.D0)} · ${L('금리', 'rate')} ${pc(P.ir)} · ${repayName} · ${vehName}`] }] : [])
         ], { align: ['left', 'left'] })
       );
@@ -6341,9 +6534,12 @@
           { cells: [L('AI Enterprise 구독', 'AI Enterprise subscription'), perYr(eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)), `${formatSwSub(d.swRateUsd)} × ${nf.format(d.swGpus || 0)} GPU`] },
           { cells: [L('임차 비용', 'Lease cost'), perYr(eok(leaseSum)), `${L('임대료', 'rent')} ${eok(d.leaseRentEok)} + ${L('관리비', 'management')} ${eok(d.leaseMgmtEok)} + ${L('보증금', 'deposit')} ${eok(d.leaseDepositEok)} × ${nf1.format(d.leaseDepositRatePct)}% = ${eok(d.leaseDepositCostEok)} (${nf1.format(d.leaseArea)}㎡ × ${nf.format(state.leaseRentPerSqm)}/${nf.format(state.leaseMgmtPerSqm)}${L('원/㎡·월', ' KRW/㎡·mo')})${(d.leaseAgentFeeEok || 0) > 0 ? ` + ${L('임대대행 수수료(1년차)', 'agent fee (Y1)')} ${eok(d.leaseAgentFeeEok)}` : ''} · ${L('현재 계약 조건 고정값', 'fixed at current contract terms')}`] },
           { cells: [L('인건비', 'Labor cost'), perYr(eok(laborSum)), `${nf.format(d.laborHeads || 0)}${L('명', ' people')} × ${L('인당', 'per head')} ${eok(d.laborPerHeadEok || 0)} (${L('4인 3교대 운영 기준', '4-person, 3-shift operation')})`] },
+          { cells: [L('시설·인프라 유지보수', 'Facility maintenance'), perYr(eok(d.maintEok || 0)), `${(Number(d.maintRate) || 0).toFixed(1)}${L('백만원', ' KRW M')}/MW·${L('년', 'yr')} × IT ${(Number(d.itMwOpex) || 0).toFixed(1)}MW (${L('성수 IM: 장비 유지보수 3,307 + 수선유지 400원/kW·월', 'Seongsu IM: maintenance 3,307 + upkeep 400 KRW/kW·mo')})`] },
+          { cells: [L('운영기 보험', 'Operating insurance'), perYr(eok(d.insurEok || 0)), `${(Number(d.insurRate) || 0).toFixed(1)}${L('백만원', ' KRW M')}/MW·${L('년', 'yr')} × IT ${(Number(d.itMwOpex) || 0).toFixed(1)}MW (${L('성수 IM 재산종합보험 4,000원/kW·월 · 개발기 보험은 CAPEX', 'Seongsu IM property all-risk 4,000 KRW/kW·mo; construction cover in capex')})`] },
+          { cells: [L('네트워크 회선', 'Network lines'), perYr(eok(d.netEok || 0)), `${L('추론 비중', 'inference share')} ${nf.format(Math.round((d.netShare || 0) * 100))}% · ${nf.format(d.gpus || 0)} GPU → ${nf1.format(d.netGbps || 0)}G → ${L('회선당', 'per line')} ${nf.format(d.netCommitG || 0)}G ${L('약정', 'commit')} × ${nf.format(Math.round((d.netUnitKrw || 0) / 10000))}${L('만원', '0k KRW')}/Gbps·${L('월', 'mo')} + ${L('크로스커넥트', 'cross-connect')} × 2${L('회선', ' lines')} × 12 (${L('DC OPEX 기준 단가표 2026.11.18', 'DC OPEX unit-rate table 2026-11-18')})`] },
           { cells: [L('SW 초기 설치·통합비 (1회)', 'SW initial integration (one-off)'), eok(d.integrationEok), L('40M/M × 월 2,000만원 + 예비비 2억 · 1년차 운영비에 1회 계상 (프로젝트 전체 고정)', '40 man-months × KRW 20M + 0.2B contingency · charged once in Year-1 opex (fixed per project)')] },
           { cells: [L('감가상각(1년차)', 'Depreciation (Y1)'), perYr(eok(d.capexByYear[0])), `${t('labelDepGroup')} ${nf1.format(state.depY1)} / ${nf1.format(state.depY2)} / ${nf1.format(state.depY3)}%`] },
-          { bold: true, cells: [L('연간 지출(1년차)', 'Annual expense (Y1)'), perYr(eok(d.annualExpense[0])), L('감가상각 + 전기료 + AI Enterprise + 임차 비용 + 인건비 + SW 초기 설치·통합비(1회)', 'Depreciation + electricity + AI Enterprise + lease + labor + SW integration (one-off)')] }
+          { bold: true, cells: [L('연간 지출(1년차)', 'Annual expense (Y1)'), perYr(eok(d.annualExpense[0])), L('감가상각 + 전기료 + AI Enterprise + 임차 비용 + 인건비 + 유지보수·보험·회선 + SW 초기 설치·통합비(1회)', 'Depreciation + electricity + AI Enterprise + lease + labor + maintenance/insurance/lines + SW integration (one-off)')] }
         ], { align: ['left', 'center', 'left'] })
       );
       // [pre] 시설 CAPEX 내역 (rev65: 보고서 446.12억 구조 — 직접공사비 → 공통비·예비비 → 공사비 합계 → 지반조사 → 총계)
@@ -7568,7 +7764,8 @@
       }
 
       const inputId = event.target.dataset.input;
-      if (inputId === 'laborHeadcount' || inputId === 'laborCostPerHeadEok' || inputId === 'swSubUsdPerGpuYear' || inputId === 'leaseRentPerSqm' || inputId === 'leaseMgmtPerSqm' || inputId === 'initIntegrationEok') {
+      if (inputId === 'laborHeadcount' || inputId === 'laborCostPerHeadEok' || inputId === 'swSubUsdPerGpuYear' || inputId === 'leaseRentPerSqm' || inputId === 'leaseMgmtPerSqm' || inputId === 'initIntegrationEok'
+        || inputId === 'maintRateMwYear' || inputId === 'insurRateMwYear' || inputId === 'netInferSharePct') {
         // rev73: OPEX 패널의 인건비 입력 — 타이핑 중 패널 값만 갱신
         const def = getControlDef(inputId);
         let v = Number(String(event.target.value).replace(/,/g, '').trim());
@@ -8713,7 +8910,10 @@ const PODFIN = (function () {
     // rev66: + 운영 인건비(운영 인원 × 인당 연 인건비)
     const labor = Array.isArray(data.laborByYear) ? data.laborByYear : data.annualRevenue.map(() => Number(data.laborEok) || 0);
     const integ = Array.isArray(data.integrationByYear) ? data.integrationByYear : data.annualRevenue.map((_, i) => (i === 0 ? Number(data.integrationEok) || 0 : 0));
-    const opex = data.annualRevenue.map((_, i) => (data.electricityByYear[i] || 0) + (data.swOpexByYear[i] || 0) + (lease[i] || 0) + (labor[i] || 0) + (integ[i] || 0));
+    // rev87: + 시설·인프라 유지보수 + 운영기 보험 + 네트워크 회선 (DC OPEX 기준 단가표)
+    const fixedOf = (arr, v) => (Array.isArray(arr) ? arr : data.annualRevenue.map(() => Number(v) || 0));
+    const maint = fixedOf(data.maintByYear, data.maintEok), insur = fixedOf(data.insurByYear, data.insurEok), net = fixedOf(data.netByYear, data.netEok);
+    const opex = data.annualRevenue.map((_, i) => (data.electricityByYear[i] || 0) + (data.swOpexByYear[i] || 0) + (lease[i] || 0) + (labor[i] || 0) + (integ[i] || 0) + (maint[i] || 0) + (insur[i] || 0) + (net[i] || 0));
     const dep = data.capexByYear.slice();
     const capex = data.totalCapexEok;
     const resid = Math.max(0, capex - dep.reduce((s, v) => s + v, 0));
@@ -8982,15 +9182,16 @@ const PODFIN = (function () {
     if (typeof applyCollapsedSecs === 'function') applyCollapsedSecs(panel);
     const leaseNote = Number(d.leaseOpexEok) || 0;
     const laborNote = Number(d.laborEok) || 0;
+    const dcNote = (Number(d.maintEok) || 0) + (Number(d.insurEok) || 0) + (Number(d.netEok) || 0);
     const depositNote = Number(d.leaseDepositEok) || 0;
     set('pfinNote', L(
       '※ 매출·운영비·감가상각은 본 모델의 입력값에서 그대로 가져옵니다(운영비 = 전기료 + AI Enterprise 구독료 + 임차 비용 '
-      + FINVIEW.fmt(leaseNote, 1) + '억/년[임대료 + 관리비 + 보증금 환산 이자] + 인건비 ' + FINVIEW.fmt(laborNote, 1) + '억/년[' + nf.format(Number(d.laborHeads) || 0) + '명 × 인당 ' + FINVIEW.fmt(Number(d.laborPerHeadEok) || 0, 1) + '억, 4인 3교대 기준] + SW 초기 설치·통합비 ' + FINVIEW.fmt(Number(d.integrationEok) || 0, 1) + '억(1년차 1회)'
+      + FINVIEW.fmt(leaseNote, 1) + '억/년[임대료 + 관리비 + 보증금 환산 이자] + 인건비 ' + FINVIEW.fmt(laborNote, 1) + '억/년[' + nf.format(Number(d.laborHeads) || 0) + '명 × 인당 ' + FINVIEW.fmt(Number(d.laborPerHeadEok) || 0, 1) + '억, 4인 3교대 기준] + 유지보수·보험·회선 ' + FINVIEW.fmt(dcNote, 1) + '억/년 + SW 초기 설치·통합비 ' + FINVIEW.fmt(Number(d.integrationEok) || 0, 1) + '억(1년차 1회)'
       + ', 감가상각 = 상각률 스케줄). 잔존가액은 3년차 FCFE에 회수분으로 반영됩니다. 임차 보증금 ' + FINVIEW.fmt(depositNote, 1) + '억은 0년차에 자기자본과 함께 납입하고 3년차에 회수합니다. 통합투자세액공제 5%는 건축·토목 시설비 '
       + FINVIEW.fmt(itcExclBase(d.key === 'rack' ? 'rack' : 'pod'), 1)
       + '억을 제외한 금액에 적용됩니다. 상단 「3년 누적 지출」은 운영비 + 감가상각 + PF 이자 + 법인세의 합계이며, 「3년 누적 손익」은 매출에서 이를 차감한 세후 순이익 누계입니다(PF 원금상환은 비용이 아니므로 제외).',
       'Revenue, operating cost and depreciation come straight from this model (operating cost = electricity + AI Enterprise + lease costs of '
-      + FINVIEW.fmt(leaseNote, 1) + 'B a year [rent + management fee + deposit carrying cost] + labor of ' + FINVIEW.fmt(laborNote, 1) + 'B a year [' + nf.format(Number(d.laborHeads) || 0) + ' people × ' + FINVIEW.fmt(Number(d.laborPerHeadEok) || 0, 1) + 'B each, 4-person 3-shift operation] + SW initial integration ' + FINVIEW.fmt(Number(d.integrationEok) || 0, 1) + 'B (once, Year 1)'
+      + FINVIEW.fmt(leaseNote, 1) + 'B a year [rent + management fee + deposit carrying cost] + labor of ' + FINVIEW.fmt(laborNote, 1) + 'B a year [' + nf.format(Number(d.laborHeads) || 0) + ' people × ' + FINVIEW.fmt(Number(d.laborPerHeadEok) || 0, 1) + 'B each, 4-person 3-shift operation] + maintenance, insurance and network lines of ' + FINVIEW.fmt(dcNote, 1) + 'B a year + SW initial integration ' + FINVIEW.fmt(Number(d.integrationEok) || 0, 1) + 'B (once, Year 1)'
       + '; depreciation follows the schedule). The residual is recovered in Year-3 FCFE. The lease deposit of ' + FINVIEW.fmt(depositNote, 1) + 'B is paid in Year 0 with equity and returned in Year 3. The 5% investment tax credit excludes '
       + FINVIEW.fmt(itcExclBase(d.key === 'rack' ? 'rack' : 'pod'), 1)
       + 'B of building/civil facility cost. "3-yr cumulative cost" is opex + depreciation + interest + tax; "3-yr cumulative profit" is revenue less that total.'));
