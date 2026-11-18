@@ -371,6 +371,8 @@
     @keyframes viewIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
     #mainContent.view-enter, #summaryCards.view-enter { animation: viewIn .32s cubic-bezier(.2, .7, .2, 1); }
     .sec.collapsed > :not(.sec-head) { display: none; }
+    .sec-head .sec-amt { display: none; margin-left: 14px; margin-right: auto; font-size: 18px; font-weight: 500; color: var(--g60); line-height: 24.4px; letter-spacing: -0.015em; }
+    .sec.collapsed > .sec-head .sec-amt { display: inline-flex; } /* rev75: 접힌 상태에서 시설비 CAPEX·OPEX 합계 표시 */
     .sec.collapsed .sec-tools { display: none; }
     .sec.collapsed + .table-after-chart { display: none; }
     .sec.collapsed .tri-btn::before { transform: rotate(-90deg); transform-origin: 50% 35%; }
@@ -627,49 +629,46 @@
     .sys-card .sys-sub2 { margin-top: 4px; color: var(--ga0); white-space: normal; line-height: 17px; word-break: keep-all; }
     .sys-capex li .cx-note { font-size: 12px; color: var(--ga0); white-space: normal; line-height: 15px; }
     /* rev60: 카드 — 상단(SU + 단가·전력·면적) / 슬라이더 / 하단 2열(CDU | GPU 임대단가) */
-    /* 시안 실측(카드 폭 1,453px → 549.3px, ×0.378): 제목 cap-top 56, 수량 "2" 146~191, 슬라이더 중심 224, 2행 라벨 296 · baseline 366, 구분선 422, 행 442/464/492, 바닥 573 */
-    .sys-grid .sys-card { padding: 46px 50px 64px 46px; }
+    /* 시안 실측(카드 1,454px → 549.3px, ×0.378 · rev75): 제목 cap-top 51, '서버 구성' 136, 수량 "2" 161~207, 스펙 라벨 149 · 값 174, 슬라이더 중심 231, 임대단가 라벨 284 · 숫자 322~355, 구매비 헤더 451 · 선 469 · 행 488, 바닥 573 */
+    .sys-grid .sys-card { padding: 42px 50px 66px 46px; }
     .sys-grid .sys-title { margin-left: -1.5px; }
     .sys-grid .sys-title strong { font-size: 27px; }
-    .card-top { display: flex; align-items: flex-end; column-gap: 0; margin-top: 47.5px; }
-    .sys-grid .sys-card .card-top .su-big.card-count { margin: 0; flex: 0 0 113px; width: 113px; display: inline-flex; }
+    .card-top { display: flex; align-items: flex-start; column-gap: 0; margin-top: 53px; }
+    .card-count-col { flex: 0 0 109px; width: 109px; }
+    .card-count-lab { font-size: 14px; font-weight: 600; color: var(--g60); line-height: 14px; white-space: nowrap; }
+    .sys-grid .sys-card .card-top .su-big.card-count { margin: 0; display: inline-flex; }
     .card-top .su-big.card-count .u { font-size: 64px; font-weight: 300; line-height: 72px; letter-spacing: -0.015em; }
     .card-top .su-big.card-count .u::after { bottom: 0.13em; left: 3px; right: 5px; }
     .card-top .su-big.card-count .unit { font-size: 17px; font-weight: 800; color: var(--g60); margin-left: -1px; }
-    .card-top-specs { display: flex; flex: 1 1 auto; min-width: 0; column-gap: 33px; padding-bottom: 4.5px; }
+    .card-top-specs { display: flex; flex: 1 1 auto; min-width: 0; column-gap: 0; margin-top: 14px; }
     .card-top-specs .sys-spec { flex: 0 0 auto; min-width: 0; }
+    .card-top-specs .sys-spec:nth-child(1) { width: 137px; }
+    .card-top-specs .sys-spec:nth-child(2) { width: 117px; }
     .card-top-specs .sys-spec + .sys-spec { border-left: 0; padding-left: 0; }
-    .card-top-specs .sys-spec .lab { position: relative; display: block; font-weight: 500; }
+    .card-top-specs .sys-spec .lab { position: relative; display: block; align-self: flex-start; font-weight: 400; color: var(--ga0); }
     .card-top-specs .sys-spec .lab .ico-i { position: absolute; left: 100%; top: 50%; margin: -7px 0 0 4px; width: 14px; height: 14px; }
     .card-top-specs .sys-spec .v { width: 0; margin-top: 3.4px; }
     .card-top-specs .sys-spec .v > * { flex: none; }
     .card-top-specs .sys-spec .v .u input { min-width: var(--w, 0); }
     .card-top-specs .sys-spec .v .u::after { bottom: 0.24em; left: 1px; right: 0; }
     .card-top-specs .sys-spec .v .unit { margin-left: 2px; }
-    .sys-grid .sys-card .track { margin-top: 18px; height: 4px; }
+    .sys-grid .sys-card .track { margin-top: 9px; height: 4px; }
     .sys-grid .sys-card .track::-webkit-slider-runnable-track { height: 4px; }
     .sys-grid .sys-card .track::-webkit-slider-thumb { width: 9.5px; height: 9.5px; margin-top: -2.75px; }
     .sys-card .card-max { text-align: right; font-size: 13px; font-weight: 400; color: var(--ga0); line-height: 16px; margin-top: 8px; }
     .sys-card .card-max .text-danger { color: var(--red); }
-    .card-cols { display: flex; margin-top: 46px; }
-    .card-col { flex: 0 0 238px; width: 238px; }
-    .card-col.right { flex: 1 1 auto; width: auto; }
-    .card-col + .card-col { border-left: 1px solid #e0e0e0; padding-left: 37px; margin-left: 0; }
-    .sys-grid .card-lab { position: relative; align-self: flex-start; font-size: 14px; font-weight: 600; color: var(--g60); line-height: 11px; white-space: nowrap; }
+    .card-price-blk { margin-top: 29px; display: flex; flex-direction: column; align-items: flex-start; }
+    .sys-grid .card-lab { position: relative; align-self: flex-start; display: inline-block; font-size: 14px; font-weight: 600; color: var(--g60); line-height: 11px; white-space: nowrap; }
     .sys-grid .card-lab .ico-i { position: absolute; left: 100%; top: 50%; margin: -7px 0 0 5px; width: 14px; height: 14px; }
-    .card-cdu { display: flex; align-items: flex-end; column-gap: 0; margin-top: 8px; }
-    .card-cdu .cdu-n { display: inline-flex; align-items: baseline; white-space: nowrap; flex: 0 0 109px; width: 109px; }
-    .card-cdu .cdu-n .num { font-size: 53px; font-weight: 400; color: var(--g60); line-height: 60px; letter-spacing: -0.015em; }
-    .card-cdu .cdu-n .unit { font-size: 14px; font-weight: 800; color: var(--g60); margin-left: 3px; }
-    .card-cdu .sys-spec { padding-bottom: 4px; }
-    .card-cdu .sys-spec .lab { font-weight: 500; }
-    .card-cdu .sys-spec .v { margin-top: 0.5px; }
-    .card-cdu .sys-spec .v .u::after { bottom: 0.11em; left: 1px; right: 2px; }
-    .card-cdu .sys-spec .v .unit { margin-left: 2px; }
     .sys-grid .sys-card .su-big.card-price { margin: 15px 0 0; display: inline-flex; align-items: baseline; }
     .sys-grid .sys-card .su-big.card-price .u { font-size: 44px; font-weight: 400; line-height: 55px; letter-spacing: 0; }
-    .sys-grid .sys-card .su-big.card-price .u::after { bottom: 0.19em; left: 2px; right: 2px; }
+    .sys-grid .sys-card .su-big.card-price .u::after { bottom: 0.235em; left: 2px; right: 2px; }
     .sys-grid .sys-card .su-big.card-price .unit { font-size: 14px; font-weight: 600; color: var(--g60); margin-left: 1px; }
+    .card-buy { margin-top: 83px; }
+    .card-buy-h { font-size: 13px; font-weight: 400; color: var(--ga0); line-height: 16px; padding-bottom: 2px; border-bottom: 1px solid #d3d3d3; }
+    .card-buy-row { display: flex; align-items: center; margin-top: 17px; font-size: 16px; font-weight: 700; color: #4f4f4f; line-height: 20px; white-space: nowrap; }
+    .card-buy-row .lead { flex: 1 1 auto; height: 3px; margin: 0 11px 0 12px; background-image: radial-gradient(circle, #9a9a9a 1.1px, transparent 1.4px); background-size: 6px 3px; background-repeat: repeat-x; background-position: 0 center; }
+    .card-buy-row b { font-weight: 700; color: #4f4f4f; }
     .card-lab { font-size: 15px; font-weight: 500; color: var(--g60); line-height: 20px; white-space: nowrap; }
     .card-lab .max { font-weight: 500; color: var(--g60); }
     .card-lab .max.text-danger { color: var(--red); }
@@ -704,13 +703,14 @@
     .sys-card .sys-capex li small { font-size: 12px; color: var(--g77); margin-left: 2px; font-weight: 400; }
     .cfg-detail { margin-top: 34px; }
     .cfg-detail .dt.itc td { vertical-align: top; }
-    .sec.mt-cfg { margin-top: 72px; }
+    .sec.mt-cfg { margin-top: 112px; }
+    .sec.mix-sec.collapsed + .sec.su-sec { display: none; } /* rev75: 도입 구성을 접으면 수전·면적 사용 현황도 함께 접힘 */
     .cfg-rows { margin-top: 22px; }
     .cfg-row + .cfg-row { margin-top: 36px; padding-top: 30px; border-top: var(--hair) solid var(--gcc); }
     .cfg-head { display: flex; align-items: baseline; column-gap: 14px; }
     .cfg-head strong { font-size: 24px; font-weight: 500; color: var(--g60); line-height: 32px; letter-spacing: -0.01em; }
     .cfg-head .cfg-mw { display: inline-block; font-size: 22px; font-weight: 700; color: var(--g60); line-height: 30px; cursor: help; }
-    .cfg-stats { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 64px; row-gap: 10px; margin-top: 14px; }
+    .cfg-stats { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 40px; row-gap: 10px; margin-top: 14px; }
     .cfg-stat { display: inline-flex; align-items: baseline; color: var(--g60); cursor: help; outline: none; }
     .cfg-stat .num { font-size: 55px; font-weight: 400; line-height: 74.5px; letter-spacing: -0.04em; font-variant-numeric: proportional-nums; font-feature-settings: 'pnum' 1, 'tnum' 0; }
     .cfg-stat .unit { font-size: 25px; font-weight: 600; margin-left: 2.5px; letter-spacing: -0.825px; } /* 시설비 CAPEX 합계의 '억' 단위와 동일 (25px/600 · 자간 -0.015em@55px · 간격 2.5px) */
@@ -845,7 +845,7 @@
     .dt.fac .fac-est-tbl tbody tr:last-child td::after { display: block; }
     .dt.fac .fac-est-note { margin-top: 8px; font-size: 13px; line-height: 20px; color: var(--g60); }
     .dt.fac .fac-est-note b { font-weight: 600; }
-    .dt.fac .fac-est-note.warn { color: var(--red); }
+    .dt.fac .fac-est-note.warn { color: var(--g60); }
     .dt.fac .fac-est-src { margin-top: 16px; font-size: 12px; line-height: 18px; color: var(--ga0); }
     .dt.fac tr.fac-sub td, .dt.fac tr.fac-sum td { padding: 14px 0 14px; font-size: 17px; font-weight: 600; color: var(--g60); line-height: 25px; }
     .dt.fac tr.fac-sub td strong, .dt.fac tr.fac-sum td strong { font-size: 17px; font-weight: 600; color: var(--g60); }
@@ -1347,7 +1347,7 @@
       itcCduNote: { ko: 'HPE/Vertiv XDU1350 세전 표시가 €582,148·€831,832 평균 × 1,470.23원/€(2026.11.16 ECB) = 대당 10.39억 · 실거래 평균·확정 견적 아님 · 한 대 정지 시 명목 냉각능력 2.70MW ≥ 컴퓨팅 2.16MW(HGX 2SU) · CDU 펌프 전력은 냉각설비 전력으로 별도 · 설치비 미포함', en: 'HPE/Vertiv XDU1350 pre-tax list €582,148 and €831,832 averaged × KRW 1,470.23/€ (ECB 2026-11-16) = KRW 1.039B per unit · not a transaction average or firm quote · with one unit down, nominal 2.70MW ≥ 2.16MW compute (HGX 2 SU) · CDU pump power counted under cooling plant · installation excluded' },
       itcRowIntegration: { ko: '초기 설치·통합비', en: 'Initial installation & integration' },
       itcIntegrationNote: { ko: '40M/M × 월 2,000만원 = 8억 + 예비비 2억 = 10억 · 프로젝트 전체 고정(SU 수와 무관) · 사이드바 「SW 초기 설치·통합비」에서 수정', en: '40 man-months × KRW 20M = 0.8B + 0.2B contingency = 1.0B · fixed per project (independent of SU count) · edit under “SW initial install & integration” in the sidebar' },
-      itcRowTotal: { ko: '초기 구축 투자비 (장비 + CDU + 초기 통합비)', en: 'Initial IT capex (equipment + CDU + integration)' },
+      itcRowTotal: { ko: '초기 구축 투자비 (장비 + 초기 통합비)', en: 'Initial IT capex (equipment + integration)' },
       labelCduUsd: { ko: 'CDU 단가', en: 'CDU unit price' },
       labelInitIntegration: { ko: '초기 설치·통합비', en: 'Initial integration budget' },
       unitCdu: { ko: '대', en: ' units' },
@@ -1377,6 +1377,7 @@
       cardRowEquip: { ko: 'GPU당 적용 단가', en: 'Applied price per GPU' },
       cardRowCdu: { ko: 'CDU (공용 {n}대 N+1 · SU당 배분)', en: 'CDU ({n} shared, N+1 · per-SU share)' },
       cardRowTotal: { ko: 'SU당 장비 구매비', en: 'Equipment per SU' },
+      cardCountLab: { ko: '서버 구성', en: 'Server config' },
       tipCduShare: { ko: 'CDU 구매비는 부지 공용(N+1)으로 계상하고, 카드에는 전체 CDU 구매비 ÷ 전체 SU 수로 나눈 SU당 배분액을 표시합니다. 산식·대수·단가는 아래 도입 구성 상세 참조.', en: 'CDU purchase is costed at site level (N+1); the card shows total CDU cost ÷ total SUs. See the deployment detail below for the formula, count and unit price.' },
       labelSwInitial: { ko: 'SW 초기 설치·통합비 (1회)', en: 'SW initial install & integration (one-off)' },
       labelSwMaint: { ko: 'AI Enterprise 유지비', en: 'AI Enterprise upkeep' },
@@ -1432,6 +1433,7 @@
       blLeaseDetail: { ko: '임대료 {r} + 관리비 {m} + 보증금 이자 {dc}', en: 'rent {r} + mgmt {m} + deposit interest {dc}' },
       chipLease: { ko: '임차 조건', en: 'Lease' },
       blCdu: { ko: 'CDU', en: 'CDU' },
+      cduInFacilityShort: { ko: '시설비 CAPEX 기계설비 5.1에 계상 (1,250kW급 {n}대 · N+1 · 12.60억) — IT 장비 CAPEX 제외', en: 'Costed in facility capex, mechanical 5.1 ({n} × 1,250kW · N+1 · 1.26B KRW) — excluded from IT equipment capex' },
       blIntegration: { ko: '초기 설치·통합비', en: 'Initial integration' },
       pnlLeaseNote: { ko: '임차 비용(임대료 + 관리비 + 보증금 환산 이자)은 모든 열에 같은 기준으로 계상됩니다.', en: 'Lease cost (rent + management fee + deposit carrying cost) is applied identically to every column.' },
       // ---- rev37: 운영 방식 CSP / NeoCloud ----
@@ -1522,7 +1524,7 @@
       capexItemSi: { ko: 'SW Setup·SI (할증 {m}배 적용)', en: 'SW setup · SI (×{m} premium)' },
       mixTypeSub: { ko: '{name} · GPU {g}개 · {n}{u}', en: '{name} · {g} GPUs · {n}{u}' },
       mixRowRevenueTotal: { ko: '연간 매출 합계', en: 'Total annual revenue' },
-      mixSummary: { ko: 'GPU {g}개 · FP4 {fp} PFLOPS · IT 장비 CAPEX {capex} (장비 + CDU + 초기 통합비)', en: '{g} GPUs · FP4 {fp} PFLOPS · IT equipment CAPEX {capex} (equipment + CDU + integration)' },
+      mixSummary: { ko: 'GPU {g}개 · FP4 {fp} PFLOPS · IT 장비 CAPEX {capex} (장비 + 초기 통합비)', en: '{g} GPUs · FP4 {fp} PFLOPS · IT equipment CAPEX {capex} (equipment + integration)' },
       mixNoType: { ko: '계산에 반영된 카드가 없습니다 — 사양이 입력된 카드를 켜 주세요.', en: 'No card is included in the calculation — turn on a card with specs.' },
       capSecTitle: { ko: '수전·면적 사용 현황', en: 'Power & Area Usage' },
       capSecDesc: { ko: '켜진 카드 수량의 합계가 IT 수전용량과 사용가능 면적 안에 들어오는지 확인합니다. 카드별 상한은 다른 카드가 쓰는 전력·면적을 뺀 잔여분으로 산출되며, 초과분은 빨간색으로 표시됩니다.', en: 'Checks whether the total of the active cards fits within IT power and usable floor area. Each card’s ceiling is the remainder after the other cards; any excess is shown in red.' },
@@ -1994,7 +1996,7 @@
       facEstScaleManual: { ko: '수동 입력 중 — 아래 표는 보고서의 기준 수량·금액이며 입력값과 연동되지 않습니다.', en: 'Manual input in effect — the table below shows the report base and is not linked to the entered value.' },
       facEstSource: { ko: '출처: 공종별 개략공사비 산정보고서 (2026.11.17) · 기획단계 예산가정 · 업체 견적·구조계산·실측 없음 · VAT 별도', en: 'Source: detailed cost estimate by trade (2026-11-17) · planning-stage budget assumptions · no vendor quotes, structural calculation or site measurement · VAT excluded' },
       facEstSourceFoot: { ko: '기본값은 「공종별 개략공사비 산정보고서」(2026.11.17)의 446.12억(공사비 445.32 + 지반조사 0.80)에 설계/감리 4%(13.49억)를 더한 459.61억입니다. 제시 수량·복합단가는 설계 가정이며 발주용 예정가격 또는 투자비 확정액이 아닙니다. VAT·토지·건물 취득비·금융비·GPU 서버·고속 스위치·스토리지·SW·대규모 한전 외부망은 제외입니다.', en: 'Defaults equal the 446.12 (construction 445.32 + geotechnical 0.80) of the detailed cost estimate (2026-11-17) plus 4% design & supervision (459.61). Quantities and composite rates are design assumptions, not tender prices or approved investment. VAT, land/building acquisition, financing, GPU servers, high-speed switches, storage, software and large utility grid works are excluded.' },
-      facilityCduNoteEst: { ko: '※ 기계설비 5.1의 CDU 1,250kW급 3대(12.60억)는 IT 장비 CAPEX(서버 선택 카드)의 CDU 구매비와 범위가 겹칠 수 있습니다 — 중복 계상 여부 확인 전까지 보고서 수치를 그대로 유지합니다.', en: '※ The three 1,250kW CDUs (1.26B KRW) in mechanical 5.1 may overlap with the CDU purchase in IT equipment capex (server cards) — the report figure is kept until double counting is checked.' },
+      facilityCduNoteEst: { ko: '※ CDU는 기계설비 5.1(1,250kW급 3대 · N+1 · 12.60억)에만 계상하며 IT 장비 CAPEX에서는 제외합니다.', en: '※ CDUs are costed only in mechanical 5.1 (three 1,250kW units, N+1, 1.26B KRW) and excluded from IT equipment capex.' },
       facilityTotalNoteB1: { ko: '리모델링 단일 항목 {b} = 시설비 CAPEX 합계 {c} (신축 전력동 폐지로 신축분 0)', en: 'Remodel-only {b} = facility CAPEX total {c} (new-build portion is zero — the power building is dropped)' },
       facilityDescB1: { ko: '[B1 전체] 신축 전력동을 폐지하고 수배전·UPS·비상발전기·급수탱크를 B1 내부로 흡수한 구조입니다. 전력·공조는 총액이 그대로 리모델링으로 이관되고, 건축/토목·통신/소방의 신축 고정분(40억·16억)만 소멸합니다. 면적비례 단가는 고하중(데이터홀) 구간과 일반 구간을 분리 적용합니다.', en: '[Full B1] the new power building is dropped and switchgear, UPS, emergency generators and the water tank are absorbed into B1. Power and mechanical costs transfer wholly to the remodel column at unchanged totals; only the fixed new-build portions of architecture (4.0B) and telecom/fire (1.6B) disappear. Area-proportional rates are split between the heavy-load (data hall) zone and the general zone.' },
       b1FacilityNotice: { ko: '면적비례 단가 분리 적용 중 — 고하중(화이트스페이스) 구간 {h}㎡ · 일반(그레이스페이스 및 기타) 구간 {g}㎡. 기존시설 철거비는 전 구간 동일 단가입니다.', en: 'Split area rates in effect — heavy-load (white space) {h}㎡ · general (grey space & other) {g}㎡. Demolition uses one rate across all area.' },
@@ -2076,8 +2078,8 @@
       ] },
       mechanical: { sections: [
         { id: '5.1', titleKo: '직접수랭 계통', titleEn: 'Direct liquid-cooling system', amount: 43.98, items: [
-          ['밀폐형 냉각탑 350CRT 급', 'Closed-circuit cooling towers, 350 CRT class', '3대', '3.20 억원/대', 9.60],
-          ['CDU 1,250kW 급', 'CDU, 1,250kW class', '3대', '4.20 억원/대', 12.60],
+          ['밀폐형 냉각탑 350CRT 급', 'Closed-circuit cooling towers, 350 CRT class', '3대 (2+1)', '3.20 억원/대', 9.60],
+          ['CDU 1,250kW 급', 'CDU, 1,250kW class', '3대 (N+1: 운전 2 + 예비 1)', '4.20 억원/대', 12.60],
           ['액체냉각 순환펌프', 'Liquid-cooling circulation pumps', '3 세트', '1.10 억원/세트', 3.30],
           ['버퍼·팽창탱크', 'Buffer & expansion tanks', '2식', '1.00 억원/식', 2.00],
           ['시설수 배관·밸브·보온', 'Facility-water piping, valves & insulation', '500m', '140 만원/m', 7.00],
@@ -2087,12 +2089,12 @@
           ['장비 양중·설치 보조공사', 'Equipment rigging & installation support', '1식', '2.30 억원/식', 2.30]],
           noteKo: '산정 해석 — DLC 열부하 2,250kW, 밀폐형 냉각탑 350CRT 3대 및 CDU 1,250kW 3대(각 2+1)를 가정했습니다. 설계 외기 습구온도·서버 공급수 온도에 따른 실용량 검증 전입니다.',
           noteEn: 'Basis — Assumes a 2,250kW DLC heat load with three 350 CRT closed-circuit towers and three 1,250kW CDUs (2+1 each). Actual capacity against design wet-bulb and server supply-water temperatures is unverified.',
-          cautionKo: '중복 주의 — CDU 1,250kW급 3대(12.60억)는 IT 장비 CAPEX(서버 선택 카드)의 CDU 구매비와 범위가 겹칠 수 있습니다. 중복 계상 여부를 확인하기 전까지 보고서 수치를 그대로 둡니다.',
-          cautionEn: 'Overlap caution — The three 1,250kW CDUs (1.26B KRW) may overlap with the CDU purchase in IT equipment capex (server cards). The report figure is kept as is until double counting is checked.' },
+          cautionKo: 'CDU 계상 — CDU 1,250kW급 3대(N+1 · 12.60억)는 이 항목(기계 5.1)에서만 계상하며 IT 장비 CAPEX에서는 제외합니다.',
+          cautionEn: 'CDU costing — The three 1,250kW CDUs (N+1, 1.26B KRW) are costed only here (mechanical 5.1) and excluded from IT equipment capex.' },
         { id: '5.2', titleKo: '공조냉각 계통', titleEn: 'HVAC cooling system', amount: 34.20, items: [
-          ['냉동기 150USRT 급', 'Chillers, 150 USRT class', '3대', '3.00 억원/대', 9.00],
+          ['냉동기 150USRT 급', 'Chillers, 150 USRT class', '3대 (2+1)', '3.00 억원/대', 9.00],
           ['공조용 냉각탑 200CRT 급', 'HVAC cooling towers, 200 CRT class', '3대', '1.20 억원/대', 3.60],
-          ['CRAH 250kW 급', 'CRAH units, 250kW class', '4대', '2.00 억원/대', 8.00],
+          ['CRAH 250kW 급', 'CRAH units, 250kW class', '4대 (3+1)', '2.00 억원/대', 8.00],
           ['냉수·냉각수 순환펌프', 'Chilled/condenser-water pumps', '6대', '0.65 억원/대', 3.90],
           ['냉수·냉각수 배관·밸브·보온', 'Chilled/condenser-water piping, valves & insulation', '350m', '120 만원/m', 4.20],
           ['기류분배·컨테인먼트', 'Airflow distribution & containment', '1식', '4.00 억원/식', 4.00],
@@ -2111,7 +2113,7 @@
       electrical: { sections: [
         { id: '6.1', titleKo: '수변전·주배전', titleEn: 'HV/LV switchgear & main distribution', amount: 40.00, items: [
           ['특고압 수배전반', 'HV switchgear', '1식', '6.00 억원/식', 6.00],
-          ['변압기 2,500kVA 급', 'Transformers, 2,500kVA class', '3대', '4.00 억원/대', 12.00],
+          ['변압기 2,500kVA 급', 'Transformers, 2,500kVA class', '3대 (2+1)', '4.00 억원/대', 12.00],
           ['저압 주배전반', 'LV main switchboard', '1식', '8.00 억원/식', 8.00],
           ['동력제어반(MCC)', 'Motor control centers (MCC)', '1식', '4.00 억원/식', 4.00],
           ['수변전 간선·부스덕트·전선관', 'Feeders, busduct & conduit', '1식', '6.50 억원/식', 6.50],
@@ -2119,7 +2121,7 @@
           noteKo: '산정 해석 — 변압기 2,500kVA 3대(2+1) 예산 구성입니다. 수전전력 3.6MW는 전력운전 한도이며 변압기 설치 정격용량과 혼동해서는 안 됩니다.',
           noteEn: 'Basis — Three 2,500kVA transformers (2+1). The 3.6MW supply limit is an operating ceiling and must not be confused with installed transformer rating.' },
         { id: '6.2', titleKo: 'UPS·배터리·IT 배전', titleEn: 'UPS, battery & IT distribution', amount: 57.12, items: [
-          ['UPS 1,200kW 급', 'UPS, 1,200kW class', '4 모듈', '5.00 억원/모듈', 20.00],
+          ['UPS 1,200kW 급', 'UPS, 1,200kW class', '4 모듈 (3+1)', '5.00 억원/모듈', 20.00],
           ['배터리 시스템 명목 1.2MWh', 'Battery system, nominal 1.2MWh', '1식', '12.00 억원/식', 12.00],
           ['A/B 배전 버스웨이', 'A/B distribution busway', '240m', '260 만원/m', 6.24],
           ['고밀도 랙 PDU', 'High-density rack PDUs', '24 개 랙', '1,200 만원/랙', 2.88],
@@ -2128,7 +2130,7 @@
           noteKo: '산정 해석 — UPS 1,200kW 4모듈(3+1) 및 명목 배터리 1.2MWh를 가정했습니다. 15분 IT 부하 유지와 A/B 배전은 실제 제품 성능 검증이 필요하며 전 계통 2N을 의미하지 않습니다.',
           noteEn: 'Basis — Four 1,200kW UPS modules (3+1) and a nominal 1.2MWh battery. 15-minute ride-through and A/B distribution need product-level verification and do not imply full 2N.' },
         { id: '6.3', titleKo: '비상발전기', titleEn: 'Emergency generators', amount: 41.00, items: [
-          ['디젤발전기 2,750kVA 급', 'Diesel generators, 2,750kVA class', '3대', '7.00 억원/대', 21.00],
+          ['디젤발전기 2,750kVA 급', 'Diesel generators, 2,750kVA class', '3대 (2+1)', '7.00 억원/대', 21.00],
           ['병렬운전반·ATS·제어', 'Paralleling switchgear, ATS & controls', '1식', '5.00 억원/식', 5.00],
           ['연료저장·공급배관', 'Fuel storage & supply piping', '1식', '4.00 억원/식', 4.00],
           ['발전기 급배기·방음·배기', 'Generator ventilation, acoustic & exhaust', '1식', '6.00 억원/식', 6.00],
@@ -3167,7 +3169,9 @@
       const cduUnits = totalSu > 0 ? (cduMode === 'n1' ? cduDuty + 1 : cduUnitsPerSu) : 0;
       const cduUnitUsd = Math.max(0, Number(inputState.cduUnitUsd) || 0);
       const cduUnitEok = cduUnitUsd * fxv / EOK;
-      const cduCapexEok = cduUnits * cduUnitEok;
+      // rev75: CDU는 시설비 CAPEX 기계설비 5.1(CDU 1,250kW급 3대 12.60억)에서만 계상 — IT 장비 CAPEX에서 제외 (대수·N+1 산식은 참고용으로 유지)
+      const CDU_IN_FACILITY = true;
+      const cduCapexEok = CDU_IN_FACILITY ? 0 : cduUnits * cduUnitEok;
       const cduCapexUsd = fxv > 0 ? cduCapexEok * EOK / fxv : 0;   // 표시용 달러 환산
       const integrationEok = gpus > 0 ? Math.max(0, Number(inputState.initIntegrationEok) || 0) : 0;
       const equipCapexEok = equipCapexUsd * fxv / EOK;
@@ -3406,6 +3410,7 @@
       return `
         <div class="sec-head">
           <h2 class="sec-title ${opts.tri === false ? '' : 'tri'}">${opts.tri === false ? '' : '<button type="button" class="tri-btn" aria-label="toggle"></button>'}${title}${opts.badge ? `<span class="tag-box ${opts.badgeCls || ''}">${opts.badge}</span>` : ''}</h2>
+          ${opts.amt ? `<div class="sec-amt">${opts.amt}</div>` : ''}
           ${opts.tools ? `<div class="sec-tools">${opts.tools}</div>` : ''}
         </div>`;
     }
@@ -3602,9 +3607,12 @@
             ${subHtml}
             ${ok ? '' : `<div class="sys-blank-note">${t('gpuBlankSpec')}</div>`}
             <div class="card-top">
-              <div class="su-big card-count">
-                <span class="u"><input type="number" min="0" max="${gpuAbsMax(g)}" step="1" value="${n}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} count" /></span>
-                <span class="unit">SU</span>
+              <div class="card-count-col">
+                <div class="card-count-lab">${t('cardCountLab')}</div>
+                <div class="su-big card-count">
+                  <span class="u"><input type="number" min="0" max="${gpuAbsMax(g)}" step="1" value="${n}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} count" /></span>
+                  <span class="unit">SU</span>
+                </div>
               </div>
               <div class="card-top-specs">
                 ${specs.map(([lab, input, u, w]) => `<div class="sys-spec"><span class="lab">${lab}</span><span class="v" style="--w:${w}">${input}<span class="unit">${u}</span></span></div>`).join('')}
@@ -3612,24 +3620,14 @@
             </div>
             <input type="range" class="track" min="0" max="${sliderMax}" step="1" value="${Math.min(n, sliderMax)}" data-gpu-count="${key}" aria-label="${escAttr(gpuLabel(g, key))} slider" ${ok ? '' : 'disabled'} />
             <div class="card-max"><span class="max ${overNow ? 'text-danger' : ''}" data-gpu-chip="${key}">${maxNote}</span></div>
-            <div class="card-cols">
-              <div class="card-col">
-                <div class="card-lab">${t('cardCduLab')}${infoIcon(t('tipCduUnits'), t('cardCduLab'), true)}</div>
-                <div class="card-cdu">
-                  <span class="cdu-n"><span class="num" data-card-cdu-n>${nf.format(cduUnits)}</span><span class="unit">${cduUnit}</span></span>
-                  <div class="sys-spec"><span class="lab">${t('cardCduPrice')}</span><span class="v"><span class="u"><input type="number" min="0" step="1000" value="${nf.format(Number(state.cduUnitUsd) || 0).replace(/,/g, '')}" data-input="cduUnitUsd" aria-label="${escAttr(t('cardCduPrice'))}" /></span><span class="unit">$</span></span></div>
-                </div>
-              </div>
-              <div class="card-col right">
-                <div class="card-lab">${t('cardPriceLab')}${infoIcon(neo ? t('tipNetRate') : t('tipMixRate'), t('cardPriceLab'), true)}</div>
-                <div class="su-big card-price">${priceInput}<span class="unit">$/GPU/h</span></div>
-              </div>
+            <div class="card-price-blk">
+              <div class="card-lab">${t('cardPriceLab')}${infoIcon(neo ? t('tipNetRate') : t('tipMixRate'), t('cardPriceLab'), true)}</div>
+              <div class="su-big card-price">${priceInput}<span class="unit">$/GPU/h</span></div>
             </div>
-            <ul class="sys-capex">
-              <li><span>${t('cardRowEquipX', { g: nf.format(Number(g.gpusPerUnit) || 0) })}</span><span class="cx-val" data-gpu-capex-total="${key}">${usdM(perUnit)}</span></li>
-              <li><span>${t('cardCduLab')}${infoIcon(t('tipCduShare'), t('cardCduLab'), true)}</span><span class="cx-val" data-card-cdu="${key}">${cduShare > 0 ? usdM(cduShare) : '—'}</span></li>
-              <li class="total"><span>${t('cardRowTotal')}</span><b data-card-total="${key}">${usdWithKrw(perUnit + cduShare, true)}</b></li>
-            </ul>
+            <div class="card-buy">
+              <div class="card-buy-h">${t('cardRowTotal')}</div>
+              <div class="card-buy-row"><span class="lab">${t('cardRowEquipX', { g: nf.format(Number(g.gpusPerUnit) || 0) })}</span><span class="lead"></span><b data-gpu-capex-total="${key}">${usdWithKrw(perUnit)}</b></div>
+            </div>
           </div>
         </article>`;
     }
@@ -3781,7 +3779,7 @@
       const tip = neo ? t('tipCfgSec') : t('tipCfgSec') + '\n' + t('tipMixTable');
       return `
         <section class="sec mt-cfg mix-sec">
-          ${secHead(title + infoIcon(tip, title, true), { tri: false })}
+          ${secHead(title + infoIcon(tip, title, true))}
           ${basisNote ? `<div class="sec-desc">${basisNote}</div>` : ''}
           <div class="cfg-rows">${rows || `<div class="notice warn">${t('mixNoType')}</div>`}</div>
           ${neo ? '' : (okTypes.length ? tables + totalRow : (rows ? `<div class="notice warn">${t('mixNoType')}</div>` : ''))}
@@ -4047,7 +4045,7 @@
       const depTxt = `${getDepreciationText().replace(/\//g, ' / ')}%`;
       // rev58: IT 장비 CAPEX = 장비 구매비(카드별) + CDU + 초기 설치·통합비 · 운영비 = 전기료 + AI Enterprise + 임차 비용
       const capexRows = okTypes.map(td => [t('blTypeCapex', { name: gpuShortLabel(td.type, td.key) }), `${eok(td.itCapexEok)} (${usdM(td.itCapexUsd)} = ${nf.format(td.n)}SU × ${usdM(td.perUnitUsd)})`, 'res']);
-      const cduRow = [t('blCdu'), `${eok(data.cduCapexEok)} (${nf.format(data.cduUnits)}${t('unitCdu')} × ${eok(data.cduUnitEok)} · ${data.cduMode === 'perSu' ? t('itcCduModePerSu') : t('itcCduModeN1')})`];
+      const cduRow = [t('blCdu'), `${t('cduInFacilityShort', { n: nf.format(data.cduUnits) })}`];
       const intRow = [t('blIntegration'), eok(data.integrationEok)];
       const itRow = [t('blItCapex'), `${eok(data.itCapexEok)} (${usdM(data.itCapexUsd)} + ${eok(data.integrationEok)})`, 'res'];
       const leaseRow = [t('blLease'), `${eok(data.leaseOpexEok)} (${t('blLeaseDetail', { r: eok(data.leaseRentEok), m: eok(data.leaseMgmtEok), dc: eok(data.leaseDepositCostEok) })})`, 'res'];
@@ -4572,11 +4570,13 @@
     // rev65: 세부 근거(보고서 3~7p) — 영문 수량·단가 변환
     function facEstQty(q, en) {
       if (!en) return q;
-      let r = String(q).replace('영향면적 ', 'affected ').replace('마이크로파일 ', 'micropiles ').replace(' 등', ' etc.');
+      const pm = String(q).match(/^(.*?)(\s*\(.*\))?$/);
+      const suffix = (pm && pm[2]) ? pm[2].replace('N+1: 운전 2 + 예비 1', 'N+1: 2 duty + 1 standby') : '';
+      let r = String(pm ? pm[1] : q).replace('영향면적 ', 'affected ').replace('마이크로파일 ', 'micropiles ').replace(' 등', ' etc.');
       r = r.replace(/(\d)\s*개 방호구역/, '$1 zones').replace(/(\d)\s*개 랙/, '$1 racks').replace(/(\d)\s*개소/, '$1 locations').replace(/(\d)\s*세트/, '$1 sets')
         .replace(/(\d)\s*모듈/, '$1 modules').replace(/(\d)\s*포트/, '$1 ports').replace(/(\d)\s*구역/, '$1 zones').replace(/(\d)\s*대$/, '$1 units').replace(/(\d)\s*공$/, '$1 borings')
         .replace(/(\d+)\s*식$/, (m, n) => (Number(n) === 1 ? '1 lot' : `${n} lots`));
-      return r;
+      return r + suffix;
     }
     function facEstRate(rate, en) {
       if (!en) return rate;
@@ -4720,7 +4720,7 @@
       const extraBadge = state.activeView === 'compare' ? `<span class="tag-box" style="margin-left:5.4px">${modelName}</span>` : '';
       return `
         <section class="sec mt-163 fac-sec" data-fac-panel="${modelKey}">
-          ${secHead(t('facilityTitle') + infoIcon(t('tipFacility'), t('facilityTitle'), true), { badge: `<span id="facBadge-${modelKey}">${modeLabel}</span>` })}
+          ${secHead(t('facilityTitle') + infoIcon(t('tipFacility'), t('facilityTitle'), true), { badge: `<span id="facBadge-${modelKey}">${modeLabel}</span>`, amt: `<span data-sec-amt="fac-${modelKey}">${eokF(grand)}</span>` })}
           ${extraBadge ? `<div style="margin-top:6px">${extraBadge}</div>` : ''}
           <div class="sec-desc">${isRemodelOnly() ? t('facilityDescRemodel') : t('facilityDescV7')}</div>
           <div class="fac-big"><span class="big-num" id="facGrandBig-${modelKey}">${bigNumInner(eokF(grand))}</span></div>
@@ -4807,7 +4807,7 @@
         </tr>`).join('');
       return `
         <section class="sec mt-163 fac-sec opex-sec" data-opex-panel>
-          ${secHead(t('opexTitle') + infoIcon(t('tipOpex'), t('opexTitle'), true), { badge: `<span>${t('opexBadge')}</span>` })}
+          ${secHead(t('opexTitle') + infoIcon(t('tipOpex'), t('opexTitle'), true), { badge: `<span>${t('opexBadge')}</span>`, amt: `<span data-sec-amt="opex">${eokF(total)}</span>` })}
           <div class="sec-desc">${t('opexDesc')}</div>
           <div class="fac-big"><span class="big-num" id="opexGrandBig">${bigNumInner(eokF(total))}</span></div>
           <div class="dt-wrap fac-table">
@@ -4850,6 +4850,7 @@
       });
       const big = panel.querySelector('#opexGrandBig'); if (big) big.innerHTML = bigNumInner(eokF(total));
       const g = panel.querySelector('#opexGrand'); if (g) g.textContent = eokF(total);
+      panel.querySelectorAll('[data-sec-amt="opex"]').forEach(el => { el.textContent = eokF(total); });
       const note = panel.querySelector('#opexTotalNote'); if (note) note.innerHTML = opexTotalNoteHtml(d, rows, total);
     }
 
@@ -6202,9 +6203,9 @@
         table([1800, 1500, W - 3300], [
           head([L('항목', 'Item'), L('금액', 'Amount'), L('산출 근거', 'Basis')]),
           { cells: [L('장비 구매비', 'Equipment purchase'), eok(d.equipCapexEok), activeTypes.map(td => `${gpuShortLabel(td.type, td.key)} ${nf.format(td.n)}SU × ${usdM(td.perUnitUsd)} (${L('GPU당', 'per GPU')} ${usdPlain(Number(td.type.pricePerGpuUsd) || 0)} × ${nf.format(Number(td.type.gpusPerUnit) || 0)} GPU)`).join(' + ') + ` = ${fmtUsdLarge(d.equipCapexUsd)}`] },
-          { cells: [L('CDU 구매비', 'CDU purchase'), eok(d.cduCapexEok), `${cduFormulaText(d)} × ${L('대당', 'per unit')} ${eok(d.cduUnitEok)} (HPE/Vertiv XDU1350 ${L('표시가 평균 · 설치비 미포함', 'list-price average · installation excluded')})`] },
+          { cells: [L('CDU', 'CDU'), L('시설비 포함', 'In facility'), `${cduFormulaText(d)} · ${L('시설비 CAPEX 기계설비 5.1 「CDU 1,250kW급 3대 12.60억」으로 계상 — IT 장비 CAPEX에서 제외', 'Costed in facility capex, mechanical 5.1 (three 1,250kW CDUs, 1.26B KRW) — excluded from IT equipment capex')}`] },
           { cells: [L('초기 설치·통합비', 'Initial integration'), eok(d.integrationEok), L('40M/M × 월 2,000만원 + 예비비 2억 · 프로젝트 전체 고정', '40 man-months × KRW 20M + 0.2B contingency · fixed per project')] },
-          { bold: true, cells: [L('IT 장비 CAPEX', 'IT equipment capex'), eok(d.itCapexEok), L('장비 구매비 + CDU + 초기 설치·통합비', 'Equipment + CDU + initial integration')] },
+          { bold: true, cells: [L('IT 장비 CAPEX', 'IT equipment capex'), eok(d.itCapexEok), L('장비 구매비 + 초기 설치·통합비 (CDU는 시설비에 계상)', 'Equipment + initial integration (CDU in facility capex)')] },
           { cells: [L('시설 CAPEX', 'Facility capex'), eok(d.facilityEok), `${L('연면적', 'Floor area')} ${sqm(d.floorArea)} · ${L('총 수전', 'total power')} ${kw(state.totalPowerKw)} ${L('기준 (내역은 시설 CAPEX 내역 참조)', 'basis (see facility breakdown)')}`] },
           { bold: true, cells: [L('총 CAPEX', 'Total capex'), { t: eok(d.totalCapexEok), color: RPT.OR }, L('IT 장비 + 시설', 'IT equipment + facility')] },
           { cells: [L('연간 전기료', 'Electricity (Y1)'), perYr(eok(d.electricityByYear[0])), `${L('전력량', 'Energy')} ${eok(d.energyByYear[0])} + ${L('기본요금', 'basic charge')} ${eok(d.baseEok)}`] },
@@ -6258,7 +6259,7 @@
         rows.push(row(L('GPU당 적용 단가', 'Applied price per GPU'), td => `${usdPlain(Number(td.type.pricePerGpuUsd) || 0)} × ${nf.format(Number(td.type.gpusPerUnit) || 0)} GPU = ${usdM(td.perUnitUsd)}/SU (${L('설치·세팅비 포함 거래가 ÷ GPU 수', 'deal price incl. install/setup ÷ GPUs')})`));
         rows.push(row(L('장비 구매비', 'Equipment purchase'), td => B(`${usdWithKrw(td.perUnitUsd)} (${L('SU당', 'per SU')}) · ${L('합계', 'total')} ${eok(td.itCapexEok)}`, RPT.OR)));
         sec('pre', L('SU 구성·단가', 'SU configuration & pricing'), table(cols, rows, { align: Array.from({ length: nT + 1 }, () => 'left') }),
-          note(L(`CDU ${nf.format(d.cduUnits)}${t('unitCdu')}(${eok(d.cduCapexEok)}, 2SU 공용 N+1)와 초기 설치·통합비 ${eok(d.integrationEok)}는 부지 단위로 별도 계상 (투자·운영비 표 참조).`, `CDUs (${nf.format(d.cduUnits)}, ${eok(d.cduCapexEok)}, shared N+1) and initial integration (${eok(d.integrationEok)}) are costed at site level (see capex & opex table).`)));
+          note(L(`CDU(${nf.format(d.cduUnits)}${t('unitCdu')}, N+1)는 시설비 CAPEX 기계설비 5.1(12.60억)에 계상되어 IT 장비 CAPEX에서 제외하며, 초기 설치·통합비 ${eok(d.integrationEok)}는 부지 단위로 별도 계상합니다 (투자·운영비 표 참조).`, `CDUs (${nf.format(d.cduUnits)}, N+1) are costed in facility capex (mechanical 5.1, 1.26B KRW) and excluded from IT equipment capex; initial integration (${eok(d.integrationEok)}) is costed at site level (see capex & opex table).`)));
       }
       // [pre] 수전·면적 사용 현황
       const whitePct = d.usableArea > 0 ? d.occupiedArea / d.usableArea * 100 : 0;
@@ -7107,7 +7108,7 @@
         const td = data.types.find(x => x.key === key);
         if (td && td.ok) { const row = document.querySelector(`.cfg-row[data-cfg-row="${key}"]`); if (row) row.outerHTML = cfgRowHtml(td, data); }
         document.querySelectorAll(`[data-gpu-capex-total="${key}"]`).forEach(tot => {
-          tot.innerHTML = tot.closest('.sys-card') ? usdM(gpuCapexPerUnitUsd(g)) : usdWithKrw(gpuCapexPerUnitUsd(g));
+          tot.innerHTML = usdWithKrw(gpuCapexPerUnitUsd(g));
         });
         const share = cduShareUsd(data);
         document.querySelectorAll('[data-card-cdu-n]').forEach(el => { el.textContent = nf.format(data.cduUnits || 0); });
@@ -7318,6 +7319,7 @@
       if (totalRemodel) totalRemodel.textContent = eokF(result.remodelSum);
       if (grandEl) grandEl.textContent = eokF(grand);
       if (grandBig) grandBig.innerHTML = bigNumInner(eokF(grand));
+      document.querySelectorAll(`[data-sec-amt="fac-${modelKey}"]`).forEach(el => { el.textContent = eokF(grand); });
       if (note) note.innerHTML = facTotalNoteHtml(showNew, result, grand);
       if (badge) badge.textContent = state.spaceMode === 'base' ? t('facManualBadge') : t('facAutoBadge');
     }
