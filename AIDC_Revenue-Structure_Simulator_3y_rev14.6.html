@@ -5713,7 +5713,7 @@
     // rev16: 접힌 섹션 상태(제목 기준)를 재렌더 후에도 유지
     const collapsedSecs = new Set();
     // rev80: 기본 접힘 섹션 — 타사위탁 공급 조건·매출 구조, 타사위탁 마진율 민감도·협상 범위, 도입 구성, 시설비 CAPEX, 연간 OPEX (사용자가 한 번 펼치면 그 상태 유지)
-    const DEFAULT_COLLAPSED_SECS = ['neo-terms-sec', 'neo-sens-sec', 'mix-sec', 'fac-sec', 'opex-sec'];
+    const DEFAULT_COLLAPSED_SECS = ['neo-terms-sec', 'neo-sens-sec', 'mix-sec', 'fac-sec', 'opex-sec', 'formula-sec'];
     const secToggled = new Set();
     function applyCollapsedSecs(root) {
       (root || document).querySelectorAll('.sec').forEach(sec => {
