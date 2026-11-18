@@ -856,6 +856,12 @@
     .fac-table.dt-wrap { border-bottom: 0; } /* 합계 행 아래 1.5px 선만 남김 (표 테두리와 겹치지 않게) */
     .dt.fac tr.fac-sub td .fac-sum-note, .dt.fac tr.fac-sum td .fac-sum-note { font-size: 13px; font-weight: 400; line-height: 20px; color: var(--ga0); }
     .dt.fac tr.fac-row.fac-overhead .fac-lab, .dt.fac tr.fac-row.fac-extra .fac-lab { font-size: 15px; }
+    /* rev74: OPEX 패널 입력칸 가로 배치 */
+    .opex-sec .fac-rate-row { display: flex; flex-wrap: wrap; column-gap: 32px; row-gap: 12px; margin-top: 28.9px; }
+    .opex-sec .dt.fac .fac-rate-row .fac-rate, .opex-sec .dt.fac .fac-rate-row .fac-rate + .fac-rate { margin-top: 0; }
+    .opex-sec .fac-rate .u { display: inline-block; }
+    .opex-sec .fac-rate .fac-pre { font-size: 22px; font-weight: 600; color: var(--k100); line-height: 29.8px; margin-right: 2px; vertical-align: baseline; }
+    .opex-sec .fac-rate label .ico-i { width: 13px; height: 13px; margin-left: 3px; vertical-align: -2px; }
 
     /* =====================================================================
        메인: 기준값 및 산식
@@ -1193,7 +1199,7 @@
     //    장비비 GPU당 $62,000(조사 4개 사례 평균, 설치·세팅비 포함 거래가 ÷ GPU 수) × 576 = $35,712,000/SU
     //  · DGX GB300 NVL72: 1 SU = 컴퓨팅 8랙 · 트레이 144개 · 576 GPU · 20개 위치/SU(NVIDIA RA) · 8랙 × 140kW + 10% = 1,232kW/SU · GPU당 $80,167 × 576 = $46,176,192/SU
     //  · CDU·초기 설치·통합비는 SU 단가에 넣지 않고 부지 단위로 별도 계상 (calcMix: cduUnits × cduUsd, initIntegrationEok)
-    //  · 기초단가: B300은 NeoCloud 공개 판매단가 $7.38/GPU·h를 온디맨드 기초단가 가정값으로 사용 (카드에서 수정 가능)
+    //  · 기초단가: B300은 NeoCloud 공개 판매단가 $7.65/GPU·h를 온디맨드 기초단가 가정값으로 사용 (카드에서 수정 가능)
     //  · VR SuperPOD · 직접 입력: 확인된 사양이 없어 빈칸(0) — 값을 넣기 전까지는 계산에 0으로 반영
     const GPU_KEYS = ['b300', 'gb300', 'vr', 'custom'];
     const CDU_PER_SU_DEFAULT = 2;   // 'SU당' 방식일 때 SU당 CDU 대수 (운전 1 + 예비 1) — 기본은 부지 공용 N+1
@@ -1207,7 +1213,7 @@
         gpusPerUnit: 576, racksPerUnit: 9, serversPerUnit: 72, serversPerRack: 8, positionsPerUnit: 14, rackAreaSqm: 3.5,
         serverKw: 15, rackKw: 120, supportPct: 10, computeKwPerUnit: 1080, unitItPowerKw: 1188, unitAreaSqm: 49,
         pricePerGpuUsd: 62000, cduPerUnit: CDU_PER_SU_DEFAULT,
-        baseRateUsd: { A: 7.38, B: 7.38 },
+        baseRateUsd: { A: 7.65, B: 7.65 },
         fp4PflopsPerUnit: 8640,
         capexUsd: { equip: 35712000 },
         color: 'var(--b300-color)'
@@ -1314,7 +1320,7 @@
       // rev37: 운영 방식 — 'csp'(직접 영업·운영) | 'neo'(NeoCloud 경유). 기본값과 NeoCloud 조건은 VSLAI rev1.2 값
       opMode: 'neo',
       neoPriceKey: 'b300',
-      neoPrice_b300: 7.38,     // NeoCloud 공개 판매단가 ($/GPU·h) — B300
+      neoPrice_b300: 7.65,     // NeoCloud 공개 판매단가 ($/GPU·h) — B300 (rev74: 7.65)
       neoPrice_gb300: 0,       // 자료 없음 — 빈칸(0)이면 매출 0
       neoPrice_vr: 0,
       neoPrice_custom: 0,
@@ -1397,8 +1403,8 @@
       blLabor: { ko: '인건비(연)', en: 'Labor cost (per yr)' },
       opexTitle: { ko: '연간 OPEX 세부 내역', en: 'Annual OPEX Breakdown' },
       opexBadge: { ko: '1년차 기준', en: 'Year 1 basis' },
-      tipOpex: { ko: '연간 운영비(OPEX) = 전기료 + AI Enterprise 구독료 + 임차 비용 + 인건비. 전기료는 가동률에 따라 연차별로 달라지고 나머지는 매년 고정입니다. 감가상각은 별도이며 연간 지출 = OPEX + 감가상각입니다. 인건비(운영 인원·인당 인건비)는 이 표에서 입력합니다.', en: 'Annual OPEX = electricity + AI Enterprise subscription + lease + labor. Electricity varies by year with utilization; the rest is fixed each year. Depreciation is separate: annual expense = OPEX + depreciation. Labor (staff count, cost per head) is entered in this table.' },
-      opexDesc: { ko: '1년차 기준 연간 운영비를 항목별로 나눈 표입니다. 전기료는 사용 IT 전력·PUE·가동비중·요금으로, AI Enterprise 구독료는 GPU 수 × 연 단가 × 환율로, 임차 비용은 계약면적 × (임대료 + 관리비) + 보증금 환산 이자로, 인건비는 운영 인원 × 인당 인건비로 산출합니다. 전기요금·AI Enterprise 단가·환율·전력 조건은 왼쪽 공통값에서, 인건비는 이 표에서 조정합니다.', en: 'Annual operating cost broken down by item on a Year-1 basis. Electricity comes from used IT power, PUE, utilization and tariffs; AI Enterprise from GPU count × annual rate × FX; lease from contract area × (rent + management fee) plus deposit carrying cost; labor from staff count × cost per head. Tariffs, AI Enterprise rate, FX and power settings are in the sidebar; labor is edited here.' },
+      tipOpex: { ko: '연간 운영비(OPEX) = 전기료 + AI Enterprise 구독료 + 임차 비용 + 인건비. 전기료는 가동률에 따라 연차별로 달라지고 나머지는 매년 고정입니다. 감가상각은 별도이며 연간 지출 = OPEX + 감가상각입니다. AI Enterprise 단가와 인건비(운영 인원·인당 인건비)는 이 표에서 입력합니다.', en: 'Annual OPEX = electricity + AI Enterprise subscription + lease + labor. Electricity varies by year with utilization; the rest is fixed each year. Depreciation is separate: annual expense = OPEX + depreciation. The AI Enterprise rate and labor (staff count, cost per head) are entered in this table.' },
+      opexDesc: { ko: '1년차 기준 연간 운영비를 항목별로 나눈 표입니다. 전기료는 사용 IT 전력·PUE·가동비중·요금으로, AI Enterprise 구독료는 GPU 수 × 연 단가 × 환율로, 임차 비용은 계약면적 × (임대료 + 관리비) + 보증금 환산 이자로, 인건비는 운영 인원 × 인당 인건비로 산출합니다. 전기요금·환율·전력 조건은 왼쪽 공통값에서, AI Enterprise 단가와 인건비는 이 표에서 조정합니다.', en: 'Annual operating cost broken down by item on a Year-1 basis. Electricity comes from used IT power, PUE, utilization and tariffs; AI Enterprise from GPU count × annual rate × FX; lease from contract area × (rent + management fee) plus deposit carrying cost; labor from staff count × cost per head. Tariffs, FX and power settings are in the sidebar; the AI Enterprise rate and labor are edited here.' },
       opexColAmount: { ko: '연간 금액 (1년차)', en: 'Annual amount (Year 1)' },
       opexColBasis: { ko: '근거 (산출 기준 · 입력값)', en: 'Basis (calculation & inputs)' },
       opexPerYear: { ko: '/년', en: '/yr' },
@@ -1411,7 +1417,7 @@
       opexElecSummary: { ko: '전력량 요금 {e} + 기본요금 {b}', en: 'Energy {e} + basic charge {b}' },
       opexElecLogic: { ko: '가동 연동 — 사용 IT 전력 {kw}kW × PUE {pue} × 8,760h × 가동비중 {u}% × {rate} + 총 수전 {tot}kW × {basic} × 12개월 · {years}', en: 'Utilization-linked — used IT power {kw}kW × PUE {pue} × 8,760h × utilization {u}% × {rate} + total power {tot}kW × {basic} × 12 months · {years}' },
       opexSwSummary: { ko: '{r} × {g} GPU × 환율 {fx}원', en: '{r} × {g} GPU × FX {fx} KRW/USD' },
-      opexSwLogic: { ko: '연 고정 — 가동률과 무관하게 전체 GPU에 매년 부과 · 단가는 왼쪽 「AI Enterprise 유지비」에서 조정', en: 'Fixed per year — charged on all GPUs every year regardless of utilization · rate set in the sidebar AI Enterprise upkeep' },
+      opexSwLogic: { ko: '연 고정 — 가동률과 무관하게 전체 GPU에 매년 부과 · GPU당 연 단가는 왼쪽 입력칸에서 조정', en: 'Fixed per year — charged on all GPUs every year regardless of utilization · annual rate per GPU edited in the input on the left' },
       opexLeaseSummary: { ko: '임대료 {r} + 관리비 {m} + 보증금 환산 이자 {dc}', en: 'Rent {r} + management {m} + deposit carrying cost {dc}' },
       opexLeaseLogicLead: { ko: '연 고정 —', en: 'Fixed per year —' },
       opexLaborSummary: { ko: '{n}명 × 인당 {c} · 4인 3교대 운영 기준', en: '{n} people × {c} each · 4-person, 3-shift operation' },
@@ -4760,13 +4766,13 @@
           logic: t('opexElecLogic', { kw: nf.format(Math.round(d.usedItPower || 0)), pue: nf2.format(d.pue || 0), u: nf.format(Math.round(u0 * 100)), rate: formatRateText('energyCostRate', state.energyCostRate), tot: nf.format(Number(state.totalPowerKw) || 0), basic: formatRateText('basicChargeKwMonth', state.basicChargeKwMonth), years: elecYears }) },
         { key: 'sw', label: t('opexRowSw'), kind: t('kindFixedYear'), value: d.swOpexEok,
           summary: t('opexSwSummary', { r: formatSwSub(d.swRateUsd), g: nf.format(d.swGpus || 0), fx: nf.format(Number(state.fxKrwUsd) || 0) }),
-          logic: t('opexSwLogic') },
+          logic: t('opexSwLogic'), inputs: 'sw' },
         { key: 'lease', label: t('opexRowLease'), kind: t('kindFixedYear'), value: d.leaseOpexEok,
           summary: t('opexLeaseSummary', { r: eokF(d.leaseRentEok), m: eokF(d.leaseMgmtEok), dc: eokF(d.leaseDepositCostEok) }),
           logic: `${t('opexLeaseLogicLead')} ${leaseTermsText()}` },
         { key: 'labor', label: t('opexRowLabor'), kind: t('kindFixedYear'), value: d.laborEok,
           summary: t('opexLaborSummary', { n: nf.format(d.laborHeads || 0), c: eokF(d.laborPerHeadEok || 0) }),
-          logic: t('opexLaborLogic'), inputs: true }
+          logic: t('opexLaborLogic'), inputs: 'labor' }
       ];
     }
     function opexTotalNoteHtml(d, rows, total) {
@@ -4781,13 +4787,19 @@
       const total = rows.reduce((sum, r) => sum + (Number(r.value) || 0), 0);
       const share = v => (total > 0 ? `${nf1.format(Math.round(v / total * 1000) / 10)}%` : '0%');
       const laborInputs = `
-            <div class="fac-rate"><label>${t('labelLaborHeadcount')} (${unitOf('laborHeadcount')})</label>${numInputHtml('laborHeadcount')}</div>
-            <div class="fac-rate"><label>${t('labelLaborPerHead').replace(/\s*\((연|yr)\)/, '')} (${unitOf('laborCostPerHeadEok')}/${state.lang === 'en' ? 'yr' : '년'})</label>${numInputHtml('laborCostPerHeadEok')}</div>`;
+            <div class="fac-rate-row">
+              <div class="fac-rate"><label>${t('labelLaborHeadcount')} (${unitOf('laborHeadcount')})</label>${numInputHtml('laborHeadcount')}</div>
+              <div class="fac-rate"><label>${t('labelLaborPerHead').replace(/\s*\((연|yr)\)/, '')} (${unitOf('laborCostPerHeadEok')}/${state.lang === 'en' ? 'yr' : '년'})</label>${numInputHtml('laborCostPerHeadEok')}</div>
+            </div>`;
+      const swInputs = `
+            <div class="fac-rate-row">
+              <div class="fac-rate"><label>${t('labelSwMaint')}${infoIcon(t('tipSwMaint'), t('labelSwMaint'), true)} ($/${unitOf('swSubUsdPerGpuYear')})</label><span class="fac-pre">$</span>${numInputHtml('swSubUsdPerGpuYear')}</div>
+            </div>`;
       const rowsHtml = rows.map(r => `
         <tr class="fac-row opex-row" data-opex-row="${r.key}">
           <td class="fac-cat">
             <div class="fac-lab">${r.label}<span class="tag-box">${r.kind}</span></div>
-            ${r.inputs ? laborInputs : ''}
+            ${r.inputs === 'labor' ? laborInputs : (r.inputs === 'sw' ? swInputs : '')}
           </td>
           <td><span class="fac-val"><span data-opex-val="${r.key}">${eokF(r.value)}</span></span><span class="fac-auto">${t('opexPerYear')}</span></td>
           <td><span class="fac-val" data-opex-share="${r.key}">${share(r.value)}</span></td>
@@ -5484,7 +5496,6 @@
         </section>
         <section class="s-group swcost" data-views="superpod,compare">
           ${ctlRow('initIntegrationEok', `${t('labelSwInitial')}${infoIcon(t('tipIntegration'), t('labelSwInitial'), true)}`)}
-          ${ctlRow('swSubUsdPerGpuYear', `${t('labelSwMaint')}${infoIcon(t('tipSwMaint'), t('labelSwMaint'), true)}`, { pre: '$' })}
         </section>
         <section class="s-group" data-views="superpod,compare">
           ${ctlRow('energyCostRate', t('labelEnergyCostRate'))}
@@ -7425,7 +7436,7 @@
       }
 
       const inputId = event.target.dataset.input;
-      if (inputId === 'laborHeadcount' || inputId === 'laborCostPerHeadEok') {
+      if (inputId === 'laborHeadcount' || inputId === 'laborCostPerHeadEok' || inputId === 'swSubUsdPerGpuYear') {
         // rev73: OPEX 패널의 인건비 입력 — 타이핑 중 패널 값만 갱신
         const def = getControlDef(inputId);
         let v = Number(String(event.target.value).replace(/,/g, '').trim());
