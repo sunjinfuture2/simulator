@@ -844,8 +844,8 @@
     .dt.fac .fac-est-head .id { font-weight: 500; color: var(--ga0); margin-right: 8px; }
     .dt.fac .fac-est-head b { margin-left: auto; font-size: 15px; font-weight: 600; color: var(--g60); }
     .dt.fac table.fac-est-tbl { margin-top: 8px; }
-    .dt.fac .fac-est-tbl th, .dt.fac .fac-est-tbl td { height: 28px; padding: 4px 0; font-size: 13px; line-height: 18px; white-space: normal; vertical-align: middle; }
-    .dt.fac .fac-est-tbl th { height: 24px; font-weight: 600; color: var(--g60); }
+    .dt.fac .fac-est-tbl th, .dt.fac .fac-est-tbl td { height: 34px; padding: 10px 0 5px; font-size: 13px; line-height: 18px; white-space: normal; vertical-align: middle; }
+    .dt.fac .fac-est-tbl th { height: 26px; padding: 4px 0; font-weight: 600; color: var(--g60); }
     .dt.fac .fac-est-tbl th::after, .dt.fac .fac-est-tbl td::after { background: var(--gcc); }
     .dt.fac .fac-est-tbl th.n, .dt.fac .fac-est-tbl td.n { text-align: right; padding-right: 7.5px; font-variant-numeric: tabular-nums; }
     .dt.fac .fac-est-tbl tr.sum td { font-weight: 600; color: var(--g60); }
@@ -867,7 +867,8 @@
     /* rev74: OPEX 패널 입력칸 가로 배치 */
     .opex-sec .fac-rate-row { display: flex; flex-wrap: wrap; column-gap: 32px; row-gap: 12px; margin-top: 28.9px; }
     .opex-sec .dt.fac .fac-rate-row .fac-rate, .opex-sec .dt.fac .fac-rate-row .fac-rate + .fac-rate { margin-top: 0; }
-    .opex-sec .fac-rate .u { display: inline-block; }
+    .dt.fac .fac-rate .u { display: inline-block; }
+    .dt.fac .fac-rate .fac-unit { font-size: 12px; font-weight: 500; color: var(--g77); margin-left: 3px; vertical-align: baseline; }
     .opex-sec .fac-rate .fac-pre { font-size: 22px; font-weight: 600; color: var(--k100); line-height: 29.8px; margin-right: 2px; vertical-align: baseline; }
     .opex-sec .fac-rate label .ico-i { width: 13px; height: 13px; margin-left: 3px; vertical-align: -2px; }
 
@@ -1412,8 +1413,8 @@
       blLabor: { ko: '인건비(연)', en: 'Labor cost (per yr)' },
       opexTitle: { ko: '연간 OPEX 세부 내역', en: 'Annual OPEX Breakdown' },
       opexBadge: { ko: '1년차 기준', en: 'Year 1 basis' },
-      tipOpex: { ko: '연간 운영비(OPEX) = 전기료 + AI Enterprise 구독료 + 임차 비용 + 인건비. 전기료는 가동률에 따라 연차별로 달라지고 나머지는 매년 고정입니다. 감가상각은 별도이며 연간 지출 = OPEX + 감가상각입니다. AI Enterprise 단가와 인건비(운영 인원·인당 인건비)는 이 표에서 입력합니다.', en: 'Annual OPEX = electricity + AI Enterprise subscription + lease + labor. Electricity varies by year with utilization; the rest is fixed each year. Depreciation is separate: annual expense = OPEX + depreciation. The AI Enterprise rate and labor (staff count, cost per head) are entered in this table.' },
-      opexDesc: { ko: '1년차 기준 연간 운영비를 항목별로 나눈 표입니다. 전기료는 사용 IT 전력·PUE·가동비중·요금으로, AI Enterprise 구독료는 GPU 수 × 연 단가 × 환율로, 임차 비용은 계약면적 × (임대료 + 관리비) + 보증금 환산 이자로, 인건비는 운영 인원 × 인당 인건비로 산출합니다. 전기요금·환율·전력 조건은 왼쪽 공통값에서, AI Enterprise 단가·임대료·관리비·인건비는 이 표에서 조정합니다.', en: 'Annual operating cost broken down by item on a Year-1 basis. Electricity comes from used IT power, PUE, utilization and tariffs; AI Enterprise from GPU count × annual rate × FX; lease from contract area × (rent + management fee) plus deposit carrying cost; labor from staff count × cost per head. Tariffs, FX and power settings are in the sidebar; the AI Enterprise rate, rent, management fee and labor are edited here.' },
+      tipOpex: { ko: '연간 운영비(OPEX) = 전기료 + AI Enterprise 구독료 + 임차 비용 + 인건비 + SW 초기 설치·통합비(1년차 1회). 전기료는 가동률에 따라 연차별로 달라지고 나머지는 매년 고정입니다. 감가상각은 별도이며 연간 지출 = OPEX + 감가상각입니다. AI Enterprise 단가와 인건비(운영 인원·인당 인건비)는 이 표에서 입력합니다.', en: 'Annual OPEX = electricity + AI Enterprise subscription + lease + labor + SW initial integration (once, Year 1). Electricity varies by year with utilization; the rest is fixed each year. Depreciation is separate: annual expense = OPEX + depreciation. The AI Enterprise rate and labor (staff count, cost per head) are entered in this table.' },
+      opexDesc: { ko: '1년차 기준 연간 운영비를 항목별로 나눈 표입니다. 전기료는 사용 IT 전력·PUE·가동비중·요금으로, AI Enterprise 구독료는 GPU 수 × 연 단가 × 환율로, 임차 비용은 계약면적 × (임대료 + 관리비) + 보증금 환산 이자로, 인건비는 운영 인원 × 인당 인건비로 산출합니다. SW 초기 설치·통합비는 1년차에 1회만 반영합니다. 전기요금·환율·전력 조건은 왼쪽 공통값에서, AI Enterprise 단가·임대료·관리비·인건비·초기 설치·통합비는 이 표에서 조정합니다.', en: 'Annual operating cost broken down by item on a Year-1 basis. Electricity comes from used IT power, PUE, utilization and tariffs; AI Enterprise from GPU count × annual rate × FX; lease from contract area × (rent + management fee) plus deposit carrying cost; labor from staff count × cost per head. SW initial integration is charged once in Year 1. Tariffs, FX and power settings are in the sidebar; the AI Enterprise rate, rent, management fee, labor and initial integration are edited here.' },
       opexColAmount: { ko: '연간 금액 (1년차)', en: 'Annual amount (Year 1)' },
       opexColBasis: { ko: '근거 (산출 기준 · 입력값)', en: 'Basis (calculation & inputs)' },
       opexPerYear: { ko: '/년', en: '/yr' },
@@ -1421,6 +1422,15 @@
       opexRowSw: { ko: 'AI Enterprise 구독료', en: 'AI Enterprise subscription' },
       opexRowLease: { ko: '임차 비용', en: 'Lease cost' },
       opexRowLabor: { ko: '인건비', en: 'Labor cost' },
+      opexRowInteg: { ko: 'SW 초기 설치·통합비', en: 'SW initial integration' },
+      kindOnce: { ko: '1회 고정', en: 'One-off' },
+      opexOnce: { ko: '1회 · 1년차', en: 'once · Year 1' },
+      opexOnceShort: { ko: '1회', en: 'once' },
+      opexIntegSummary: { ko: '40M/M × 월 2,000만원 = 8억 + 예비비 2억 = 10억 · 1년차에 1회 계상', en: '40 man-months × KRW 20M = 0.8B + 0.2B contingency = 1.0B · charged once in Year 1' },
+      opexIntegLogic: { ko: '1회 고정 — 프로젝트 전체 고정 금액(SU 수와 무관), 2·3년차에는 발생하지 않음 · IT 장비 CAPEX가 아닌 운영비로 계상', en: 'One-off — fixed for the project (independent of SU count), not charged in Years 2–3 · booked as opex, not IT equipment capex' },
+      labelSwMaintShort: { ko: '유지비', en: 'Upkeep' },
+      labelSwInitialShort: { ko: '초기 설치·통합비', en: 'Initial integration' },
+      blOnceY1: { ko: '1회 · 1년차', en: 'once · Year 1' },
       kindUtilLinked: { ko: '가동 연동', en: 'Utilization-linked' },
       kindFixedYear: { ko: '연 고정', en: 'Fixed per year' },
       opexElecSummary: { ko: '전력량 요금 {e} + 기본요금 {b}', en: 'Energy {e} + basic charge {b}' },
@@ -1432,7 +1442,7 @@
       opexLaborSummary: { ko: '{n}명 × 인당 {c} · 4인 3교대 운영 기준', en: '{n} people × {c} each · 4-person, 3-shift operation' },
       opexLaborLogic: { ko: '연 고정 — 운영 인원 × 인당 연 인건비, 가동률과 무관하게 매년 반영 · 왼쪽 입력칸에서 조정', en: 'Fixed per year — staff count × annual cost per head, charged every year regardless of utilization · edit in the inputs on the left' },
       opexTotalRow: { ko: '연간 OPEX 합계', en: 'Annual OPEX total' },
-      opexFoot: { ko: '※ 연간 지출 = OPEX + 감가상각(1년차 {dep}) = {exp}. 임차 보증금 원금은 운영비가 아니라 재무구조에서 0년차 납입·3년차 회수로 반영됩니다.', en: '※ Annual expense = OPEX + depreciation (Year 1 {dep}) = {exp}. The lease deposit principal is not an operating cost; it is paid in Year 0 and returned in Year 3 in the financing model.' },
+      opexFoot: { ko: '※ 연간 지출 = OPEX + 감가상각(1년차 {dep}) = {exp}. SW 초기 설치·통합비는 1년차에만 1회 포함되고, 임차 보증금 원금은 운영비가 아니라 재무구조에서 0년차 납입·3년차 회수로 반영됩니다.', en: '※ Annual expense = OPEX + depreciation (Year 1 {dep}) = {exp}. SW initial integration is included once in Year 1 only; the lease deposit principal is not an operating cost and is paid in Year 0 and returned in Year 3 in the financing model.' },
       blLaborDetail: { ko: '{n}명 × 인당 {c} · 4인 3교대 기준', en: '{n} people × {c} each · 4-person 3-shift' },
       labelLaborHeadcount: { ko: '운영 인원', en: 'Operations staff' },
       labelLaborPerHead: { ko: '인당 인건비 (연)', en: 'Labor cost per head (yr)' },
@@ -1969,13 +1979,13 @@
       kindCapacity: { ko: '용량비례', en: 'Capacity-based' },
       kindAreaFixed: { ko: '면적비례+고정', en: 'Area + Fixed' },
       kindSoft: { ko: '간접비율', en: 'Indirect %' },
-      rateAreaLabel: { ko: '단가(억/㎡)', en: 'Rate (0.1B KRW/㎡)' },
+      rateAreaLabel: { ko: '단가', en: 'Rate' },
       facSubtotalEqualsTotal: { ko: '= 합계', en: '= total' },
-      rateAreaHeavyLabel: { ko: '고하중 단가(억/㎡)', en: 'Heavy-load rate (0.1B/㎡)' },
-      rateAreaGeneralLabel: { ko: '일반구간 단가(억/㎡)', en: 'General-zone rate (0.1B/㎡)' },
-      rateCapacityLabel: { ko: '단가(억/MW)', en: 'Rate (0.1B KRW/MW)' },
-      rateFixedLabel: { ko: '고정분(억)', en: 'Fixed (0.1B KRW)' },
-      rateSoftLabel: { ko: '직접비 대비(%)', en: 'Of direct cost (%)' },
+      rateAreaHeavyLabel: { ko: '고하중 단가', en: 'Heavy-load rate' },
+      rateAreaGeneralLabel: { ko: '일반구간 단가', en: 'General-zone rate' },
+      rateCapacityLabel: { ko: '단가', en: 'Rate' },
+      rateFixedLabel: { ko: '고정분', en: 'Fixed' },
+      rateSoftLabel: { ko: '직접비 대비', en: 'Of direct cost' },
       facAutoBadge: { ko: '단가 자동 산출', en: 'Auto (unit-rate)' },
       facManualBadge: { ko: '고정값(수동)', en: 'Fixed (manual)' },
       facAutoCell: { ko: '자동', en: 'auto' },
@@ -1988,7 +1998,7 @@
       facilityTotalNoteCols: { ko: '신축 {a} + 리모델링 {b}', en: 'New build {a} + remodel {b}' },
       kindFixed: { ko: '고정', en: 'Fixed' },
       kindPct: { ko: '비율', en: 'Ratio' },
-      ratePctLabel: { ko: '직접공사비 대비(%)', en: 'Of direct cost (%)' },
+      ratePctLabel: { ko: '직접공사비 대비', en: 'Of direct cost' },
       facRowDirect: { ko: '직접공사비', en: 'Direct construction cost' },
       facRowDirectNote: { ko: '공종별 직접공사비 소계 — 설계/감리·직접공사 공통비·예비비 산정 기준', en: 'Subtotal of direct cost by trade — base for design/supervision, direct-cost overhead and contingency' },
       facRowConstruction: { ko: '공사비 합계', en: 'Construction cost total' },
@@ -3184,7 +3194,9 @@
       const integrationEok = gpus > 0 ? Math.max(0, Number(inputState.initIntegrationEok) || 0) : 0;
       const equipCapexEok = equipCapexUsd * fxv / EOK;
       const itCapexUsd = equipCapexUsd + cduCapexUsd;           // USD 환산(장비 + CDU)
-      const itCapexEok = equipCapexEok + cduCapexEok + integrationEok;
+      // rev79: SW 초기 설치·통합비는 IT 장비 CAPEX가 아닌 1년차 운영비(1회)로 계상
+      const itCapexEok = equipCapexEok + cduCapexEok;
+      const integrationByYear = utils.map((_, i) => (i === 0 ? integrationEok : 0));
       const swGpus = gpus;                                     // rev58: AI Enterprise는 전체 GPU에 적용
       const facilityEok = inputFacilityEok !== null ? inputFacilityEok : facilityTotalEok('pod', inputState);
       const totalCapexEok = itCapexEok + facilityEok;
@@ -3217,7 +3229,7 @@
       const depIncrements = getDepreciationIncrements(inputState);
       const capexByYear = depIncrements.map(d => totalCapexEok * d);
       const annualRevenue = revenueByYear;
-      const annualExpense = utils.map((u, i) => capexByYear[i] + electricityByYear[i] + swOpexByYear[i] + leaseByYear[i] + laborByYear[i]);
+      const annualExpense = utils.map((u, i) => capexByYear[i] + electricityByYear[i] + swOpexByYear[i] + leaseByYear[i] + laborByYear[i] + integrationByYear[i]);
       let sumR = 0, sumE = 0;
       const cumRevenue = annualRevenue.map(v => (sumR += v));
       const cumExpense = annualExpense.map(v => (sumE += v));
@@ -3242,7 +3254,7 @@
         totalSu, servers, positions, remainingItKw: Math.max(0, itPowerKw - usedItPower),
         equipCapexUsd, equipCapexEok, cduMode, cduUnits, cduDuty, cduCapKw, cduUnitUsd, cduUnitEok, computeKw, cduCapexUsd, cduCapexEok, integrationEok,
         leaseArea, leaseRentMonthKrw, leaseMgmtMonthKrw, leaseRentEok, leaseMgmtEok, leaseDepositEok, leaseDepositRatePct, leaseDepositCostEok, leaseOpexEok, leaseAgentFeeEok, leaseByYear,
-        laborHeads, laborPerHeadEok, laborEok, laborByYear,
+        laborHeads, laborPerHeadEok, laborEok, laborByYear, integrationByYear,
         grossByYear, takeByYear: grossByYear.map((v, i) => v - revenueByYear[i]), gpuHours: utils.map(u => gpus * HOURS * u),
         system: primary ? primary.type : fallback, systemKey: primary ? primary.key : null, su: primary ? primary.n : 0,
         gpus, totalGpu: gpus, racks, totalFp4,
@@ -4054,8 +4066,8 @@
       // rev58: IT 장비 CAPEX = 장비 구매비(카드별) + CDU + 초기 설치·통합비 · 운영비 = 전기료 + AI Enterprise + 임차 비용
       const capexRows = okTypes.map(td => [t('blTypeCapex', { name: gpuShortLabel(td.type, td.key) }), `${eok(td.itCapexEok)} (${usdM(td.itCapexUsd)} = ${nf.format(td.n)}SU × ${usdM(td.perUnitUsd)})`, 'res']);
       const cduRow = [t('blCdu'), `${t('cduInFacilityShort', { n: nf.format(data.cduUnits) })}`];
-      const intRow = [t('blIntegration'), eok(data.integrationEok)];
-      const itRow = [t('blItCapex'), `${eok(data.itCapexEok)} (${usdM(data.itCapexUsd)} + ${eok(data.integrationEok)})`, 'res'];
+      const intRow = [t('blIntegration'), `${eok(data.integrationEok)} (${t('blOnceY1')})`];
+      const itRow = [t('blItCapex'), `${eok(data.itCapexEok)} (${usdM(data.itCapexUsd)})`, 'res'];
       const leaseRow = [t('blLease'), `${eok(data.leaseOpexEok)} (${t('blLeaseDetail', { r: eok(data.leaseRentEok), m: eok(data.leaseMgmtEok), dc: eok(data.leaseDepositCostEok) })})`, 'res'];
       const laborRow = [t('blLabor'), `${eok(data.laborEok)} (${t('blLaborDetail', { n: nf.format(data.laborHeads), c: eok(data.laborPerHeadEok) })})`, 'res'];
       const leaseChip = [t('chipLease'), `${nf1.format(data.leaseArea)}㎡ · ${nf.format(state.leaseRentPerSqm)}/${nf.format(state.leaseMgmtPerSqm)}${state.lang === 'en' ? ' KRW/㎡·mo' : '원/㎡·월'} · ${t('chipLeaseFixed', { months: nf.format(state.leaseDepositMonths), rate: nf1.format(data.leaseDepositRatePct) })}`];
@@ -4077,8 +4089,8 @@
         };
         return formulaSectionHtml([
           { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBodyNeo'), items: [B.config, ...priceRows, B.margin, utilRow, B.rev] },
-          { title: t('formulaCardCapexTitleMix'), body: t('formulaCardCapexBodyMix'), items: [...capexRows, cduRow, intRow, itRow, B.fac] },
-          { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyNeo'), items: [B.elec, B.sw, leaseRow, laborRow, [t('blDep'), depTxt], utilRow, tot, it, pue] },
+          { title: t('formulaCardCapexTitleMix'), body: t('formulaCardCapexBodyMix'), items: [...capexRows, cduRow, itRow, B.fac] },
+          { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyNeo'), items: [B.elec, B.sw, leaseRow, laborRow, intRow, [t('blDep'), depTxt], utilRow, tot, it, pue] },
           { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyMix'), items: [floor, support, B.fac, B.energy, B.basic, B.fx, swChip, leaseChip, [t('chipDep'), depTxt]] }
         ]);
       }
@@ -4100,8 +4112,8 @@
       const vars = { loc: nf1.format(Number(state.locPremiumPct) || 0), d1: nf1.format(Number(state.disc1YPct) || 0), d3: nf1.format(Number(state.disc3YPct) || 0) };
       return formulaSectionHtml([
         { title: t('formulaCardGpuTitle'), body: t('formulaCardGpuBodyMix', vars), items: [B.config, ...rateRows, B.mix, ...effRows, B.rev] },
-        { title: t('formulaCardCapexTitleMix'), body: t('formulaCardCapexBodyMix'), items: [...capexRows, cduRow, intRow, itRow, B.fac] },
-        { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyMix'), items: [B.elec, B.sw, leaseRow, laborRow, [t('blDep'), depTxt], utilRow, B.tot, B.it, B.pue] },
+        { title: t('formulaCardCapexTitleMix'), body: t('formulaCardCapexBodyMix'), items: [...capexRows, cduRow, itRow, B.fac] },
+        { title: t('formulaCardOpexTitle'), body: t('formulaCardOpexBodyMix'), items: [B.elec, B.sw, leaseRow, laborRow, intRow, [t('blDep'), depTxt], utilRow, B.tot, B.it, B.pue] },
         { title: t('formulaCardDepTitle'), body: t('formulaCardDepBodyMix'), items: [B.floor, B.support, B.fac, B.energy, B.basic, B.fx, swChip, leaseChip, [t('chipDep'), depTxt]] }
       ]);
     }
@@ -4561,18 +4573,20 @@
     function facRateInputs(modelKey, row) {
       if (state.spaceMode === 'base') return '';
       const mk = `${modelKey}:${row.key}`;
-      const one = (label, value, field, step, max) => `<div class="fac-rate"><label>${label}</label><span class="u"><input type="number" min="0" ${max ? `max="${max}"` : ''} step="${step}" value="${value}" data-fac-rate="${mk}:${field}" aria-label="${escAttr(label)}" /></span></div>`;
-      if (row.kind === 'area') return one(t('rateAreaLabel'), +Number(row.ratePerSqm).toFixed(4), 'ratePerSqm', 0.001);
-      if (row.kind === 'capacity') return one(t('rateCapacityLabel'), +(Number(row.ratePerKw) * 1000).toFixed(3), 'ratePerMw', 0.1);
+      const en = state.lang === 'en';
+      const one = (label, value, field, step, max, unit) => `<div class="fac-rate"><label>${label}</label><span class="u"><input type="number" min="0" ${max ? `max="${max}"` : ''} step="${step}" value="${value}" data-fac-rate="${mk}:${field}" aria-label="${escAttr(label + (unit ? ` (${unit})` : ''))}" /></span>${unit ? `<span class="fac-unit">${unit}</span>` : ''}</div>`;
+      const U = { area: en ? '0.1B/㎡' : '억/㎡', mw: en ? '0.1B/MW' : '억/MW', eok: en ? '0.1B' : '억', pct: '%' };
+      if (row.kind === 'area') return one(t('rateAreaLabel'), +Number(row.ratePerSqm).toFixed(4), 'ratePerSqm', 0.001, null, U.area);
+      if (row.kind === 'capacity') return one(t('rateCapacityLabel'), +(Number(row.ratePerKw) * 1000).toFixed(3), 'ratePerMw', 0.1, null, U.mw);
       if (row.kind === 'areaFixed') {
         const b1 = isRemodelOnly();
-        return one(b1 ? t('rateAreaHeavyLabel') : t('rateAreaLabel'), +Number(row.ratePerSqm).toFixed(4), 'ratePerSqm', 0.001)
-          + ((b1 && row.ratePerSqmGeneral > 0) ? one(t('rateAreaGeneralLabel'), +Number(row.ratePerSqmGeneral).toFixed(4), 'ratePerSqmGeneral', 0.001) : '')
-          + (b1 ? '' : one(t('rateFixedLabel'), +Number(row.fixedEok).toFixed(1), 'fixedEok', 1));
+        return one(b1 ? t('rateAreaHeavyLabel') : t('rateAreaLabel'), +Number(row.ratePerSqm).toFixed(4), 'ratePerSqm', 0.001, null, U.area)
+          + ((b1 && row.ratePerSqmGeneral > 0) ? one(t('rateAreaGeneralLabel'), +Number(row.ratePerSqmGeneral).toFixed(4), 'ratePerSqmGeneral', 0.001, null, U.area) : '')
+          + (b1 ? '' : one(t('rateFixedLabel'), +Number(row.fixedEok).toFixed(1), 'fixedEok', 1, null, U.eok));
       }
-      if (row.kind === 'fixed') return one(t('rateFixedLabel'), +Number(row.fixedEok).toFixed(2), 'fixedEok', 0.1);
-      if (row.kind === 'soft') return one(t('rateSoftLabel'), +Number(row.softPct).toFixed(1), 'softPct', 0.5, 100);
-      if (row.kind === 'pct') return one(t('ratePctLabel'), +Number(row.pct).toFixed(1), 'pct', 0.5, 100);
+      if (row.kind === 'fixed') return one(t('rateFixedLabel'), +Number(row.fixedEok).toFixed(2), 'fixedEok', 0.1, null, U.eok);
+      if (row.kind === 'soft') return one(t('rateSoftLabel'), +Number(row.softPct).toFixed(1), 'softPct', 0.5, 100, U.pct);
+      if (row.kind === 'pct') return one(t('ratePctLabel'), +Number(row.pct).toFixed(1), 'pct', 0.5, 100, U.pct);
       return '';
     }
     // rev65: 세부 근거(보고서 3~7p) — 영문 수량·단가 변환
@@ -4780,11 +4794,14 @@
           logic: `${t('opexLeaseLogicLead')} ${leaseTermsText()}`, inputs: 'lease' },
         { key: 'labor', label: t('opexRowLabor'), kind: t('kindFixedYear'), value: d.laborEok,
           summary: t('opexLaborSummary', { n: nf.format(d.laborHeads || 0), c: eokF(d.laborPerHeadEok || 0) }),
-          logic: t('opexLaborLogic'), inputs: 'labor' }
+          logic: t('opexLaborLogic'), inputs: 'labor' },
+        { key: 'integ', label: t('opexRowInteg'), kind: t('kindOnce'), value: d.integrationEok, once: true,
+          summary: t('opexIntegSummary'),
+          logic: t('opexIntegLogic'), inputs: 'integ' }
       ];
     }
     function opexTotalNoteHtml(d, rows, total) {
-      const parts = rows.map(r => `${r.label} ${eokF(r.value)}`).join(' + ');
+      const parts = rows.map(r => `${r.label} ${eokF(r.value)}${r.once ? `(${t('opexOnceShort')})` : ''}`).join(' + ');
       const byYear = d.annualExpense.map((v, i) => `${t('yearLabel', { n: i + 1 })} ${eokF(v - d.capexByYear[i])}`).join(' · ');
       return `${parts}<br>= ${t('opexTotalRow')} ${eokF(total)} · ${byYear}`;
     }
@@ -4794,27 +4811,34 @@
       const rows = opexRows(d);
       const total = rows.reduce((sum, r) => sum + (Number(r.value) || 0), 0);
       const share = v => (total > 0 ? `${nf1.format(Math.round(v / total * 1000) / 10)}%` : '0%');
+      // 입력칸: 라벨은 이름만, 단위는 입력값 옆에 (사이드바 양식과 동일)
+      const rateInput = (id, label, unit, pre) => `<div class="fac-rate"><label>${label}</label>${pre ? `<span class="fac-pre">${pre}</span>` : ''}${numInputHtml(id)}<span class="fac-unit">${unit}</span></div>`;
+      const yr = state.lang === 'en' ? 'yr' : '년';
       const laborInputs = `
             <div class="fac-rate-row">
-              <div class="fac-rate"><label>${t('labelLaborHeadcount')} (${unitOf('laborHeadcount')})</label>${numInputHtml('laborHeadcount')}</div>
-              <div class="fac-rate"><label>${t('labelLaborPerHead').replace(/\s*\((연|yr)\)/, '')} (${unitOf('laborCostPerHeadEok')}/${state.lang === 'en' ? 'yr' : '년'})</label>${numInputHtml('laborCostPerHeadEok')}</div>
+              ${rateInput('laborHeadcount', t('labelLaborHeadcount'), unitOf('laborHeadcount'))}
+              ${rateInput('laborCostPerHeadEok', t('labelLaborPerHead').replace(/\s*\((연|yr)\)/, ''), `${unitOf('laborCostPerHeadEok')}/${yr}`)}
             </div>`;
       const leaseInputs = `
             <div class="fac-rate-row">
-              <div class="fac-rate"><label>${t('labelLeaseRent')} (${unitOf('leaseRentPerSqm')})</label>${numInputHtml('leaseRentPerSqm')}</div>
-              <div class="fac-rate"><label>${t('labelLeaseMgmt')} (${unitOf('leaseMgmtPerSqm')})</label>${numInputHtml('leaseMgmtPerSqm')}</div>
+              ${rateInput('leaseRentPerSqm', t('labelLeaseRent'), unitOf('leaseRentPerSqm'))}
+              ${rateInput('leaseMgmtPerSqm', t('labelLeaseMgmt'), unitOf('leaseMgmtPerSqm'))}
             </div>`;
       const swInputs = `
             <div class="fac-rate-row">
-              <div class="fac-rate"><label>${t('labelSwMaint')}${infoIcon(t('tipSwMaint'), t('labelSwMaint'), true)} ($/${unitOf('swSubUsdPerGpuYear')})</label><span class="fac-pre">$</span>${numInputHtml('swSubUsdPerGpuYear')}</div>
+              ${rateInput('swSubUsdPerGpuYear', `${t('labelSwMaintShort')}${infoIcon(t('tipSwMaint'), t('labelSwMaint'), true)}`, `$/${unitOf('swSubUsdPerGpuYear')}`, '$')}
+            </div>`;
+      const integInputs = `
+            <div class="fac-rate-row">
+              ${rateInput('initIntegrationEok', `${t('labelSwInitialShort')}${infoIcon(t('tipIntegration'), t('labelSwInitial'), true)}`, unitOf('initIntegrationEok'))}
             </div>`;
       const rowsHtml = rows.map(r => `
         <tr class="fac-row opex-row" data-opex-row="${r.key}">
           <td class="fac-cat">
             <div class="fac-lab">${r.label}<span class="tag-box">${r.kind}</span></div>
-            ${r.inputs === 'labor' ? laborInputs : (r.inputs === 'sw' ? swInputs : (r.inputs === 'lease' ? leaseInputs : ''))}
+            ${r.inputs === 'labor' ? laborInputs : (r.inputs === 'sw' ? swInputs : (r.inputs === 'lease' ? leaseInputs : (r.inputs === 'integ' ? integInputs : '')))}
           </td>
-          <td><span class="fac-val"><span data-opex-val="${r.key}">${eokF(r.value)}</span></span><span class="fac-auto">${t('opexPerYear')}</span></td>
+          <td><span class="fac-val"><span data-opex-val="${r.key}">${eokF(r.value)}</span></span><span class="fac-auto">${r.once ? t('opexOnce') : t('opexPerYear')}</span></td>
           <td><span class="fac-val" data-opex-share="${r.key}">${share(r.value)}</span></td>
           <td><div class="fac-note"><div class="fac-summary" data-opex-sum="${r.key}">${r.summary}</div><div class="fac-logic" data-opex-logic="${r.key}">${bracketLead(r.logic)}</div></div></td>
         </tr>`).join('');
@@ -5508,9 +5532,6 @@
         </section>
         <section class="s-group" data-views="superpod,compare">
           ${ctlRow('fxKrwUsd', t('labelFx'))}
-        </section>
-        <section class="s-group swcost" data-views="superpod,compare">
-          ${ctlRow('initIntegrationEok', `${t('labelSwInitial')}${infoIcon(t('tipIntegration'), t('labelSwInitial'), true)}`)}
         </section>
         <section class="s-group" data-views="superpod,compare">
           ${ctlRow('energyCostRate', t('labelEnergyCostRate'))}
@@ -6218,16 +6239,16 @@
           head([L('항목', 'Item'), L('금액', 'Amount'), L('산출 근거', 'Basis')]),
           { cells: [L('장비 구매비', 'Equipment purchase'), eok(d.equipCapexEok), activeTypes.map(td => `${gpuShortLabel(td.type, td.key)} ${nf.format(td.n)}SU × ${usdM(td.perUnitUsd)} (${L('GPU당', 'per GPU')} ${usdPlain(Number(td.type.pricePerGpuUsd) || 0)} × ${nf.format(Number(td.type.gpusPerUnit) || 0)} GPU)`).join(' + ') + ` = ${fmtUsdLarge(d.equipCapexUsd)}`] },
           { cells: [L('CDU', 'CDU'), L('시설비 포함', 'In facility'), `${cduFormulaText(d)} · ${L('시설비 CAPEX 기계설비 5.1 「CDU 1,250kW급 3대 12.60억」으로 계상 — IT 장비 CAPEX에서 제외', 'Costed in facility capex, mechanical 5.1 (three 1,250kW CDUs, 1.26B KRW) — excluded from IT equipment capex')}`] },
-          { cells: [L('초기 설치·통합비', 'Initial integration'), eok(d.integrationEok), L('40M/M × 월 2,000만원 + 예비비 2억 · 프로젝트 전체 고정', '40 man-months × KRW 20M + 0.2B contingency · fixed per project')] },
-          { bold: true, cells: [L('IT 장비 CAPEX', 'IT equipment capex'), eok(d.itCapexEok), L('장비 구매비 + 초기 설치·통합비 (CDU는 시설비에 계상)', 'Equipment + initial integration (CDU in facility capex)')] },
+          { bold: true, cells: [L('IT 장비 CAPEX', 'IT equipment capex'), eok(d.itCapexEok), L('장비 구매비 (CDU는 시설비, SW 초기 설치·통합비는 1년차 운영비 1회)', 'Equipment (CDU in facility capex; SW integration as one-off Year-1 opex)')] },
           { cells: [L('시설 CAPEX', 'Facility capex'), eok(d.facilityEok), `${L('연면적', 'Floor area')} ${sqm(d.floorArea)} · ${L('총 수전', 'total power')} ${kw(state.totalPowerKw)} ${L('기준 (내역은 시설 CAPEX 내역 참조)', 'basis (see facility breakdown)')}`] },
           { bold: true, cells: [L('총 CAPEX', 'Total capex'), { t: eok(d.totalCapexEok), color: RPT.OR }, L('IT 장비 + 시설', 'IT equipment + facility')] },
           { cells: [L('연간 전기료', 'Electricity (Y1)'), perYr(eok(d.electricityByYear[0])), `${L('전력량', 'Energy')} ${eok(d.energyByYear[0])} + ${L('기본요금', 'basic charge')} ${eok(d.baseEok)}`] },
           { cells: [L('AI Enterprise 구독', 'AI Enterprise subscription'), perYr(eok(d.swOpexByYear ? d.swOpexByYear[0] : d.swOpexEok)), `${formatSwSub(d.swRateUsd)} × ${nf.format(d.swGpus || 0)} GPU`] },
           { cells: [L('임차 비용', 'Lease cost'), perYr(eok(leaseSum)), `${L('임대료', 'rent')} ${eok(d.leaseRentEok)} + ${L('관리비', 'management')} ${eok(d.leaseMgmtEok)} + ${L('보증금', 'deposit')} ${eok(d.leaseDepositEok)} × ${nf1.format(d.leaseDepositRatePct)}% = ${eok(d.leaseDepositCostEok)} (${nf1.format(d.leaseArea)}㎡ × ${nf.format(state.leaseRentPerSqm)}/${nf.format(state.leaseMgmtPerSqm)}${L('원/㎡·월', ' KRW/㎡·mo')})${(d.leaseAgentFeeEok || 0) > 0 ? ` + ${L('임대대행 수수료(1년차)', 'agent fee (Y1)')} ${eok(d.leaseAgentFeeEok)}` : ''} · ${L('현재 계약 조건 고정값', 'fixed at current contract terms')}`] },
           { cells: [L('인건비', 'Labor cost'), perYr(eok(laborSum)), `${nf.format(d.laborHeads || 0)}${L('명', ' people')} × ${L('인당', 'per head')} ${eok(d.laborPerHeadEok || 0)} (${L('4인 3교대 운영 기준', '4-person, 3-shift operation')})`] },
+          { cells: [L('SW 초기 설치·통합비 (1회)', 'SW initial integration (one-off)'), eok(d.integrationEok), L('40M/M × 월 2,000만원 + 예비비 2억 · 1년차 운영비에 1회 계상 (프로젝트 전체 고정)', '40 man-months × KRW 20M + 0.2B contingency · charged once in Year-1 opex (fixed per project)')] },
           { cells: [L('감가상각(1년차)', 'Depreciation (Y1)'), perYr(eok(d.capexByYear[0])), `${t('labelDepGroup')} ${nf1.format(state.depY1)} / ${nf1.format(state.depY2)} / ${nf1.format(state.depY3)}%`] },
-          { bold: true, cells: [L('연간 지출(1년차)', 'Annual expense (Y1)'), perYr(eok(d.annualExpense[0])), L('감가상각 + 전기료 + AI Enterprise + 임차 비용 + 인건비', 'Depreciation + electricity + AI Enterprise + lease + labor')] }
+          { bold: true, cells: [L('연간 지출(1년차)', 'Annual expense (Y1)'), perYr(eok(d.annualExpense[0])), L('감가상각 + 전기료 + AI Enterprise + 임차 비용 + 인건비 + SW 초기 설치·통합비(1회)', 'Depreciation + electricity + AI Enterprise + lease + labor + SW integration (one-off)')] }
         ], { align: ['left', 'center', 'left'] })
       );
       // [pre] 시설 CAPEX 내역 (rev65: 보고서 446.12억 구조 — 직접공사비 → 공통비·예비비 → 공사비 합계 → 지반조사 → 총계)
@@ -6273,7 +6294,7 @@
         rows.push(row(L('GPU당 적용 단가', 'Applied price per GPU'), td => `${usdPlain(Number(td.type.pricePerGpuUsd) || 0)} × ${nf.format(Number(td.type.gpusPerUnit) || 0)} GPU = ${usdM(td.perUnitUsd)}/SU (${L('설치·세팅비 포함 거래가 ÷ GPU 수', 'deal price incl. install/setup ÷ GPUs')})`));
         rows.push(row(L('장비 구매비', 'Equipment purchase'), td => B(`${usdWithKrw(td.perUnitUsd)} (${L('SU당', 'per SU')}) · ${L('합계', 'total')} ${eok(td.itCapexEok)}`, RPT.OR)));
         sec('pre', L('SU 구성·단가', 'SU configuration & pricing'), table(cols, rows, { align: Array.from({ length: nT + 1 }, () => 'left') }),
-          note(L(`CDU(${nf.format(d.cduUnits)}${t('unitCdu')}, N+1)는 시설비 CAPEX 기계설비 5.1(12.60억)에 계상되어 IT 장비 CAPEX에서 제외하며, 초기 설치·통합비 ${eok(d.integrationEok)}는 부지 단위로 별도 계상합니다 (투자·운영비 표 참조).`, `CDUs (${nf.format(d.cduUnits)}, N+1) are costed in facility capex (mechanical 5.1, 1.26B KRW) and excluded from IT equipment capex; initial integration (${eok(d.integrationEok)}) is costed at site level (see capex & opex table).`)));
+          note(L(`CDU(${nf.format(d.cduUnits)}${t('unitCdu')}, N+1)는 시설비 CAPEX 기계설비 5.1(12.60억)에 계상되어 IT 장비 CAPEX에서 제외하며, SW 초기 설치·통합비 ${eok(d.integrationEok)}는 1년차 운영비에 1회 계상합니다 (투자·운영비 표 참조).`, `CDUs (${nf.format(d.cduUnits)}, N+1) are costed in facility capex (mechanical 5.1, 1.26B KRW) and excluded from IT equipment capex; SW initial integration (${eok(d.integrationEok)}) is charged once in Year-1 opex (see capex & opex table).`)));
       }
       // [pre] 수전·면적 사용 현황
       const whitePct = d.usableArea > 0 ? d.occupiedArea / d.usableArea * 100 : 0;
@@ -7452,7 +7473,7 @@
       }
 
       const inputId = event.target.dataset.input;
-      if (inputId === 'laborHeadcount' || inputId === 'laborCostPerHeadEok' || inputId === 'swSubUsdPerGpuYear' || inputId === 'leaseRentPerSqm' || inputId === 'leaseMgmtPerSqm') {
+      if (inputId === 'laborHeadcount' || inputId === 'laborCostPerHeadEok' || inputId === 'swSubUsdPerGpuYear' || inputId === 'leaseRentPerSqm' || inputId === 'leaseMgmtPerSqm' || inputId === 'initIntegrationEok') {
         // rev73: OPEX 패널의 인건비 입력 — 타이핑 중 패널 값만 갱신
         const def = getControlDef(inputId);
         let v = Number(String(event.target.value).replace(/,/g, '').trim());
@@ -8595,7 +8616,8 @@ const PODFIN = (function () {
     const lease = Array.isArray(data.leaseByYear) ? data.leaseByYear : data.annualRevenue.map(() => Number(data.leaseOpexEok) || 0);
     // rev66: + 운영 인건비(운영 인원 × 인당 연 인건비)
     const labor = Array.isArray(data.laborByYear) ? data.laborByYear : data.annualRevenue.map(() => Number(data.laborEok) || 0);
-    const opex = data.annualRevenue.map((_, i) => (data.electricityByYear[i] || 0) + (data.swOpexByYear[i] || 0) + (lease[i] || 0) + (labor[i] || 0));
+    const integ = Array.isArray(data.integrationByYear) ? data.integrationByYear : data.annualRevenue.map((_, i) => (i === 0 ? Number(data.integrationEok) || 0 : 0));
+    const opex = data.annualRevenue.map((_, i) => (data.electricityByYear[i] || 0) + (data.swOpexByYear[i] || 0) + (lease[i] || 0) + (labor[i] || 0) + (integ[i] || 0));
     const dep = data.capexByYear.slice();
     const capex = data.totalCapexEok;
     const resid = Math.max(0, capex - dep.reduce((s, v) => s + v, 0));
@@ -8867,12 +8889,12 @@ const PODFIN = (function () {
     const depositNote = Number(d.leaseDepositEok) || 0;
     set('pfinNote', L(
       '※ 매출·운영비·감가상각은 본 모델의 입력값에서 그대로 가져옵니다(운영비 = 전기료 + AI Enterprise 구독료 + 임차 비용 '
-      + FINVIEW.fmt(leaseNote, 1) + '억/년[임대료 + 관리비 + 보증금 환산 이자] + 인건비 ' + FINVIEW.fmt(laborNote, 1) + '억/년[' + nf.format(Number(d.laborHeads) || 0) + '명 × 인당 ' + FINVIEW.fmt(Number(d.laborPerHeadEok) || 0, 1) + '억, 4인 3교대 기준]'
+      + FINVIEW.fmt(leaseNote, 1) + '억/년[임대료 + 관리비 + 보증금 환산 이자] + 인건비 ' + FINVIEW.fmt(laborNote, 1) + '억/년[' + nf.format(Number(d.laborHeads) || 0) + '명 × 인당 ' + FINVIEW.fmt(Number(d.laborPerHeadEok) || 0, 1) + '억, 4인 3교대 기준] + SW 초기 설치·통합비 ' + FINVIEW.fmt(Number(d.integrationEok) || 0, 1) + '억(1년차 1회)'
       + ', 감가상각 = 상각률 스케줄). 잔존가액은 3년차 FCFE에 회수분으로 반영됩니다. 임차 보증금 ' + FINVIEW.fmt(depositNote, 1) + '억은 0년차에 자기자본과 함께 납입하고 3년차에 회수합니다. 통합투자세액공제 5%는 건축·토목 시설비 '
       + FINVIEW.fmt(itcExclBase(d.key === 'rack' ? 'rack' : 'pod'), 1)
       + '억을 제외한 금액에 적용됩니다. 상단 「3년 누적 지출」은 운영비 + 감가상각 + PF 이자 + 법인세의 합계이며, 「3년 누적 손익」은 매출에서 이를 차감한 세후 순이익 누계입니다(PF 원금상환은 비용이 아니므로 제외).',
       'Revenue, operating cost and depreciation come straight from this model (operating cost = electricity + AI Enterprise + lease costs of '
-      + FINVIEW.fmt(leaseNote, 1) + 'B a year [rent + management fee + deposit carrying cost] + labor of ' + FINVIEW.fmt(laborNote, 1) + 'B a year [' + nf.format(Number(d.laborHeads) || 0) + ' people × ' + FINVIEW.fmt(Number(d.laborPerHeadEok) || 0, 1) + 'B each, 4-person 3-shift operation]'
+      + FINVIEW.fmt(leaseNote, 1) + 'B a year [rent + management fee + deposit carrying cost] + labor of ' + FINVIEW.fmt(laborNote, 1) + 'B a year [' + nf.format(Number(d.laborHeads) || 0) + ' people × ' + FINVIEW.fmt(Number(d.laborPerHeadEok) || 0, 1) + 'B each, 4-person 3-shift operation] + SW initial integration ' + FINVIEW.fmt(Number(d.integrationEok) || 0, 1) + 'B (once, Year 1)'
       + '; depreciation follows the schedule). The residual is recovered in Year-3 FCFE. The lease deposit of ' + FINVIEW.fmt(depositNote, 1) + 'B is paid in Year 0 with equity and returned in Year 3. The 5% investment tax credit excludes '
       + FINVIEW.fmt(itcExclBase(d.key === 'rack' ? 'rack' : 'pod'), 1)
       + 'B of building/civil facility cost. "3-yr cumulative cost" is opex + depreciation + interest + tax; "3-yr cumulative profit" is revenue less that total.'));
