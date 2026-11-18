@@ -326,6 +326,8 @@
     .remote.collapsed .sg-toggle { height: 11px; }
     .remote.collapsed .sg-toggle::before { width: 7px; height: 7px; transform: translateY(-2px) rotate(225deg); }
     .remote.collapsed { padding-bottom: 4px; }
+    .remote.stuck.collapsed { top: 15px; } /* rev80: 접힌 요약 바는 화면 위 15px(선 18px)에 붙임 */
+    .remote { transition: padding-bottom .28s ease, top .28s ease; }
     .kpi { position: relative; min-width: 0; }
     .kpi .k-pre { font-size: 13px; font-weight: 500; color: var(--g77); line-height: 17.6px; margin-bottom: 0.4px; white-space: nowrap; }
     .kpi .k-label { display: flex; align-items: center; font-size: 19px; font-weight: 600; color: var(--g77); line-height: 25.7px; white-space: nowrap; }
@@ -5710,11 +5712,16 @@
     }
     // rev16: 접힌 섹션 상태(제목 기준)를 재렌더 후에도 유지
     const collapsedSecs = new Set();
+    // rev80: 기본 접힘 섹션 — 타사위탁 공급 조건·매출 구조, 타사위탁 마진율 민감도·협상 범위, 도입 구성, 시설비 CAPEX, 연간 OPEX (사용자가 한 번 펼치면 그 상태 유지)
+    const DEFAULT_COLLAPSED_SECS = ['neo-terms-sec', 'neo-sens-sec', 'mix-sec', 'fac-sec', 'opex-sec'];
+    const secToggled = new Set();
     function applyCollapsedSecs(root) {
       (root || document).querySelectorAll('.sec').forEach(sec => {
         const h = sec.querySelector(':scope > .sec-head .sec-title.tri');
         if (!h) return;
-        sec.classList.toggle('collapsed', collapsedSecs.has(h.textContent.trim()));
+        const key = h.textContent.trim();
+        if (!collapsedSecs.has(key) && !secToggled.has(key) && DEFAULT_COLLAPSED_SECS.some(c => sec.classList.contains(c))) collapsedSecs.add(key);
+        sec.classList.toggle('collapsed', collapsedSecs.has(key));
       });
       (root || document).querySelectorAll('.remote').forEach(el => el.classList.toggle('collapsed', collapsedSecs.has('@' + (el.id || 'fin'))));
     }
@@ -7614,6 +7621,7 @@
         if (sec) {
           sec.classList.toggle('collapsed');
           const key = secTitle.textContent.trim();
+          secToggled.add(key);
           if (sec.classList.contains('collapsed')) collapsedSecs.add(key); else collapsedSecs.delete(key);
           return;
         }
