@@ -871,6 +871,8 @@
     .opex-sec .dt.fac .fac-rate-row .fac-rate, .opex-sec .dt.fac .fac-rate-row .fac-rate + .fac-rate { margin-top: 0; }
     .dt.fac .fac-rate .u { display: inline-block; }
     .dt.fac .fac-rate .fac-unit { font-size: 12px; font-weight: 500; color: var(--g77); margin-left: 3px; vertical-align: baseline; }
+    .dt.fac .fac-once { margin-top: 8px; font-size: 15px; font-weight: 400; color: var(--g60); line-height: 20px; white-space: nowrap; }
+    .dt.fac .fac-once .fac-auto-inline { font-size: 12px; color: var(--ga0); margin-left: 2px; }
     .opex-sec .fac-rate .fac-pre { font-size: 22px; font-weight: 600; color: var(--k100); line-height: 29.8px; margin-right: 2px; vertical-align: baseline; }
     .opex-sec .fac-rate label .ico-i { width: 13px; height: 13px; margin-left: 3px; vertical-align: -2px; }
 
@@ -1429,6 +1431,8 @@
       opexOnce: { ko: '1회 · 1년차', en: 'once · Year 1' },
       opexOnceShort: { ko: '1회', en: 'once' },
       opexIntegSummary: { ko: '40M/M × 월 2,000만원 = 8억 + 예비비 2억 = 10억 · 1년차에 1회 계상', en: '40 man-months × KRW 20M = 0.8B + 0.2B contingency = 1.0B · charged once in Year 1' },
+      opexIntegInline: { ko: '초기 설치·통합비 {v}는 1년차 1회(매년 가산 안 함)', en: 'initial integration {v} once in Year 1 (not added every year)' },
+      opexIntegLogicShort: { ko: '초기 설치·통합비 = 40M/M × 월 2,000만원 + 예비비 2억, 프로젝트 전체 고정', en: 'initial integration = 40 man-months × KRW 20M + 0.2B contingency, fixed per project' },
       opexIntegLogic: { ko: '1회 고정 — 프로젝트 전체 고정 금액(SU 수와 무관), 2·3년차에는 발생하지 않음 · IT 장비 CAPEX가 아닌 운영비로 계상', en: 'One-off — fixed for the project (independent of SU count), not charged in Years 2–3 · booked as opex, not IT equipment capex' },
       labelSwMaintShort: { ko: '유지비', en: 'Upkeep' },
       labelSwInitialShort: { ko: '초기 설치·통합비', en: 'Initial integration' },
@@ -4788,22 +4792,19 @@
         { key: 'elec', label: t('opexRowElec'), kind: t('kindUtilLinked'), value: d.electricityByYear[0],
           summary: t('opexElecSummary', { e: eokF(d.energyByYear[0]), b: eokF(d.baseEok) }),
           logic: t('opexElecLogic', { kw: nf.format(Math.round(d.usedItPower || 0)), pue: nf2.format(d.pue || 0), u: nf.format(Math.round(u0 * 100)), rate: formatRateText('energyCostRate', state.energyCostRate), tot: nf.format(Number(state.totalPowerKw) || 0), basic: formatRateText('basicChargeKwMonth', state.basicChargeKwMonth), years: elecYears }) },
-        { key: 'sw', label: t('opexRowSw'), kind: t('kindFixedYear'), value: d.swOpexEok,
-          summary: t('opexSwSummary', { r: formatSwSub(d.swRateUsd), g: nf.format(d.swGpus || 0), fx: nf.format(Number(state.fxKrwUsd) || 0) }),
-          logic: t('opexSwLogic'), inputs: 'sw' },
+        { key: 'sw', label: t('opexRowSw'), kind: t('kindFixedYear'), value: d.swOpexEok, once: false, onceValue: d.integrationEok, onceLabel: t('opexRowInteg'),
+          summary: `${t('opexSwSummary', { r: formatSwSub(d.swRateUsd), g: nf.format(d.swGpus || 0), fx: nf.format(Number(state.fxKrwUsd) || 0) })} · ${t('opexIntegInline', { v: eokF(d.integrationEok) })}`,
+          logic: `${t('opexSwLogic')} · ${t('opexIntegLogicShort')}`, inputs: 'sw' },
         { key: 'lease', label: t('opexRowLease'), kind: t('kindFixedYear'), value: d.leaseOpexEok,
           summary: t('opexLeaseSummary', { r: eokF(d.leaseRentEok), m: eokF(d.leaseMgmtEok), dc: eokF(d.leaseDepositCostEok) }),
           logic: `${t('opexLeaseLogicLead')} ${leaseTermsText()}`, inputs: 'lease' },
         { key: 'labor', label: t('opexRowLabor'), kind: t('kindFixedYear'), value: d.laborEok,
           summary: t('opexLaborSummary', { n: nf.format(d.laborHeads || 0), c: eokF(d.laborPerHeadEok || 0) }),
           logic: t('opexLaborLogic'), inputs: 'labor' },
-        { key: 'integ', label: t('opexRowInteg'), kind: t('kindOnce'), value: d.integrationEok, once: true,
-          summary: t('opexIntegSummary'),
-          logic: t('opexIntegLogic'), inputs: 'integ' }
       ];
     }
     function opexTotalNoteHtml(d, rows, total) {
-      const parts = rows.map(r => `${r.label} ${eokF(r.value)}${r.once ? `(${t('opexOnceShort')})` : ''}`).join(' + ');
+      const parts = rows.map(r => `${r.label} ${eokF(r.value)}${r.onceValue != null ? ` + ${r.onceLabel} ${eokF(r.onceValue)}(${t('opexOnceShort')})` : ''}`).join(' + ');
       const byYear = d.annualExpense.map((v, i) => `${t('yearLabel', { n: i + 1 })} ${eokF(v - d.capexByYear[i])}`).join(' · ');
       return `${parts}<br>= ${t('opexTotalRow')} ${eokF(total)} · ${byYear}`;
     }
@@ -4811,7 +4812,7 @@
       const d = getActiveData();
       if (!d || !Array.isArray(d.electricityByYear)) return '';
       const rows = opexRows(d);
-      const total = rows.reduce((sum, r) => sum + (Number(r.value) || 0), 0);
+      const total = rows.reduce((sum, r) => sum + (Number(r.value) || 0) + (Number(r.onceValue) || 0), 0);
       const share = v => (total > 0 ? `${nf1.format(Math.round(v / total * 1000) / 10)}%` : '0%');
       // 입력칸: 라벨은 이름만, 단위는 입력값 옆에 (사이드바 양식과 동일)
       const rateInput = (id, label, unit, pre) => `<div class="fac-rate"><label>${label}</label>${pre ? `<span class="fac-pre">${pre}</span>` : ''}${numInputHtml(id)}<span class="fac-unit">${unit}</span></div>`;
@@ -4829,18 +4830,15 @@
       const swInputs = `
             <div class="fac-rate-row">
               ${rateInput('swSubUsdPerGpuYear', `${t('labelSwMaintShort')}${infoIcon(t('tipSwMaint'), t('labelSwMaint'), true)}`, `$/${unitOf('swSubUsdPerGpuYear')}`, '$')}
-            </div>`;
-      const integInputs = `
-            <div class="fac-rate-row">
-              ${rateInput('initIntegrationEok', `${t('labelSwInitialShort')}${infoIcon(t('tipIntegration'), t('labelSwInitial'), true)}`, unitOf('initIntegrationEok'))}
+              ${rateInput('initIntegrationEok', `${t('labelSwInitialShort')} (${t('opexOnceShort')})${infoIcon(t('tipIntegration'), t('labelSwInitial'), true)}`, unitOf('initIntegrationEok'))}
             </div>`;
       const rowsHtml = rows.map(r => `
         <tr class="fac-row opex-row" data-opex-row="${r.key}">
           <td class="fac-cat">
             <div class="fac-lab">${r.label}<span class="tag-box">${r.kind}</span></div>
-            ${r.inputs === 'labor' ? laborInputs : (r.inputs === 'sw' ? swInputs : (r.inputs === 'lease' ? leaseInputs : (r.inputs === 'integ' ? integInputs : '')))}
+            ${r.inputs === 'labor' ? laborInputs : (r.inputs === 'sw' ? swInputs : (r.inputs === 'lease' ? leaseInputs : ''))}
           </td>
-          <td><span class="fac-val"><span data-opex-val="${r.key}">${eokF(r.value)}</span></span><span class="fac-auto">${r.once ? t('opexOnce') : t('opexPerYear')}</span></td>
+          <td><span class="fac-val"><span data-opex-val="${r.key}">${eokF(r.value)}</span></span><span class="fac-auto">${r.once ? t('opexOnce') : t('opexPerYear')}</span>${r.onceValue != null ? `<div class="fac-once">+ <span data-opex-once="${r.key}">${eokF(r.onceValue)}</span> <span class="fac-auto-inline">${t('opexOnce')}</span></div>` : ''}</td>
           <td><span class="fac-val" data-opex-share="${r.key}">${share(r.value)}</span></td>
           <td><div class="fac-note"><div class="fac-summary" data-opex-sum="${r.key}">${r.summary}</div><div class="fac-logic" data-opex-logic="${r.key}">${bracketLead(r.logic)}</div></div></td>
         </tr>`).join('');
@@ -4880,10 +4878,11 @@
       if (!panel) return;
       const d = getActiveData();
       const rows = opexRows(d);
-      const total = rows.reduce((sum, r) => sum + (Number(r.value) || 0), 0);
+      const total = rows.reduce((sum, r) => sum + (Number(r.value) || 0) + (Number(r.onceValue) || 0), 0);
       const share = v => (total > 0 ? `${nf1.format(Math.round(v / total * 1000) / 10)}%` : '0%');
       rows.forEach(r => {
         const v = panel.querySelector(`[data-opex-val="${r.key}"]`); if (v) v.textContent = eokF(r.value);
+        const o = panel.querySelector(`[data-opex-once="${r.key}"]`); if (o) o.textContent = eokF(r.onceValue || 0);
         const sh = panel.querySelector(`[data-opex-share="${r.key}"]`); if (sh) sh.textContent = share(r.value);
         const sm = panel.querySelector(`[data-opex-sum="${r.key}"]`); if (sm) sm.innerHTML = r.summary;
         const lg = panel.querySelector(`[data-opex-logic="${r.key}"]`); if (lg) lg.innerHTML = bracketLead(r.logic);
