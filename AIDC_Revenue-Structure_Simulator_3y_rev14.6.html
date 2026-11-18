@@ -1143,6 +1143,7 @@
     // baseRateUsd = 온디맨드 '기초단가'($/GPU/h, 입지 프리미엄 적용 전) — 'GPU 시간당 임대료 산정 보고서(GB300 NVL72 SuperPOD 4SU 기준)' 4-1 기준.
     //   A) 전문 GPU 클라우드 사업자 / B) 하이퍼스케일러
     //   GB300: 단일 랙 $16.11 / $21.35, SuperPOD $18.12 / $24.02 (SuperPOD = 단일 랙 x 1.125, 실효성능 +12.5%)
+    //   rev88: GB300 기초단가는 $11.19/GPU·h 로 재설정 (보고서 산정값 대신 기본 임대료 가정값, A/B 동일)
     //   GB200: 보고서 4장 표(GB200 NVL72 $10.50 / $18.00)에 동일 로직 적용 → SuperPOD $11.81 / $20.25
     const SYSTEM_DEFAULTS = {
       gb200: {
@@ -1170,7 +1171,7 @@
         racksPerSu: 8,
         suItPowerKw: 1200, // GB300 SuperPOD도 효율 개선으로 SU당 전력 동일 (1.2MW)
         suAreaSqm: 120,
-        baseRateUsd: { A: 18.12, B: 24.02 },
+        baseRateUsd: { A: 11.19, B: 11.19 },   // rev88: GB300 기본 임대료 $11.19/GPU·h (A/B 동일, 카드에서 수정 가능)
         fp4PflopsPerSu: 8640,
         capexUsd: { nvl72: 32500000, network: 4750000, storage: 2000000, mgmt: 300000, cdu: 2000000, swSetup: 3500000 },
         color: 'var(--gb300-color)'
@@ -1243,7 +1244,7 @@
         gpusPerUnit: 576, racksPerUnit: 8, serversPerUnit: 144, serversPerRack: 18, positionsPerUnit: 18, rackAreaSqm: 3.5,
         serverKw: 0, rackKw: 140, supportPct: 10, computeKwPerUnit: 1120, unitItPowerKw: 1232, unitAreaSqm: 63,
         pricePerGpuUsd: 80167, cduPerUnit: CDU_PER_SU_DEFAULT,
-        baseRateUsd: { A: 18.12, B: 24.02 },
+        baseRateUsd: { A: 11.19, B: 11.19 },   // rev88: GB300 기본 임대료 $11.19/GPU·h (A/B 동일, 카드에서 수정 가능)
         fp4PflopsPerUnit: 8640,
         capexUsd: { equip: 46176192 },
         color: 'var(--gb300-color)'
@@ -1341,7 +1342,7 @@
       opMode: 'neo',
       neoPriceKey: 'b300',
       neoPrice_b300: 7.65,     // NeoCloud 공개 판매단가 ($/GPU·h) — B300 (rev74: 7.65)
-      neoPrice_gb300: 0,       // 자료 없음 — 빈칸(0)이면 매출 0
+      neoPrice_gb300: 11.19,   // NeoCloud 판매단가 ($/GPU·h) — GB300 (rev88: 11.19)
       neoPrice_vr: 0,
       neoPrice_custom: 0,
       neoMarginPct: 20,        // NeoCloud 사업자 마진율(%) — 공개가에서 차감
