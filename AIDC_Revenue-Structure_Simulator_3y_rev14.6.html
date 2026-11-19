@@ -1285,13 +1285,13 @@
       utilY1: 100,            // 연차별 가동률 계수(%) — VSLAI rev1.2 기본값 100/100/100 (보고서 6장은 90/80/80)
       utilY2: 100,
       utilY3: 100,
-      mix3Y: 50,              // 3년 예약 비중(%)
+      mix3Y: 30,              // 3년 예약 비중(%) — rev89: 30/30/30/10
       mix1Y: 30,              // 1년 예약 비중(%)
-      mixOD: 10,              // 온디맨드 비중(%)
+      mixOD: 30,              // 온디맨드 비중(%)
       mixIdle: 10,            // 정비 및 유휴(%)
       locPremiumPct: 0,       // 설치 국가·입지 여건 프리미엄(%) — 보고서 5-1 (rev36: 기본값 0)
-      disc1YPct: 25,          // 1년 예약 할인(%) — 보고서 5-3
-      disc3YPct: 46,          // 3년 예약 할인(%) — 보고서 5-3
+      disc1YPct: 8,           // 1년 예약 할인(%) — rev89: 8 (보고서 5-3은 25)
+      disc3YPct: 35,          // 3년 예약 할인(%) — rev89: 35 (보고서 5-3은 46)
       totalPowerKw: 3600,      // rev58: 판교 AIDC 총 수전 3.6MW
       pue: 1.2,
       itPowerKw: 3000,         // rev58: IT Load 3MW (HGX B300 2SU · 2,376kW 수용) — 총 수전 3.6MW → PUE 1.2
@@ -1339,7 +1339,7 @@
       n_b300: 0, n_gb300: 0, n_vr: 0, n_custom: 0,
       customOpen: false,
       // rev37: 운영 방식 — 'csp'(직접 영업·운영) | 'neo'(NeoCloud 경유). 기본값과 NeoCloud 조건은 VSLAI rev1.2 값
-      opMode: 'neo',
+      opMode: 'csp',           // rev89: 기본 CSP 직접운영
       neoPriceKey: 'b300',
       neoPrice_b300: 7.65,     // NeoCloud 공개 판매단가 ($/GPU·h) — B300 (rev74: 7.65)
       neoPrice_gb300: 11.19,   // NeoCloud 판매단가 ($/GPU·h) — GB300 (rev88: 11.19)
