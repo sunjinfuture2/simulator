@@ -1621,6 +1621,8 @@
       tabCompare: { ko: '모델 비교', en: 'Model Comparison' },
       suSecTitle: { ko: 'SU구성', en: 'SU Configuration' },
       labelDepGroup: { ko: 'GPU 누적 감가상각률', en: 'Cumulative GPU Depreciation' },
+      depHint: { ko: '※ 투자비(CAPEX)를 각 연차 말까지 비용으로 인식한 누적 비율입니다. 연간 감가상각비 = 총 CAPEX × (해당 연차 누적률 − 전년 누적률).', en: '※ Share of capex recognised as expense by the end of each year. Annual depreciation = total capex × (this year\'s cumulative rate − last year\'s).' },
+      tipDepGroup: { ko: '감가상각은 장비·시설에 들인 투자비를 사용 기간에 나눠 비용으로 잡는 회계 처리입니다. GPU는 세대 교체가 빨라 3년 안에 가치가 거의 소진된다고 보고 누적 33 / 66 / 99%를 기본값으로 둡니다.\n· 연간 감가상각비 = (IT 장비 CAPEX + 시설 CAPEX) × 연차별 증가분. 기본값이면 매년 총 CAPEX의 33%입니다.\n· 실제 현금이 나가는 비용이 아니라 손익(연간 지출·세전이익)에만 반영되는 비현금 비용입니다.\n· 3년차 누적률이 100% 미만이면 남은 금액(기본 1%)은 잔존가액으로, 재무구조의 3년차 주주 현금흐름에 회수분으로 더해집니다.\n· 이름은 GPU 기준이지만 이 모델에서는 시설 CAPEX에도 같은 비율을 적용합니다.', en: 'Depreciation spreads the capex spent on equipment and facilities over its useful life as an expense. GPUs turn over quickly, so the default assumes value is almost fully consumed in three years: cumulative 33 / 66 / 99%.\n· Annual depreciation = (IT equipment capex + facility capex) × yearly increment; at the defaults, 33% of total capex each year.\n· It is a non-cash charge: it affects profit (annual expense, pre-tax income), not cash out.\n· If the Year-3 cumulative rate is below 100%, the remainder (1% by default) is residual value, recovered in Year-3 equity cash flow in the financing model.\n· Although named for GPUs, the same rates are applied to facility capex in this model.' },
       labelSwSubShort: { ko: 'AI Enterprise 구독단가', en: 'AI Enterprise rate' },
       rackSpecHeading: { ko: '랙 사양 · 1랙 기준', en: 'Rack spec · per rack' },
       btnToggleCards: { ko: '요약 카드 접기/펴기', en: 'Collapse/expand summary cards' },
@@ -5840,8 +5842,9 @@
           ${ctlRow('locPremiumPct', t('labelLocPremium'), { cls: 'rate-row', unitCls: 'pct', extra: neo ? 'disabled' : '' })}
         </section>
         <section class="s-group dep last" data-views="superpod,compare">
-          <span class="s-lab">${t('labelDepGroup')}</span>
+          <span class="s-lab">${t('labelDepGroup')}${infoIcon(t('tipDepGroup'), t('labelDepGroup'), true)}</span>
           ${ctlCols(['depY1', 'depY2', 'depY3'], [yr(1), yr(2), yr(3)], 'c3')}
+          <div class="s-hint">${t('depHint')}</div>
         </section>
         `;
       const fin = (typeof PODFIN !== 'undefined' && PODFIN.sidebarHtml) ? PODFIN.sidebarHtml() : '';
