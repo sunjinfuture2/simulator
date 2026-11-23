@@ -5000,7 +5000,19 @@
         + sumRow('fac-sub', 'direct', t('facRowDirect'), result.direct, t('facRowDirectNote'))
         + result.overheadRows.map(dataRow).join('')
         + sumRow('fac-sum', 'construction', t('facRowConstruction'), result.construction, t('facRowConstructionNote'))
-        + result.extraRows.map(dataRow).join('');
+        + result.extraRows.map(dataRow).join('')
+        // rev92: SW 초기 설치·통합비 — 지반조사용역 바로 아래 (IT 장비 CAPEX 계상, 시설 합계 미포함)
+        + (modelKey === 'pod' ? `
+                <tr class="fac-row fac-itcapex">
+                  <td class="fac-cat">
+                    <div class="fac-lab">${t('labelSwInitial')}<span class="tag-box">${t('kindItCapex')}</span></div>
+                    <div class="fac-rate"><label>${t('labelInitIntegration')}${infoIcon(t('tipIntegration'), t('labelSwInitial'), true)}</label>${numInputHtml('initIntegrationEok')}<span class="fac-unit">${unitOf('initIntegrationEok')}</span></div>
+                  </td>
+                  ${showNew ? '<td></td>' : ''}
+                  <td><span class="fac-val"><span data-integ-val>${eokF(Math.max(0, Number(state.initIntegrationEok) || 0))}</span></span><span class="fac-auto">${t('integOnce')}</span></td>
+                  <td><span class="fac-val">–</span></td>
+                  <td><div class="fac-note"><div class="fac-summary">${t('integSummary')}</div><div class="fac-logic">${bracketLead(t('integLogic'))}</div></div></td>
+                </tr>` : '');
       const cols = showNew
         ? '<col style="width:300px"><col style="width:86.8px"><col style="width:106px"><col style="width:107.4px"><col>'
         : '<col style="width:300px"><col style="width:192.8px"><col style="width:107.4px"><col>';
@@ -5032,17 +5044,6 @@
                   <td><strong id="facGrand-${modelKey}">${eokF(grand)}</strong><div class="fac-pct">(100%)</div></td>
                   <td><div class="fac-note" id="facTotalNote-${modelKey}">${facTotalNoteHtml(showNew, result, grand)}</div></td>
                 </tr>
-                ${modelKey === 'pod' ? `
-                <tr class="fac-row fac-itcapex">
-                  <td class="fac-cat">
-                    <div class="fac-lab">${t('labelSwInitial')}<span class="tag-box">${t('kindItCapex')}</span></div>
-                    <div class="fac-rate"><label>${t('labelInitIntegration')}${infoIcon(t('tipIntegration'), t('labelSwInitial'), true)}</label>${numInputHtml('initIntegrationEok')}<span class="fac-unit">${unitOf('initIntegrationEok')}</span></div>
-                  </td>
-                  ${showNew ? '<td></td>' : ''}
-                  <td><span class="fac-val"><span data-integ-val>${eokF(Math.max(0, Number(state.initIntegrationEok) || 0))}</span></span><span class="fac-auto">${t('integOnce')}</span></td>
-                  <td><span class="fac-val">–</span></td>
-                  <td><div class="fac-note"><div class="fac-summary">${t('integSummary')}</div><div class="fac-logic">${bracketLead(t('integLogic'))}</div></div></td>
-                </tr>` : ''}
               </tbody>
             </table>
           </div>
